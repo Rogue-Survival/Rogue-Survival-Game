@@ -4,7 +4,8 @@ import pygame
 pygame.init()
 
 # creates the window and dimensions for the game
-screen = pygame.display.set_mode((850, 850))
+# screen = pygame.display.set_mode((850, 850))
+screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 # sets the window caption at the top
 pygame.display.set_caption("Rogue Survival")
 
@@ -102,11 +103,16 @@ class Enemy(pygame.sprite.Sprite):
 
 # initializes the Player and Enemy classes
 p = Player()
-e = Enemy()
+e1 = Enemy()
+e2 = Enemy()
+e3 = Enemy()
+
+
 
 speed_item_visible = True
 game = True
 while game:
+    x = pygame.time.get_ticks()
     # the core game loop
     clock = 60
     # sets the fps to 60
@@ -150,15 +156,15 @@ while game:
         p.move_down()
 
     # loads the map and makes it visible
-    background_image = './images/Real_Project.png'
-    bg_img = pygame.image.load(background_image)
-    screen.blit(pygame.transform.scale(bg_img, (850, 850)), (0, 0))
+    background_image = './images/island.png'
+    bg_img = pygame.image.load(background_image).convert_alpha()
+    screen.blit(pygame.transform.scale(bg_img, (2000, 2000)), (0, 0))
 
     # loads the main character and makes it visible
     # the first tuple dictates the size (45,45)
     # the second tuple dictates the starting coordinates (p.mc_x, p.mc_y)
     # the coordinates start at the top left of the screen, which is (0,0) instead of the center
-    mc_img = pygame.image.load(p.image)
+    mc_img = pygame.image.load(p.image).convert_alpha()
     screen.blit(pygame.transform.scale(mc_img, (45, 45)), (p.mc_x, p.mc_y))
 
     if speed_item_visible:
@@ -174,9 +180,28 @@ while game:
             speed_item_visible = False
 
     # tells the enemy to follow the main character
-    enemy1 = pygame.image.load(e.image).convert_alpha()
-    screen.blit(pygame.transform.scale(enemy1, (50, 50)), (e.enemy_x, e.enemy_y))
-    e.follow_mc()
+    enemy1 = pygame.image.load(e1.image).convert_alpha()
+    screen.blit(pygame.transform.scale(enemy1, (50, 50)), (e1.enemy_x, e1.enemy_y))
+    e1.follow_mc()
+
+
+    if x > 3000:
+        enemy2 = pygame.image.load(e1.image).convert_alpha()
+        screen.blit(pygame.transform.scale(enemy1, (75, 75)), (e2.enemy_x, e2.enemy_y))
+        e2.follow_mc()
+
+
+    if x > 6000:
+        enemy3 = pygame.image.load(e1.image).convert_alpha()
+        screen.blit(pygame.transform.scale(enemy1, (125, 125)), (e3.enemy_x, e2.enemy_y))
+        e3.follow_mc()
+
+
+
+    if x > 100000:
+        pass
+        # Add different enemies after 1 minute. Add them to the enemies list. If enemies are destroyed, remove them from the list.
+
 
     pygame.display.update()
 
