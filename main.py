@@ -104,8 +104,14 @@ class Enemy(pygame.sprite.Sprite):
 # initializes the Player and Enemy classes
 p = Player()
 e1 = Enemy()
-e2 = Enemy()
-e3 = Enemy()
+# e2 = Enemy()
+# e3 = Enemy()
+
+
+enemies = []
+for i in range(10):
+    enemies.append(Enemy(i))
+    eval(enemies[i])
 
 
 
@@ -185,23 +191,25 @@ while game:
     e1.follow_mc()
 
 
-    if x > 3000:
-        enemy2 = pygame.image.load(e1.image).convert_alpha()
-        screen.blit(pygame.transform.scale(enemy1, (75, 75)), (e2.enemy_x, e2.enemy_y))
-        e2.follow_mc()
-
-
-    if x > 6000:
-        enemy3 = pygame.image.load(e1.image).convert_alpha()
-        screen.blit(pygame.transform.scale(enemy1, (125, 125)), (e3.enemy_x, e2.enemy_y))
-        e3.follow_mc()
-
-
-
-    if x > 100000:
-        pass
+    # if x > 3000:
+    #     enemy2 = pygame.image.load(e1.image).convert_alpha()
+    #     screen.blit(pygame.transform.scale(enemy1, (75, 75)), (e2.enemy_x, e2.enemy_y))
+    #     e2.follow_mc()
+    #
+    #
+    # if x > 6000:
+    #     enemy3 = pygame.image.load(e1.image).convert_alpha()
+    #     screen.blit(pygame.transform.scale(enemy1, (125, 125)), (e3.enemy_x, e2.enemy_y))
+    #     e3.follow_mc()
+    #
+    #
+    #
+    # if x > 100000:
+    #     pass
         # Add different enemies after 1 minute. Add them to the enemies list. If enemies are destroyed, remove them from the list.
 
+    if x > 4000:
+        enemy[1]
 
     pygame.display.update()
 
