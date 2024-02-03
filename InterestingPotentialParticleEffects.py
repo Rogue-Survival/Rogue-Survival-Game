@@ -12,19 +12,18 @@ pygame.display.set_caption("Rogue Survival")
 
 # creates variable to control game fps
 clock = pygame.time.Clock()
-x = pygame.time.get_ticks()
 
 
 class Player(pygame.sprite.Sprite):
     # Player class controls basic functions relating to the player
-    def __init__(self, mc_x=350, mc_y=580, speed=5, image="./images/MAIN_CHARACTER.png", health=50):
+    def __init__(self, mc_x=350, mc_y=580, speed=5, image="./images/MAIN_CHARACTER.png" ):
         # inherits from the pygame.sprite.Sprite class
         pygame.sprite.Sprite.__init__(self)
         self.mc_x = mc_x
         self.mc_y = mc_y
         self.speed = speed
         self.image = image
-        self.health = health
+
 
     def get_mc_x(self):
         # returns x position of player
@@ -41,6 +40,7 @@ class Player(pygame.sprite.Sprite):
     def get_image(self):
         # returns image of player
         return self.image
+
 
     def move_left(self):
         # moves the player left
@@ -69,7 +69,7 @@ class Player(pygame.sprite.Sprite):
 
 class Enemy(pygame.sprite.Sprite):
     # Enemy class controls basic functions relating to the enemy
-    def __init__(self, enemy_x=50, enemy_y=50, speed=2.5, image="./images/skeleton1.png"):
+    def __init__(self, enemy_x=50, enemy_y=50, speed=2.5, image="./images/skeleton1.png" ):
         pygame.sprite.Sprite.__init__(self)
         self.enemy_x = enemy_x
         self.enemy_y = enemy_y
@@ -94,8 +94,8 @@ class Enemy(pygame.sprite.Sprite):
 
     def generate_enemy(self):
         enemy1 = pygame.image.load(self.image).convert_alpha()
-        screen.blit(pygame.transform.scale(enemy1, (60, 60)), (self.enemy_x, self.enemy_y))
-
+        screen.blit(pygame.transform.scale(enemy1, (random.randint(45, 100), random.randint(45,100))), (self.enemy_x, self.enemy_y))
+        print("LOL")
     def follow_mc(self):
         # follows the main character around the map
         if self.enemy_x < p.mc_x:
@@ -110,12 +110,20 @@ class Enemy(pygame.sprite.Sprite):
 
 # initializes the Player and Enemy classes
 p = Player()
-enemies = [Enemy(random.randint(50,500),random.randint(50,500)) for _ in range(5)]
+e1 = Enemy(random.randint(50,500), random.randint(50,500))
+e2 = Enemy(random.randint(50,500), random.randint(50,500))
+e3 = Enemy(random.randint(50,500), random.randint(50,500))
+
+
+
+
+
+
 
 speed_item_visible = True
 game = True
 while game:
-
+    x = pygame.time.get_ticks()
     # the core game loop
     clock.tick(200)
     # sets the fps to 60
@@ -183,17 +191,50 @@ while game:
             speed_item_visible = False
 
     # tells the enemy to follow the main character
-    # enemy1 = pygame.image.load(e1.image).convert_alpha()
+    enemy1 = pygame.image.load(e1.image).convert_alpha()
     # screen.blit(pygame.transform.scale(enemy1, (50, 50)), (e1.enemy_x, e1.enemy_y))
+    e1.generate_enemy()
+    e1.follow_mc()
 
-    for enemy in enemies:
-        enemy.generate_enemy()
-        enemy.follow_mc()
 
-    print(p.health)
+
+    if x > 3000:
+        enemy2 = pygame.image.load(e1.image).convert_alpha()
+        # screen.blit(pygame.transform.scale(enemy1, (75, 75)), (e2.enemy_x, e2.enemy_y))
+        e2.generate_enemy()
+        e2.follow_mc()
+
+
+    if x > 6000:
+        enemy3 = pygame.image.load(e1.image).convert_alpha()
+        # screen.blit(pygame.transform.scale(enemy1, (125, 125)), (e1.enemy_x, e2.enemy_y))
+        e3.generate_enemy()
+        e3.follow_mc()
+
+
+
     pygame.display.update()
 
 pygame.quit()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
