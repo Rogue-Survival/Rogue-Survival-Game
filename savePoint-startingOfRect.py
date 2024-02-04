@@ -17,97 +17,116 @@ x = pygame.time.get_ticks()
 
 class Player(pygame.sprite.Sprite):
     # Player class controls basic functions relating to the player
-    def __init__(self, speed=5, health=50):
+    def __init__(self, mc_x=350, mc_y=580, speed=5, image="./images/MAIN_CHARACTER.png", health=50):
         # inherits from the pygame.sprite.Sprite class
         pygame.sprite.Sprite.__init__(self)
+        self.mc_x = mc_x
+        self.mc_y = mc_y
         self.speed = speed
+        self.image = image
         self.health = health
+
+    def get_mc_x(self):
+        # returns x position of player
+        return self.mc_x
+
+    def get_mc_y(self):
+        # returns y position of player
+        return self.mc_y
 
     def get_speed(self):
         # returns speed of player
         return self.speed
 
+    def get_image(self):
+        # returns image of player
+        return self.image
+
     def move_left(self):
         # moves the player left
-        if not rectMc.x < 45:
-            # self.mc_x -= self.speed
-            # pygame.display.update()
-            rectMc.x -= self.speed
+        if not self.mc_x < 45:
+            self.mc_x -= self.speed
+            pygame.display.update()
+            # rectMc.x -= self.speed
 
     def move_right(self):
         # moves the player right
-        if not rectMc.x > 720:
-            # self.mc_x += self.speed
-            # pygame.display.update()
-            rectMc.x += self.speed
+        if not self.mc_x > 755:
+            self.mc_x += self.speed
+            pygame.display.update()
+            # rectMc.x += self.speed
 
     def move_up(self):
         # moves the player up
-        if not rectMc.y < 45:
-            # self.mc_y -= self.speed
-            # pygame.display.update()
-            rectMc.y -= self.speed
+        if not self.mc_y < 45:
+            self.mc_y -= self.speed
+            pygame.display.update()
+            # rectMc.y -= self.speed
 
     def move_down(self):
         # moves the player down
-        if not rectMc.y > 720:
-            # self.mc_y += self.speed
-            # pygame.display.update()
-            rectMc.y += self.speed
+        if not self.mc_y > 755:
+            self.mc_y += self.speed
+            pygame.display.update()
+            # rectMc.y += self.speed
 
 
 class Enemy(pygame.sprite.Sprite):
     # Enemy class controls basic functions relating to the enemy
-    def __init__(self, speed=2.5, health=10):
+    def __init__(self, enemy_x=50, enemy_y=50, speed=2.5, image="./images/skeleton1.png"):
         pygame.sprite.Sprite.__init__(self)
+        self.enemy_x = enemy_x
+        self.enemy_y = enemy_y
         self.speed = speed
-        self.health = health
+        self.image = image
 
+    def get_enemy_x(self):
+        # returns x position of player
+        return self.enemy_x
 
+    def get_enemy_y(self):
+        # returns y position of player
+        return self.enemy_y
 
     def get_speed(self):
-        # returns the speed of the enemy
+        # returns speed of player
         return self.speed
 
-    def get_health(self):
-        # returns the health of the enemy
-        return self.health
+    def get_image(self):
+        # returns image of player
+        return self.image
 
     def generate_enemy(self):
-        enemy1 = pygame.image.load('./images/skeleton1.png').convert_alpha()
-        screen.blit(pygame.transform.scale(enemy1, (60, 60)), rectEnemy)
+        enemy1 = pygame.image.load(self.image).convert_alpha()
+        screen.blit(pygame.transform.scale(enemy1, (60, 60)), (self.enemy_x, self.enemy_y))
 
     def follow_mc(self):
         # follows the main character around the map
-        if rectEnemy.x < rectMc.x:
-            rectEnemy.x += self.speed
-        if rectEnemy.x > rectMc.x:
-            rectEnemy.x -= self.speed
-        if rectEnemy.y < rectMc.y:
-            rectEnemy.y += self.speed
-        if rectEnemy.y > rectMc.y:
-            rectEnemy.y -= self.speed
+        if self.enemy_x < p.mc_x:
+            self.enemy_x += self.speed
+        if self.enemy_x > p.mc_x:
+            self.enemy_x -= self.speed
+        if self.enemy_y < p.mc_y:
+            self.enemy_y += self.speed
+        if self.enemy_y > p.mc_y:
+            self.enemy_y -= self.speed
 
 
 # initializes the Player and Enemy classes
 p = Player()
-enemies = [Enemy(random.randint(50,500),random.randint(50,500)) for _ in range(1)]
+enemies = [Enemy(random.randint(50,500),random.randint(50,500)) for _ in range(5)]
 
 # loads images
-bg_img = pygame.image.load('./images/island.png').convert_alpha()
-mc_img = pygame.image.load("./images/MAIN_CHARACTER.png").convert_alpha()
+background_image = './images/island.png'
+bg_img = pygame.image.load(background_image).convert_alpha()
+mc_img = pygame.image.load(p.image).convert_alpha()
 speedI = pygame.image.load("./images/Noodle.png").convert_alpha()
-enemy_img = pygame.image.load("./images/skeleton1.png").convert_alpha()
 
-rectMc = mc_img.get_rect()
-rectEnemy = enemy_img.get_rect()
-rectSi = speedI.get_rect()
 
 speed_item_visible = True
 game = True
 while game:
-    # print(rectMc)
-    print(rectEnemy)
+
     # the core game loop
     clock.tick(200)
     # sets the fps to 60
@@ -157,15 +176,13 @@ while game:
     # the first tuple dictates the size (45,45)
     # the second tuple dictates the starting coordinates (p.mc_x, p.mc_y)
     # the coordinates start at the top left of the screen, which is (0,0) instead of the center
-    screen.blit(pygame.transform.scale(mc_img, (45, 45)), rectMc)
+    screen.blit(pygame.transform.scale(mc_img, (45, 45)), (p.mc_x,p.mc_y))
 
     if speed_item_visible:
-        rectSi.x = 350
-        rectSi.y = 600
         # shows a visible object on the map if it has not been taken yet
-        screen.blit(pygame.transform.scale(speedI, (30, 30)), rectSi)
+        screen.blit(pygame.transform.scale(speedI, (30, 30)), (400, 285))
 
-    if (380 <= rectMc.x <= 420) and (265 <= rectMc.y <= 305):
+    if (p.mc_x >= 380 and p.mc_x <= 420) and (p.mc_y >= 265 and p.mc_y <= 305):
         # if the player is in the vacinity of the item, give the player the powerup from the item
         # and no longer show the powerup
         if speed_item_visible:
@@ -175,7 +192,6 @@ while game:
     for enemy in enemies:
         enemy.generate_enemy()
         enemy.follow_mc()
-
 
     print(p.health)
     pygame.display.update()
