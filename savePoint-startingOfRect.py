@@ -70,7 +70,7 @@ class Player(pygame.sprite.Sprite):
             pygame.display.update()
             # rectMc.y += self.speed
 
-
+enemy1 = pygame.image.load("./images/skeleton1.png").convert_alpha()
 class Enemy(pygame.sprite.Sprite):
     # Enemy class controls basic functions relating to the enemy
     def __init__(self, enemy_x=50, enemy_y=50, speed=2.5, image="./images/skeleton1.png"):
@@ -97,7 +97,6 @@ class Enemy(pygame.sprite.Sprite):
         return self.image
 
     def generate_enemy(self):
-        enemy1 = pygame.image.load(self.image).convert_alpha()
         screen.blit(pygame.transform.scale(enemy1, (60, 60)), (self.enemy_x, self.enemy_y))
 
     def follow_mc(self):
@@ -112,9 +111,12 @@ class Enemy(pygame.sprite.Sprite):
             self.enemy_y -= self.speed
 
 
+    # clock.tick(60)
+
+
 # initializes the Player and Enemy classes
 p = Player()
-enemies = [Enemy(random.randint(50,500),random.randint(50,500)) for _ in range(5)]
+enemies = [Enemy(random.randint(50,500),random.randint(50,500)) for _ in range(100)]
 
 # loads images
 background_image = './images/island.png'
@@ -126,9 +128,11 @@ speedI = pygame.image.load("./images/Noodle.png").convert_alpha()
 speed_item_visible = True
 game = True
 while game:
+    fps= clock.get_fps()
+    print(fps)
 
     # the core game loop
-    clock.tick(200)
+    clock.tick(60)
     # sets the fps to 60
     pygame.time.delay(5)
     # adds a very small delay to make it feel more like a game
