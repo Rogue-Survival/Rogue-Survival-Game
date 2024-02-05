@@ -15,104 +15,175 @@ clock = pygame.time.Clock()
 x = pygame.time.get_ticks()
 
 
+mc_img = pygame.image.load("./images/MAIN_CHARACTER.png").convert_alpha()
+enemy1 = pygame.image.load("./images/slime.png").convert_alpha()
+
 class Player(pygame.sprite.Sprite):
     # Player class controls basic functions relating to the player
-    def __init__(self, speed=5, health=50):
+    def __init__(self, mc_x=350, mc_y=580, width=0, height=0, speed=5, image="./images/MAIN_CHARACTER.png", health=50):
         # inherits from the pygame.sprite.Sprite class
         pygame.sprite.Sprite.__init__(self)
+        self.mc_x = mc_x
+        self.mc_y = mc_y
+        self.width = width
+        self.height = height
         self.speed = speed
+        self.image = image
         self.health = health
+        self.rect = mc_img.get_rect()
+
+    def render(self):
+        pass
+
+    def get_mc_x(self):
+        # returns x position of player
+        return self.mc_x
+
+    def get_mc_y(self):
+        # returns y position of player
+        return self.mc_y
+
+    def get_width(self):
+        return self.width
+
+    def get_height(self):
+        return self.height
 
     def get_speed(self):
         # returns speed of player
         return self.speed
 
+    def get_image(self):
+        # returns image of player
+        return self.image
+
     def move_left(self):
         # moves the player left
-        if not rectMc.x < 45:
-            # self.mc_x -= self.speed
-            # pygame.display.update()
-            rectMc.x -= self.speed
+        if not self.mc_x < 45:
+            self.mc_x -= self.speed
+            # self.rect.move(-5,0)
+            self.rect.x -= self.speed
+            pygame.display.update()
+            # rectMc.x -= self.speed
 
     def move_right(self):
         # moves the player right
-        if not rectMc.x > 720:
-            # self.mc_x += self.speed
-            # pygame.display.update()
-            rectMc.x += self.speed
+        if not self.mc_x > 755:
+            self.mc_x += self.speed
+            # self.rect.move(5,0)
+            self.rect.x += self.speed
+            pygame.display.update()
+            # rectMc.x += self.speed
 
     def move_up(self):
         # moves the player up
-        if not rectMc.y < 45:
-            # self.mc_y -= self.speed
-            # pygame.display.update()
-            rectMc.y -= self.speed
+        if not self.mc_y < 45:
+            self.mc_y -= self.speed
+            # self.rect.move(0,-5)
+            self.rect.y -= self.speed
+            pygame.display.update()
+            # rectMc.y -= self.speed
 
     def move_down(self):
         # moves the player down
-        if not rectMc.y > 720:
-            # self.mc_y += self.speed
-            # pygame.display.update()
-            rectMc.y += self.speed
+        if not self.mc_y > 755:
+            self.mc_y += self.speed
+            # self.rect.move(0,5)
+            self.rect.y += self.speed
+            pygame.display.update()
+            # rectMc.y += self.speed
 
 
 class Enemy(pygame.sprite.Sprite):
     # Enemy class controls basic functions relating to the enemy
-    def __init__(self, speed=2.5, health=10):
+    def __init__(self, enemy_x=50, enemy_y=50, width=0, height=0, speed=2.5, image="./images/slime.png"):
         pygame.sprite.Sprite.__init__(self)
+        self.enemy_x = enemy_x
+        self.enemy_y = enemy_y
+        self.width = width
+        self.height = height
         self.speed = speed
-        self.health = health
+        self.image = image
+        self.rect = enemy1.get_rect()
 
+
+
+
+
+    def render(self):
+        pass
+
+
+    def get_enemy_x(self):
+        # returns x position of player
+        return self.enemy_x
+
+    def get_enemy_y(self):
+        # returns y position of player
+        return self.enemy_y
+
+    def get_width(self):
+        return self.width
+    def get_height(self):
+        return self.height
 
 
     def get_speed(self):
-        # returns the speed of the enemy
+        # returns speed of player
         return self.speed
 
-    def get_health(self):
-        # returns the health of the enemy
-        return self.health
+    def get_image(self):
+        # returns image of player
+        return self.image
 
     def generate_enemy(self):
-        enemy1 = pygame.image.load('./images/skeleton1.png').convert_alpha()
-        screen.blit(pygame.transform.scale(enemy1, (60, 60)), rectEnemy)
+        # screen.blit(pygame.transform.scale(enemy1, (60, 60)), (self.enemy_x, self.enemy_y))
+        # screen.blit(enemy1, (self.rect.x, self.rect.y))
+        pass
 
     def follow_mc(self):
         # follows the main character around the map
-        if rectEnemy.x < rectMc.x:
-            rectEnemy.x += self.speed
-        if rectEnemy.x > rectMc.x:
-            rectEnemy.x -= self.speed
-        if rectEnemy.y < rectMc.y:
-            rectEnemy.y += self.speed
-        if rectEnemy.y > rectMc.y:
-            rectEnemy.y -= self.speed
+        if self.rect.x < p.rect.x:
+            self.rect.x += self.speed
+        if self.rect.x > p.rect.x:
+            self.rect.x -= self.speed
+        if self.rect.y < p.rect.y:
+            self.rect.y += self.speed
+        if self.rect.y > p.rect.y:
+            self.rect.y -= self.speed
+
+
 
 
 # initializes the Player and Enemy classes
 p = Player()
-enemies = [Enemy(random.randint(50,500),random.randint(50,500)) for _ in range(1)]
+enemies = [Enemy(10,100,80,40) for _ in range(1)]
 
 # loads images
-bg_img = pygame.image.load('./images/island.png').convert_alpha()
-mc_img = pygame.image.load("./images/MAIN_CHARACTER.png").convert_alpha()
-speedI = pygame.image.load("./images/Noodle.png").convert_alpha()
-enemy_img = pygame.image.load("./images/skeleton1.png").convert_alpha()
+background_image = './images/island.png'
+bg_img = pygame.image.load(background_image).convert_alpha()
 
-rectMc = mc_img.get_rect()
-rectEnemy = enemy_img.get_rect()
-rectSi = speedI.get_rect()
+speedI = pygame.image.load("./images/Noodle.png").convert_alpha()
+
+
+
+
+
 
 speed_item_visible = True
 game = True
 while game:
-    # print(rectMc)
-    print(rectEnemy)
+    fps= clock.get_fps()
+    # print(fps)
+
     # the core game loop
-    clock.tick(200)
+    clock.tick(60)
     # sets the fps to 60
     pygame.time.delay(5)
     # adds a very small delay to make it feel more like a game
+
+
+
 
     key_presses = pygame.key.get_pressed()
     # stores the keys that are pressed
@@ -132,6 +203,7 @@ while game:
     if key_presses[pygame.K_d]:
         # if 'd' is pressed, move right
         p.move_right()
+
     elif key_presses[pygame.K_RIGHT]:
         # if right arrow is pressed, move right
         p.move_right()
@@ -157,15 +229,14 @@ while game:
     # the first tuple dictates the size (45,45)
     # the second tuple dictates the starting coordinates (p.mc_x, p.mc_y)
     # the coordinates start at the top left of the screen, which is (0,0) instead of the center
-    screen.blit(pygame.transform.scale(mc_img, (45, 45)), rectMc)
+    # screen.blit(pygame.transform.scale(mc_img, (45, 45)), (p.mc_x,p.mc_y))
+    screen.blit(mc_img,p.rect)
 
     if speed_item_visible:
-        rectSi.x = 350
-        rectSi.y = 600
         # shows a visible object on the map if it has not been taken yet
-        screen.blit(pygame.transform.scale(speedI, (30, 30)), rectSi)
+        screen.blit(pygame.transform.scale(speedI, (30, 30)), (400, 285))
 
-    if (380 <= rectMc.x <= 420) and (265 <= rectMc.y <= 305):
+    if (p.mc_x >= 380 and p.mc_x <= 420) and (p.mc_y >= 265 and p.mc_y <= 305):
         # if the player is in the vacinity of the item, give the player the powerup from the item
         # and no longer show the powerup
         if speed_item_visible:
@@ -173,8 +244,16 @@ while game:
             speed_item_visible = False
 
     for enemy in enemies:
+        screen.blit(enemy1, (enemy.rect.x, enemy.rect.y))
         enemy.generate_enemy()
         enemy.follow_mc()
+        pygame.draw.rect(screen, (255,0,0), enemy.rect)
+        if enemy.rect.colliderect(p.rect):
+            print("COLLISION- HUHHHHH")
+
+    pygame.draw.rect(screen, (0,255,0), p.rect)
+
+
 
 
     print(p.health)
