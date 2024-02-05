@@ -59,39 +59,23 @@ class Player(pygame.sprite.Sprite):
 
     def move_left(self):
         # moves the player left
-        if not self.mc_x < 45:
-            self.mc_x -= self.speed
-            # self.rect.move(-5,0)
+        if not self.mc_x < 370:
             self.rect.x -= self.speed
-            pygame.display.update()
-            # rectMc.x -= self.speed
 
     def move_right(self):
         # moves the player right
-        if not self.mc_x > 755:
-            self.mc_x += self.speed
-            # self.rect.move(5,0)
+        if not self.mc_x > 1120:
             self.rect.x += self.speed
-            pygame.display.update()
-            # rectMc.x += self.speed
 
     def move_up(self):
         # moves the player up
-        if not self.mc_y < 45:
-            self.mc_y -= self.speed
-            # self.rect.move(0,-5)
+        if not self.mc_y < 595:
             self.rect.y -= self.speed
-            pygame.display.update()
-            # rectMc.y -= self.speed
 
     def move_down(self):
         # moves the player down
-        if not self.mc_y > 755:
-            self.mc_y += self.speed
-            # self.rect.move(0,5)
+        if not self.mc_y > 1350:
             self.rect.y += self.speed
-            pygame.display.update()
-            # rectMc.y += self.speed
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -106,13 +90,8 @@ class Enemy(pygame.sprite.Sprite):
         self.image = image
         self.rect = enemy1.get_rect()
 
-
-
-
-
     def render(self):
         pass
-
 
     def get_enemy_x(self):
         # returns x position of player
@@ -123,10 +102,12 @@ class Enemy(pygame.sprite.Sprite):
         return self.enemy_y
 
     def get_width(self):
+        # returns the width of the enemy
         return self.width
-    def get_height(self):
-        return self.height
 
+    def get_height(self):
+        # returns the height of the enemy
+        return self.height
 
     def get_speed(self):
         # returns speed of player
@@ -153,25 +134,17 @@ class Enemy(pygame.sprite.Sprite):
             self.rect.y -= self.speed
 
 
-
-
 # initializes the Player and Enemy classes
 p = Player()
 enemies = [Enemy(10,100,80,40) for _ in range(1)]
 
 # loads images
-background_image = './images/island.png'
-bg_img = pygame.image.load(background_image).convert_alpha()
-
+bg_img = pygame.image.load('./images/island.png').convert_alpha()
 speedI = pygame.image.load("./images/Noodle.png").convert_alpha()
-
-
-
-
-
 
 speed_item_visible = True
 game = True
+
 while game:
     fps= clock.get_fps()
     # print(fps)
@@ -236,7 +209,7 @@ while game:
         # shows a visible object on the map if it has not been taken yet
         screen.blit(pygame.transform.scale(speedI, (30, 30)), (400, 285))
 
-    if (p.mc_x >= 380 and p.mc_x <= 420) and (p.mc_y >= 265 and p.mc_y <= 305):
+    if (380 <= p.mc_x <= 420) and (265 <= p.mc_y <= 305):
         # if the player is in the vacinity of the item, give the player the powerup from the item
         # and no longer show the powerup
         if speed_item_visible:
@@ -249,12 +222,9 @@ while game:
         enemy.follow_mc()
         pygame.draw.rect(screen, (255,0,0), enemy.rect)
         if enemy.rect.colliderect(p.rect):
-            print("COLLISION- HUHHHHH")
+            print("COLLISION DETECTED!!!")
 
     pygame.draw.rect(screen, (0,255,0), p.rect)
-
-
-
 
     print(p.health)
     pygame.display.update()
