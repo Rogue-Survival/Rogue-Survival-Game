@@ -18,6 +18,27 @@ x = pygame.time.get_ticks()
 mc_img = pygame.image.load("./images/MAIN_CHARACTER.png").convert_alpha()
 enemy1 = pygame.image.load("./images/slime.png").convert_alpha()
 
+mapX = -675
+mapY = -800
+
+class Map(pygame.sprite.Sprite):
+    def __init__(self, mapX=-600, mapY=-800):
+        pygame.sprite.Sprite.__init__(self)
+        self.mapX = mapX
+        self.mapY = mapY
+
+    def get_mapX(self):
+        # returns the x coordinate of the map
+        return self.mapX
+
+    def get_mapY(self):
+        # returns the y coordinate of the map
+        return self.mapY
+
+
+
+
+
 class Player(pygame.sprite.Sprite):
     # Player class controls basic functions relating to the player
     def __init__(self, mc_x=350, mc_y=580, width=0, height=0, speed=5, image="./images/MAIN_CHARACTER.png", health=50):
@@ -31,6 +52,8 @@ class Player(pygame.sprite.Sprite):
         self.image = image
         self.health = health
         self.rect = mc_img.get_rect()
+        self.rect.x = 500
+        self.rect.y = 600
 
     def render(self):
         pass
@@ -59,28 +82,28 @@ class Player(pygame.sprite.Sprite):
 
     def move_left(self):
         # moves the player left
-        if not self.mc_x < 370:
-            self.rect.x -= self.speed
+        # if not self.mc_x < 370:
+        self.rect.x -= self.speed
 
     def move_right(self):
         # moves the player right
-        if not self.mc_x > 1120:
-            self.rect.x += self.speed
+        # if not self.mc_x > 1120:
+        self.rect.x += self.speed
 
     def move_up(self):
         # moves the player up
-        if not self.mc_y < 595:
-            self.rect.y -= self.speed
+        # if not self.mc_y < 550:
+        self.rect.y -= self.speed
 
     def move_down(self):
         # moves the player down
-        if not self.mc_y > 1350:
-            self.rect.y += self.speed
+        # if not self.mc_y > 1350:
+        self.rect.y += self.speed
 
 
 class Enemy(pygame.sprite.Sprite):
     # Enemy class controls basic functions relating to the enemy
-    def __init__(self, enemy_x=50, enemy_y=50, width=0, height=0, speed=2.5, image="./images/slime.png"):
+    def __init__(self, enemy_x=50, enemy_y= 50, width=0, height=0, speed=2.5, image="./images/slime.png"):
         pygame.sprite.Sprite.__init__(self)
         self.enemy_x = enemy_x
         self.enemy_y = enemy_y
@@ -89,6 +112,11 @@ class Enemy(pygame.sprite.Sprite):
         self.speed = speed
         self.image = image
         self.rect = enemy1.get_rect()
+        self.rect.x = random.randint(0, 600)
+        self.rect.y = random.randint(0, 1000)
+        self.inRange = False
+        self.startTimer = 0
+
 
     def render(self):
         pass
@@ -125,22 +153,59 @@ class Enemy(pygame.sprite.Sprite):
     def follow_mc(self):
         # follows the main character around the map
         if self.rect.x < p.rect.x:
+            n=0
             self.rect.x += self.speed
+            # for enemy in enemies:
+            #     if self.rect.colliderect(enemies[n]):
+            #         self.rect.x-= self.speed
+            #     n+=1
         if self.rect.x > p.rect.x:
+            n=0
             self.rect.x -= self.speed
+            # for enemy in enemies:
+            #     if self.rect.colliderect(enemies[n]):
+            #         self.rect.x+= self.speed
         if self.rect.y < p.rect.y:
+            n=0
             self.rect.y += self.speed
+            # for enemy in enemies:
+            #     if self.rect.colliderect(enemies[n]):
+            #         self.rect.y-= self.speed
         if self.rect.y > p.rect.y:
+            n=0
             self.rect.y -= self.speed
+            # for enemy in enemies:
+            #     if self.rect.colliderect(enemies[n]):
+            #         self.rect.y+= self.speed
+
+    def attack_mc(self):
+        if self.rect.colliderect(p.rect):
+            if self.inRange == False:
+                self.startTimer=pygame.time.get_ticks()
+            self.inRange = True
+            if self.startTimer > 3000:
+                # print("TESTING)
+                pass
+            print(self.startTimer)
+
+
+
+# while mainloop: # mainloop
+#
+
 
 
 # initializes the Player and Enemy classes
 p = Player()
-enemies = [Enemy(10,100,80,40) for _ in range(1)]
+m = Map()
+enemies = [Enemy(500,100,80,40) for _ in range(2)]
+
+
 
 # loads images
 bg_img = pygame.image.load('./images/island.png').convert_alpha()
 speedI = pygame.image.load("./images/Noodle.png").convert_alpha()
+
 
 speed_item_visible = True
 game = True
@@ -196,7 +261,7 @@ while game:
         p.move_down()
 
     # makes the map visible
-    screen.blit(pygame.transform.scale(bg_img, (2250, 2250)), (-675, -800))
+    screen.blit(pygame.transform.scale(bg_img, (2250, 2250)), (mapX, mapY))
 
     # makes the main character visible
     # the first tuple dictates the size (45,45)
@@ -209,7 +274,7 @@ while game:
         # shows a visible object on the map if it has not been taken yet
         screen.blit(pygame.transform.scale(speedI, (30, 30)), (400, 285))
 
-    if (380 <= p.mc_x <= 420) and (265 <= p.mc_y <= 305):
+    if (380 <= p.rect.x <= 420) and (265 <= p.rect.y <= 305):
         # if the player is in the vacinity of the item, give the player the powerup from the item
         # and no longer show the powerup
         if speed_item_visible:
@@ -219,10 +284,34 @@ while game:
     for enemy in enemies:
         screen.blit(enemy1, (enemy.rect.x, enemy.rect.y))
         enemy.generate_enemy()
+
         enemy.follow_mc()
         pygame.draw.rect(screen, (255,0,0), enemy.rect)
         if enemy.rect.colliderect(p.rect):
             print("COLLISION DETECTED!!!")
+            p.health -= 1
+    index = 0
+    numOfEnemies = len(enemies)
+    # for enemy in enemies:
+    #     for index in enemies:
+    #         if enemy.rect.colliderect(enemies[0].rect):
+    #             pass
+    #
+    #
+    #     # index +=1
+    #
+    #
+    #     if enemy.rect.colliderect(enemies[2]):
+    #         pass
+    #     else:
+    #         enemy.follow_mc()
+
+
+    # lol = (p.rect.y)
+    # p.rect.y += 5
+
+
+
 
     pygame.draw.rect(screen, (0,255,0), p.rect)
 
@@ -238,7 +327,7 @@ pygame.quit()
 
 
 
-
+# when enemy reaches player collision, initiate attack animation/wind up attack, if player still in collision (plus add offset due to weapon they might have) then the player will take damage.
 
 
 
