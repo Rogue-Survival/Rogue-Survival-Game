@@ -18,8 +18,6 @@ x = pygame.time.get_ticks()
 mc_img = pygame.image.load("./images/MAIN_CHARACTER.png").convert_alpha()
 enemy1 = pygame.image.load("./images/slime.png").convert_alpha()
 
-# mapX = -675
-# mapY = -800
 
 class Map(pygame.sprite.Sprite):
     def __init__(self, mapX=-600, mapY=-800):
@@ -34,9 +32,6 @@ class Map(pygame.sprite.Sprite):
     def get_mapY(self):
         # returns the y coordinate of the map
         return self.mapY
-
-
-
 
 
 class Player(pygame.sprite.Sprite):
@@ -115,16 +110,14 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.x = random.randint(0, 600)
         self.rect.y = random.randint(0, 1000)
         self.inRange = False
-        self.startTimer = 0
         self.northRect = pygame.rect.Rect((self.rect.x, self.rect.y), (10,10))
-        self.northRect.midbottom = self.rect.midbottom
+        self.northRect.midtop = self.rect.midbottom
         self.eastRect = pygame.rect.Rect((self.rect.x, self.rect.y), (10,10))
-        self.eastRect.midbottom = self.rect.midbottom
+        self.eastRect.midright = self.rect.midbottom
         self.southRect = pygame.rect.Rect((self.rect.x, self.rect.y), (10,10))
         self.southRect.midbottom = self.rect.midbottom
         self.westRect = pygame.rect.Rect((self.rect.x, self.rect.y), (10,10))
-        self.westRect.midbottom = self.rect.midbottom
-
+        self.westRect.midleft = self.rect.midbottom
 
     def render(self):
         pass
@@ -154,8 +147,6 @@ class Enemy(pygame.sprite.Sprite):
         return self.image
 
     def generate_enemy(self):
-        # screen.blit(pygame.transform.scale(enemy1, (60, 60)), (self.enemy_x, self.enemy_y))
-        # screen.blit(enemy1, (self.rect.x, self.rect.y))
         pass
 
     def follow_mc(self):
@@ -163,19 +154,17 @@ class Enemy(pygame.sprite.Sprite):
         if self.rect.x < p.rect.x:
             # enemy moves East
             n = len(enemies)
-            # self.rect.x += self.speed
-            # self.northRect.x = self.rect.x + 3
-            # self.eastRect.x = self.rect.x + 8
-            # self.southRect.x = self.rect.x + 3
-            # self.westRect.x = self.rect.x - 3
             for i in range(n):
+                # iterate through each enemy
                 if self.eastRect.colliderect(p.rect):
+                    # if enemy collides with player, do not move
                     pass
                 elif self.rect.x == enemies[i].rect.x and self.rect.y == enemies[i].rect.y:
+                    # checks if the enemy is checking itself in the list of enemies, and if it is itself, skip
                     pass
                 else:
                     if not self.eastRect.colliderect(enemies[i].rect):
-                        # enemy moves East if unobstrcuted
+                        # enemy moves East if unobstructed
                         self.rect.x += self.speed
                         self.northRect.x = self.rect.x + 3
                         self.eastRect.x = self.rect.x + 8
@@ -183,6 +172,7 @@ class Enemy(pygame.sprite.Sprite):
                         self.westRect.x = self.rect.x - 3
                     else:
                         if (p.rect.x - self.rect.x) > 50:
+                            # enemy continues trying to move towards player if further than 50 pixels away.
                             if not self.northRect.colliderect(enemies[i].rect) and not self.eastRect.colliderect(enemies[i].rect):
                                 # if enemy can go both North and South, pick a random direction
                                 randomDirection = random.randint(0,3)
@@ -201,6 +191,7 @@ class Enemy(pygame.sprite.Sprite):
                                     self.southRect.y = self.rect.y + 10
                                     self.westRect.y = self.rect.y + 3
                             else:
+                                # if North and South are not both an option, check which direct is an option
                                 if not self.northRect.colliderect(enemies[i].rect):
                                     # enemy moves North
                                     self.rect.y += self.speed
@@ -216,30 +207,23 @@ class Enemy(pygame.sprite.Sprite):
                                     self.southRect.y = self.rect.y + 10
                                     self.westRect.y = self.rect.y + 3
                                 elif not self.westRect.colliderect(enemies[i].rect):
-                                    # enemy moves West as a last option
+                                    # enemy moves West as a last resort
                                     self.rect.x -= self.speed
                                     self.northRect.x = self.rect.x + 3
                                     self.eastRect.x = self.rect.x + 8
                                     self.southRect.x = self.rect.x + 3
                                     self.westRect.x = self.rect.x - 3
 
-
-
-
-
-
         if self.rect.x > p.rect.x:
             # enemy moves West
             n = len(enemies)
-            # self.rect.x -= self.speed
-            # self.northRect.x = self.rect.x + 3
-            # self.eastRect.x = self.rect.x + 8
-            # self.southRect.x = self.rect.x + 3
-            # self.westRect.x = self.rect.x - 3
             for i in range(n):
+                # iterate through each enemy
                 if self.westRect.colliderect(p.rect):
+                    # if enemy collides with player, do not move
                     pass
                 elif self.rect.x == enemies[i].rect.x and self.rect.y == enemies[i].rect.y:
+                    # checks if the enemy is checking itself in the list of enemies, and if it is itself, skip
                     pass
                 else:
                     if not self.westRect.colliderect(enemies[i].rect):
@@ -251,6 +235,7 @@ class Enemy(pygame.sprite.Sprite):
                         self.westRect.x = self.rect.x - 3
                     else:
                         if (self.rect.x - p.rect.x) > 50:
+                            # enemy continues trying to move towards player if further than 50 pixels away.
                             if not self.northRect.colliderect(enemies[i].rect) and not self.eastRect.colliderect(enemies[i].rect):
                                 # if enemy can go both North and South, pick a random direction
                                 randomDirection = random.randint(0,3)
@@ -269,6 +254,7 @@ class Enemy(pygame.sprite.Sprite):
                                     self.southRect.y = self.rect.y + 10
                                     self.westRect.y = self.rect.y + 3
                             else:
+                                # if North and Sout are not both an option, check which direct is an option
                                 if not self.northRect.colliderect(enemies[i].rect):
                                     # enemy moves North
                                     self.rect.y += self.speed
@@ -284,7 +270,7 @@ class Enemy(pygame.sprite.Sprite):
                                     self.southRect.y = self.rect.y + 10
                                     self.westRect.y = self.rect.y + 3
                                 elif not self.eastRect.colliderect(enemies[i].rect):
-                                    # enemy moves East as a last option
+                                    # enemy moves East as a last resort
                                     self.rect.x += self.speed
                                     self.northRect.x = self.rect.x + 3
                                     self.eastRect.x = self.rect.x + 8
@@ -295,9 +281,12 @@ class Enemy(pygame.sprite.Sprite):
             # enemy moves South
             n = len(enemies)
             for i in range(n):
+                # iterate through each enemy
                 if self.southRect.colliderect(p.rect):
+                    # if enemy collides with player, do not move
                     pass
                 elif self.rect.x == enemies[i].rect.x and self.rect.y == enemies[i].rect.y:
+                    # checks if the enemy is checking itself in the list of enemies, and if it is itself, skip
                     pass
                 else:
                     if not self.southRect.colliderect(enemies[i].rect):
@@ -309,6 +298,7 @@ class Enemy(pygame.sprite.Sprite):
                         self.westRect.y = self.rect.y + 3
                     else:
                         if (p.rect.y - self.rect.y) > 50:
+                            # enemy continues trying to move towards player if further than 50 pixels away.
                             if not self.eastRect.colliderect(enemies[i].rect) and not self.westRect.colliderect(enemies[i].rect):
                                 # if enemy can go both North and South, pick a random direction
                                 randomDirection = random.randint(0,3)
@@ -327,6 +317,7 @@ class Enemy(pygame.sprite.Sprite):
                                     self.southRect.x = self.rect.x + 3
                                     self.westRect.x = self.rect.x - 3
                             else:
+                                # if East and West are not both an option, check which direct is an option
                                 if not self.eastRect.colliderect(enemies[i].rect):
                                     self.rect.x += self.speed
                                     self.northRect.x = self.rect.x + 3
@@ -340,31 +331,27 @@ class Enemy(pygame.sprite.Sprite):
                                     self.southRect.x = self.rect.x + 3
                                     self.westRect.x = self.rect.x - 3
                                 elif not self.northRect.colliderect(enemies[i].rect):
-                                    # enemy moves North as a last option
+                                    # enemy moves North as a last resort
                                     self.rect.y += self.speed
                                     self.northRect.y = self.rect.y - 3
                                     self.eastRect.y = self.rect.y + 3
                                     self.southRect.y = self.rect.y + 10
                                     self.westRect.y = self.rect.y + 3
 
-
-
-
         if self.rect.y > p.rect.y:
             # enemy moves North
             n = len(enemies)
-            # self.rect.y -= self.speed
-            # self.northRect.y = self.rect.y - 3
-            # self.eastRect.y = self.rect.y + 3
-            # self.southRect.y = self.rect.y + 10
-            # self.westRect.y = self.rect.y + 3
             for i in range(n):
+                # iterate through each enemy
                 if self.northRect.colliderect(p.rect):
+                    # if enemy collides with player, do not move
                     pass
                 elif self.rect.x == enemies[i].rect.x and self.rect.y == enemies[i].rect.y:
+                    # checks if the enemy is checking itself in the list of enemies, and if it is itself, skip
                     pass
                 else:
                     if not self.northRect.colliderect(enemies[i].rect):
+                        # enemy moves North if unobstructed
                         self.rect.y -= self.speed
                         self.northRect.y = self.rect.y - 3
                         self.eastRect.y = self.rect.y + 3
@@ -372,6 +359,7 @@ class Enemy(pygame.sprite.Sprite):
                         self.westRect.y = self.rect.y + 3
                     else:
                         if (self.rect.y - p.rect.y) > 50:
+                            # enemy continues trying to move towards player if further than 50 pixels away.
                             if not self.eastRect.colliderect(enemies[i].rect) and not self.westRect.colliderect(enemies[i].rect):
                                 # if enemy can go both North and South, pick a random direction
                                 randomDirection = random.randint(0,3)
@@ -390,6 +378,7 @@ class Enemy(pygame.sprite.Sprite):
                                     self.southRect.x = self.rect.x + 3
                                     self.westRect.x = self.rect.x - 3
                             else:
+                                # if East and West are not both an option, check which direct is an option
                                 if not self.eastRect.colliderect(enemies[i].rect):
                                     # enemy moves east
                                     self.rect.x += self.speed
@@ -405,7 +394,7 @@ class Enemy(pygame.sprite.Sprite):
                                     self.southRect.x = self.rect.x + 3
                                     self.westRect.x = self.rect.x - 3
                                 elif not self.southRect.colliderect(enemies[i].rect):
-                                    # enemy moves South as a last option
+                                    # enemy moves South as a last resort
                                     self.rect.y += self.speed
                                     self.northRect.y = self.rect.y - 3
                                     self.eastRect.y = self.rect.y + 3
@@ -422,19 +411,10 @@ class Enemy(pygame.sprite.Sprite):
                 pass
             print(self.startTimer)
 
-
-
-# while mainloop: # mainloop
-#
-
-
-
 # initializes the Player and Enemy classes
 p = Player()
 m = Map()
 enemies = [Enemy(500,100,80,40) for _ in range(2)]
-enemies2 = enemies.copy()
-
 
 
 # loads images
@@ -446,16 +426,15 @@ speed_item_visible = True
 game = True
 
 while game:
+    # the core game loop
+
     fps= clock.get_fps()
     # print(fps)
-    # the core game loop
+
     clock.tick(60)
     # sets the fps to 60
     pygame.time.delay(5)
     # adds a very small delay to make it feel more like a game
-
-
-
 
     key_presses = pygame.key.get_pressed()
     # stores the keys that are pressed
@@ -530,26 +509,6 @@ while game:
             p.health -= 1
     index = 0
     numOfEnemies = len(enemies)
-    # for enemy in enemies:
-    #     for index in enemies:
-    #         if enemy.rect.colliderect(enemies[0].rect):
-    #             pass
-    #
-    #
-    #     # index +=1
-    #
-    #
-    #     if enemy.rect.colliderect(enemies[2]):
-    #         pass
-    #     else:
-    #         enemy.follow_mc()
-
-
-    # lol = (p.rect.y)
-    # p.rect.y += 5
-
-
-
 
     pygame.draw.rect(screen, (0,255,0), p.rect)
 
@@ -571,108 +530,3 @@ pygame.quit()
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-"""
-
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
-0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
-0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
-0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
-0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0
-0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0
-0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0
-0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
-0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
-0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
-0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
-0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
-0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0
-0,0,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,0,0
-0,0,1,1,1,1,1,1,1,0,0,1,1,1,1,1,1,1,0,0
-0,0,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,0,0,0
-0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0
-0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0
-
-"""
-"""
-[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
-1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-
-"""
