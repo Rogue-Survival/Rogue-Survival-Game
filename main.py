@@ -116,6 +116,14 @@ class Enemy(pygame.sprite.Sprite):
         self.rect.y = random.randint(0, 1000)
         self.inRange = False
         self.startTimer = 0
+        self.northRect = pygame.rect.Rect((self.rect.x, self.rect.y), (10,10))
+        self.northRect.midbottom = self.rect.midbottom
+        self.eastRect = pygame.rect.Rect((self.rect.x, self.rect.y), (10,10))
+        self.eastRect.midbottom = self.rect.midbottom
+        self.southRect = pygame.rect.Rect((self.rect.x, self.rect.y), (10,10))
+        self.southRect.midbottom = self.rect.midbottom
+        self.westRect = pygame.rect.Rect((self.rect.x, self.rect.y), (10,10))
+        self.westRect.midbottom = self.rect.midbottom
 
 
     def render(self):
@@ -153,27 +161,95 @@ class Enemy(pygame.sprite.Sprite):
     def follow_mc(self):
         # follows the main character around the map
         if self.rect.x < p.rect.x:
-            n=0
+            n = len(enemies)
             self.rect.x += self.speed
-            # for enemy in enemies:
-            #     if self.rect.colliderect(enemies[n]):
-            #         self.rect.x-= self.speed
-            #     n+=1
+            self.northRect.x = self.rect.x + 3
+            self.eastRect.x = self.rect.x + 8
+            self.southRect.x = self.rect.x + 3
+            self.westRect.x = self.rect.x - 3
+            for i in range(n):
+                if self.rect.x == enemies[i].rect.x and self.rect.y == enemies[i].rect.y:
+                    pass
+                else:
+                    if self.northRect.colliderect(enemies[i].rect):
+                        print("WORKING")
+                    if self.eastRect.colliderect(enemies[i].rect):
+                        print("WORKING")
+                    if self.southRect.colliderect(enemies[i].rect):
+                        print("WORKING")
+                    if self.westRect.colliderect(enemies[i].rect):
+                        print("WORKING")
+
+
         if self.rect.x > p.rect.x:
-            n=0
+            n = len(enemies)
             self.rect.x -= self.speed
+            self.northRect.x = self.rect.x + 3
+            self.eastRect.x = self.rect.x + 8
+            self.southRect.x = self.rect.x + 3
+            self.westRect.x = self.rect.x - 3
+            for i in range(n):
+                if self.rect.x == enemies[i].rect.x and self.rect.y == enemies[i].rect.y:
+                    pass
+                else:
+                    if self.northRect.colliderect(enemies[i].rect):
+                        print("WORKING")
+                    if self.eastRect.colliderect(enemies[i].rect):
+                        print("WORKING")
+                    if self.southRect.colliderect(enemies[i].rect):
+                        print("WORKING")
+                    if self.westRect.colliderect(enemies[i].rect):
+                        print("WORKING")
+
+
             # for enemy in enemies:
             #     if self.rect.colliderect(enemies[n]):
             #         self.rect.x+= self.speed
         if self.rect.y < p.rect.y:
-            n=0
+            n = len(enemies)
             self.rect.y += self.speed
+            self.northRect.y = self.rect.y - 3
+            self.eastRect.y = self.rect.y + 3
+            self.southRect.y = self.rect.y + 10
+            self.westRect.y = self.rect.y + 3
+            for i in range(n):
+                if self.rect.x == enemies[i].rect.x and self.rect.y == enemies[i].rect.y:
+                    pass
+                else:
+                    if self.northRect.colliderect(enemies[i].rect):
+                        print("WORKING")
+                    if self.eastRect.colliderect(enemies[i].rect):
+                        print("WORKING")
+                    if self.southRect.colliderect(enemies[i].rect):
+                        print("WORKING")
+                    if self.westRect.colliderect(enemies[i].rect):
+                        print("WORKING")
+
+
             # for enemy in enemies:
             #     if self.rect.colliderect(enemies[n]):
             #         self.rect.y-= self.speed
         if self.rect.y > p.rect.y:
-            n=0
+            n = len(enemies)
             self.rect.y -= self.speed
+            self.northRect.y = self.rect.y - 3
+            self.eastRect.y = self.rect.y + 3
+            self.southRect.y = self.rect.y + 10
+            self.westRect.y = self.rect.y + 3
+            for i in range(n):
+                if self.rect.x == enemies[i].rect.x and self.rect.y == enemies[i].rect.y:
+                    pass
+                else:
+                    if self.northRect.colliderect(enemies[i].rect):
+                        print("WORKING")
+                    if self.eastRect.colliderect(enemies[i].rect):
+                        print("WORKING")
+                    if self.southRect.colliderect(enemies[i].rect):
+                        print("WORKING")
+                    if self.westRect.colliderect(enemies[i].rect):
+                        print("WORKING")
+
+
             # for enemy in enemies:
             #     if self.rect.colliderect(enemies[n]):
             #         self.rect.y+= self.speed
@@ -199,6 +275,7 @@ class Enemy(pygame.sprite.Sprite):
 p = Player()
 m = Map()
 enemies = [Enemy(500,100,80,40) for _ in range(2)]
+enemies2 = enemies.copy()
 
 
 
@@ -287,6 +364,10 @@ while game:
 
         enemy.follow_mc()
         pygame.draw.rect(screen, (255,0,0), enemy.rect)
+        pygame.draw.rect(screen, (128,0,128), enemy.northRect)
+        pygame.draw.rect(screen, (128,0,128), enemy.eastRect)
+        pygame.draw.rect(screen, (128,0,128), enemy.southRect)
+        pygame.draw.rect(screen, (128,0,128), enemy.westRect)
         if enemy.rect.colliderect(p.rect):
             print("COLLISION DETECTED!!!")
             p.health -= 1
