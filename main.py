@@ -169,7 +169,9 @@ class Enemy(pygame.sprite.Sprite):
             # self.southRect.x = self.rect.x + 3
             # self.westRect.x = self.rect.x - 3
             for i in range(n):
-                if self.rect.x == enemies[i].rect.x and self.rect.y == enemies[i].rect.y:
+                if self.eastRect.colliderect(p.rect):
+                    pass
+                elif self.rect.x == enemies[i].rect.x and self.rect.y == enemies[i].rect.y:
                     pass
                 else:
                     if not self.eastRect.colliderect(enemies[i].rect):
@@ -180,45 +182,46 @@ class Enemy(pygame.sprite.Sprite):
                         self.southRect.x = self.rect.x + 3
                         self.westRect.x = self.rect.x - 3
                     else:
-                        if not self.northRect.colliderect(enemies[i].rect) and not self.eastRect.colliderect(enemies[i].rect):
-                            # if enemy can go both North and South, pick a random direction
-                            randomDirection = random.randint(0,3)
-                            if randomDirection <= 1:
-                                # enemy moves North
-                                self.rect.y += self.speed
-                                self.northRect.y = self.rect.y - 3
-                                self.eastRect.y = self.rect.y + 3
-                                self.southRect.y = self.rect.y + 10
-                                self.westRect.y = self.rect.y + 3
+                        if (p.rect.x - self.rect.x) > 50:
+                            if not self.northRect.colliderect(enemies[i].rect) and not self.eastRect.colliderect(enemies[i].rect):
+                                # if enemy can go both North and South, pick a random direction
+                                randomDirection = random.randint(0,3)
+                                if randomDirection <= 1:
+                                    # enemy moves North
+                                    self.rect.y += self.speed
+                                    self.northRect.y = self.rect.y - 3
+                                    self.eastRect.y = self.rect.y + 3
+                                    self.southRect.y = self.rect.y + 10
+                                    self.westRect.y = self.rect.y + 3
+                                else:
+                                    # enemy moves South
+                                    self.rect.y -= self.speed
+                                    self.northRect.y = self.rect.y - 3
+                                    self.eastRect.y = self.rect.y + 3
+                                    self.southRect.y = self.rect.y + 10
+                                    self.westRect.y = self.rect.y + 3
                             else:
-                                # enemy moves South
-                                self.rect.y -= self.speed
-                                self.northRect.y = self.rect.y - 3
-                                self.eastRect.y = self.rect.y + 3
-                                self.southRect.y = self.rect.y + 10
-                                self.westRect.y = self.rect.y + 3
-                        else:
-                            if not self.northRect.colliderect(enemies[i].rect):
-                                # enemy moves North
-                                self.rect.y += self.speed
-                                self.northRect.y = self.rect.y - 3
-                                self.eastRect.y = self.rect.y + 3
-                                self.southRect.y = self.rect.y + 10
-                                self.westRect.y = self.rect.y + 3
-                            elif not self.southRect.colliderect(enemies[i].rect):
-                                # enemy moves South
-                                self.rect.y += self.speed
-                                self.northRect.y = self.rect.y - 3
-                                self.eastRect.y = self.rect.y + 3
-                                self.southRect.y = self.rect.y + 10
-                                self.westRect.y = self.rect.y + 3
-                            elif not self.westRect.colliderect(enemies[i].rect):
-                                # enemy moves West as a last option
-                                self.rect.x -= self.speed
-                                self.northRect.x = self.rect.x + 3
-                                self.eastRect.x = self.rect.x + 8
-                                self.southRect.x = self.rect.x + 3
-                                self.westRect.x = self.rect.x - 3
+                                if not self.northRect.colliderect(enemies[i].rect):
+                                    # enemy moves North
+                                    self.rect.y += self.speed
+                                    self.northRect.y = self.rect.y - 3
+                                    self.eastRect.y = self.rect.y + 3
+                                    self.southRect.y = self.rect.y + 10
+                                    self.westRect.y = self.rect.y + 3
+                                elif not self.southRect.colliderect(enemies[i].rect):
+                                    # enemy moves South
+                                    self.rect.y += self.speed
+                                    self.northRect.y = self.rect.y - 3
+                                    self.eastRect.y = self.rect.y + 3
+                                    self.southRect.y = self.rect.y + 10
+                                    self.westRect.y = self.rect.y + 3
+                                elif not self.westRect.colliderect(enemies[i].rect):
+                                    # enemy moves West as a last option
+                                    self.rect.x -= self.speed
+                                    self.northRect.x = self.rect.x + 3
+                                    self.eastRect.x = self.rect.x + 8
+                                    self.southRect.x = self.rect.x + 3
+                                    self.westRect.x = self.rect.x - 3
 
 
 
@@ -234,7 +237,9 @@ class Enemy(pygame.sprite.Sprite):
             # self.southRect.x = self.rect.x + 3
             # self.westRect.x = self.rect.x - 3
             for i in range(n):
-                if self.rect.x == enemies[i].rect.x and self.rect.y == enemies[i].rect.y:
+                if self.westRect.colliderect(p.rect):
+                    pass
+                elif self.rect.x == enemies[i].rect.x and self.rect.y == enemies[i].rect.y:
                     pass
                 else:
                     if not self.westRect.colliderect(enemies[i].rect):
@@ -245,51 +250,54 @@ class Enemy(pygame.sprite.Sprite):
                         self.southRect.x = self.rect.x + 3
                         self.westRect.x = self.rect.x - 3
                     else:
-                        if not self.northRect.colliderect(enemies[i].rect) and not self.eastRect.colliderect(enemies[i].rect):
-                            # if enemy can go both North and South, pick a random direction
-                            randomDirection = random.randint(0,3)
-                            if randomDirection <= 1:
-                                # enemy moves North
-                                self.rect.y += self.speed
-                                self.northRect.y = self.rect.y - 3
-                                self.eastRect.y = self.rect.y + 3
-                                self.southRect.y = self.rect.y + 10
-                                self.westRect.y = self.rect.y + 3
+                        if (self.rect.x - p.rect.x) > 50:
+                            if not self.northRect.colliderect(enemies[i].rect) and not self.eastRect.colliderect(enemies[i].rect):
+                                # if enemy can go both North and South, pick a random direction
+                                randomDirection = random.randint(0,3)
+                                if randomDirection <= 1:
+                                    # enemy moves North
+                                    self.rect.y += self.speed
+                                    self.northRect.y = self.rect.y - 3
+                                    self.eastRect.y = self.rect.y + 3
+                                    self.southRect.y = self.rect.y + 10
+                                    self.westRect.y = self.rect.y + 3
+                                else:
+                                    # enemy moves South
+                                    self.rect.y -= self.speed
+                                    self.northRect.y = self.rect.y - 3
+                                    self.eastRect.y = self.rect.y + 3
+                                    self.southRect.y = self.rect.y + 10
+                                    self.westRect.y = self.rect.y + 3
                             else:
-                                # enemy moves South
-                                self.rect.y -= self.speed
-                                self.northRect.y = self.rect.y - 3
-                                self.eastRect.y = self.rect.y + 3
-                                self.southRect.y = self.rect.y + 10
-                                self.westRect.y = self.rect.y + 3
-                        else:
-                            if not self.northRect.colliderect(enemies[i].rect):
-                                # enemy moves North
-                                self.rect.y += self.speed
-                                self.northRect.y = self.rect.y - 3
-                                self.eastRect.y = self.rect.y + 3
-                                self.southRect.y = self.rect.y + 10
-                                self.westRect.y = self.rect.y + 3
-                            elif not self.southRect.colliderect(enemies[i].rect):
-                                # enemy moves South
-                                self.rect.y += self.speed
-                                self.northRect.y = self.rect.y - 3
-                                self.eastRect.y = self.rect.y + 3
-                                self.southRect.y = self.rect.y + 10
-                                self.westRect.y = self.rect.y + 3
-                            elif not self.eastRect.colliderect(enemies[i].rect):
-                                # enemy moves East as a last option
-                                self.rect.x += self.speed
-                                self.northRect.x = self.rect.x + 3
-                                self.eastRect.x = self.rect.x + 8
-                                self.southRect.x = self.rect.x + 3
-                                self.westRect.x = self.rect.x - 3
+                                if not self.northRect.colliderect(enemies[i].rect):
+                                    # enemy moves North
+                                    self.rect.y += self.speed
+                                    self.northRect.y = self.rect.y - 3
+                                    self.eastRect.y = self.rect.y + 3
+                                    self.southRect.y = self.rect.y + 10
+                                    self.westRect.y = self.rect.y + 3
+                                elif not self.southRect.colliderect(enemies[i].rect):
+                                    # enemy moves South
+                                    self.rect.y += self.speed
+                                    self.northRect.y = self.rect.y - 3
+                                    self.eastRect.y = self.rect.y + 3
+                                    self.southRect.y = self.rect.y + 10
+                                    self.westRect.y = self.rect.y + 3
+                                elif not self.eastRect.colliderect(enemies[i].rect):
+                                    # enemy moves East as a last option
+                                    self.rect.x += self.speed
+                                    self.northRect.x = self.rect.x + 3
+                                    self.eastRect.x = self.rect.x + 8
+                                    self.southRect.x = self.rect.x + 3
+                                    self.westRect.x = self.rect.x - 3
 
         if self.rect.y < p.rect.y:
             # enemy moves South
             n = len(enemies)
             for i in range(n):
-                if self.rect.x == enemies[i].rect.x and self.rect.y == enemies[i].rect.y:
+                if self.southRect.colliderect(p.rect):
+                    pass
+                elif self.rect.x == enemies[i].rect.x and self.rect.y == enemies[i].rect.y:
                     pass
                 else:
                     if not self.southRect.colliderect(enemies[i].rect):
@@ -300,43 +308,44 @@ class Enemy(pygame.sprite.Sprite):
                         self.southRect.y = self.rect.y + 10
                         self.westRect.y = self.rect.y + 3
                     else:
-                        if not self.eastRect.colliderect(enemies[i].rect) and not self.westRect.colliderect(enemies[i].rect):
-                            # if enemy can go both North and South, pick a random direction
-                            randomDirection = random.randint(0,3)
-                            if randomDirection <= 1:
-                                # enemy moves East
-                                self.rect.x += self.speed
-                                self.northRect.x = self.rect.x + 3
-                                self.eastRect.x = self.rect.x + 8
-                                self.southRect.x = self.rect.x + 3
-                                self.westRect.x = self.rect.x - 3
+                        if (p.rect.y - self.rect.y) > 50:
+                            if not self.eastRect.colliderect(enemies[i].rect) and not self.westRect.colliderect(enemies[i].rect):
+                                # if enemy can go both North and South, pick a random direction
+                                randomDirection = random.randint(0,3)
+                                if randomDirection <= 1:
+                                    # enemy moves East
+                                    self.rect.x += self.speed
+                                    self.northRect.x = self.rect.x + 3
+                                    self.eastRect.x = self.rect.x + 8
+                                    self.southRect.x = self.rect.x + 3
+                                    self.westRect.x = self.rect.x - 3
+                                else:
+                                    # enemy moves West
+                                    self.rect.x -= self.speed
+                                    self.northRect.x = self.rect.x + 3
+                                    self.eastRect.x = self.rect.x + 8
+                                    self.southRect.x = self.rect.x + 3
+                                    self.westRect.x = self.rect.x - 3
                             else:
-                                # enemy moves West
-                                self.rect.x -= self.speed
-                                self.northRect.x = self.rect.x + 3
-                                self.eastRect.x = self.rect.x + 8
-                                self.southRect.x = self.rect.x + 3
-                                self.westRect.x = self.rect.x - 3
-                        else:
-                            if not self.eastRect.colliderect(enemies[i].rect):
-                                self.rect.x += self.speed
-                                self.northRect.x = self.rect.x + 3
-                                self.eastRect.x = self.rect.x + 8
-                                self.southRect.x = self.rect.x + 3
-                                self.westRect.x = self.rect.x - 3
-                            elif not self.westRect.colliderect(enemies[i].rect):
-                                self.rect.x -= self.speed
-                                self.northRect.x = self.rect.x + 3
-                                self.eastRect.x = self.rect.x + 8
-                                self.southRect.x = self.rect.x + 3
-                                self.westRect.x = self.rect.x - 3
-                            elif not self.northRect.colliderect(enemies[i].rect):
-                                # enemy moves North as a last option
-                                self.rect.y += self.speed
-                                self.northRect.y = self.rect.y - 3
-                                self.eastRect.y = self.rect.y + 3
-                                self.southRect.y = self.rect.y + 10
-                                self.westRect.y = self.rect.y + 3
+                                if not self.eastRect.colliderect(enemies[i].rect):
+                                    self.rect.x += self.speed
+                                    self.northRect.x = self.rect.x + 3
+                                    self.eastRect.x = self.rect.x + 8
+                                    self.southRect.x = self.rect.x + 3
+                                    self.westRect.x = self.rect.x - 3
+                                elif not self.westRect.colliderect(enemies[i].rect):
+                                    self.rect.x -= self.speed
+                                    self.northRect.x = self.rect.x + 3
+                                    self.eastRect.x = self.rect.x + 8
+                                    self.southRect.x = self.rect.x + 3
+                                    self.westRect.x = self.rect.x - 3
+                                elif not self.northRect.colliderect(enemies[i].rect):
+                                    # enemy moves North as a last option
+                                    self.rect.y += self.speed
+                                    self.northRect.y = self.rect.y - 3
+                                    self.eastRect.y = self.rect.y + 3
+                                    self.southRect.y = self.rect.y + 10
+                                    self.westRect.y = self.rect.y + 3
 
 
 
@@ -350,7 +359,9 @@ class Enemy(pygame.sprite.Sprite):
             # self.southRect.y = self.rect.y + 10
             # self.westRect.y = self.rect.y + 3
             for i in range(n):
-                if self.rect.x == enemies[i].rect.x and self.rect.y == enemies[i].rect.y:
+                if self.northRect.colliderect(p.rect):
+                    pass
+                elif self.rect.x == enemies[i].rect.x and self.rect.y == enemies[i].rect.y:
                     pass
                 else:
                     if not self.northRect.colliderect(enemies[i].rect):
@@ -360,45 +371,46 @@ class Enemy(pygame.sprite.Sprite):
                         self.southRect.y = self.rect.y + 10
                         self.westRect.y = self.rect.y + 3
                     else:
-                        if not self.eastRect.colliderect(enemies[i].rect) and not self.westRect.colliderect(enemies[i].rect):
-                            # if enemy can go both North and South, pick a random direction
-                            randomDirection = random.randint(0,3)
-                            if randomDirection <= 1:
-                                # enemy moves East
-                                self.rect.x += self.speed
-                                self.northRect.x = self.rect.x + 3
-                                self.eastRect.x = self.rect.x + 8
-                                self.southRect.x = self.rect.x + 3
-                                self.westRect.x = self.rect.x - 3
+                        if (self.rect.y - p.rect.y) > 50:
+                            if not self.eastRect.colliderect(enemies[i].rect) and not self.westRect.colliderect(enemies[i].rect):
+                                # if enemy can go both North and South, pick a random direction
+                                randomDirection = random.randint(0,3)
+                                if randomDirection <= 1:
+                                    # enemy moves East
+                                    self.rect.x += self.speed
+                                    self.northRect.x = self.rect.x + 3
+                                    self.eastRect.x = self.rect.x + 8
+                                    self.southRect.x = self.rect.x + 3
+                                    self.westRect.x = self.rect.x - 3
+                                else:
+                                    # enemy moves West
+                                    self.rect.x -= self.speed
+                                    self.northRect.x = self.rect.x + 3
+                                    self.eastRect.x = self.rect.x + 8
+                                    self.southRect.x = self.rect.x + 3
+                                    self.westRect.x = self.rect.x - 3
                             else:
-                                # enemy moves West
-                                self.rect.x -= self.speed
-                                self.northRect.x = self.rect.x + 3
-                                self.eastRect.x = self.rect.x + 8
-                                self.southRect.x = self.rect.x + 3
-                                self.westRect.x = self.rect.x - 3
-                        else:
-                            if not self.eastRect.colliderect(enemies[i].rect):
-                                # enemy moves east
-                                self.rect.x += self.speed
-                                self.northRect.x = self.rect.x + 3
-                                self.eastRect.x = self.rect.x + 8
-                                self.southRect.x = self.rect.x + 3
-                                self.westRect.x = self.rect.x - 3
-                            elif not self.westRect.colliderect(enemies[i].rect):
-                                # enemy moves west
-                                self.rect.x -= self.speed
-                                self.northRect.x = self.rect.x + 3
-                                self.eastRect.x = self.rect.x + 8
-                                self.southRect.x = self.rect.x + 3
-                                self.westRect.x = self.rect.x - 3
-                            elif not self.southRect.colliderect(enemies[i].rect):
-                                # enemy moves South as a last option
-                                self.rect.y += self.speed
-                                self.northRect.y = self.rect.y - 3
-                                self.eastRect.y = self.rect.y + 3
-                                self.southRect.y = self.rect.y + 10
-                                self.westRect.y = self.rect.y + 3
+                                if not self.eastRect.colliderect(enemies[i].rect):
+                                    # enemy moves east
+                                    self.rect.x += self.speed
+                                    self.northRect.x = self.rect.x + 3
+                                    self.eastRect.x = self.rect.x + 8
+                                    self.southRect.x = self.rect.x + 3
+                                    self.westRect.x = self.rect.x - 3
+                                elif not self.westRect.colliderect(enemies[i].rect):
+                                    # enemy moves west
+                                    self.rect.x -= self.speed
+                                    self.northRect.x = self.rect.x + 3
+                                    self.eastRect.x = self.rect.x + 8
+                                    self.southRect.x = self.rect.x + 3
+                                    self.westRect.x = self.rect.x - 3
+                                elif not self.southRect.colliderect(enemies[i].rect):
+                                    # enemy moves South as a last option
+                                    self.rect.y += self.speed
+                                    self.northRect.y = self.rect.y - 3
+                                    self.eastRect.y = self.rect.y + 3
+                                    self.southRect.y = self.rect.y + 10
+                                    self.westRect.y = self.rect.y + 3
 
     def attack_mc(self):
         if self.rect.colliderect(p.rect):
@@ -420,7 +432,7 @@ class Enemy(pygame.sprite.Sprite):
 # initializes the Player and Enemy classes
 p = Player()
 m = Map()
-enemies = [Enemy(500,100,80,40) for _ in range(3)]
+enemies = [Enemy(500,100,80,40) for _ in range(2)]
 enemies2 = enemies.copy()
 
 
@@ -513,7 +525,7 @@ while game:
         pygame.draw.rect(screen, (128,0,128), enemy.eastRect)
         pygame.draw.rect(screen, (128,0,128), enemy.southRect)
         pygame.draw.rect(screen, (128,0,128), enemy.westRect)
-        if enemy.rect.colliderect(p.rect):
+        if enemy.rect.colliderect(p.rect) or enemy.northRect.colliderect(p.rect) or enemy.eastRect.colliderect(p.rect) or enemy.southRect.colliderect(p.rect) or enemy.westRect.colliderect(p.rect):
             print("COLLISION DETECTED!!!")
             p.health -= 1
     index = 0
