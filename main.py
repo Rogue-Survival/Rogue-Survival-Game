@@ -155,6 +155,38 @@ class Enemy(pygame.sprite.Sprite):
     def generate_enemy(self):
         pass
 
+    def travel_north(self):
+        # enemy moves North
+        self.rect.y -= self.speed
+        self.northRect.y = self.rect.y - self.northYVal
+        self.eastRect.y = self.rect.y + self.eastYVal
+        self.southRect.y = self.rect.y + self.southYVal
+        self.westRect.y = self.rect.y + self.westYVal
+
+    def travel_east(self):
+        # enemy moves East
+        self.rect.x += self.speed
+        self.northRect.x = self.rect.x + self.northXVal
+        self.eastRect.x = self.rect.x + self.eastXVal
+        self.southRect.x = self.rect.x + self.southXVal
+        self.westRect.x = self.rect.x - self.westXVal
+
+    def travel_south(self):
+        # enemy moves South
+        self.rect.y += self.speed
+        self.northRect.y = self.rect.y - self.northYVal
+        self.eastRect.y = self.rect.y + self.eastYVal
+        self.southRect.y = self.rect.y + self.southYVal
+        self.westRect.y = self.rect.y + self.westYVal
+
+    def travel_west(self):
+        # enemy moves West
+        self.rect.x -= self.speed
+        self.northRect.x = self.rect.x + self.northXVal
+        self.eastRect.x = self.rect.x + self.eastXVal
+        self.southRect.x = self.rect.x + self.southXVal
+        self.westRect.x = self.rect.x - self.westXVal
+
     def follow_mc(self):
         # follows the main character around the map
         if self.rect.x < p.rect.x:
@@ -200,33 +232,13 @@ class Enemy(pygame.sprite.Sprite):
                                     # enemy moves West as a last resort
                                     moveWest += 1
             if moveEast == (len(enemies) - 1):
-                # code to move East
-                self.rect.x += self.speed
-                self.northRect.x = self.rect.x + self.northXVal
-                self.eastRect.x = self.rect.x + self.eastXVal
-                self.southRect.x = self.rect.x + self.southXVal
-                self.westRect.x = self.rect.x - self.westXVal
+                self.travel_east()
             elif moveNorth == (len(enemies) - 1):
-                # code to move North
-                self.rect.y -= self.speed
-                self.northRect.y = self.rect.y - self.northYVal
-                self.eastRect.y = self.rect.y + self.eastYVal
-                self.southRect.y = self.rect.y + self.southYVal
-                self.westRect.y = self.rect.y + self.westYVal
+                self.travel_north()
             elif moveSouth == (len(enemies) -1):
-                # code to move South
-                self.rect.y += self.speed
-                self.northRect.y = self.rect.y - self.northYVal
-                self.eastRect.y = self.rect.y + self.eastYVal
-                self.southRect.y = self.rect.y + self.southYVal
-                self.westRect.y = self.rect.y + self.westYVal
+                self.travel_south()
             elif moveWest == (len(enemies) -1):
-                # code to move West
-                self.rect.x -= self.speed
-                self.northRect.x = self.rect.x + self.northXVal
-                self.eastRect.x = self.rect.x + self.eastXVal
-                self.southRect.x = self.rect.x + self.southXVal
-                self.westRect.x = self.rect.x - self.westXVal
+                self.travel_west()
 
         if self.rect.x > p.rect.x:
             # enemy moves West
@@ -271,33 +283,13 @@ class Enemy(pygame.sprite.Sprite):
                                     # enemy moves East as a last resort
                                     moveEast += 1
             if moveWest == (len(enemies) -1):
-                # code to move West
-                self.rect.x -= self.speed
-                self.northRect.x = self.rect.x + self.northXVal
-                self.eastRect.x = self.rect.x + self.eastXVal
-                self.southRect.x = self.rect.x + self.southXVal
-                self.westRect.x = self.rect.x - self.westXVal
+                self.travel_west()
             elif moveNorth == (len(enemies) - 1):
-                # code to move North
-                self.rect.y -= self.speed
-                self.northRect.y = self.rect.y - self.northYVal
-                self.eastRect.y = self.rect.y + self.eastYVal
-                self.southRect.y = self.rect.y + self.southYVal
-                self.westRect.y = self.rect.y + self.westYVal
+                self.travel_north()
             elif moveSouth == (len(enemies) -1):
-                # code to move South
-                self.rect.y += self.speed
-                self.northRect.y = self.rect.y - self.northYVal
-                self.eastRect.y = self.rect.y + self.eastYVal
-                self.southRect.y = self.rect.y + self.southYVal
-                self.westRect.y = self.rect.y + self.westYVal
+                self.travel_south()
             elif moveEast == (len(enemies) - 1):
-                # code to move East
-                self.rect.x += self.speed
-                self.northRect.x = self.rect.x + self.northXVal
-                self.eastRect.x = self.rect.x + self.eastXVal
-                self.southRect.x = self.rect.x + self.southXVal
-                self.westRect.x = self.rect.x - self.westXVal
+                self.travel_east()
 
         if self.rect.y < p.rect.y:
             # enemy moves South
@@ -340,33 +332,13 @@ class Enemy(pygame.sprite.Sprite):
                                     # enemy moves North as a last resort
                                     moveNorth += 1
             if moveSouth == (len(enemies) -1):
-                # code to move South
-                self.rect.y += self.speed
-                self.northRect.y = self.rect.y - self.northYVal
-                self.eastRect.y = self.rect.y + self.eastYVal
-                self.southRect.y = self.rect.y + self.southYVal
-                self.westRect.y = self.rect.y + self.westYVal
+                self.travel_south()
             elif moveEast == (len(enemies) - 1):
-                # code to move East
-                self.rect.x += self.speed
-                self.northRect.x = self.rect.x + self.northXVal
-                self.eastRect.x = self.rect.x + self.eastXVal
-                self.southRect.x = self.rect.x + self.southXVal
-                self.westRect.x = self.rect.x - self.westXVal
+                self.travel_east()
             elif moveWest == (len(enemies) -1):
-                # code to move West
-                self.rect.x -= self.speed
-                self.northRect.x = self.rect.x + self.northXVal
-                self.eastRect.x = self.rect.x + self.eastXVal
-                self.southRect.x = self.rect.x + self.southXVal
-                self.westRect.x = self.rect.x - self.westXVal
+                self.travel_west()
             elif moveNorth == (len(enemies) - 1):
-                # code to move North
-                self.rect.y -= self.speed
-                self.northRect.y = self.rect.y - self.northYVal
-                self.eastRect.y = self.rect.y + self.eastYVal
-                self.southRect.y = self.rect.y + self.southYVal
-                self.westRect.y = self.rect.y + self.westYVal
+                self.travel_north()
 
         if self.rect.y > p.rect.y:
             # enemy moves North
@@ -411,33 +383,13 @@ class Enemy(pygame.sprite.Sprite):
                                     # enemy moves South as a last resort
                                     moveSouth += 1
             if moveNorth == (len(enemies) - 1):
-                # code to move North
-                self.rect.y -= self.speed
-                self.northRect.y = self.rect.y - self.northYVal
-                self.eastRect.y = self.rect.y + self.eastYVal
-                self.southRect.y = self.rect.y + self.southYVal
-                self.westRect.y = self.rect.y + self.westYVal
+                self.travel_north()
             elif moveEast == (len(enemies) - 1):
-                # code to move East
-                self.rect.x += self.speed
-                self.northRect.x = self.rect.x + self.northXVal
-                self.eastRect.x = self.rect.x + self.eastXVal
-                self.southRect.x = self.rect.x + self.southXVal
-                self.westRect.x = self.rect.x - self.westXVal
+                self.travel_east()
             elif moveWest == (len(enemies) -1):
-                # code to move West
-                self.rect.x -= self.speed
-                self.northRect.x = self.rect.x + self.northXVal
-                self.eastRect.x = self.rect.x + self.eastXVal
-                self.southRect.x = self.rect.x + self.southXVal
-                self.westRect.x = self.rect.x - self.westXVal
+                self.travel_west()
             elif moveSouth == (len(enemies) -1):
-                # code to move South
-                self.rect.y += self.speed
-                self.northRect.y = self.rect.y - self.northYVal
-                self.eastRect.y = self.rect.y + self.eastYVal
-                self.southRect.y = self.rect.y + self.southYVal
-                self.westRect.y = self.rect.y + self.westYVal
+                self.travel_south()
 
     def attack_mc(self):
         # when enemy reaches player collision, initiate attack animation/wind up attack, if player still in collision (plus add offset due to weapon they might have) then the player will take damage.
