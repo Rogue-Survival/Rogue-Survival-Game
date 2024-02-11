@@ -75,24 +75,20 @@ class Player(pygame.sprite.Sprite):
         # returns image of player
         return self.image
 
-    def move_left(self):
-        # moves the player left
-        # if not self.mc_x < 370:
+    def move_west(self):
+        # moves the player West
         self.rect.x -= self.speed
 
-    def move_right(self):
-        # moves the player right
-        # if not self.mc_x > 1120:
+    def move_east(self):
+        # moves the player East
         self.rect.x += self.speed
 
-    def move_up(self):
-        # moves the player up
-        # if not self.mc_y < 550:
+    def move_north(self):
+        # moves the player North
         self.rect.y -= self.speed
 
-    def move_down(self):
-        # moves the player down
-        # if not self.mc_y > 1350:
+    def move_south(self):
+        # moves the player South
         self.rect.y += self.speed
 
 
@@ -154,6 +150,10 @@ class Enemy(pygame.sprite.Sprite):
         if self.rect.x < p.rect.x:
             # enemy moves East
             n = len(enemies)
+            moveNorth = 0
+            moveEast = 0
+            moveSouth = 0
+            moveWest = 0
             for i in range(n):
                 # iterate through each enemy
                 if self.eastRect.colliderect(p.rect):
@@ -165,11 +165,7 @@ class Enemy(pygame.sprite.Sprite):
                 else:
                     if not self.eastRect.colliderect(enemies[i].rect):
                         # enemy moves East if unobstructed
-                        self.rect.x += self.speed
-                        self.northRect.x = self.rect.x + 3
-                        self.eastRect.x = self.rect.x + 8
-                        self.southRect.x = self.rect.x + 3
-                        self.westRect.x = self.rect.x - 3
+                        moveEast += 1
                     else:
                         if (p.rect.x - self.rect.x) > 50:
                             # enemy continues trying to move towards player if further than 50 pixels away.
@@ -178,45 +174,57 @@ class Enemy(pygame.sprite.Sprite):
                                 randomDirection = random.randint(0,3)
                                 if randomDirection <= 1:
                                     # enemy moves North
-                                    self.rect.y += self.speed
-                                    self.northRect.y = self.rect.y - 3
-                                    self.eastRect.y = self.rect.y + 3
-                                    self.southRect.y = self.rect.y + 10
-                                    self.westRect.y = self.rect.y + 3
+                                    moveNorth += 1
                                 else:
                                     # enemy moves South
-                                    self.rect.y -= self.speed
-                                    self.northRect.y = self.rect.y - 3
-                                    self.eastRect.y = self.rect.y + 3
-                                    self.southRect.y = self.rect.y + 10
-                                    self.westRect.y = self.rect.y + 3
+                                    moveSouth += 1
                             else:
                                 # if North and South are not both an option, check which direct is an option
                                 if not self.northRect.colliderect(enemies[i].rect):
                                     # enemy moves North
-                                    self.rect.y += self.speed
-                                    self.northRect.y = self.rect.y - 3
-                                    self.eastRect.y = self.rect.y + 3
-                                    self.southRect.y = self.rect.y + 10
-                                    self.westRect.y = self.rect.y + 3
+                                    moveNorth += 1
                                 elif not self.southRect.colliderect(enemies[i].rect):
                                     # enemy moves South
-                                    self.rect.y += self.speed
-                                    self.northRect.y = self.rect.y - 3
-                                    self.eastRect.y = self.rect.y + 3
-                                    self.southRect.y = self.rect.y + 10
-                                    self.westRect.y = self.rect.y + 3
+                                    moveSouth += 1
                                 elif not self.westRect.colliderect(enemies[i].rect):
                                     # enemy moves West as a last resort
-                                    self.rect.x -= self.speed
-                                    self.northRect.x = self.rect.x + 3
-                                    self.eastRect.x = self.rect.x + 8
-                                    self.southRect.x = self.rect.x + 3
-                                    self.westRect.x = self.rect.x - 3
+                                    moveWest += 1
+            if moveEast == (len(enemies) - 1):
+                # code to move East
+                self.rect.x += self.speed
+                self.northRect.x = self.rect.x + 3
+                self.eastRect.x = self.rect.x + 8
+                self.southRect.x = self.rect.x + 3
+                self.westRect.x = self.rect.x - 3
+            elif moveNorth == (len(enemies) - 1):
+                # code to move North
+                self.rect.y -= self.speed
+                self.northRect.y = self.rect.y - 3
+                self.eastRect.y = self.rect.y + 3
+                self.southRect.y = self.rect.y + 10
+                self.westRect.y = self.rect.y + 3
+            elif moveSouth == (len(enemies) -1):
+                # code to move South
+                self.rect.y += self.speed
+                self.northRect.y = self.rect.y - 3
+                self.eastRect.y = self.rect.y + 3
+                self.southRect.y = self.rect.y + 10
+                self.westRect.y = self.rect.y + 3
+            elif moveWest == (len(enemies) -1):
+                # code to move West
+                self.rect.x -= self.speed
+                self.northRect.x = self.rect.x + 3
+                self.eastRect.x = self.rect.x + 8
+                self.southRect.x = self.rect.x + 3
+                self.westRect.x = self.rect.x - 3
 
         if self.rect.x > p.rect.x:
             # enemy moves West
             n = len(enemies)
+            moveNorth = 0
+            moveEast = 0
+            moveSouth = 0
+            moveWest = 0
             for i in range(n):
                 # iterate through each enemy
                 if self.westRect.colliderect(p.rect):
@@ -228,11 +236,7 @@ class Enemy(pygame.sprite.Sprite):
                 else:
                     if not self.westRect.colliderect(enemies[i].rect):
                         # enemy moves West if unobstructed
-                        self.rect.x -= self.speed
-                        self.northRect.x = self.rect.x + 3
-                        self.eastRect.x = self.rect.x + 8
-                        self.southRect.x = self.rect.x + 3
-                        self.westRect.x = self.rect.x - 3
+                        moveWest += 1
                     else:
                         if (self.rect.x - p.rect.x) > 50:
                             # enemy continues trying to move towards player if further than 50 pixels away.
@@ -241,45 +245,57 @@ class Enemy(pygame.sprite.Sprite):
                                 randomDirection = random.randint(0,3)
                                 if randomDirection <= 1:
                                     # enemy moves North
-                                    self.rect.y += self.speed
-                                    self.northRect.y = self.rect.y - 3
-                                    self.eastRect.y = self.rect.y + 3
-                                    self.southRect.y = self.rect.y + 10
-                                    self.westRect.y = self.rect.y + 3
+                                    moveNorth += 1
                                 else:
                                     # enemy moves South
-                                    self.rect.y -= self.speed
-                                    self.northRect.y = self.rect.y - 3
-                                    self.eastRect.y = self.rect.y + 3
-                                    self.southRect.y = self.rect.y + 10
-                                    self.westRect.y = self.rect.y + 3
+                                    moveSouth += 1
                             else:
                                 # if North and Sout are not both an option, check which direct is an option
                                 if not self.northRect.colliderect(enemies[i].rect):
                                     # enemy moves North
-                                    self.rect.y += self.speed
-                                    self.northRect.y = self.rect.y - 3
-                                    self.eastRect.y = self.rect.y + 3
-                                    self.southRect.y = self.rect.y + 10
-                                    self.westRect.y = self.rect.y + 3
+                                    moveNorth += 1
                                 elif not self.southRect.colliderect(enemies[i].rect):
                                     # enemy moves South
-                                    self.rect.y += self.speed
-                                    self.northRect.y = self.rect.y - 3
-                                    self.eastRect.y = self.rect.y + 3
-                                    self.southRect.y = self.rect.y + 10
-                                    self.westRect.y = self.rect.y + 3
+                                    moveSouth += 1
                                 elif not self.eastRect.colliderect(enemies[i].rect):
                                     # enemy moves East as a last resort
-                                    self.rect.x += self.speed
-                                    self.northRect.x = self.rect.x + 3
-                                    self.eastRect.x = self.rect.x + 8
-                                    self.southRect.x = self.rect.x + 3
-                                    self.westRect.x = self.rect.x - 3
+                                    moveEast += 1
+            if moveWest == (len(enemies) -1):
+                # code to move West
+                self.rect.x -= self.speed
+                self.northRect.x = self.rect.x + 3
+                self.eastRect.x = self.rect.x + 8
+                self.southRect.x = self.rect.x + 3
+                self.westRect.x = self.rect.x - 3
+            elif moveNorth == (len(enemies) - 1):
+                # code to move North
+                self.rect.y -= self.speed
+                self.northRect.y = self.rect.y - 3
+                self.eastRect.y = self.rect.y + 3
+                self.southRect.y = self.rect.y + 10
+                self.westRect.y = self.rect.y + 3
+            elif moveSouth == (len(enemies) -1):
+                # code to move South
+                self.rect.y += self.speed
+                self.northRect.y = self.rect.y - 3
+                self.eastRect.y = self.rect.y + 3
+                self.southRect.y = self.rect.y + 10
+                self.westRect.y = self.rect.y + 3
+            elif moveEast == (len(enemies) - 1):
+                # code to move East
+                self.rect.x += self.speed
+                self.northRect.x = self.rect.x + 3
+                self.eastRect.x = self.rect.x + 8
+                self.southRect.x = self.rect.x + 3
+                self.westRect.x = self.rect.x - 3
 
         if self.rect.y < p.rect.y:
             # enemy moves South
             n = len(enemies)
+            moveNorth = 0
+            moveEast = 0
+            moveSouth = 0
+            moveWest = 0
             for i in range(n):
                 # iterate through each enemy
                 if self.southRect.colliderect(p.rect):
@@ -291,11 +307,7 @@ class Enemy(pygame.sprite.Sprite):
                 else:
                     if not self.southRect.colliderect(enemies[i].rect):
                         # enemy moves South if unobstructed
-                        self.rect.y += self.speed
-                        self.northRect.y = self.rect.y - 3
-                        self.eastRect.y = self.rect.y + 3
-                        self.southRect.y = self.rect.y + 10
-                        self.westRect.y = self.rect.y + 3
+                        moveSouth += 1
                     else:
                         if (p.rect.y - self.rect.y) > 50:
                             # enemy continues trying to move towards player if further than 50 pixels away.
@@ -304,43 +316,55 @@ class Enemy(pygame.sprite.Sprite):
                                 randomDirection = random.randint(0,3)
                                 if randomDirection <= 1:
                                     # enemy moves East
-                                    self.rect.x += self.speed
-                                    self.northRect.x = self.rect.x + 3
-                                    self.eastRect.x = self.rect.x + 8
-                                    self.southRect.x = self.rect.x + 3
-                                    self.westRect.x = self.rect.x - 3
+                                    moveEast += 1
                                 else:
                                     # enemy moves West
-                                    self.rect.x -= self.speed
-                                    self.northRect.x = self.rect.x + 3
-                                    self.eastRect.x = self.rect.x + 8
-                                    self.southRect.x = self.rect.x + 3
-                                    self.westRect.x = self.rect.x - 3
+                                    moveWest += 1
                             else:
                                 # if East and West are not both an option, check which direct is an option
                                 if not self.eastRect.colliderect(enemies[i].rect):
-                                    self.rect.x += self.speed
-                                    self.northRect.x = self.rect.x + 3
-                                    self.eastRect.x = self.rect.x + 8
-                                    self.southRect.x = self.rect.x + 3
-                                    self.westRect.x = self.rect.x - 3
+                                    moveEast += 1
                                 elif not self.westRect.colliderect(enemies[i].rect):
-                                    self.rect.x -= self.speed
-                                    self.northRect.x = self.rect.x + 3
-                                    self.eastRect.x = self.rect.x + 8
-                                    self.southRect.x = self.rect.x + 3
-                                    self.westRect.x = self.rect.x - 3
+                                    moveWest += 1
                                 elif not self.northRect.colliderect(enemies[i].rect):
                                     # enemy moves North as a last resort
-                                    self.rect.y += self.speed
-                                    self.northRect.y = self.rect.y - 3
-                                    self.eastRect.y = self.rect.y + 3
-                                    self.southRect.y = self.rect.y + 10
-                                    self.westRect.y = self.rect.y + 3
+                                    moveNorth += 1
+            if moveSouth == (len(enemies) -1):
+                # code to move South
+                self.rect.y += self.speed
+                self.northRect.y = self.rect.y - 3
+                self.eastRect.y = self.rect.y + 3
+                self.southRect.y = self.rect.y + 10
+                self.westRect.y = self.rect.y + 3
+            elif moveEast == (len(enemies) - 1):
+                # code to move East
+                self.rect.x += self.speed
+                self.northRect.x = self.rect.x + 3
+                self.eastRect.x = self.rect.x + 8
+                self.southRect.x = self.rect.x + 3
+                self.westRect.x = self.rect.x - 3
+            elif moveWest == (len(enemies) -1):
+                # code to move West
+                self.rect.x -= self.speed
+                self.northRect.x = self.rect.x + 3
+                self.eastRect.x = self.rect.x + 8
+                self.southRect.x = self.rect.x + 3
+                self.westRect.x = self.rect.x - 3
+            elif moveNorth == (len(enemies) - 1):
+                # code to move North
+                self.rect.y -= self.speed
+                self.northRect.y = self.rect.y - 3
+                self.eastRect.y = self.rect.y + 3
+                self.southRect.y = self.rect.y + 10
+                self.westRect.y = self.rect.y + 3
 
         if self.rect.y > p.rect.y:
             # enemy moves North
             n = len(enemies)
+            moveNorth = 0
+            moveEast = 0
+            moveSouth = 0
+            moveWest = 0
             for i in range(n):
                 # iterate through each enemy
                 if self.northRect.colliderect(p.rect):
@@ -352,11 +376,7 @@ class Enemy(pygame.sprite.Sprite):
                 else:
                     if not self.northRect.colliderect(enemies[i].rect):
                         # enemy moves North if unobstructed
-                        self.rect.y -= self.speed
-                        self.northRect.y = self.rect.y - 3
-                        self.eastRect.y = self.rect.y + 3
-                        self.southRect.y = self.rect.y + 10
-                        self.westRect.y = self.rect.y + 3
+                        moveNorth += 1
                     else:
                         if (self.rect.y - p.rect.y) > 50:
                             # enemy continues trying to move towards player if further than 50 pixels away.
@@ -365,56 +385,67 @@ class Enemy(pygame.sprite.Sprite):
                                 randomDirection = random.randint(0,3)
                                 if randomDirection <= 1:
                                     # enemy moves East
-                                    self.rect.x += self.speed
-                                    self.northRect.x = self.rect.x + 3
-                                    self.eastRect.x = self.rect.x + 8
-                                    self.southRect.x = self.rect.x + 3
-                                    self.westRect.x = self.rect.x - 3
+                                    moveEast += 1
                                 else:
                                     # enemy moves West
-                                    self.rect.x -= self.speed
-                                    self.northRect.x = self.rect.x + 3
-                                    self.eastRect.x = self.rect.x + 8
-                                    self.southRect.x = self.rect.x + 3
-                                    self.westRect.x = self.rect.x - 3
+                                    moveWest += 1
                             else:
                                 # if East and West are not both an option, check which direct is an option
                                 if not self.eastRect.colliderect(enemies[i].rect):
                                     # enemy moves east
-                                    self.rect.x += self.speed
-                                    self.northRect.x = self.rect.x + 3
-                                    self.eastRect.x = self.rect.x + 8
-                                    self.southRect.x = self.rect.x + 3
-                                    self.westRect.x = self.rect.x - 3
+                                    moveEast += 1
                                 elif not self.westRect.colliderect(enemies[i].rect):
                                     # enemy moves west
-                                    self.rect.x -= self.speed
-                                    self.northRect.x = self.rect.x + 3
-                                    self.eastRect.x = self.rect.x + 8
-                                    self.southRect.x = self.rect.x + 3
-                                    self.westRect.x = self.rect.x - 3
+                                    moveWest += 1
                                 elif not self.southRect.colliderect(enemies[i].rect):
                                     # enemy moves South as a last resort
-                                    self.rect.y += self.speed
-                                    self.northRect.y = self.rect.y - 3
-                                    self.eastRect.y = self.rect.y + 3
-                                    self.southRect.y = self.rect.y + 10
-                                    self.westRect.y = self.rect.y + 3
+                                    moveSouth += 1
+            if moveNorth == (len(enemies) - 1):
+                # code to move North
+                self.rect.y -= self.speed
+                self.northRect.y = self.rect.y - 3
+                self.eastRect.y = self.rect.y + 3
+                self.southRect.y = self.rect.y + 10
+                self.westRect.y = self.rect.y + 3
+            elif moveEast == (len(enemies) - 1):
+                # code to move East
+                self.rect.x += self.speed
+                self.northRect.x = self.rect.x + 3
+                self.eastRect.x = self.rect.x + 8
+                self.southRect.x = self.rect.x + 3
+                self.westRect.x = self.rect.x - 3
+            elif moveWest == (len(enemies) -1):
+                # code to move West
+                self.rect.x -= self.speed
+                self.northRect.x = self.rect.x + 3
+                self.eastRect.x = self.rect.x + 8
+                self.southRect.x = self.rect.x + 3
+                self.westRect.x = self.rect.x - 3
+            elif moveSouth == (len(enemies) -1):
+                # code to move South
+                self.rect.y += self.speed
+                self.northRect.y = self.rect.y - 3
+                self.eastRect.y = self.rect.y + 3
+                self.southRect.y = self.rect.y + 10
+                self.westRect.y = self.rect.y + 3
 
     def attack_mc(self):
-        if self.rect.colliderect(p.rect):
-            if self.inRange == False:
-                self.startTimer=pygame.time.get_ticks()
-            self.inRange = True
-            if self.startTimer > 3000:
-                # print("TESTING)
-                pass
-            print(self.startTimer)
+        # when enemy reaches player collision, initiate attack animation/wind up attack, if player still in collision (plus add offset due to weapon they might have) then the player will take damage.
+
+        # if self.rect.colliderect(p.rect):
+        #     if self.inRange == False:
+        #         self.startTimer=pygame.time.get_ticks()
+        #     self.inRange = True
+        #     if self.startTimer > 3000:
+        #         # print("TESTING)
+        #         pass
+        #     print(self.startTimer)
+        pass
 
 # initializes the Player and Enemy classes
 p = Player()
 m = Map()
-enemies = [Enemy(500,100,80,40) for _ in range(2)]
+enemies = [Enemy(500,100,80,40) for _ in range(50)]
 
 
 # loads images
@@ -446,43 +477,44 @@ while game:
 
     if key_presses[pygame.K_a]:
         # if 'a' is pressed, move left
-        p.move_left()
+        p.move_west()
     elif key_presses[pygame.K_LEFT]:
         # if left arrow is pressed, move left
-        p.move_left()
+        p.move_west()
 
     if key_presses[pygame.K_d]:
         # if 'd' is pressed, move right
-        p.move_right()
+        p.move_east()
 
     elif key_presses[pygame.K_RIGHT]:
         # if right arrow is pressed, move right
-        p.move_right()
+        p.move_east()
 
     if key_presses[pygame.K_w]:
         # if 'w' is pressed, move up
-        p.move_up()
+        p.move_north()
     elif key_presses[pygame.K_UP]:
         # if up arrow is pressed, move up
-        p.move_up()
+        p.move_north()
 
     if key_presses[pygame.K_s]:
         # if 's' is pressed, move down
-        p.move_down()
+        p.move_south()
     elif key_presses[pygame.K_DOWN]:
         # if down arrow is pressed, move down
-        p.move_down()
+        p.move_south()
 
     # makes the map visible
+    # the first tuple dictates the size (2250, 2250)
+    # the second tuple dictates the starting coordinates (m.mapX, m.mapY)
+    # the coordinates start at the top left of the game, which is (0,0) instead of the center
     screen.blit(pygame.transform.scale(bg_img, (2250, 2250)), (m.mapX, m.mapY))
 
     # makes the main character visible
-    # the first tuple dictates the size (45,45)
-    # the second tuple dictates the starting coordinates (p.mc_x, p.mc_y)
-    # the coordinates start at the top left of the screen, which is (0,0) instead of the center
+
     # screen.blit(pygame.transform.scale(mc_img, (45, 45)), (p.mc_x,p.mc_y))
     screen.blit(mc_img,p.rect)
-
+    # print(p.rect.y)
     if speed_item_visible:
         # shows a visible object on the map if it has not been taken yet
         screen.blit(pygame.transform.scale(speedI, (30, 30)), (400, 285))
@@ -519,14 +551,29 @@ pygame.quit()
 
 
 
+"""
+
+The reason why the enemy physics goes insane after 2 spawned enemies is because we are iterating
+through each enemy and adjusting movements per each enemy.
+
+Possible fix: Iterate through each enemy like we have been, however, instead of actually moving
+the enemy for each iteration, just have specific variables such as northOpen or northClosed. After
+iterating through each enemy and ascertaining the available directions, whatever direction variables
+are true, then execute the movement code.
 
 
 
 
+The reason why the enemies can stack on top of one another instead of going around the enemy to the
+player is because of the > than 50 line of code. If changed to > 25, then the direction of the
+enemy will be randomly picked, however, the direction is continually randomly picked, due to this,
+if the options were either east or west and it picked east, it would go east for that one loop,
+however, immediately after it could also pick west, so it keeps going back and forth looking like it
+is shaking. Ideally, have it pick one random direction, then have that direction saved for a couple
+seconds so that it will keep going in that direction. As a "band-aid" solution, we could just have
+enemy default to one of the two directions if both are available.
 
-# when enemy reaches player collision, initiate attack animation/wind up attack, if player still in collision (plus add offset due to weapon they might have) then the player will take damage.
 
 
 
-
-
+"""
