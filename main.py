@@ -7,7 +7,7 @@ pygame.init()
 # creates the window and dimensions for the game
 screen = pygame.display.set_mode((800, 800))
 # screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-transparentSurface = pygame.Surface((800,800), pygame.SRCALPHA)
+transparentSurface = pygame.Surface((800, 800), pygame.SRCALPHA)
 # sets the window caption at the top
 pygame.display.set_caption("Rogue Survival")
 
@@ -408,31 +408,32 @@ class Enemy(pygame.sprite.Sprite):
         #     print(self.startTimer)
         pass
 
-# initializes the Player and Enemy classes
-p = Player()
-m = Map()
-enemies = [Enemy(500,100,80,40) for _ in range(25)]
+# adds ability for text to be on screen
+def text_objects(text, font):
+    textSurface = font.render(text, True, (0, 0, 0))
+    return textSurface, textSurface.get_rect()
 
+# adds the functionality of pausing the game
+def pause():
+    pause = True
 
-# loads images
-bg_img = pygame.image.load('./images/island.png').convert_alpha()
-speedI = pygame.image.load("./images/Noodle.png").convert_alpha()
+    while pause:
+        if pygame.key.get_pressed()[pygame.K_1]:
+            pause = False
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                game = False
+        screen.fill((255, 255, 255))
+        largeText = pygame.font.SysFont('futura', 115)
+        TextSurf, TextRect = text_objects("Paused", largeText)
+        TextRect.center = ((400), (400))
+        screen.blit(TextSurf, TextRect)
 
+        pygame.display.update()
+        clock.tick(15)
 
-speed_item_visible = True
-game = True
-
-while game:
-    # the core game loop
-
-    fps= clock.get_fps()
-    # print(fps)
-
-    clock.tick(60)
-    # sets the fps to 60
-    pygame.time.delay(5)
-    # adds a very small delay to make it feel more like a game
-
+# def to store all the keypress functions
+def keypressed():
     key_presses = pygame.key.get_pressed()
     # stores the keys that are pressed
 
@@ -469,6 +470,41 @@ while game:
     elif key_presses[pygame.K_DOWN]:
         # if down arrow is pressed, move down
         p.move_south()
+
+    if key_presses[pygame.K_ESCAPE]:
+        # if ESC key is pressed, pause game
+        pause()
+
+
+# initializes the Player and Enemy classes
+p = Player()
+m = Map()
+enemies = [Enemy(500,100,80,40) for _ in range(25)]
+
+
+# loads images
+bg_img = pygame.image.load('./images/island.png').convert_alpha()
+speedI = pygame.image.load("./images/Noodle.png").convert_alpha()
+
+
+speed_item_visible = True
+game = True
+
+while game:
+    # the core game loop
+
+    # cycling through the possible key presses
+    keypressed()
+
+    fps= clock.get_fps()
+    # print(fps)
+
+    clock.tick(60)
+    # sets the fps to 60
+    pygame.time.delay(5)
+    # adds a very small delay to make it feel more like a game
+
+
 
     # makes the map visible
     # the first tuple dictates the size (2250, 2250)
