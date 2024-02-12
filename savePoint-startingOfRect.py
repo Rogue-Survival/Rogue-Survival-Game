@@ -116,7 +116,7 @@ class Enemy(pygame.sprite.Sprite):
 
 # initializes the Player and Enemy classes
 p = Player()
-enemies = [Enemy(random.randint(50,500),random.randint(50,500)) for _ in range(100)]
+enemies = [Enemy(random.randint(50,500),random.randint(50,500)) for _ in range(500)]
 
 # loads images
 background_image = './images/island.png'
