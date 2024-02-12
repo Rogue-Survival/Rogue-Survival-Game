@@ -437,11 +437,6 @@ def keypressed():
     key_presses = pygame.key.get_pressed()
     # stores the keys that are pressed
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            # if the x in the top right corner of game is clicked, the program will close.
-            game = False
-
     if key_presses[pygame.K_a]:
         # if 'a' is pressed, move left
         p.move_west()
@@ -492,6 +487,12 @@ game = True
 
 while game:
     # the core game loop
+
+    # making sure the X button still closes the game
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            # if the x in the top right corner of game is clicked, the program will close.
+            game = False
 
     # cycling through the possible key presses
     keypressed()
