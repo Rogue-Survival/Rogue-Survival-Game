@@ -79,18 +79,22 @@ class Player(pygame.sprite.Sprite):
     def move_west(self):
         # moves the player West
         self.rect.x -= self.speed
+        # m.mapY += self.speed
 
     def move_east(self):
         # moves the player East
         self.rect.x += self.speed
+        # m.mapX -= self.speed
 
     def move_north(self):
         # moves the player North
         self.rect.y -= self.speed
+        # m.mapY += self.speed
 
     def move_south(self):
         # moves the player South
         self.rect.y += self.speed
+        # m.mapY -= self.speed
 
 
 class Enemy(pygame.sprite.Sprite):
