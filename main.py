@@ -1,8 +1,12 @@
 import pygame
 import random
+import math
 
 # initializes the pygame library
 pygame.init()
+
+rectx =  500
+recty = 600
 
 # creates the window and dimensions for the game
 screen = pygame.display.set_mode((800, 800))
@@ -47,8 +51,9 @@ class Player(pygame.sprite.Sprite):
         self.image = image
         self.health = health
         self.rect = mc_img.get_rect()
-        self.rect.x = 500
-        self.rect.y = 600
+        self.rect.x = 195
+        self.rect.y = 350
+        self.pos = pygame.math.Vector2(x,self.rect.y)
 
     def render(self):
         pass
@@ -75,21 +80,35 @@ class Player(pygame.sprite.Sprite):
         # returns image of player
         return self.image
 
-    def move_west(self):
-        # moves the player West
-        self.rect.x -= self.speed
+    def user_imput(self):
+        self.velocity_x = 0
+        self.velocity_y = 0
+        keys = pygame.key.get_pressed()
 
-    def move_east(self):
-        # moves the player East
-        self.rect.x += self.speed
+        if keys[pygame.K_a]:
+            self.velocity_x = -self.speed
+            # self.rect.x = self.pos[0]
+        if keys[pygame.K_d]:
+            self.velocity_x = self.speed
+            # self.rect.x = self.pos[0]
+        if keys[pygame.K_w]:
+            self.velocity_y = -self.speed
+            # self.rect.y = self.pos[1]
+        if keys[pygame.K_s]:
+            self.velocity_y = self.speed
+            # self.rect.y = self.pos[1]
+        if self.velocity_y != 0 and self.velocity_x != 0:
+            self.velocity_y /= math.sqrt(2)
+            self.velocity_x /= math.sqrt(2)
+            # self.rect.y = self.pos[1]
+            # self.rect.x = self.pos[0]
 
-    def move_north(self):
-        # moves the player North
-        self.rect.y -= self.speed
+    def move(self):
+        self.pos += pygame.math.Vector2(self.velocity_x, self.velocity_y)
 
-    def move_south(self):
-        # moves the player South
-        self.rect.y += self.speed
+    def updater(self):
+        self.user_imput()
+        self.move()
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -469,40 +488,12 @@ while game:
 
     key_presses = pygame.key.get_pressed()
     # stores the keys that are pressed
-
+    p.updater()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             # if the x in the top right corner of game is clicked, the program will close.
             game = False
 
-    if key_presses[pygame.K_a]:
-        # if 'a' is pressed, move left
-        p.move_west()
-    elif key_presses[pygame.K_LEFT]:
-        # if left arrow is pressed, move left
-        p.move_west()
-
-    if key_presses[pygame.K_d]:
-        # if 'd' is pressed, move right
-        p.move_east()
-
-    elif key_presses[pygame.K_RIGHT]:
-        # if right arrow is pressed, move right
-        p.move_east()
-
-    if key_presses[pygame.K_w]:
-        # if 'w' is pressed, move up
-        p.move_north()
-    elif key_presses[pygame.K_UP]:
-        # if up arrow is pressed, move up
-        p.move_north()
-
-    if key_presses[pygame.K_s]:
-        # if 's' is pressed, move down
-        p.move_south()
-    elif key_presses[pygame.K_DOWN]:
-        # if down arrow is pressed, move down
-        p.move_south()
 
     # makes the map visible
     # the first tuple dictates the size (2250, 2250)
@@ -512,8 +503,10 @@ while game:
 
     # makes the main character visible
 
-    # screen.blit(pygame.transform.scale(mc_img, (45, 45)), (p.mc_x,p.mc_y))
-    screen.blit(mc_img,p.rect)
+    #screen.blit(pygame.transform.scale(mc_img, (35, 30)), (p.mc_x,p.mc_y))
+    screen.blit(mc_img,p.pos)
+    p.rect.x = p.pos[0]
+    p.rect.y = p.pos[1]
     # print(p.rect.y)
     if speed_item_visible:
         # shows a visible object on the map if it has not been taken yet
@@ -546,7 +539,7 @@ while game:
 
     print(p.health)
     pygame.display.update()
-
+    # print(p.pos[0])
 pygame.quit()
 
 
