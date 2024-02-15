@@ -25,6 +25,8 @@ class Map(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.mapX = mapX
         self.mapY = mapY
+        self.cameraX = 0
+        self.cameraY = 0
 
     def get_mapX(self):
         # returns the x coordinate of the map
@@ -48,8 +50,8 @@ class Player(pygame.sprite.Sprite):
         self.image = image
         self.health = health
         self.rect = mc_img.get_rect().scale_by(2,2)
-        self.rect.x = 500
-        self.rect.y = 600
+        self.rect.x = 400
+        self.rect.y = 400
 
     def render(self):
         pass
@@ -78,19 +80,173 @@ class Player(pygame.sprite.Sprite):
 
     def move_west(self):
         # moves the player West
-        self.rect.x -= self.speed
+        if self.rect.x > 25:
+            self.rect.x -= 5
+            # m.cameraX -= 5
+            # m.mapX += 5
+            # if self.rect.x < 800/4 *3:
+            m.cameraX -= 5
+            self.rect.x += 5
+            pygame.display.update()
+            pygame.display.flip()
+            n = len(enemies)
+            count = 0
+            westCount = 0
+            northCount = 0
+            southCount = 0
+            for enemy in enemies:
+                enemy.rect.x += self.speed
+                # if enemy.rect.x != enemies[count].rect.x and enemy.rect.y != enemies[count].rect.y:
+                #     if enemy.circleRect.colliderect(enemies[count].circleRect):
+                #         if enemy.westRect.colliderect(enemies[count].circleRect):
+                #             westCount += 1
+                #         if enemy.northRect.colliderect(enemies[count].circleRect):
+                #             northCount += 1
+                #         if enemy.southRect.colliderect(enemies[count].circleRect):
+                #             southCount += 1
+                # if westCount == 0:
+                #     enemy.rect.x += self.speed
+                # elif northCount == 0:
+                #     enemy.rect.x += self.speed
+                # elif southCount == 0:
+                #     enemy.rect.x -= self.speed
+                # if enemy.rect.x != enemies[count].rect.x and enemy.rect.y != enemies[count].rect.y:
+                #     if enemy.circleRect.colliderect(enemy.circleRect):
+                #         enemy.rect.x -= self.speed
+                enemy.northRect.x = enemy.rect.x + enemy.northXVal
+                enemy.eastRect.x = enemy.rect.x + enemy.eastXVal
+                enemy.southRect.x = enemy.rect.x + enemy.southXVal
+                enemy.westRect.x = enemy.rect.x - enemy.westXVal
+
+        pygame.display.update()
+        pygame.display.flip()
 
     def move_east(self):
         # moves the player East
-        self.rect.x += self.speed
+        if self.rect.x < 800:
+            self.rect.x += 5
+            # m.cameraX += 5
+            # m.mapX -= 5
+            # if self.rect.x > 800/4 *3:
+            m.cameraX += 5
+            self.rect.x -= 5
+            pygame.display.update()
+            pygame.display.flip()
+            n = len(enemies)
+            count = 0
+            eastCount = 0
+            northCount = 0
+            southCount = 0
+            for enemy in enemies:
+                enemy.rect.x -= self.speed
+                # if enemy.rect.x != enemies[count].rect.x and enemy.rect.y != enemies[count].rect.y:
+                #     if enemy.circleRect.colliderect(enemies[count].circleRect):
+                #         if enemy.eastRect.colliderect(enemies[count].circleRect):
+                #             eastCount += 1
+                #         if enemy.northRect.colliderect(enemies[count].circleRect):
+                #             northCount += 1
+                #         if enemy.southRect.colliderect(enemies[count].circleRect):
+                #             southCount += 1
+                # if eastCount == 0:
+                #     enemy.rect.x -= self.speed
+                # elif northCount == 0:
+                #     enemy.rect.x += self.speed
+                # elif southCount == 0:
+                #     enemy.rect.x -= self.speed
+                # if enemy.rect.x != enemies[count].rect.x and enemy.rect.y != enemies[count].rect.y:
+                #     if enemy.circleRect.colliderect(enemy.circleRect):
+                #         enemy.rect.x += self.speed
+                enemy.northRect.x = enemy.rect.x + enemy.northXVal
+                enemy.eastRect.x = enemy.rect.x + enemy.eastXVal
+                enemy.southRect.x = enemy.rect.x + enemy.southXVal
+                enemy.westRect.x = enemy.rect.x - enemy.westXVal
+        pygame.display.update()
+        pygame.display.flip()
 
     def move_north(self):
         # moves the player North
-        self.rect.y -= self.speed
+        if self.rect.y > 25:
+            self.rect.y -= 5
+            # m.cameraY -= 5
+            # m.mapY += 5
+            # if self.rect.y < 800/4 *3:
+            m.cameraY -= 5
+            self.rect.y += 5
+            pygame.display.update()
+            pygame.display.flip()
+            n = len(enemies)
+            count = 0
+            northCount = 0
+            eastCount = 0
+            westCount = 0
+            for enemy in enemies:
+                enemy.rect.y += self.speed
+                # if enemy.rect.x != enemies[count].rect.x and enemy.rect.y != enemies[count].rect.y:
+                #     if enemy.circleRect.colliderect(enemies[count].circleRect):
+                #         if enemy.northRect.colliderect(enemies[count].circleRect):
+                #             northCount += 1
+                #         if enemy.eastRect.colliderect(enemies[count].circleRect):
+                #             eastCount += 1
+                #         if enemy.westRect.colliderect(enemies[count].circleRect):
+                #             westCount += 1
+                # if northCount == 0:
+                #     enemy.rect.y += self.speed
+                # elif eastCount == 0:
+                #     enemy.rect.x -= self.speed
+                # elif westCount == 0:
+                #     enemy.rect.x += self.speed
+                # if enemy.rect.x != enemies[count].rect.x and enemy.rect.y != enemies[count].rect.y:
+                #     if enemy.circleRect.colliderect(enemy.circleRect):
+                #         enemy.rect.y -= self.speed
+                enemy.northRect.y = enemy.rect.y - enemy.northYVal
+                enemy.eastRect.y = enemy.rect.y + enemy.eastYVal
+                enemy.southRect.y = enemy.rect.y + enemy.southYVal
+                enemy.westRect.y = enemy.rect.y + enemy.westYVal
+        pygame.display.update()
+        pygame.display.flip()
 
     def move_south(self):
         # moves the player South
-        self.rect.y += self.speed
+        if self.rect.y < 800:
+            self.rect.y += 5
+            # m.cameraY += 5
+            # m.mapY -= 5
+            # if self.rect.y > 800/4 *3:
+            m.cameraY += 5
+            self.rect.y -= 5
+            pygame.display.update()
+            pygame.display.flip()
+            n = len(enemies)
+            count = 0
+            southCount = 0
+            eastCount = 0
+            westCount = 0
+            for enemy in enemies:
+                enemy.rect.y -= self.speed
+                # if enemy.rect.x != enemies[count].rect.x and enemy.rect.y != enemies[count].rect.y:
+                #     if enemy.circleRect.colliderect(enemy.circleRect):
+                #         enemy.rect.y += self.speed
+                # if enemy.rect.x != enemies[count].rect.x and enemy.rect.y != enemies[count].rect.y:
+                #     if enemy.circleRect.colliderect(enemies[count].circleRect):
+                #         if enemy.southRect.colliderect(enemies[count].circleRect):
+                #             southCount += 1
+                #         if enemy.eastRect.colliderect(enemies[count].circleRect):
+                #             eastCount += 1
+                #         if enemy.westRect.colliderect(enemies[count].circleRect):
+                #             westCount += 1
+                # if southCount == 0:
+                #     enemy.rect.y -= self.speed
+                # elif eastCount == 0:
+                #     enemy.rect.x -= self.speed
+                # elif westCount == 0:
+                #     enemy.rect.x += self.speed
+
+                enemy.northRect.y = enemy.rect.y - enemy.northYVal
+                enemy.eastRect.y = enemy.rect.y + enemy.eastYVal
+                enemy.southRect.y = enemy.rect.y + enemy.southYVal
+                enemy.westRect.y = enemy.rect.y + enemy.westYVal
+        pygame.display.update()
+        pygame.display.flip()
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -123,7 +279,7 @@ class Enemy(pygame.sprite.Sprite):
         self.southYVal = 17
         self.westXVal = -5
         self.westYVal = 10
-        self.circleRect = pygame.draw.circle(screen, (0,50,0), (self.rect.x, self.rect.y), 3)
+        self.circleRect = pygame.draw.circle(transparentSurface, (0,50,0), (self.rect.x, self.rect.y), 3)
 
     def render(self):
         pass
@@ -407,7 +563,7 @@ class Enemy(pygame.sprite.Sprite):
 # initializes the Player and Enemy classes
 p = Player()
 m = Map()
-enemies = [Enemy(500,100,80,40) for _ in range(25)]
+enemies = [Enemy(500,100,80,40) for _ in range(50)]
 
 
 # loads images
@@ -417,12 +573,14 @@ speedI = pygame.image.load("./images/Noodle.png").convert_alpha()
 
 speed_item_visible = True
 game = True
+pause = False
+unpause_button = 0
 
 while game:
     # the core game loop
 
     fps= clock.get_fps()
-    # print(fps)
+    print(fps)
 
     clock.tick(60)
     # sets the fps to 60
@@ -436,80 +594,96 @@ while game:
         if event.type == pygame.QUIT:
             # if the x in the top right corner of game is clicked, the program will close.
             game = False
+    pause_button = key_presses[pygame.K_ESCAPE]
 
-    if key_presses[pygame.K_a]:
-        # if 'a' is pressed, move left
-        p.move_west()
-    elif key_presses[pygame.K_LEFT]:
-        # if left arrow is pressed, move left
-        p.move_west()
+    if pause_button:
+        pause = True
+    # if unpause_button:
+    #     pause = False
+    if pause:
+        if pause_button:
+            pause = False
+    if not pause:
+        if key_presses[pygame.K_a]:
+            # if 'a' is pressed, move left
+            p.move_west()
+        if key_presses[pygame.K_LEFT]:
+            # if left arrow is pressed, move left
+            # p.move_west()
+            p.rect.x -= 45
 
-    if key_presses[pygame.K_d]:
-        # if 'd' is pressed, move right
-        p.move_east()
+        if key_presses[pygame.K_d]:
+            # if 'd' is pressed, move right
+            p.move_east()
 
-    elif key_presses[pygame.K_RIGHT]:
-        # if right arrow is pressed, move right
-        p.move_east()
+        if key_presses[pygame.K_RIGHT]:
+            # if right arrow is pressed, move right
+            # p.move_east()
+            p.rect.x += 45
 
-    if key_presses[pygame.K_w]:
-        # if 'w' is pressed, move up
-        p.move_north()
-    elif key_presses[pygame.K_UP]:
-        # if up arrow is pressed, move up
-        p.move_north()
+        if key_presses[pygame.K_w]:
+            # if 'w' is pressed, move up
+            p.move_north()
+        if key_presses[pygame.K_UP]:
+            # if up arrow is pressed, move up
+            # p.move_north()
+            p.rect.y -= 45
 
-    if key_presses[pygame.K_s]:
-        # if 's' is pressed, move down
-        p.move_south()
-    elif key_presses[pygame.K_DOWN]:
-        # if down arrow is pressed, move down
-        p.move_south()
+        if key_presses[pygame.K_s]:
+            # if 's' is pressed, move down
+            p.move_south()
+        if key_presses[pygame.K_DOWN]:
+            # if down arrow is pressed, move down
+            # p.move_south()
+            p.rect.y += 45
 
-    # makes the map visible
-    # the first tuple dictates the size (2250, 2250)
-    # the second tuple dictates the starting coordinates (m.mapX, m.mapY)
-    # the coordinates start at the top left of the game, which is (0,0) instead of the center
-    screen.blit(pygame.transform.scale(bg_img, (2250, 2250)), (m.mapX, m.mapY))
+        # makes the map visible
+        # the first tuple dictates the size (2250, 2250)
+        # the second tuple dictates the starting coordinates (m.mapX, m.mapY)
+        # the coordinates start at the top left of the game, which is (0,0) instead of the center
+        screen.blit(pygame.transform.scale(bg_img, (2250, 2250)), (-800 -m.cameraX, -800 -m.cameraY))
 
-    # makes the main character visible
+        # makes the main character visible
 
-    # screen.blit(pygame.transform.scale(mc_img, (45, 45)), (p.mc_x,p.mc_y))
-    # screen.blit(mc_img,p.rect)
-    screen.blit(pygame.transform.scale(mc_img, (35,30)), (p.rect.x,p.rect.y))
-    # print(p.rect.y)
-    if speed_item_visible:
-        # shows a visible object on the map if it has not been taken yet
-        screen.blit(pygame.transform.scale(speedI, (30, 30)), (400, 285))
+        # screen.blit(pygame.transform.scale(mc_img, (45, 45)), (p.mc_x,p.mc_y))
+        # screen.blit(mc_img,p.rect)
+        # p.rect.x = abs(m.mapX)
+        # p.rect.y = abs(m.mapY)
+        screen.blit(pygame.transform.scale(mc_img, (35,30)), (p.rect.x,p.rect.y))
+        # print(p.rect.y)
+        # if speed_item_visible:
+        #     # shows a visible object on the map if it has not been taken yet
+        #     screen.blit(pygame.transform.scale(speedI, (30, 30)), (400, 285))
+        #
+        # if (380 <= p.rect.x <= 420) and (265 <= p.rect.y <= 305):
+        #     # if the player is in the vacinity of the item, give the player the powerup from the item
+        #     # and no longer show the powerup
+        #     if speed_item_visible:
+        #         p.speed += 10
+        #         speed_item_visible = False
 
-    if (380 <= p.rect.x <= 420) and (265 <= p.rect.y <= 305):
-        # if the player is in the vacinity of the item, give the player the powerup from the item
-        # and no longer show the powerup
-        if speed_item_visible:
-            p.speed += 10
-            speed_item_visible = False
+        for enemy in enemies:
+            # screen.blit(enemy1, (enemy.rect.x, enemy.rect.y))
+            screen.blit(pygame.transform.scale(enemy1, (35,30)), (enemy.rect.x,enemy.rect.y))
+            # print(enemy.speed)
+            enemy.generate_enemy()
 
-    for enemy in enemies:
-        # screen.blit(enemy1, (enemy.rect.x, enemy.rect.y))
-        screen.blit(pygame.transform.scale(enemy1, (35,30)), (enemy.rect.x,enemy.rect.y))
-        print(enemy.speed)
-        enemy.generate_enemy()
+            enemy.follow_mc()
+            # pygame.draw.rect(screen, (255,0,0), enemy.rect)
+            # pygame.draw.rect(screen, (128,0,128), enemy.northRect)
+            # pygame.draw.rect(screen, (128,0,128), enemy.eastRect)
+            # pygame.draw.rect(screen, (128,0,128), enemy.southRect)
+            # pygame.draw.rect(screen, (128,0,128), enemy.westRect)
+            enemy.circleRect = pygame.draw.circle(transparentSurface, (0,50,0,100), (enemy.rect.x+18,enemy.rect.y+17), 10)
+            if enemy.rect.colliderect(p.rect) or enemy.northRect.colliderect(p.rect) or enemy.eastRect.colliderect(p.rect) or enemy.southRect.colliderect(p.rect) or enemy.westRect.colliderect(p.rect):
+                print("COLLISION DETECTED!!!")
+                p.health -= 1
+        index = 0
+        numOfEnemies = len(enemies)
+        pygame.display.flip()
+        # print(p.health)
+        pygame.display.update()
 
-        enemy.follow_mc()
-        # pygame.draw.rect(screen, (255,0,0), enemy.rect)
-        # pygame.draw.rect(screen, (128,0,128), enemy.northRect)
-        # pygame.draw.rect(screen, (128,0,128), enemy.eastRect)
-        # pygame.draw.rect(screen, (128,0,128), enemy.southRect)
-        # pygame.draw.rect(screen, (128,0,128), enemy.westRect)
-        enemy.circleRect = pygame.draw.circle(transparentSurface, (0,50,0,100), (enemy.rect.x+18,enemy.rect.y+17), 10)
-        if enemy.rect.colliderect(p.rect) or enemy.northRect.colliderect(p.rect) or enemy.eastRect.colliderect(p.rect) or enemy.southRect.colliderect(p.rect) or enemy.westRect.colliderect(p.rect):
-            print("COLLISION DETECTED!!!")
-            p.health -= 1
-    index = 0
-    numOfEnemies = len(enemies)
-
-    # print(p.health)
-    pygame.display.update()
 
 pygame.quit()
 
@@ -543,3 +717,4 @@ surround the Player.
 
 
 """
+
