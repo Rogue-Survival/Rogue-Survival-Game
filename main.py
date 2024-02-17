@@ -15,7 +15,6 @@ pygame.display.set_caption("Rogue Survival")
 clock = pygame.time.Clock()
 x = pygame.time.get_ticks()
 
-
 mc_img = pygame.image.load("./images/MAIN_CHARACTER.png").convert_alpha()
 enemy1 = pygame.image.load("./images/slime.png").convert_alpha()
 
@@ -39,19 +38,20 @@ class Map(pygame.sprite.Sprite):
 
 class Player(pygame.sprite.Sprite):
     # Player class controls basic functions relating to the player
-    def __init__(self, mc_x=350, mc_y=580, width=0, height=0, speed=5, image="./images/MAIN_CHARACTER.png", health=50):
+    def __init__(self, speed=5, health=50):
         # inherits from the pygame.sprite.Sprite class
         pygame.sprite.Sprite.__init__(self)
-        self.mc_x = mc_x
-        self.mc_y = mc_y
-        self.width = 50
-        self.height = 50
         self.speed = speed
-        self.image = image
+        self.image = "./images/MAIN_CHARACTER.png"
         self.health = health
         self.rect = mc_img.get_rect().scale_by(2,2)
         self.rect.x = 400
         self.rect.y = 400
+        self.bulletRect = pygame.draw.circle(screen, (255,255,255), (self.rect.x+18,self.rect.y+17), 10)
+        self.startingPoint = (0,0)
+        self.mousePOS = pygame.mouse.get_pos()
+        self.bulletValid = False
+        self.bulletSpeed = 25
 
     def render(self):
         pass
@@ -82,9 +82,6 @@ class Player(pygame.sprite.Sprite):
         # moves the player West
         if self.rect.x > 25:
             self.rect.x -= 5
-            # m.cameraX -= 5
-            # m.mapX += 5
-            # if self.rect.x < 800/4 *3:
             m.cameraX -= 5
             self.rect.x += 5
             pygame.display.update()
@@ -95,24 +92,8 @@ class Player(pygame.sprite.Sprite):
             northCount = 0
             southCount = 0
             for enemy in enemies:
+                # moves the enemy and associated rects due to the effects of the player camera
                 enemy.rect.x += self.speed
-                # if enemy.rect.x != enemies[count].rect.x and enemy.rect.y != enemies[count].rect.y:
-                #     if enemy.circleRect.colliderect(enemies[count].circleRect):
-                #         if enemy.westRect.colliderect(enemies[count].circleRect):
-                #             westCount += 1
-                #         if enemy.northRect.colliderect(enemies[count].circleRect):
-                #             northCount += 1
-                #         if enemy.southRect.colliderect(enemies[count].circleRect):
-                #             southCount += 1
-                # if westCount == 0:
-                #     enemy.rect.x += self.speed
-                # elif northCount == 0:
-                #     enemy.rect.x += self.speed
-                # elif southCount == 0:
-                #     enemy.rect.x -= self.speed
-                # if enemy.rect.x != enemies[count].rect.x and enemy.rect.y != enemies[count].rect.y:
-                #     if enemy.circleRect.colliderect(enemy.circleRect):
-                #         enemy.rect.x -= self.speed
                 enemy.northRect.x = enemy.rect.x + enemy.northXVal
                 enemy.eastRect.x = enemy.rect.x + enemy.eastXVal
                 enemy.southRect.x = enemy.rect.x + enemy.southXVal
@@ -125,9 +106,6 @@ class Player(pygame.sprite.Sprite):
         # moves the player East
         if self.rect.x < 800:
             self.rect.x += 5
-            # m.cameraX += 5
-            # m.mapX -= 5
-            # if self.rect.x > 800/4 *3:
             m.cameraX += 5
             self.rect.x -= 5
             pygame.display.update()
@@ -138,24 +116,8 @@ class Player(pygame.sprite.Sprite):
             northCount = 0
             southCount = 0
             for enemy in enemies:
+                # moves the enemy and associated rects due to the effects of the player camera
                 enemy.rect.x -= self.speed
-                # if enemy.rect.x != enemies[count].rect.x and enemy.rect.y != enemies[count].rect.y:
-                #     if enemy.circleRect.colliderect(enemies[count].circleRect):
-                #         if enemy.eastRect.colliderect(enemies[count].circleRect):
-                #             eastCount += 1
-                #         if enemy.northRect.colliderect(enemies[count].circleRect):
-                #             northCount += 1
-                #         if enemy.southRect.colliderect(enemies[count].circleRect):
-                #             southCount += 1
-                # if eastCount == 0:
-                #     enemy.rect.x -= self.speed
-                # elif northCount == 0:
-                #     enemy.rect.x += self.speed
-                # elif southCount == 0:
-                #     enemy.rect.x -= self.speed
-                # if enemy.rect.x != enemies[count].rect.x and enemy.rect.y != enemies[count].rect.y:
-                #     if enemy.circleRect.colliderect(enemy.circleRect):
-                #         enemy.rect.x += self.speed
                 enemy.northRect.x = enemy.rect.x + enemy.northXVal
                 enemy.eastRect.x = enemy.rect.x + enemy.eastXVal
                 enemy.southRect.x = enemy.rect.x + enemy.southXVal
@@ -167,9 +129,6 @@ class Player(pygame.sprite.Sprite):
         # moves the player North
         if self.rect.y > 25:
             self.rect.y -= 5
-            # m.cameraY -= 5
-            # m.mapY += 5
-            # if self.rect.y < 800/4 *3:
             m.cameraY -= 5
             self.rect.y += 5
             pygame.display.update()
@@ -180,24 +139,8 @@ class Player(pygame.sprite.Sprite):
             eastCount = 0
             westCount = 0
             for enemy in enemies:
+                # moves the enemy and associated rects due to the effects of the player camera
                 enemy.rect.y += self.speed
-                # if enemy.rect.x != enemies[count].rect.x and enemy.rect.y != enemies[count].rect.y:
-                #     if enemy.circleRect.colliderect(enemies[count].circleRect):
-                #         if enemy.northRect.colliderect(enemies[count].circleRect):
-                #             northCount += 1
-                #         if enemy.eastRect.colliderect(enemies[count].circleRect):
-                #             eastCount += 1
-                #         if enemy.westRect.colliderect(enemies[count].circleRect):
-                #             westCount += 1
-                # if northCount == 0:
-                #     enemy.rect.y += self.speed
-                # elif eastCount == 0:
-                #     enemy.rect.x -= self.speed
-                # elif westCount == 0:
-                #     enemy.rect.x += self.speed
-                # if enemy.rect.x != enemies[count].rect.x and enemy.rect.y != enemies[count].rect.y:
-                #     if enemy.circleRect.colliderect(enemy.circleRect):
-                #         enemy.rect.y -= self.speed
                 enemy.northRect.y = enemy.rect.y - enemy.northYVal
                 enemy.eastRect.y = enemy.rect.y + enemy.eastYVal
                 enemy.southRect.y = enemy.rect.y + enemy.southYVal
@@ -209,9 +152,6 @@ class Player(pygame.sprite.Sprite):
         # moves the player South
         if self.rect.y < 800:
             self.rect.y += 5
-            # m.cameraY += 5
-            # m.mapY -= 5
-            # if self.rect.y > 800/4 *3:
             m.cameraY += 5
             self.rect.y -= 5
             pygame.display.update()
@@ -222,25 +162,8 @@ class Player(pygame.sprite.Sprite):
             eastCount = 0
             westCount = 0
             for enemy in enemies:
+                # moves the enemy and associated rects due to the effects of the player camera
                 enemy.rect.y -= self.speed
-                # if enemy.rect.x != enemies[count].rect.x and enemy.rect.y != enemies[count].rect.y:
-                #     if enemy.circleRect.colliderect(enemy.circleRect):
-                #         enemy.rect.y += self.speed
-                # if enemy.rect.x != enemies[count].rect.x and enemy.rect.y != enemies[count].rect.y:
-                #     if enemy.circleRect.colliderect(enemies[count].circleRect):
-                #         if enemy.southRect.colliderect(enemies[count].circleRect):
-                #             southCount += 1
-                #         if enemy.eastRect.colliderect(enemies[count].circleRect):
-                #             eastCount += 1
-                #         if enemy.westRect.colliderect(enemies[count].circleRect):
-                #             westCount += 1
-                # if southCount == 0:
-                #     enemy.rect.y -= self.speed
-                # elif eastCount == 0:
-                #     enemy.rect.x -= self.speed
-                # elif westCount == 0:
-                #     enemy.rect.x += self.speed
-
                 enemy.northRect.y = enemy.rect.y - enemy.northYVal
                 enemy.eastRect.y = enemy.rect.y + enemy.eastYVal
                 enemy.southRect.y = enemy.rect.y + enemy.southYVal
@@ -248,6 +171,28 @@ class Player(pygame.sprite.Sprite):
         pygame.display.update()
         pygame.display.flip()
 
+    def bullet(self, n):
+        # bullet movement
+        if ((self.bulletRect.x - self.mousePOS[0] >= 0 and self.bulletRect.x - self.mousePOS[0] <= 25) or (self.bulletRect.x - self.mousePOS[0] >= -25 and self.bulletRect.x - self.mousePOS[0] <= 0)) and ((self.bulletRect.y - self.mousePOS[1] >= 0 and self.bulletRect.y - self.mousePOS[1] <= 25) or (self.bulletRect.y - self.mousePOS[1] >= -25 and self.bulletRect.y - self.mousePOS[1] <= 0)):
+            self.bulletRect.x = self.rect.x
+            self.bulletRect.y = self.rect.y
+            self.bulletValid = False
+        else:
+            self.bulletValid = True
+        if self.bulletRect.x == self.mousePOS[0]:
+            pass
+        else:
+            if self.bulletRect.x < self.mousePOS[0]:
+                self.bulletRect.x += self.bulletSpeed/3
+            elif self.bulletRect.x > self.mousePOS[0]:
+                self.bulletRect.x -= self.bulletSpeed/3
+        if self.bulletRect.x == self.mousePOS[1]:
+            pass
+        else:
+            if self.bulletRect.y < self.mousePOS[1]:
+                self.bulletRect.y += self.bulletSpeed/3
+            elif self.bulletRect.y > self.mousePOS[1]:
+                self.bulletRect.y -= self.bulletSpeed/3
 
 class Enemy(pygame.sprite.Sprite):
     # Enemy class controls basic functions relating to the enemy
@@ -257,19 +202,19 @@ class Enemy(pygame.sprite.Sprite):
         self.enemy_y = enemy_y
         self.width = width
         self.height = height
-        self.speed = random.uniform(1.3,2.5)
+        self.speed = random.uniform(1.3, 2.5)
         self.image = image
-        self.rect = enemy1.get_rect().scale_by(2,2)
+        self.rect = enemy1.get_rect().scale_by(2, 2)
         self.rect.x = random.randint(0, 600)
         self.rect.y = random.randint(0, 1000)
         self.inRange = False
-        self.northRect = pygame.rect.Rect((self.rect.x, self.rect.y), (10,10))
+        self.northRect = pygame.rect.Rect((self.rect.x, self.rect.y), (10, 10))
         self.northRect.midtop = self.rect.midtop
-        self.eastRect = pygame.rect.Rect((self.rect.x, self.rect.y), (10,10))
+        self.eastRect = pygame.rect.Rect((self.rect.x, self.rect.y), (10, 10))
         self.eastRect.midright = self.rect.midright
-        self.southRect = pygame.rect.Rect((self.rect.x, self.rect.y), (10,10))
+        self.southRect = pygame.rect.Rect((self.rect.x, self.rect.y), (10, 10))
         self.southRect.midbottom = self.rect.midbottom
-        self.westRect = pygame.rect.Rect((self.rect.x, self.rect.y), (10,10))
+        self.westRect = pygame.rect.Rect((self.rect.x, self.rect.y), (10, 10))
         self.westRect.midleft = self.rect.midleft
         self.northXVal = 12
         self.northYVal = -5
@@ -279,7 +224,9 @@ class Enemy(pygame.sprite.Sprite):
         self.southYVal = 17
         self.westXVal = -5
         self.westYVal = 10
-        self.circleRect = pygame.draw.circle(transparentSurface, (0,50,0), (self.rect.x, self.rect.y), 3)
+        self.circleRect = pygame.draw.circle(transparentSurface, (0, 50, 0), (self.rect.x, self.rect.y), 10)
+        self.midDotRect = pygame.draw.circle(screen, (0, 50, 0, 100), (self.rect.x+16, self.rect.y + 16), 1)
+        self.health = 50
 
     def render(self):
         pass
@@ -369,7 +316,7 @@ class Enemy(pygame.sprite.Sprite):
                             # enemy continues trying to move towards player if further than 50 pixels away.
                             if not self.northRect.colliderect(enemies[i].circleRect) and not self.eastRect.colliderect(enemies[i].circleRect):
                                 # if enemy can go both North and South, pick a random direction
-                                randomDirection = random.randint(0,3)
+                                randomDirection = random.randint(0, 3)
                                 if randomDirection <= 1:
                                     # enemy moves North
                                     moveNorth += 1
@@ -391,9 +338,9 @@ class Enemy(pygame.sprite.Sprite):
                 self.travel_east()
             elif moveNorth == (len(enemies) - 1):
                 self.travel_north()
-            elif moveSouth == (len(enemies) -1):
+            elif moveSouth == (len(enemies) - 1):
                 self.travel_south()
-            elif moveWest == (len(enemies) -1):
+            elif moveWest == (len(enemies) - 1):
                 self.travel_west()
 
         if self.rect.x > p.rect.x:
@@ -420,7 +367,7 @@ class Enemy(pygame.sprite.Sprite):
                             # enemy continues trying to move towards player if further than 50 pixels away.
                             if not self.northRect.colliderect(enemies[i].circleRect) and not self.eastRect.colliderect(enemies[i].circleRect):
                                 # if enemy can go both North and South, pick a random direction
-                                randomDirection = random.randint(0,3)
+                                randomDirection = random.randint(0, 3)
                                 if randomDirection <= 1:
                                     # enemy moves North
                                     moveNorth += 1
@@ -438,11 +385,11 @@ class Enemy(pygame.sprite.Sprite):
                                 elif not self.eastRect.colliderect(enemies[i].circleRect):
                                     # enemy moves East as a last resort
                                     moveEast += 1
-            if moveWest == (len(enemies) -1):
+            if moveWest == (len(enemies) - 1):
                 self.travel_west()
             elif moveNorth == (len(enemies) - 1):
                 self.travel_north()
-            elif moveSouth == (len(enemies) -1):
+            elif moveSouth == (len(enemies) - 1):
                 self.travel_south()
             elif moveEast == (len(enemies) - 1):
                 self.travel_east()
@@ -487,11 +434,11 @@ class Enemy(pygame.sprite.Sprite):
                                 elif not self.northRect.colliderect(enemies[i].circleRect):
                                     # enemy moves North as a last resort
                                     moveNorth += 1
-            if moveSouth == (len(enemies) -1):
+            if moveSouth == (len(enemies) - 1):
                 self.travel_south()
             elif moveEast == (len(enemies) - 1):
                 self.travel_east()
-            elif moveWest == (len(enemies) -1):
+            elif moveWest == (len(enemies) - 1):
                 self.travel_west()
             elif moveNorth == (len(enemies) - 1):
                 self.travel_north()
@@ -520,7 +467,7 @@ class Enemy(pygame.sprite.Sprite):
                             # enemy continues trying to move towards player if further than 50 pixels away.
                             if not self.eastRect.colliderect(enemies[i].circleRect) and not self.westRect.colliderect(enemies[i].circleRect):
                                 # if enemy can go both North and South, pick a random direction
-                                randomDirection = random.randint(0,3)
+                                randomDirection = random.randint(0, 3)
                                 if randomDirection <= 1:
                                     # enemy moves East
                                     moveEast += 1
@@ -542,151 +489,146 @@ class Enemy(pygame.sprite.Sprite):
                 self.travel_north()
             elif moveEast == (len(enemies) - 1):
                 self.travel_east()
-            elif moveWest == (len(enemies) -1):
+            elif moveWest == (len(enemies) - 1):
                 self.travel_west()
-            elif moveSouth == (len(enemies) -1):
+            elif moveSouth == (len(enemies) - 1):
                 self.travel_south()
 
     def attack_mc(self):
-        # when enemy reaches player collision, initiate attack animation/wind up attack, if player still in collision (plus add offset due to weapon they might have) then the player will take damage.
-
-        # if self.rect.colliderect(p.rect):
-        #     if self.inRange == False:
-        #         self.startTimer=pygame.time.get_ticks()
-        #     self.inRange = True
-        #     if self.startTimer > 3000:
-        #         # print("TESTING)
-        #         pass
-        #     print(self.startTimer)
         pass
+
 
 # initializes the Player and Enemy classes
 p = Player()
 m = Map()
-enemies = [Enemy(500,100,80,40) for _ in range(50)]
-
+enemies = [Enemy(500, 100, 80, 40) for _ in range(25)]
 
 # loads images
 bg_img = pygame.image.load('./images/island.png').convert_alpha()
 speedI = pygame.image.load("./images/Noodle.png").convert_alpha()
 
-
 speed_item_visible = True
 game = True
-pause = False
-unpause_button = 0
+n = 0
 
 while game:
     # the core game loop
-
-    fps= clock.get_fps()
-    print(fps)
-
+    fps = clock.get_fps()
     clock.tick(60)
+    # print(fps)
     # sets the fps to 60
     pygame.time.delay(5)
     # adds a very small delay to make it feel more like a game
 
     key_presses = pygame.key.get_pressed()
-    # stores the keys that are pressed
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             # if the x in the top right corner of game is clicked, the program will close.
             game = False
-    pause_button = key_presses[pygame.K_ESCAPE]
 
-    if pause_button:
-        pause = True
-    # if unpause_button:
-    #     pause = False
-    if pause:
-        if pause_button:
-            pause = False
-    if not pause:
-        if key_presses[pygame.K_a]:
-            # if 'a' is pressed, move left
-            p.move_west()
-        if key_presses[pygame.K_LEFT]:
-            # if left arrow is pressed, move left
-            # p.move_west()
-            p.rect.x -= 45
+    if key_presses[pygame.K_a]:
+        # if 'a' is pressed, move left
+        p.move_west()
+    if key_presses[pygame.K_LEFT]:
+        # if left arrow is pressed, move left
+        # p.move_west()
+        p.rect.x -= 45
 
-        if key_presses[pygame.K_d]:
-            # if 'd' is pressed, move right
-            p.move_east()
+    if key_presses[pygame.K_d]:
+        # if 'd' is pressed, move right
+        p.move_east()
 
-        if key_presses[pygame.K_RIGHT]:
-            # if right arrow is pressed, move right
-            # p.move_east()
-            p.rect.x += 45
+    if key_presses[pygame.K_RIGHT]:
+        # if right arrow is pressed, move right
+        # p.move_east()
+        p.rect.x += 45
 
-        if key_presses[pygame.K_w]:
-            # if 'w' is pressed, move up
-            p.move_north()
-        if key_presses[pygame.K_UP]:
-            # if up arrow is pressed, move up
-            # p.move_north()
-            p.rect.y -= 45
+    if key_presses[pygame.K_w]:
+        # if 'w' is pressed, move up
+        p.move_north()
+    if key_presses[pygame.K_UP]:
+        # if up arrow is pressed, move up
+        # p.move_north()
+        p.rect.y -= 45
 
-        if key_presses[pygame.K_s]:
-            # if 's' is pressed, move down
-            p.move_south()
-        if key_presses[pygame.K_DOWN]:
-            # if down arrow is pressed, move down
-            # p.move_south()
-            p.rect.y += 45
+    if key_presses[pygame.K_s]:
+        # if 's' is pressed, move down
+        p.move_south()
+    if key_presses[pygame.K_DOWN]:
+        # if down arrow is pressed, move down
+        # p.move_south()
+        p.rect.y += 45
 
-        # makes the map visible
-        # the first tuple dictates the size (2250, 2250)
-        # the second tuple dictates the starting coordinates (m.mapX, m.mapY)
-        # the coordinates start at the top left of the game, which is (0,0) instead of the center
-        screen.blit(pygame.transform.scale(bg_img, (2250, 2250)), (-800 -m.cameraX, -800 -m.cameraY))
+    n += 1
+    if key_presses[pygame.K_q]:
+        # if 'q' is pressed, fire bullet
+        p.mousePOS = pygame.mouse.get_pos()
+        p.startingPoint = (p.rect.x, p.rect.y)
+        p.bullet(n)
 
-        # makes the main character visible
+    # makes the map visible
+    # the first tuple dictates the size (2250, 2250)
+    # the second tuple dictates the starting coordinates (m.mapX, m.mapY)
+    # the coordinates start at the top left of the game, which is (0,0) instead of the center
+    screen.blit(pygame.transform.scale(bg_img, (2250, 2250)), (-800 - m.cameraX, -800 - m.cameraY))
 
-        # screen.blit(pygame.transform.scale(mc_img, (45, 45)), (p.mc_x,p.mc_y))
-        # screen.blit(mc_img,p.rect)
-        # p.rect.x = abs(m.mapX)
-        # p.rect.y = abs(m.mapY)
-        screen.blit(pygame.transform.scale(mc_img, (35,30)), (p.rect.x,p.rect.y))
-        # print(p.rect.y)
-        # if speed_item_visible:
-        #     # shows a visible object on the map if it has not been taken yet
-        #     screen.blit(pygame.transform.scale(speedI, (30, 30)), (400, 285))
-        #
-        # if (380 <= p.rect.x <= 420) and (265 <= p.rect.y <= 305):
-        #     # if the player is in the vacinity of the item, give the player the powerup from the item
-        #     # and no longer show the powerup
-        #     if speed_item_visible:
-        #         p.speed += 10
-        #         speed_item_visible = False
+    # makes the main character visible
 
-        for enemy in enemies:
-            # screen.blit(enemy1, (enemy.rect.x, enemy.rect.y))
-            screen.blit(pygame.transform.scale(enemy1, (35,30)), (enemy.rect.x,enemy.rect.y))
-            # print(enemy.speed)
-            enemy.generate_enemy()
+    # screen.blit(pygame.transform.scale(mc_img, (45, 45)), (p.mc_x,p.mc_y))
+    # screen.blit(mc_img,p.rect)
 
-            enemy.follow_mc()
-            # pygame.draw.rect(screen, (255,0,0), enemy.rect)
-            # pygame.draw.rect(screen, (128,0,128), enemy.northRect)
-            # pygame.draw.rect(screen, (128,0,128), enemy.eastRect)
-            # pygame.draw.rect(screen, (128,0,128), enemy.southRect)
-            # pygame.draw.rect(screen, (128,0,128), enemy.westRect)
-            enemy.circleRect = pygame.draw.circle(transparentSurface, (0,50,0,100), (enemy.rect.x+18,enemy.rect.y+17), 10)
-            if enemy.rect.colliderect(p.rect) or enemy.northRect.colliderect(p.rect) or enemy.eastRect.colliderect(p.rect) or enemy.southRect.colliderect(p.rect) or enemy.westRect.colliderect(p.rect):
-                print("COLLISION DETECTED!!!")
-                p.health -= 1
-        index = 0
-        numOfEnemies = len(enemies)
-        pygame.display.flip()
-        # print(p.health)
-        pygame.display.update()
+    screen.blit(pygame.transform.scale(mc_img, (35, 30)), (p.rect.x, p.rect.y))
+    """
+    # speed item
+    if speed_item_visible:
+        # shows a visible object on the map if it has not been taken yet
+        screen.blit(pygame.transform.scale(speedI, (30, 30)), (400, 285))
 
+    if (380 <= p.rect.x <= 420) and (265 <= p.rect.y <= 305):
+        # if the player is in the vacinity of the item, give the player the powerup from the item
+        # and no longer show the powerup
+        if speed_item_visible:
+            p.speed += 10
+            speed_item_visible = False
+    """
+
+    for enemy in enemies:
+        # for every enemy
+        screen.blit(pygame.transform.scale(enemy1, (35, 30)), (enemy.rect.x, enemy.rect.y))
+        enemy.generate_enemy()
+
+        enemy.follow_mc()
+        # pygame.draw.rect(screen, (255,0,0), enemy.rect)
+        # pygame.draw.rect(screen, (128,0,128), enemy.northRect)
+        # pygame.draw.rect(screen, (128,0,128), enemy.eastRect)
+        # pygame.draw.rect(screen, (128,0,128), enemy.southRect)
+        # pygame.draw.rect(screen, (128,0,128), enemy.westRect)
+        enemy.circleRect = pygame.draw.circle(transparentSurface, (0, 50, 0, 100), (enemy.rect.x+18, enemy.rect.y + 17), 10)
+        enemy.midDotRect = pygame.draw.circle(transparentSurface, (0, 50, 0, 100), (enemy.rect.x + 16, enemy.rect.y + 16), 1) # potential problems, blit it to screen instead of transparentSurface to see potential odd behavior
+        if enemy.rect.colliderect(p.bulletRect) and not enemy.rect.colliderect(p.rect):
+            # if bullet hits enemy, reduce enemy health
+            enemy.health -= 5
+            print(enemy.health)
+            if enemy.health <= 0:
+                enemies.remove(enemy)
+        if enemy.rect.colliderect(p.rect) or enemy.northRect.colliderect(p.rect) or enemy.eastRect.colliderect(p.rect) or enemy.southRect.colliderect(p.rect) or enemy.westRect.colliderect(p.rect):
+            print("COLLIDE!!!")
+            p.health -= 1
+
+    if p.bulletValid:
+        # if bullet ability has been activated
+        pygame.draw.circle(screen, (255, 255, 255), (p.bulletRect.x, p.bulletRect.y), 10)
+        p.bullet(n)
+
+    index = 0
+    numOfEnemies = len(enemies)
+    pygame.display.flip()
+    # print(p.health)
+
+    pygame.display.update()
 
 pygame.quit()
-
 
 
 """
@@ -717,4 +659,3 @@ surround the Player.
 
 
 """
-
