@@ -56,20 +56,6 @@ class Player(pygame.sprite.Sprite):
     def render(self):
         pass
 
-    def get_mc_x(self):
-        # returns x position of player
-        return self.mc_x
-
-    def get_mc_y(self):
-        # returns y position of player
-        return self.mc_y
-
-    def get_width(self):
-        return self.width
-
-    def get_height(self):
-        return self.height
-
     def get_speed(self):
         # returns speed of player
         return self.speed
