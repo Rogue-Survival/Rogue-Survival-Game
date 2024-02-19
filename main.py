@@ -413,8 +413,26 @@ def text_objects(text, font):
     textSurface = font.render(text, True, (0, 0, 0))
     return textSurface, textSurface.get_rect()
 
+# adding the ability to implement buttons (WIP, button will not do any action)
+def button(msg,x,y,w,h,ic,ac, action=None):
+    mouse = pygame.mouse.get_pos()
+    click = pygame.mouse.get_pressed()
+    print(click)
+
+    if x+w > mouse[0] > x and y+h > mouse[1] > y:
+        pygame.draw.rect(screen, ac,(x,y,w,h))
+        if click[0] == 1 and action != None:
+            action()
+    else:
+        pygame.draw.rect(screen, ic,(x,y,w,h))
+
+    smallText = pygame.font.Font("freesansbold.ttf",20)
+    textSurf, textRect = text_objects(msg, smallText)
+    textRect.center = ( (x+(w/2)), (y+(h/2)) )
+    screen.blit(textSurf, textRect)
+
 # adds the functionality of pausing the game
-def pause():
+def pauseGame():
     pause = True
 
     while pause:
@@ -424,13 +442,37 @@ def pause():
             if event.type == pygame.QUIT:
                 game = False
         screen.fill((255, 255, 255))
-        largeText = pygame.font.SysFont('futura', 115)
+        largeText = pygame.font.SysFont('courier new bold', 115)
         TextSurf, TextRect = text_objects("Paused", largeText)
         TextRect.center = ((400), (400))
+        button("Settings", 266, 100, 266, 110, (255, 0, 0), (0, 255, 0), settingsMenu())
         screen.blit(TextSurf, TextRect)
 
         pygame.display.update()
         clock.tick(15)
+
+def settingsMenu():
+    pause = False
+
+    while pause:
+        if pygame.key.get_pressed()[pygame.K_1]:
+            pause = False
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                game = False
+        screen.fill((255, 255, 255))
+        largeText = pygame.font.SysFont('courier new bold', 115)
+        TextSurf, TextRect = text_objects("Settings", largeText)
+        TextRect.center = ((200), (400))
+        button("Fullscreen Toggle", 600, 100, 266, 110, (255, 0, 0), (0, 255, 0), unPause())
+        screen.blit(TextSurf, TextRect)
+
+        pygame.display.update()
+        clock.tick(15)
+
+# unpausing func for the buttons
+def unPause():
+    pause = False
 
 # def to store all the keypress functions
 def keypressed():
@@ -468,7 +510,7 @@ def keypressed():
 
     if key_presses[pygame.K_ESCAPE]:
         # if ESC key is pressed, pause game
-        pause()
+        pauseGame()
 
 
 # initializes the Player and Enemy classes
@@ -478,7 +520,7 @@ enemies = [Enemy(500,100,80,40) for _ in range(25)]
 
 
 # loads images
-bg_img = pygame.image.load('./images/island.png').convert_alpha()
+bg_img = pygame.image.load('./images/islandBIG.png').convert_alpha()
 speedI = pygame.image.load("./images/Noodle.png").convert_alpha()
 
 
@@ -487,6 +529,9 @@ game = True
 
 while game:
     # the core game loop
+
+    # Introducing a pause function for the buttons and game pause functionality
+    pause = False
 
     # making sure the X button still closes the game
     for event in pygame.event.get():
@@ -511,7 +556,8 @@ while game:
     # the first tuple dictates the size (2250, 2250)
     # the second tuple dictates the starting coordinates (m.mapX, m.mapY)
     # the coordinates start at the top left of the game, which is (0,0) instead of the center
-    screen.blit(pygame.transform.scale(bg_img, (2250, 2250)), (m.mapX, m.mapY))
+    # screen.blit(pygame.transform.scale(bg_img, (2250, 2250)), (m.mapX, m.mapY))
+    screen.blit(bg_img, (m.mapX, m.mapY))
 
     # makes the main character visible
 
