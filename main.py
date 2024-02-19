@@ -413,8 +413,8 @@ def text_objects(text, font):
     textSurface = font.render(text, True, (0, 0, 0))
     return textSurface, textSurface.get_rect()
 
-# adding the ability to implement buttons (WIP, button will not do any action)
-def button(msg,x,y,w,h,ic,ac, action=None):
+# adding the ability to implement buttons
+def button(msg,x,y,w,h,ic,ac, action):
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
     print(click)
@@ -422,7 +422,12 @@ def button(msg,x,y,w,h,ic,ac, action=None):
     if x+w > mouse[0] > x and y+h > mouse[1] > y:
         pygame.draw.rect(screen, ac,(x,y,w,h))
         if click[0] == 1 and action != None:
-            action()
+            if action == "Settings":
+                settingsMenu()
+            elif action == "Fullscreen Toggle":
+                fullscreenToggle()
+
+
     else:
         pygame.draw.rect(screen, ic,(x,y,w,h))
 
@@ -430,6 +435,15 @@ def button(msg,x,y,w,h,ic,ac, action=None):
     textSurf, textRect = text_objects(msg, smallText)
     textRect.center = ( (x+(w/2)), (y+(h/2)) )
     screen.blit(textSurf, textRect)
+
+# adds the ability to fullscreen the game
+def fullscreenToggle():
+    info = pygame.display.Info()  # get the size of the current screen
+    screen_width, screen_height = info.current_w, info.current_h
+    window_width, window_height = screen_width - 10, screen_height - 50
+    window = pygame.display.set_mode((window_width, window_height))
+    pygame.display.update()
+
 
 # adds the functionality of pausing the game
 def pauseGame():
@@ -445,14 +459,14 @@ def pauseGame():
         largeText = pygame.font.SysFont('courier new bold', 115)
         TextSurf, TextRect = text_objects("Paused", largeText)
         TextRect.center = ((400), (400))
-        button("Settings", 266, 100, 266, 110, (255, 0, 0), (0, 255, 0), settingsMenu())
+        button("Settings", 266, 100, 266, 110, (255, 0, 0), (0, 255, 0), "Settings")
         screen.blit(TextSurf, TextRect)
 
         pygame.display.update()
         clock.tick(15)
 
 def settingsMenu():
-    pause = False
+    pause = True
 
     while pause:
         if pygame.key.get_pressed()[pygame.K_1]:
@@ -463,8 +477,8 @@ def settingsMenu():
         screen.fill((255, 255, 255))
         largeText = pygame.font.SysFont('courier new bold', 115)
         TextSurf, TextRect = text_objects("Settings", largeText)
-        TextRect.center = ((200), (400))
-        button("Fullscreen Toggle", 600, 100, 266, 110, (255, 0, 0), (0, 255, 0), unPause())
+        TextRect.center = ((400), (100))
+        button("Fullscreen Toggle", 200, 600, 266, 110, (255, 0, 0), (0, 255, 0), "Fullscreen Toggle")
         screen.blit(TextSurf, TextRect)
 
         pygame.display.update()
