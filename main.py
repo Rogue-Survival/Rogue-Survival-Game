@@ -420,7 +420,7 @@ def button(msg,x,y,w,h,ic,ac, action):
     print(click)
 
     if x+w > mouse[0] > x and y+h > mouse[1] > y:
-        pygame.draw.rect(screen, ac,(x,y,w,h))
+        pygame.draw.rect(screen, ac, (x, y, w, h), border_radius=20)
         if click[0] == 1 and action != None:
             if action == "Settings":
                 settingsMenu()
@@ -429,9 +429,9 @@ def button(msg,x,y,w,h,ic,ac, action):
 
 
     else:
-        pygame.draw.rect(screen, ic,(x,y,w,h))
+        pygame.draw.rect(screen, ic, (x, y, w, h), border_radius=20)
 
-    smallText = pygame.font.Font("freesansbold.ttf",20)
+    smallText = pygame.font.SysFont("monospace", 20, bold=True)
     textSurf, textRect = text_objects(msg, smallText)
     textRect.center = ( (x+(w/2)), (y+(h/2)) )
     screen.blit(textSurf, textRect)
@@ -456,10 +456,10 @@ def pauseGame():
             if event.type == pygame.QUIT:
                 game = False
         screen.fill((255, 255, 255))
-        largeText = pygame.font.SysFont('courier new bold', 115)
+        largeText = pygame.font.SysFont('monospace', 115)
         TextSurf, TextRect = text_objects("Paused", largeText)
         TextRect.center = ((400), (400))
-        button("Settings", 266, 100, 266, 110, (255, 0, 0), (0, 255, 0), "Settings")
+        button("Settings", 266, 550, 266, 110, (202, 186, 227), (227, 186, 186), "Settings")
         screen.blit(TextSurf, TextRect)
 
         pygame.display.update()
@@ -475,10 +475,10 @@ def settingsMenu():
             if event.type == pygame.QUIT:
                 game = False
         screen.fill((255, 255, 255))
-        largeText = pygame.font.SysFont('courier new bold', 115)
+        largeText = pygame.font.SysFont('monospace', 115)
         TextSurf, TextRect = text_objects("Settings", largeText)
         TextRect.center = ((400), (100))
-        button("Fullscreen Toggle", 200, 600, 266, 110, (255, 0, 0), (0, 255, 0), "Fullscreen Toggle")
+        button("Fullscreen Toggle", 100, 550, 266, 110, (202, 186, 227), (227, 186, 186), "Fullscreen Toggle")
         screen.blit(TextSurf, TextRect)
 
         pygame.display.update()
