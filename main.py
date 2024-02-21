@@ -562,14 +562,40 @@ class Enemy(pygame.sprite.Sprite):
 p = Player()
 m = Map()
 enemies = [Enemy(500, 100, 80, 40) for _ in range(25)]
+# adds ability for text to be on screen
+def text_objects(text, font):
+    textSurface = font.render(text, True, (0, 0, 0))
+    return textSurface, textSurface.get_rect()
+
+# adding the ability to implement buttons
+def button(msg,x,y,w,h,ic,ac, action):
+    mouse = pygame.mouse.get_pos()
+    click = pygame.mouse.get_pressed()
+    print(click)
+
+    if x+w > mouse[0] > x and y+h > mouse[1] > y:
+        pygame.draw.rect(screen, ac, (x, y, w, h), border_radius=20)
+        if click[0] == 1 and action != None:
+            if action == "Settings":
+                settingsMenu()
+            elif action == "Fullscreen Toggle":
+                 fullscreenToggle()
+    else:
+        pygame.draw.rect(screen, ic, (x, y, w, h), border_radius=20)
+
+    smallText = pygame.font.SysFont("monospace", 20, bold=True)
+    textSurf, textRect = text_objects(msg, smallText)
+    textRect.center = ( (x+(w/2)), (y+(h/2)) )
+    screen.blit(textSurf, textRect)
+
 
 # loads images
 bg_img = pygame.image.load('./images/island.png').convert_alpha()
 speedI = pygame.image.load("./images/Noodle.png").convert_alpha()
 
+
 speed_item_visible = True
 game = True
-n = 0
 gameTimerOn = False
 
 
@@ -619,12 +645,25 @@ def display_fps(text, font, textColor):
     fpsDisplay = font.render(text, True, textColor).convert_alpha()
     screen.blit(fpsDisplay, (0,0))
 
+# adds the ability to fullscreen the game
+def fullscreenToggle():
+    # info = pygame.display.Info()  # get the size of the current screen
+    # screen_width, screen_height = info.current_w, info.current_h
+    # window_width, window_height = screen_width - 10, screen_height - 50
+    window = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    pygame.display.update()
+
 
 while game:
     # the core game loop
     start_game_time()
     display_timer(gameTimeStr, timerFont, (0, 0, 0))
     pygame.display.update()
+# adds the functionality of pausing the game
+def pauseGame():
+    info = pygame.display.Info()
+    screen_width, screen_height = info.current_w, info.current_h
+    pause = True
 
     fps = clock.get_fps()
     clock.tick(60)
@@ -634,13 +673,55 @@ while game:
     # sets the fps to 60
     pygame.time.delay(5)
     # adds a very small delay to make it feel more like a game
+    while pause:
+        if pygame.key.get_pressed()[pygame.K_1]:
+            pause = False
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                game = False
+        screen.fill((255, 255, 255))
+        # surf = transparentSurface
+        # screen.blit(surf, (0, 0))
 
+        largeText = pygame.font.SysFont('monospace', 115)
+        TextSurf, TextRect = text_objects("Paused", largeText)
+        TextRect.center = ((400), (200))
+        button("Settings", ((screen_width/8)*3), ((screen_height/4)*3), (screen_width/4), (screen_height/8), (202, 186, 227), (227, 186, 186), "Settings")
+        screen.blit(TextSurf, TextRect)
+
+        # key_presses = pygame.key.get_pressed()
+        pygame.display.update()
+        clock.tick(15)
+
+def settingsMenu():
+    info = pygame.display.Info()
+    screen_width, screen_height = info.current_w, info.current_h
+    pause = True
+
+    while pause:
+        if pygame.key.get_pressed()[pygame.K_ESCAPE]:
+            pause = False
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                game = False
+        screen.fill((255, 255, 255))
+        largeText = pygame.font.SysFont('monospace', 115)
+        TextSurf, TextRect = text_objects("Settings", largeText)
+        TextRect.center = ((400), (200))
+        button("Fullscreen", ((screen_width/8)*3), ((screen_height/4)*2), (screen_width/4), (screen_height/8), (202, 186, 227), (227, 186, 186), "Fullscreen Toggle")
+        screen.blit(TextSurf, TextRect)
+
+        pygame.display.update()
+        clock.tick(15)
+
+# unpausing func for the buttons
+def unPause():
+    pause = False
+
+# def to store all the keypress functions
+def keypressed():
     key_presses = pygame.key.get_pressed()
-
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            # if the x in the top right corner of game is clicked, the program will close.
-            game = False
+    # stores the keys that are pressed
 
     if key_presses[pygame.K_a]:
         # if 'a' is pressed, move left
@@ -675,18 +756,63 @@ while game:
         p.move_south()
         # p.rect.y += 45
 
-    n += 1
     if key_presses[pygame.K_q]:
         # if 'q' is pressed, fire bullet
         p.mousePOS = pygame.mouse.get_pos()
         p.startingPoint = pygame.math.Vector2(p.rect.x, p.rect.y)
         p.bullet()
 
+    if key_presses[pygame.K_ESCAPE]:
+        # if ESC key is pressed, pause game
+        pauseGame()
+
+
+# initializes the Player and Enemy classes
+p = Player()
+m = Map()
+enemies = [Enemy(500,100,80,40) for _ in range(25)]
+
+
+# loads images
+bg_img = pygame.image.load('./images/islandBIG.png').convert_alpha()
+speedI = pygame.image.load("./images/Noodle.png").convert_alpha()
+
+
+speed_item_visible = True
+game = True
+
+while game:
+    # the core game loop
+
+    # Introducing a pause function for the buttons and game pause functionality
+    pause = False
+
+    # making sure the X button still closes the game
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            # if the x in the top right corner of game is clicked, the program will close.
+            game = False
+
+    # cycling through the possible key presses
+    keypressed()
+
+    fps= clock.get_fps()
+    # print(fps)
+
+    clock.tick(60)
+    # sets the fps to 60
+    pygame.time.delay(5)
+    # adds a very small delay to make it feel more like a game
+
+
+
     # makes the map visible
     # the first tuple dictates the size (2250, 2250)
     # the second tuple dictates the starting coordinates (m.mapX, m.mapY)
     # the coordinates start at the top left of the game, which is (0,0) instead of the center
     screen.blit(pygame.transform.scale(bg_img, (2250, 2250)), (-800 - m.cameraX, -800 - m.cameraY))
+    # screen.blit(pygame.transform.scale(bg_img, (2250, 2250)), (m.mapX, m.mapY))
+    screen.blit(bg_img, (m.mapX, m.mapY))
 
     # makes the main character visible
 
