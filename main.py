@@ -53,7 +53,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = mc_img.get_rect()
         self.rect.x = 195
         self.rect.y = 350
-        self.pos = pygame.math.Vector2(x,self.rect.y)
+        self.pos = pygame.math.Vector2(self.rect.x,self.rect.y)
 
     def render(self):
         pass
@@ -109,7 +109,7 @@ class Player(pygame.sprite.Sprite):
     def updater(self):
         self.user_imput()
         self.move()
-
+player = Player()
 
 class Enemy(pygame.sprite.Sprite):
     # Enemy class controls basic functions relating to the enemy
@@ -133,6 +133,9 @@ class Enemy(pygame.sprite.Sprite):
         self.southRect.midbottom = self.rect.midbottom
         self.westRect = pygame.rect.Rect((self.rect.x, self.rect.y), (10,10))
         self.westRect.midleft = self.rect.midbottom
+        self.pos = pygame.math.Vector2(self.rect.x, self.rect.y)
+        self.velocity_x = 0
+        self.velocity_y = 0
 
     def render(self):
         pass
@@ -163,9 +166,35 @@ class Enemy(pygame.sprite.Sprite):
 
     def generate_enemy(self):
         pass
+    def Enemy_calc(self):
+        for enemy in enemies:
+            if enemy.rect.y < p.rect.y:
+                enemy.velocity_y = enemy.speed
+            if enemy.rect.y > p.rect.y:
+                enemy.velocity_y = -enemy.speed
+            if enemy.rect.x < p.rect.x:
+                enemy.velocity_x = enemy.speed
+            if enemy.rect.x > p.rect.x:
+                enemy.velocity_x = -enemy.speed
+            if enemy.velocity_y !=0 and enemy.velocity_x !=0:
+                enemy.velocity_y /= math.sqrt(2)
+                enemy.velocity_x /= math.sqrt(2)
 
-    def follow_mc(self):
+    def Enemy_move(self):
+        for enemy in enemies:
+            enemy.rect.x += enemy.velocity_x
+            enemy.rect.y += enemy.velocity_y
+
+    def Enemy_updater(self):
+        self.Enemy_calc()
+        self.Enemy_move()
+
+
+
+    """def follow_mc(self):
         # follows the main character around the map
+        self.velocity_x = 0
+        self.velocity_y = 0
         if self.rect.x < p.rect.x:
             # enemy moves East
             n = len(enemies)
@@ -380,6 +409,7 @@ class Enemy(pygame.sprite.Sprite):
         if self.rect.y > p.rect.y:
             # enemy moves North
             n = len(enemies)
+
             moveNorth = 0
             moveEast = 0
             moveSouth = 0
@@ -422,6 +452,7 @@ class Enemy(pygame.sprite.Sprite):
             if moveNorth == (len(enemies) - 1):
                 # code to move North
                 self.rect.y -= self.speed
+                self.velocity_y -= self.speed
                 self.northRect.y = self.rect.y - 3
                 self.eastRect.y = self.rect.y + 3
                 self.southRect.y = self.rect.y + 10
@@ -429,6 +460,7 @@ class Enemy(pygame.sprite.Sprite):
             elif moveEast == (len(enemies) - 1):
                 # code to move East
                 self.rect.x += self.speed
+                self.velocity_x += self.speed
                 self.northRect.x = self.rect.x + 3
                 self.eastRect.x = self.rect.x + 8
                 self.southRect.x = self.rect.x + 3
@@ -436,6 +468,7 @@ class Enemy(pygame.sprite.Sprite):
             elif moveWest == (len(enemies) -1):
                 # code to move West
                 self.rect.x -= self.speed
+                self.velocity_x -= self.speed
                 self.northRect.x = self.rect.x + 3
                 self.eastRect.x = self.rect.x + 8
                 self.southRect.x = self.rect.x + 3
@@ -443,10 +476,15 @@ class Enemy(pygame.sprite.Sprite):
             elif moveSouth == (len(enemies) -1):
                 # code to move South
                 self.rect.y += self.speed
+                self.velocity_y += self.speed
                 self.northRect.y = self.rect.y - 3
                 self.eastRect.y = self.rect.y + 3
                 self.southRect.y = self.rect.y + 10
                 self.westRect.y = self.rect.y + 3
+            elif self.velocity_y != 0 and self.velocity_x != 0:
+                self.velocity_y /= math.sqrt(2)
+                self.velocity_x /= math.sqrt(2)"""
+
 
     def attack_mc(self):
         # when enemy reaches player collision, initiate attack animation/wind up attack, if player still in collision (plus add offset due to weapon they might have) then the player will take damage.
@@ -520,10 +558,10 @@ while game:
             speed_item_visible = False
 
     for enemy in enemies:
-        screen.blit(enemy1, (enemy.rect.x, enemy.rect.y))
+        screen.blit(enemy1, (rectx,recty))
         enemy.generate_enemy()
 
-        enemy.follow_mc()
+        enemy.Enemy_updater()
         pygame.draw.rect(screen, (255,0,0), enemy.rect)
         pygame.draw.rect(screen, (128,0,128), enemy.northRect)
         pygame.draw.rect(screen, (128,0,128), enemy.eastRect)
