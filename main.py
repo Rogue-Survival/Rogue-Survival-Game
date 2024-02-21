@@ -70,9 +70,7 @@ class Player(pygame.sprite.Sprite):
     def move_west(self):
         # moves the player West
         if self.rect.x > 25:
-
             m.cameraX -= self.speed
-
             # pygame.display.update()
             # pygame.display.flip()
             n = len(enemies)
@@ -94,9 +92,7 @@ class Player(pygame.sprite.Sprite):
     def move_east(self):
         # moves the player East
         if self.rect.x < 800:
-
             m.cameraX += self.speed
-
             # pygame.display.update()
             # pygame.display.flip()
             n = len(enemies)
@@ -117,9 +113,7 @@ class Player(pygame.sprite.Sprite):
     def move_north(self):
         # moves the player North
         if self.rect.y > 25:
-
             m.cameraY -= self.speed
-
             # pygame.display.update()
             # pygame.display.flip()
             n = len(enemies)
@@ -140,9 +134,7 @@ class Player(pygame.sprite.Sprite):
     def move_south(self):
         # moves the player South
         if self.rect.y < 800:
-
             m.cameraY += self.speed
-
             # pygame.display.update()
             # pygame.display.flip()
             n = len(enemies)
@@ -296,7 +288,7 @@ class Enemy(pygame.sprite.Sprite):
         self.westXVal = -5
         self.westYVal = 10
         self.circleRect = pygame.draw.circle(transparentSurface, (0, 50, 0), (self.rect.x, self.rect.y), 10)
-        self.midDotRect = pygame.draw.circle(screen, (0, 50, 0, 100), (self.rect.x+16, self.rect.y + 16), 1)
+        self.midDotRect = pygame.draw.circle(transparentSurface, (0, 50, 0, 100), (self.rect.x+16, self.rect.y + 16), 1)
         self.health = 50
 
     def get_enemy_x(self):
@@ -728,7 +720,7 @@ while game:
         # pygame.draw.rect(screen, (128,0,128), enemy.southRect)
         # pygame.draw.rect(screen, (128,0,128), enemy.westRect)
         enemy.circleRect = pygame.draw.circle(transparentSurface, (0, 50, 0, 100), (enemy.rect.x+18, enemy.rect.y + 17), 10)
-        enemy.midDotRect = pygame.draw.circle(screen, (0, 50, 0, 100), (enemy.rect.x + 16, enemy.rect.y + 16), 1)
+        enemy.midDotRect = pygame.draw.circle(transparentSurface, (0, 50, 0, 100), (enemy.rect.x + 16, enemy.rect.y + 16), 1)
         if enemy.rect.colliderect(p.bulletRect) and not enemy.rect.colliderect(p.rect):
             # if bullet hits enemy, reduce enemy health
             enemy.health -= 5
