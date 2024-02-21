@@ -2,7 +2,7 @@ import pygame
 import random
 import math
 import numpy
-# MERGING WITH PROTOTYPE-1 FROM PROTOTYPE-1-NOAH
+
 # initializes the pygame library
 pygame.init()
 
