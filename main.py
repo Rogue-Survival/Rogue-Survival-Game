@@ -167,21 +167,22 @@ class Enemy(pygame.sprite.Sprite):
     def generate_enemy(self):
         pass
     def Enemy_calc(self):
-        for enemy in enemies:
-            if enemy.rect.y < p.rect.y:
-                enemy.velocity_y = enemy.speed
-            if enemy.rect.y > p.rect.y:
-                enemy.velocity_y = -enemy.speed
-            if enemy.rect.x < p.rect.x:
-                enemy.velocity_x = enemy.speed
-            if enemy.rect.x > p.rect.x:
-                enemy.velocity_x = -enemy.speed
-            if enemy.velocity_y !=0 and enemy.velocity_x !=0:
-                enemy.velocity_y /= math.sqrt(2)
-                enemy.velocity_x /= math.sqrt(2)
+        if enemy.rect.y < p.rect.y:
+            enemy.velocity_y = enemy.speed
+        if enemy.rect.y > p.rect.y:
+            enemy.velocity_y = -enemy.speed
+        if enemy.rect.x < p.rect.x:
+            enemy.velocity_x = enemy.speed
+        if enemy.rect.x > p.rect.x:
+            enemy.velocity_x = -enemy.speed
+        if enemy.velocity_y !=0 and enemy.velocity_x !=0:
+            enemy.velocity_y /= math.sqrt(2)
+            enemy.velocity_x /= math.sqrt(2)
 
     def Enemy_move(self):
-        for enemy in enemies:
+        if enemy.rect.colliderect(p.rect):
+            pass
+        else:
             enemy.rect.x += enemy.velocity_x
             enemy.rect.y += enemy.velocity_y
 
@@ -567,9 +568,9 @@ while game:
         pygame.draw.rect(screen, (128,0,128), enemy.eastRect)
         pygame.draw.rect(screen, (128,0,128), enemy.southRect)
         pygame.draw.rect(screen, (128,0,128), enemy.westRect)
-        if enemy.rect.colliderect(p.rect) or enemy.northRect.colliderect(p.rect) or enemy.eastRect.colliderect(p.rect) or enemy.southRect.colliderect(p.rect) or enemy.westRect.colliderect(p.rect):
+        """if enemy.rect.colliderect(p.rect) or enemy.northRect.colliderect(p.rect) or enemy.eastRect.colliderect(p.rect) or enemy.southRect.colliderect(p.rect) or enemy.westRect.colliderect(p.rect):
             print("COLLISION DETECTED!!!")
-            p.health -= 1
+            p.health -= 1"""
     index = 0
     numOfEnemies = len(enemies)
 
