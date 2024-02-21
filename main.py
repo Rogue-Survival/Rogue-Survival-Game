@@ -426,7 +426,13 @@ def button(msg,x,y,w,h,ic,ac, action):
                 settingsMenu()
             elif action == "Fullscreen Toggle":
                 fullscreenToggle()
-
+            elif action == "Quit":
+                global game
+                game = False
+                pygame.quit()
+            elif action == "Play":
+                global intro
+                intro = False
 
     else:
         pygame.draw.rect(screen, ic, (x, y, w, h), border_radius=20)
@@ -467,6 +473,33 @@ def pauseGame():
         button("Settings", ((screen_width/8)*3), ((screen_height/4)*3), (screen_width/4), (screen_height/8), (202, 186, 227), (227, 186, 186), "Settings")
         screen.blit(TextSurf, TextRect)
 
+        pygame.display.update()
+        clock.tick(15)
+
+# main menu of the game
+def mainMenu():
+    info = pygame.display.Info()
+    screen_width, screen_height = info.current_w, info.current_h
+    global intro
+    intro = True
+
+    while intro:
+        for event in pygame.event.get():
+            print(event)
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+
+        screen.fill((212, 180, 121))
+        largeText = pygame.font.SysFont('monospace', 80)
+        TextSurf, TextRect = text_objects("Rogue Survival", largeText)
+        TextRect.center = ((screen_width / 2), (screen_height / 3))
+        button("Play!", ((screen_width / 8) * 1), ((screen_height / 4) * 3), (screen_width / 4), (screen_height / 8),
+               (202, 186, 227), (227, 186, 186), "Play")
+        button("Quit :(", ((screen_width / 8) * 5), ((screen_height / 4) * 3), (screen_width / 4), (screen_height / 8),
+               (202, 186, 227), (227, 186, 186), "Quit")
+
+        screen.blit(TextSurf, TextRect)
         pygame.display.update()
         clock.tick(15)
 
@@ -541,16 +574,17 @@ enemies = [Enemy(500,100,80,40) for _ in range(25)]
 
 
 # loads images
-bg_img = pygame.image.load('./images/islandBIG.png').convert_alpha()
+bg_img = pygame.image.load('./images/island.png').convert_alpha()
 speedI = pygame.image.load("./images/Noodle.png").convert_alpha()
 
 
 speed_item_visible = True
 game = True
+intro = True
 
 while game:
     # the core game loop
-
+    mainMenu()
     # Introducing a pause function for the buttons and game pause functionality
     pause = False
 
