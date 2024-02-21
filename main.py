@@ -654,12 +654,6 @@ def fullscreenToggle():
     pygame.display.update()
 
 
-while game:
-    # the core game loop
-    start_game_time()
-    display_timer(gameTimeStr, timerFont, (0, 0, 0))
-    pygame.display.update()
-# adds the functionality of pausing the game
 def pauseGame():
     info = pygame.display.Info()
     screen_width, screen_height = info.current_w, info.current_h
@@ -767,20 +761,6 @@ def keypressed():
         pauseGame()
 
 
-# initializes the Player and Enemy classes
-p = Player()
-m = Map()
-enemies = [Enemy(500,100,80,40) for _ in range(25)]
-
-
-# loads images
-bg_img = pygame.image.load('./images/islandBIG.png').convert_alpha()
-speedI = pygame.image.load("./images/Noodle.png").convert_alpha()
-
-
-speed_item_visible = True
-game = True
-
 while game:
     # the core game loop
 
@@ -812,7 +792,7 @@ while game:
     # the coordinates start at the top left of the game, which is (0,0) instead of the center
     screen.blit(pygame.transform.scale(bg_img, (2250, 2250)), (-800 - m.cameraX, -800 - m.cameraY))
     # screen.blit(pygame.transform.scale(bg_img, (2250, 2250)), (m.mapX, m.mapY))
-    screen.blit(bg_img, (m.mapX, m.mapY))
+    # screen.blit(bg_img, (m.mapX, m.mapY))
 
     # makes the main character visible
 
