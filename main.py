@@ -430,6 +430,7 @@ def button(msg,x,y,w,h,ic,ac, action):
                 global game
                 game = False
                 pygame.quit()
+            # why will this play action not work for an identical button???
             elif action == "Play":
                 global intro
                 global maingame
