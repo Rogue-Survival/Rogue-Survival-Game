@@ -635,15 +635,17 @@ def start_game_time():
 
 def display_timer(text, font, textColor):
     gameTimer = font.render(text, True, textColor).convert_alpha()
-    # screen.blit(gameTimer, (675,15))
-    timerRect = gameTimer.get_rect()
-    screen.blit(gameTimer, (675, 15), timerRect)
+    screen.blit(gameTimer, (675, 15))
+    # timerRect = gameTimer.get_rect()
+    # screen.blit(gameTimer, (675, 15), timerRect)
 
 
 def display_fps(text, font, textColor):
     text = str(int(text))
+    print(text)
     fpsDisplay = font.render(text, True, textColor).convert_alpha()
-    screen.blit(fpsDisplay, (0,0))
+    print(fpsDisplay)
+    screen.blit(fpsDisplay, (0, 0))
 
 # adds the ability to fullscreen the game
 def fullscreenToggle():
@@ -659,14 +661,6 @@ def pauseGame():
     screen_width, screen_height = info.current_w, info.current_h
     pause = True
 
-    fps = clock.get_fps()
-    clock.tick(60)
-    display_fps(fps, fpsFont, (0, 255, 0))
-    pygame.display.update()
-    # print(fps)
-    # sets the fps to 60
-    pygame.time.delay(5)
-    # adds a very small delay to make it feel more like a game
     while pause:
         if pygame.key.get_pressed()[pygame.K_1]:
             pause = False
@@ -763,10 +757,19 @@ def keypressed():
 
 while game:
     # the core game loop
+    start_game_time()
+    display_timer(gameTimeStr, timerFont, (0, 0, 0))
 
+    fps = clock.get_fps()
+
+    clock.tick(60)
+    # sets the fps to 60
+    display_fps(fps, fpsFont, (0,255,0))
+    pygame.time.delay(5)
+    # adds a very small delay to make it feel more like a game
     # Introducing a pause function for the buttons and game pause functionality
     pause = False
-
+    pygame.display.update()
     # making sure the X button still closes the game
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -776,13 +779,7 @@ while game:
     # cycling through the possible key presses
     keypressed()
 
-    fps= clock.get_fps()
-    # print(fps)
 
-    clock.tick(60)
-    # sets the fps to 60
-    pygame.time.delay(5)
-    # adds a very small delay to make it feel more like a game
 
 
 
