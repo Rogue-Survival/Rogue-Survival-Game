@@ -337,6 +337,7 @@ class Enemy(pygame.sprite.Sprite):
         self.circleRect = pygame.draw.circle(transparentSurface, (0, 50, 0), (self.rect.x, self.rect.y), 10)
         self.midDotRect = pygame.draw.circle(transparentSurface, (0, 50, 0, 100), (self.rect.x+16, self.rect.y + 16), 1)
         self.health = 50
+        self.bulletCollisions = []
 
     def get_enemy_x(self):
         # returns x position of player
@@ -609,7 +610,7 @@ class Enemy(pygame.sprite.Sprite):
 p = Player()
 m = Map()
 b = Bullet()
-enemies = [Enemy(500, 100, 80, 40) for _ in range(25)]
+enemies = [Enemy(500, 100, 80, 40) for _ in range(2)]
 bullets = [Bullet() for _ in range(1)]
 # adds ability for text to be on screen
 def text_objects(text, font):
@@ -865,8 +866,39 @@ while game:
     """
 
 
+    # bulletTimer1 = (pygame.time.get_ticks() / 1000) + 2
+    bulletTimer2 = (pygame.time.get_ticks() / 1000)
+    # if bulletTimer1
+    if seconds % b.bulletIncrement == 0:
+        activateBullet = True
+    if bulletTimer2 > bulletTimer1:
+        # enemies = [Enemy(500, 100, 80, 40) for _ in range(25)]
+        # bullets = [Bullet() for _ in range(1)]
+        bullets.append(Bullet())
+        # bulletTimer2 = 0
+        # print(bullets)
+        for bullet in bullets:
+            bullet.mousePOS = pygame.mouse.get_pos()
+            bullet.mousePOS = (pygame.math.Vector2(bullet.mousePOS[0], bullet.mousePOS[1]))
+            bullet.startingPoint = pygame.math.Vector2(p.rect.x, p.rect.y)
+            bullet.bullet()
+        bulletTimer1 += b.bulletIncrement
+        activateBullet = False
+        # print(activateBullet)
+    for bullet in bullets:
+        if bullet.bulletValid:
+            # if bullet ability has been activated
+            pygame.draw.circle(screen, (255, 255, 255), (bullet.rect.x+18, bullet.rect.y+17), 10)
+            bullet.bullet()
+    # print(bullets)
+    # print(bulletTimer1)
+    # print(bulletTimer2)
+
+
+
     for enemy in enemies:
         # for every enemy
+        print(enemy.bulletCollisions)
         screen.blit(pygame.transform.scale(enemy1, (35, 30)), (enemy.rect.x, enemy.rect.y))
         enemy.generate_enemy()
         enemy.follow_mc()
@@ -878,9 +910,28 @@ while game:
         enemy.circleRect = pygame.draw.circle(transparentSurface, (0, 50, 0, 100), (enemy.rect.x+18, enemy.rect.y + 17), 10)
         enemy.midDotRect = pygame.draw.circle(transparentSurface, (0, 50, 0, 100), (enemy.rect.x + 16, enemy.rect.y + 16), 1)
         for bullet in bullets:
-            if enemy.rect.colliderect(bullet.rect) and not enemy.rect.colliderect(p.rect):
+            print("1")
+            if enemy.rect.colliderect(bullet.rect):
+                print("2")
+                if not enemy.bulletCollisions:
+                    print("3")
+                    enemy.bulletCollisions.append(bullet)
+                    enemy.health -=22
+                elif enemy.bulletCollisions:
+                    print("4")
+                    i = 0
+                    for l in enemy.bulletCollisions:
+                        print("5")
+                        if bullet.rect.x == enemy.bulletCollisions[i].rect.x and bullet.rect.y == enemy.bulletCollisions[i].rect.y:
+                            pass
+                        elif bullet not in enemy.bulletCollisions:
+                            enemy.bulletCollisions.append(bullet)
+                            enemy.health -= 22
+                        # else:
+                        #     enemy.bulletCollisions.append(bullet)
+                        i += 1
                 # if bullet hits enemy, reduce enemy health
-                enemy.health -= 5
+                # enemy.health -= 45
                 # print(enemy.health)
                 if enemy.health <= 0:
                     enemies.remove(enemy)
@@ -889,34 +940,16 @@ while game:
             # print("COLLIDE!!!")
             p.health -= 1
 
-
-    # bulletTimer1 = (pygame.time.get_ticks() / 1000) + 2
-    bulletTimer2 = (pygame.time.get_ticks() / 1000)
-    # if bulletTimer1
-    if seconds % b.bulletIncrement == 0:
-        activateBullet = True
-    if bulletTimer2 > bulletTimer1:
-        # enemies = [Enemy(500, 100, 80, 40) for _ in range(25)]
-        # bullets = [Bullet() for _ in range(1)]
-        bullets.append(Bullet())
-        # bulletTimer2 = 0
-        print(bullets)
-        for bullet in bullets:
-            bullet.mousePOS = pygame.mouse.get_pos()
-            bullet.mousePOS = (pygame.math.Vector2(bullet.mousePOS[0], bullet.mousePOS[1]))
-            bullet.startingPoint = pygame.math.Vector2(p.rect.x, p.rect.y)
-            bullet.bullet()
-        bulletTimer1 += b.bulletIncrement
-        activateBullet = False
-        print(activateBullet)
     for bullet in bullets:
-        if bullet.bulletValid:
-            # if bullet ability has been activated
-            pygame.draw.circle(screen, (255, 255, 255), (bullet.rect.x+18, bullet.rect.y+17), 10)
-            bullet.bullet()
-    # print(bullets)
-    print(bulletTimer1)
-    print(bulletTimer2)
+        counter = 0
+        for enemy in enemies:
+            if bullet.rect.colliderect(enemy.rect):
+                counter += 1
+        if not counter:
+            if enemy.bulletCollisions:
+                enemy.bulletCollisions.remove(bullet)
+
+
     index = 0
     numOfEnemies = len(enemies)
     pygame.display.flip()
