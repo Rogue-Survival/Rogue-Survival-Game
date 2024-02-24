@@ -942,12 +942,18 @@ while game:
 
     for bullet in bullets:
         counter = 0
+        enemiesHit = []
+        enemiesNotHit = []
         for enemy in enemies:
             if bullet.rect.colliderect(enemy.rect):
                 counter += 1
+                enemiesHit.append(enemy)
+            else:
+                enemiesNotHit.append(enemy)
         if not counter:
-            if enemy.bulletCollisions:
-                enemy.bulletCollisions.remove(bullet)
+            for l in enemiesNotHit:
+                if bullet in l.bulletCollisions:
+                    l.bulletCollisions.remove(bullet)
 
 
     index = 0
