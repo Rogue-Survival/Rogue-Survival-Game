@@ -147,6 +147,94 @@ class Player(pygame.sprite.Sprite):
             Dspeed = self.speed/math.sqrt(2)
             m.cameraY -= Dspeed
             m.cameraX += Dspeed
+            n = len(enemies)
+            count = 0
+            southCount = 0
+            eastCount = 0
+            westCount = 0
+            for enemy in enemies:
+                enemy.rect.y += Dspeed
+                enemy.rect.x -= Dspeed
+                enemy.northRect.y = enemy.rect.y - enemy.northYVal
+                enemy.eastRect.y = enemy.rect.y + enemy.eastYVal
+                enemy.southRect.y = enemy.rect.y + enemy.southYVal
+                enemy.westRect.y = enemy.rect.y + enemy.westYVal
+                enemy.northRect.x = enemy.rect.x + enemy.northXVal
+                enemy.eastRect.x = enemy.rect.x + enemy.eastXVal
+                enemy.southRect.x = enemy.rect.x + enemy.southXVal
+                enemy.westRect.x = enemy.rect.x - enemy.westXVal
+
+    def move_northwest(self):
+        if self.rect.x > 25 and self.rect.y > 25:
+            Dspeed = self.speed / math.sqrt(2)
+            m.cameraY -= Dspeed
+            m.cameraX -= Dspeed
+            n = len(enemies)
+            count = 0
+            northCount = 0
+            eastCount = 0
+            westCount = 0
+            for enemy in enemies:
+                # moves the enemy and associated rects due to the effects of the player camera
+                enemy.rect.y += Dspeed
+                enemy.rect.x += Dspeed
+                enemy.northRect.y = enemy.rect.y - enemy.northYVal
+                enemy.eastRect.y = enemy.rect.y + enemy.eastYVal
+                enemy.southRect.y = enemy.rect.y + enemy.southYVal
+                enemy.westRect.y = enemy.rect.y + enemy.westYVal
+                enemy.northRect.x = enemy.rect.x + enemy.northXVal
+                enemy.eastRect.x = enemy.rect.x + enemy.eastXVal
+                enemy.southRect.x = enemy.rect.x + enemy.southXVal
+                enemy.westRect.x = enemy.rect.x - enemy.westXVal
+
+    def move_southeast(self):
+        if self.rect.y < 800 and self.rect.x < 800:
+            Dspeed = self.speed / math.sqrt(2)
+            m.cameraY += Dspeed
+            m.cameraX += Dspeed
+            n = len(enemies)
+            count = 0
+            southCount = 0
+            eastCount = 0
+            westCount = 0
+            for enemy in enemies:
+                # moves the enemy and associated rects due to the effects of the player camera
+                enemy.rect.y -= Dspeed
+                enemy.rect.x -= Dspeed
+                enemy.northRect.y = enemy.rect.y - enemy.northYVal
+                enemy.eastRect.y = enemy.rect.y + enemy.eastYVal
+                enemy.southRect.y = enemy.rect.y + enemy.southYVal
+                enemy.westRect.y = enemy.rect.y + enemy.westYVal
+                enemy.northRect.x = enemy.rect.x + enemy.northXVal
+                enemy.eastRect.x = enemy.rect.x + enemy.eastXVal
+                enemy.southRect.x = enemy.rect.x + enemy.southXVal
+                enemy.westRect.x = enemy.rect.x - enemy.westXVal
+
+    def move_southwest(self):
+        if self.rect.y < 800 and self.rect.x > 25:
+            Dspeed = self.speed / math.sqrt(2)
+            m.cameraY += Dspeed
+            m.cameraX -= Dspeed
+            n = len(enemies)
+            count = 0
+            southCount = 0
+            eastCount = 0
+            westCount = 0
+            for enemy in enemies:
+                # moves the enemy and associated rects due to the effects of the player camera
+                enemy.rect.y -= Dspeed
+                enemy.rect.x += Dspeed
+                enemy.northRect.y = enemy.rect.y - enemy.northYVal
+                enemy.eastRect.y = enemy.rect.y + enemy.eastYVal
+                enemy.southRect.y = enemy.rect.y + enemy.southYVal
+                enemy.westRect.y = enemy.rect.y + enemy.westYVal
+                enemy.northRect.x = enemy.rect.x + enemy.northXVal
+                enemy.eastRect.x = enemy.rect.x + enemy.eastXVal
+                enemy.southRect.x = enemy.rect.x + enemy.southXVal
+                enemy.westRect.x = enemy.rect.x - enemy.westXVal
+
+
+
 
 
 
@@ -770,6 +858,15 @@ def keypressed():
 
     if key_presses[pygame.K_w] and key_presses[pygame.K_d]:
         p.move_northeast()
+
+    elif key_presses[pygame.K_w] and key_presses[pygame.K_a]:
+        p.move_northwest()
+
+    elif key_presses[pygame.K_s] and key_presses[pygame.K_d]:
+        p.move_southeast()
+
+    elif key_presses[pygame.K_s] and key_presses[pygame.K_a]:
+        p.move_southwest()
 
     elif key_presses[pygame.K_a]:
         # if 'a' is pressed, move left
