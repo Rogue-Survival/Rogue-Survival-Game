@@ -19,7 +19,7 @@ x = pygame.time.get_ticks()
 
 mc_img = pygame.image.load("./images/MAIN_CHARACTER.png").convert_alpha()
 enemy1 = pygame.image.load("./images/slime.png").convert_alpha()
-
+xp = []
 
 class Map(pygame.sprite.Sprite):
     def __init__(self, mapX=-600, mapY=-800):
@@ -76,6 +76,9 @@ class Player(pygame.sprite.Sprite):
                 enemy.eastRect.x = enemy.rect.x + enemy.eastXVal
                 enemy.southRect.x = enemy.rect.x + enemy.southXVal
                 enemy.westRect.x = enemy.rect.x - enemy.westXVal
+            for x in xp:
+                x.x += self.speed
+                x.xp_stationary()
 
         # pygame.display.update()
         # pygame.display.flip()
@@ -98,6 +101,11 @@ class Player(pygame.sprite.Sprite):
                 enemy.eastRect.x = enemy.rect.x + enemy.eastXVal
                 enemy.southRect.x = enemy.rect.x + enemy.southXVal
                 enemy.westRect.x = enemy.rect.x - enemy.westXVal
+            for x in xp:
+                x.x -= self.speed
+                x.xp_stationary()
+
+
         # pygame.display.update()
         # pygame.display.flip()
 
@@ -119,6 +127,9 @@ class Player(pygame.sprite.Sprite):
                 enemy.eastRect.y = enemy.rect.y + enemy.eastYVal
                 enemy.southRect.y = enemy.rect.y + enemy.southYVal
                 enemy.westRect.y = enemy.rect.y + enemy.westYVal
+            for x in xp:
+                x.y += self.speed
+                x.xp_stationary()
         # pygame.display.update()
         # pygame.display.flip()
 
@@ -140,6 +151,9 @@ class Player(pygame.sprite.Sprite):
                 enemy.eastRect.y = enemy.rect.y + enemy.eastYVal
                 enemy.southRect.y = enemy.rect.y + enemy.southYVal
                 enemy.westRect.y = enemy.rect.y + enemy.westYVal
+            for x in xp:
+                x.y -= self.speed
+                x.xp_stationary()
         # pygame.display.update()
         # pygame.display.flip()
 
@@ -606,12 +620,25 @@ class Enemy(pygame.sprite.Sprite):
         pass
 
 
+class XP(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        pygame.sprite.Sprite.__init__(self)
+        self.x = x
+        self.y = y
+        self.rect = pygame.draw.circle(screen, (0,255,0), (x, y), 5)
+
+
+    def xp_stationary(self):
+        self.rect = pygame.draw.circle(screen, (0,255,0), (self.x, self.y), 5)
+
 # initializes the Player and Enemy classes
 p = Player()
 m = Map()
 b = Bullet()
 enemies = [Enemy(500, 100, 80, 40) for _ in range(25)]
 bullets = [Bullet() for _ in range(1)]
+# xp = [XP() for _ in range(0)]
+
 # adds ability for text to be on screen
 def text_objects(text, font):
     textSurface = font.render(text, True, (0, 0, 0))
@@ -920,11 +947,18 @@ while game:
 
                 if enemy.health <= 0:
                     # despawns the enemy if their health is 0 or below
+                    xp.append(XP(enemy.rect.x+18, enemy.rect.y+17))
                     enemies.remove(enemy)
+
+                    # self.rect = pygame.draw.circle(screen, (255,255,255), (p.rect.x+18,p.rect.y+17), 10)
                     break
         if enemy.rect.colliderect(p.rect) or enemy.northRect.colliderect(p.rect) or enemy.eastRect.colliderect(p.rect) or enemy.southRect.colliderect(p.rect) or enemy.westRect.colliderect(p.rect):
             # print("COLLIDE!!!")
             p.health -= 1
+
+    for x in xp:
+        x.xp_stationary()
+
 
     for bullet in bullets:
         # check if any of the bullets are actually still colliding with enemies, if not, remove the bullet from the enemies' collision list
