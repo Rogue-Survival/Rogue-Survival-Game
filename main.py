@@ -20,6 +20,7 @@ x = pygame.time.get_ticks()
 mc_img = pygame.image.load("./images/MAIN_CHARACTER.png").convert_alpha()
 enemy1 = pygame.image.load("./images/slime.png").convert_alpha()
 xp = []
+xp_hit = []
 
 class Map(pygame.sprite.Sprite):
     def __init__(self, mapX=-600, mapY=-800):
@@ -626,10 +627,12 @@ class XP(pygame.sprite.Sprite):
         self.x = x
         self.y = y
         self.rect = pygame.draw.circle(screen, (0,255,0), (x, y), 5)
+        self.hitBoxRect = pygame.draw.circle(transparentSurface, (0,255,35), (x, y), 50)
 
 
     def xp_stationary(self):
         self.rect = pygame.draw.circle(screen, (0,255,0), (self.x, self.y), 5)
+        self.hitBoxRect = pygame.draw.circle(transparentSurface, (0,255,35), (self.x, self.y), 50)
 
 # initializes the Player and Enemy classes
 p = Player()
@@ -958,6 +961,26 @@ while game:
 
     for x in xp:
         x.xp_stationary()
+        if x.hitBoxRect.colliderect(p.rect):
+            xp_hit.append(x)
+            x.xp_stationary()
+
+    for x in xp_hit:
+        if abs(x.rect.x - p.rect.x) < 25 and abs(x.rect.y - p.rect.y) < 25:
+            print(f'({x.x,x.y}), ({p.rect.x,p.rect.y})')
+            if x in xp:
+                xp.remove(x)
+            if x in xp_hit:
+                xp_hit.remove(x)
+        else:
+            if x.rect.x+18 < p.rect.x:
+                x.x += p.speed
+            if x.rect.x+18 > p.rect.x:
+                x.x -= p.speed
+            if x.rect.y+18 < p.rect.y:
+                x.y += p.speed
+            if x.rect.y+18 > p.rect.y:
+                x.y -= p.speed
 
 
     for bullet in bullets:
