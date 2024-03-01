@@ -63,8 +63,6 @@ class Player(pygame.sprite.Sprite):
         # moves the player West
         if self.rect.x > 25:
             m.cameraX -= self.speed
-            # pygame.display.update()
-            # pygame.display.flip()
             n = len(enemies)
             count = 0
             westCount = 0
@@ -81,15 +79,10 @@ class Player(pygame.sprite.Sprite):
                 x.x += self.speed
                 x.xp_stationary()
 
-        # pygame.display.update()
-        # pygame.display.flip()
-
     def move_east(self):
         # moves the player East
         if self.rect.x < 800:
             m.cameraX += self.speed
-            # pygame.display.update()
-            # pygame.display.flip()
             n = len(enemies)
             count = 0
             eastCount = 0
@@ -106,16 +99,10 @@ class Player(pygame.sprite.Sprite):
                 x.x -= self.speed
                 x.xp_stationary()
 
-
-        # pygame.display.update()
-        # pygame.display.flip()
-
     def move_north(self):
         # moves the player North
         if self.rect.y > 25:
             m.cameraY -= self.speed
-            # pygame.display.update()
-            # pygame.display.flip()
             n = len(enemies)
             count = 0
             northCount = 0
@@ -131,15 +118,11 @@ class Player(pygame.sprite.Sprite):
             for x in xp:
                 x.y += self.speed
                 x.xp_stationary()
-        # pygame.display.update()
-        # pygame.display.flip()
 
     def move_south(self):
         # moves the player South
         if self.rect.y < 800:
             m.cameraY += self.speed
-            # pygame.display.update()
-            # pygame.display.flip()
             n = len(enemies)
             count = 0
             southCount = 0
@@ -155,9 +138,6 @@ class Player(pygame.sprite.Sprite):
             for x in xp:
                 x.y -= self.speed
                 x.xp_stationary()
-        # pygame.display.update()
-        # pygame.display.flip()
-
 
 class Bullet(pygame.sprite.Sprite):
     # Bullet class allows the player to shoot bullets at enemies
@@ -630,17 +610,64 @@ class XP(pygame.sprite.Sprite):
         self.hitBoxRect = pygame.draw.circle(transparentSurface, (0,255,35), (x, y), 50)
 
 
+
     def xp_stationary(self):
         self.rect = pygame.draw.circle(screen, (0,255,0), (self.x, self.y), 5)
         self.hitBoxRect = pygame.draw.circle(transparentSurface, (0,255,35), (self.x, self.y), 50)
+
+class XP_Bar(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        self.xpBarBorderRect = None
+        self.xpBarRect = None
+        self.xpBarEmptyRect = None
+        self.xp = 0
+        self.level = 1
+        self.total_length = 600
+        self.level_xp_requirement = 10
+        self.length = 0
+        self.connector = None
+        self.top = None
+        self.right = None
+        self.bottom = None
+        self.left = None
+        self.level_background = None
+        self.level_font = pygame.font.SysFont('futura', 42)
+        self.offset = 35
+
+
+    def xp_bar(self):
+        self.xpBarBorderRect = pygame.draw.line(screen, (0,0,0), (90-self.offset,770), (710-self.offset, 770), 45)
+        if self.xp:
+            self.length = self.xp / self.level_xp_requirement
+            if self.length >= 1:
+                self.level += 1
+                self.xp = 0
+                self.level_xp_requirement *= 2.25
+                self.length = self.xp / self.level_xp_requirement
+            else:
+                self.xpBarRect = pygame.draw.line(screen, (28,36,192), (100-self.offset,770), ((self.total_length*self.length)+100-self.offset, 770), 25)
+                self.xpBarEmptyRect = pygame.draw.line(screen, (255,255,255), ((self.total_length*self.length)+100-self.offset,770), (700-self.offset, 770), 25)
+        else:
+            self.xpBarRect = pygame.draw.line(screen, (28,36,192), (100-self.offset,770), (100-self.offset, 770), 25)
+            self.xpBarEmptyRect = pygame.draw.line(screen, (255,255,255), (100-self.offset,770), (700-self.offset, 770), 25)
+        self.connector = pygame.draw.line(screen, (0,0,0), (710-self.offset,770), (740-self.offset, 770), 5)
+        self.left = pygame.draw.line(screen, (0,0,0), (740-self.offset,790), (740-self.offset, 750), 6)
+        self.top = pygame.draw.line(screen, (0,0,0), (738-self.offset,750), (785-self.offset, 750), 6)
+        self.bottom = pygame.draw.line(screen, (0,0,0), (738-self.offset,790), (785-self.offset, 790), 6)
+        self.right = pygame.draw.line(screen, (0,0,0), (785-self.offset,793), (785-self.offset, 748), 6)
+        self.level_background = pygame.draw.line(screen, (255,255,255), (744-self.offset,770), (782-self.offset, 770), 33)
+        levelRender = self.level_font.render(str(self.level), True, (0, 0, 0))
+        screen.blit(levelRender, (756-self.offset, 758))
+
 
 # initializes the Player and Enemy classes
 p = Player()
 m = Map()
 b = Bullet()
+xpB = XP_Bar()
 enemies = [Enemy(500, 100, 80, 40) for _ in range(25)]
 bullets = [Bullet() for _ in range(1)]
-# xp = [XP() for _ in range(0)]
 
 # adds ability for text to be on screen
 def text_objects(text, font):
@@ -681,6 +708,7 @@ gameTimerOn = False
 
 timerFont = pygame.font.SysFont('futura', 64)
 fpsFont = pygame.font.SysFont('futura', 28)
+
 gameTimeStr = 0
 minutes = 0
 seconds = 0
@@ -842,18 +870,18 @@ bulletTimer2 = 0
 while game:
     # the core game loop
     start_game_time()
-    display_timer(gameTimeStr, timerFont, (0, 0, 0))
+
 
     fps = clock.get_fps()
 
     clock.tick(60)
     # sets the fps to 60
-    display_fps(fps, fpsFont, (0,255,0))
+
     pygame.time.delay(5)
     # adds a very small delay to make it feel more like a game
+
     # Introducing a pause function for the buttons and game pause functionality
     pause = False
-    pygame.display.update()
     # making sure the X button still closes the game
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -863,40 +891,12 @@ while game:
     # cycling through the possible key presses
     keypressed()
 
-
-
-
-
     # makes the map visible
-    # the first tuple dictates the size (2250, 2250)
-    # the second tuple dictates the starting coordinates (m.mapX, m.mapY)
-    # the coordinates start at the top left of the game, which is (0,0) instead of the center
     screen.blit(pygame.transform.scale(bg_img, (2250, 2250)), (-800 - m.cameraX, -800 - m.cameraY))
-    # screen.blit(pygame.transform.scale(bg_img, (2250, 2250)), (m.mapX, m.mapY))
-    # screen.blit(bg_img, (m.mapX, m.mapY))
 
     # makes the main character visible
-
-    # screen.blit(pygame.transform.scale(mc_img, (45, 45)), (p.mc_x,p.mc_y))
-    # screen.blit(mc_img,p.rect)
-
     screen.blit(pygame.transform.scale(mc_img, (35, 30)), (p.rect.x, p.rect.y))
-    """
-    # speed item
-    if speed_item_visible:
-        # shows a visible object on the map if it has not been taken yet
-        screen.blit(pygame.transform.scale(speedI, (30, 30)), (400, 285))
 
-    if (380 <= p.rect.x <= 420) and (265 <= p.rect.y <= 305):
-        # if the player is in the vacinity of the item, give the player the powerup from the item
-        # and no longer show the powerup
-        if speed_item_visible:
-            p.speed += 10
-            speed_item_visible = False
-    """
-
-
-    # bulletTimer1 = (pygame.time.get_ticks() / 1000) + 2
     bulletTimer2 = (pygame.time.get_ticks() / 1000)
     # if bulletTimer1
     if seconds % b.bulletIncrement == 0:
@@ -920,7 +920,6 @@ while game:
 
     for enemy in enemies:
         # for every enemy
-        # print(enemy.bulletCollisions)
         screen.blit(pygame.transform.scale(enemy1, (35, 30)), (enemy.rect.x, enemy.rect.y))
         enemy.generate_enemy()
         enemy.follow_mc()
@@ -967,9 +966,10 @@ while game:
 
     for x in xp_hit:
         if abs(x.rect.x - p.rect.x) < 25 and abs(x.rect.y - p.rect.y) < 25:
-            print(f'({x.x,x.y}), ({p.rect.x,p.rect.y})')
+            # print(f'({x.x,x.y}), ({p.rect.x,p.rect.y})')
             if x in xp:
                 xp.remove(x)
+                xpB.xp += 1
             if x in xp_hit:
                 xp_hit.remove(x)
         else:
@@ -999,7 +999,9 @@ while game:
                 if bullet in l.bulletCollisions:
                     l.bulletCollisions.remove(bullet)
 
-
+    display_timer(gameTimeStr, timerFont, (0, 0, 0))
+    display_fps(fps, fpsFont, (0,255,0))
+    xpB.xp_bar()
     index = 0
     numOfEnemies = len(enemies)
     pygame.display.flip()
