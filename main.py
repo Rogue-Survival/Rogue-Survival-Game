@@ -634,17 +634,22 @@ class XP_Bar(pygame.sprite.Sprite):
         self.level_background = None
         self.level_font = pygame.font.SysFont('futura', 42)
         self.offset = 35
+        self.leftover = 0
 
 
-    def xp_bar(self):
+    def show_xp_bar(self):
         self.xpBarBorderRect = pygame.draw.line(screen, (0,0,0), (90-self.offset,770), (710-self.offset, 770), 45)
         if self.xp:
             self.length = self.xp / self.level_xp_requirement
             if self.length >= 1:
+                self.leftover = self.xp - self.level_xp_requirement
                 self.level += 1
                 self.xp = 0
                 self.level_xp_requirement *= 2.25
                 self.length = self.xp / self.level_xp_requirement
+                if self.leftover:
+                    self.xpBarRect = pygame.draw.line(screen, (28,36,192), (100-self.offset,770), (self.leftover+100-self.offset, 770), 25)
+                    self.leftover = 0
             else:
                 self.xpBarRect = pygame.draw.line(screen, (28,36,192), (100-self.offset,770), ((self.total_length*self.length)+100-self.offset, 770), 25)
                 self.xpBarEmptyRect = pygame.draw.line(screen, (255,255,255), ((self.total_length*self.length)+100-self.offset,770), (700-self.offset, 770), 25)
@@ -877,7 +882,7 @@ while game:
     clock.tick(60)
     # sets the fps to 60
 
-    pygame.time.delay(5)
+    # pygame.time.delay(5)
     # adds a very small delay to make it feel more like a game
 
     # Introducing a pause function for the buttons and game pause functionality
@@ -935,7 +940,7 @@ while game:
                 if not enemy.bulletCollisions:
                     # if the enemy has encountered it's first bullet, add to the list and take damage
                     enemy.bulletCollisions.append(bullet)
-                    enemy.health -= 10
+                    enemy.health -= 100
                 elif enemy.bulletCollisions:
                     # if the list of bullets the enemy has collided with is greater than 0, make sure it is a different bullet in order to deal damage
                     i = 0
@@ -944,7 +949,7 @@ while game:
                             pass
                         elif bullet not in enemy.bulletCollisions:
                             enemy.bulletCollisions.append(bullet)
-                            enemy.health -= 10
+                            enemy.health -= 100
                         i += 1
 
                 if enemy.health <= 0:
@@ -1001,7 +1006,7 @@ while game:
 
     display_timer(gameTimeStr, timerFont, (0, 0, 0))
     display_fps(fps, fpsFont, (0,255,0))
-    xpB.xp_bar()
+    xpB.show_xp_bar()
     index = 0
     numOfEnemies = len(enemies)
     pygame.display.flip()
