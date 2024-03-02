@@ -976,7 +976,7 @@ while game:
             x.xp_stationary()
 
     for x in xp_hit:
-        if abs(x.rect.x - p.rect.x) < 25 and abs(x.rect.y - p.rect.y) < 25:
+        if abs(x.rect.x - p.rect.x) < 35 and abs(x.rect.y - p.rect.y) < 35:
             # print(f'({x.x,x.y}), ({p.rect.x,p.rect.y})')
             if x in xp:
                 xp.remove(x)
