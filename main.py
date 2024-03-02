@@ -645,7 +645,7 @@ class XP_Bar(pygame.sprite.Sprite):
                 self.leftover = self.xp - self.level_xp_requirement
                 self.level += 1
                 self.xp = 0
-                self.level_xp_requirement *= 2.25
+                self.level_xp_requirement *= 1.25
                 self.length = self.xp / self.level_xp_requirement
                 if self.leftover:
                     self.xpBarRect = pygame.draw.line(screen, (28,36,192), (100-self.offset,770), (self.leftover+100-self.offset, 770), 25)
@@ -663,7 +663,10 @@ class XP_Bar(pygame.sprite.Sprite):
         self.right = pygame.draw.line(screen, (0,0,0), (785-self.offset,793), (785-self.offset, 748), 6)
         self.level_background = pygame.draw.line(screen, (255,255,255), (744-self.offset,770), (782-self.offset, 770), 33)
         levelRender = self.level_font.render(str(self.level), True, (0, 0, 0))
-        screen.blit(levelRender, (756-self.offset, 758))
+        if self.level < 10:
+            screen.blit(levelRender, (756-self.offset, 758))
+        else:
+            screen.blit(levelRender, (747-self.offset, 758))
 
 
 # initializes the Player and Enemy classes
@@ -1003,6 +1006,10 @@ while game:
             for l in enemiesNotHit:
                 if bullet in l.bulletCollisions:
                     l.bulletCollisions.remove(bullet)
+
+
+    if len(enemies) < 15:
+        enemies.append(Enemy())
 
     display_timer(gameTimeStr, timerFont, (0, 0, 0))
     display_fps(fps, fpsFont, (0,255,0))
