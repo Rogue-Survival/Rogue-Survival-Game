@@ -219,6 +219,7 @@ class Bullet(pygame.sprite.Sprite):
                 # print('-------------------')
                 # print("fourth quadrant - CONTINUING JOURNEY")
                 # print('-------------------')
+                print("1")
             elif (self.rect.x < self.startingPoint[0] and self.rect.y > self.startingPoint[1]) and self.positionReached:
                 # third quadrant - continues traveling after reaching mouse position
                 self.rect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
@@ -228,6 +229,7 @@ class Bullet(pygame.sprite.Sprite):
                 # print('-------------------')
                 # print("third quadrant - CONTINUING JOURNEY")
                 # print('-------------------')
+                print("2")
             elif (self.rect.x < self.startingPoint[0] and self.rect.y < self.startingPoint[1]) and self.positionReached:
                 # second quadrant - continues traveling after reaching mouse position
                 self.rect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
@@ -237,6 +239,7 @@ class Bullet(pygame.sprite.Sprite):
                 # print('-------------------')
                 # print("second quadrant - CONTINUING JOURNEY")
                 # print('-------------------')
+                print("3")
             elif (self.rect.x > self.startingPoint[0] and self.rect.y < self.startingPoint[1]) and self.positionReached:
                 # first quadrant - continues traveling after reaching mouse position
                 self.rect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
@@ -246,6 +249,7 @@ class Bullet(pygame.sprite.Sprite):
                 # print('-------------------')
                 # print("first quadrant - CONTINUING JOURNEY")
                 # print('-------------------')
+                print("4")
             elif self.rect.x < self.mousePOS[0] and self.rect.y < self.mousePOS[1]:
                 # fourth quadrant - travels to mouse position
                 self.rect.y += math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
@@ -257,6 +261,7 @@ class Bullet(pygame.sprite.Sprite):
                 # print('-------------------')
                 # print("fourth quadrant")
                 # print('-------------------')
+                print("5")
             elif self.rect.x > self.mousePOS[0] and self.rect.y < self.mousePOS[1]:
                 # third quadrant - travels to mouse position
                 self.rect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
@@ -268,6 +273,7 @@ class Bullet(pygame.sprite.Sprite):
                 # print('-------------------')
                 # print("third quadrant")
                 # print('-------------------')
+                print("6")
             elif self.rect.x > self.mousePOS[0] and self.rect.y > self.mousePOS[1]:
                 # second quadrant - travels to mouse position
                 self.rect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
@@ -279,6 +285,7 @@ class Bullet(pygame.sprite.Sprite):
                 # print('-------------------')
                 # print("second quadrant")
                 # print('-------------------')
+                print("7")
             elif self.rect.x < self.mousePOS[0] and self.rect.y > self.mousePOS[1]:
                 # first quadrant - travels to mouse position
                 self.rect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
@@ -290,12 +297,15 @@ class Bullet(pygame.sprite.Sprite):
                 # print('-------------------')
                 # print("first quadrant")
                 # print('-------------------')
+                print("8")
             else:
                 if self.mousePOS[1] > self.startingPoint[1] and (abs(self.mousePOS[0]) - abs(self.startingPoint[0])) < 15:
                     self.rect.y += math.sin(90 * (2*math.pi/360)) * self.bulletSpeed
+                    print("YEP")
                 elif self.mousePOS[1] < self.startingPoint[1] and (abs(self.mousePOS[0]) - abs(self.startingPoint[0])) < 15:
                     self.rect.y -= math.sin(90 * (2*math.pi/360)) * self.bulletSpeed
                     self.rect.y -= math.sin(90 * (2*math.pi/360)) * self.bulletSpeed
+                    print("YEP2")
                 self.counterX += 1
                 self.counterY += 1
 
@@ -942,7 +952,7 @@ while game:
         enemy.circleRect = pygame.draw.circle(transparentSurface, (0, 50, 0, 100), (enemy.rect.x+18, enemy.rect.y + 17), 10)
         enemy.midDotRect = pygame.draw.circle(transparentSurface, (0, 50, 0, 100), (enemy.rect.x + 16, enemy.rect.y + 16), 1)
         for bullet in bullets:
-            if enemy.rect.colliderect(bullet.rect):
+            if enemy.rect.colliderect(bullet.rect) and bullet.bulletValid:
                 if not enemy.bulletCollisions:
                     # if the enemy has encountered it's first bullet, add to the list and take damage
                     enemy.bulletCollisions.append(bullet)
@@ -953,7 +963,7 @@ while game:
                     for l in enemy.bulletCollisions:
                         if bullet.rect.x == enemy.bulletCollisions[i].rect.x and bullet.rect.y == enemy.bulletCollisions[i].rect.y:
                             pass
-                        elif bullet not in enemy.bulletCollisions:
+                        elif bullet not in enemy.bulletCollisions and bullet.bulletValid:
                             enemy.bulletCollisions.append(bullet)
                             enemy.health -= 100
                         i += 1
