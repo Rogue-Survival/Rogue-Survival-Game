@@ -367,7 +367,7 @@ class Enemy(pygame.sprite.Sprite):
     # Enemy class controls basic functions relating to the enemy
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
-        self.speed = random.uniform(1.3, 2.5)
+        self.speed = random.uniform(1.3, 2)
         self.image = "./images/slime.png"
         self.rect = enemy1.get_rect().scale_by(2, 2)
         self.rect.x = x
@@ -1057,14 +1057,14 @@ while game:
 
 
     if len(enemies) < 25:
-        xCoord = random.randint(0,800)
-        yCoord = random.randint(0, 800)
+        xCoord = random.randint(-340, 990)
+        yCoord = random.randint(-340, 990)
         enemy_length = len(enemies)
         count = 0
         for enemy in enemies:
             while xCoord == enemy.rect.x or yCoord == enemy.rect.y or (abs(xCoord - enemy.rect.x) < 15 and abs(yCoord - enemy.rect.y) < 15) or (250 <= xCoord <= 550 and 250 <= yCoord <= 550) or xCoord < m.leftBoundaryX or xCoord > m.rightBoundaryX or yCoord < m.topBoundaryY or yCoord > m.bottomBoundaryY:
-                xCoord = random.randint(0,800)
-                yCoord = random.randint(0, 800)
+                xCoord = random.randint(-340, 990)
+                yCoord = random.randint(-340, 990)
         enemies.append(Enemy(xCoord, yCoord))
 
     m.update_boundary()
