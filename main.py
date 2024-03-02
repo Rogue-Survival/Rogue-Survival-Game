@@ -273,7 +273,7 @@ class Bullet(pygame.sprite.Sprite):
                 # print('-------------------')
                 # print("fourth quadrant - CONTINUING JOURNEY")
                 # print('-------------------')
-                print("1")
+                # print("1")
             elif (self.rect.x < self.startingPoint[0] and self.rect.y > self.startingPoint[1]) and self.positionReached:
                 # third quadrant - continues traveling after reaching mouse position
                 self.rect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
@@ -283,7 +283,7 @@ class Bullet(pygame.sprite.Sprite):
                 # print('-------------------')
                 # print("third quadrant - CONTINUING JOURNEY")
                 # print('-------------------')
-                print("2")
+                # print("2")
             elif (self.rect.x < self.startingPoint[0] and self.rect.y < self.startingPoint[1]) and self.positionReached:
                 # second quadrant - continues traveling after reaching mouse position
                 self.rect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
@@ -293,7 +293,7 @@ class Bullet(pygame.sprite.Sprite):
                 # print('-------------------')
                 # print("second quadrant - CONTINUING JOURNEY")
                 # print('-------------------')
-                print("3")
+                # print("3")
             elif (self.rect.x > self.startingPoint[0] and self.rect.y < self.startingPoint[1]) and self.positionReached:
                 # first quadrant - continues traveling after reaching mouse position
                 self.rect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
@@ -303,7 +303,7 @@ class Bullet(pygame.sprite.Sprite):
                 # print('-------------------')
                 # print("first quadrant - CONTINUING JOURNEY")
                 # print('-------------------')
-                print("4")
+                # print("4")
             elif self.rect.x < self.mousePOS[0] and self.rect.y < self.mousePOS[1]:
                 # fourth quadrant - travels to mouse position
                 self.rect.y += math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
@@ -315,7 +315,7 @@ class Bullet(pygame.sprite.Sprite):
                 # print('-------------------')
                 # print("fourth quadrant")
                 # print('-------------------')
-                print("5")
+                # print("5")
             elif self.rect.x > self.mousePOS[0] and self.rect.y < self.mousePOS[1]:
                 # third quadrant - travels to mouse position
                 self.rect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
@@ -327,7 +327,7 @@ class Bullet(pygame.sprite.Sprite):
                 # print('-------------------')
                 # print("third quadrant")
                 # print('-------------------')
-                print("6")
+                # print("6")
             elif self.rect.x > self.mousePOS[0] and self.rect.y > self.mousePOS[1]:
                 # second quadrant - travels to mouse position
                 self.rect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
@@ -339,7 +339,7 @@ class Bullet(pygame.sprite.Sprite):
                 # print('-------------------')
                 # print("second quadrant")
                 # print('-------------------')
-                print("7")
+                # print("7")
             elif self.rect.x < self.mousePOS[0] and self.rect.y > self.mousePOS[1]:
                 # first quadrant - travels to mouse position
                 self.rect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
@@ -351,15 +351,15 @@ class Bullet(pygame.sprite.Sprite):
                 # print('-------------------')
                 # print("first quadrant")
                 # print('-------------------')
-                print("8")
+                # print("8")
             else:
                 if self.mousePOS[1] > self.startingPoint[1] and (abs(self.mousePOS[0]) - abs(self.startingPoint[0])) < 15:
                     self.rect.y += math.sin(90 * (2*math.pi/360)) * self.bulletSpeed
-                    print("YEP")
+                    # print("YEP")
                 elif self.mousePOS[1] < self.startingPoint[1] and (abs(self.mousePOS[0]) - abs(self.startingPoint[0])) < 15:
                     self.rect.y -= math.sin(90 * (2*math.pi/360)) * self.bulletSpeed
                     self.rect.y -= math.sin(90 * (2*math.pi/360)) * self.bulletSpeed
-                    print("YEP2")
+                    # print("YEP2")
                 self.counterX += 1
                 self.counterY += 1
 
@@ -482,6 +482,9 @@ class Enemy(pygame.sprite.Sprite):
                                 elif not self.westRect.colliderect(enemies[i].circleRect):
                                     # enemy moves West as a last resort
                                     moveWest += 1
+                                else:
+                                    tempSpeed = random.uniform(0.1, 1)
+                                    enemy.rect.x -= tempSpeed
             if moveEast == (len(enemies) - 1):
                 self.travel_east()
             elif moveNorth == (len(enemies) - 1):
@@ -533,6 +536,9 @@ class Enemy(pygame.sprite.Sprite):
                                 elif not self.eastRect.colliderect(enemies[i].circleRect):
                                     # enemy moves East as a last resort
                                     moveEast += 1
+                                else:
+                                    tempSpeed = random.uniform(0.1, 1)
+                                    enemy.rect.x += tempSpeed
             if moveWest == (len(enemies) - 1):
                 self.travel_west()
             elif moveNorth == (len(enemies) - 1):
@@ -582,6 +588,9 @@ class Enemy(pygame.sprite.Sprite):
                                 elif not self.northRect.colliderect(enemies[i].circleRect):
                                     # enemy moves North as a last resort
                                     moveNorth += 1
+                                else:
+                                    tempSpeed = random.uniform(0.1, 1)
+                                    enemy.rect.y -= tempSpeed
             if moveSouth == (len(enemies) - 1):
                 self.travel_south()
             elif moveEast == (len(enemies) - 1):
@@ -633,6 +642,9 @@ class Enemy(pygame.sprite.Sprite):
                                 elif not self.southRect.colliderect(enemies[i].circleRect):
                                     # enemy moves South as a last resort
                                     moveSouth += 1
+                                else:
+                                    tempSpeed = random.uniform(0.1, 1)
+                                    enemy.rect.y += tempSpeed
             if moveNorth == (len(enemies) - 1):
                 self.travel_north()
             elif moveEast == (len(enemies) - 1):
