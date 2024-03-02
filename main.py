@@ -200,7 +200,7 @@ class Bullet(pygame.sprite.Sprite):
             for bullet in bullets:
                 if bullet.rect.x == bullets[bulletCounter].rect.x and bullet.rect.y == bullets[bulletCounter].rect.y:
                     bullets.remove(bullet)
-                    print("BULLET REMOVED!!!")
+                    # print("BULLET REMOVED!!!")
                 bulletCounter += 1
         else:
             self.bulletValid = True
@@ -635,27 +635,30 @@ class XP_Bar(pygame.sprite.Sprite):
         self.level_font = pygame.font.SysFont('futura', 42)
         self.offset = 35
         self.leftover = 0
+        self.leftoverSize = 0
 
 
     def show_xp_bar(self):
         self.xpBarBorderRect = pygame.draw.line(screen, (0,0,0), (90-self.offset,770), (710-self.offset, 770), 45)
         if self.xp:
             self.length = self.xp / self.level_xp_requirement
-            if self.length >= 1:
+            if self.length >= 1 or self.length+self.leftover >= 1:
                 self.leftover = self.xp - self.level_xp_requirement
                 self.level += 1
                 self.xp = 0
                 self.level_xp_requirement *= 1.25
                 self.length = self.xp / self.level_xp_requirement
                 if self.leftover:
-                    self.xpBarRect = pygame.draw.line(screen, (28,36,192), (100-self.offset,770), (self.leftover+100-self.offset, 770), 25)
+                    self.leftoverSize = (((1 / self.level_xp_requirement)*self.total_length)*self.leftover)
+                    self.xpBarRect = pygame.draw.line(screen, (28,36,192), (100-self.offset,770), (self.leftoverSize+100-self.offset, 770), 25)
+                    print(self.leftover)
                     self.leftover = 0
             else:
-                self.xpBarRect = pygame.draw.line(screen, (28,36,192), (100-self.offset,770), ((self.total_length*self.length)+100-self.offset, 770), 25)
-                self.xpBarEmptyRect = pygame.draw.line(screen, (255,255,255), ((self.total_length*self.length)+100-self.offset,770), (700-self.offset, 770), 25)
+                self.xpBarRect = pygame.draw.line(screen, (28,36,192), (100-self.offset,770), ((self.total_length*self.length)+self.leftoverSize+100-self.offset, 770), 25)
+                # self.xpBarEmptyRect = pygame.draw.line(screen, (255,255,255), ((self.total_length*self.length)+100-self.offset,770), (700-self.offset, 770), 25)
         else:
-            self.xpBarRect = pygame.draw.line(screen, (28,36,192), (100-self.offset,770), (100-self.offset, 770), 25)
-            self.xpBarEmptyRect = pygame.draw.line(screen, (255,255,255), (100-self.offset,770), (700-self.offset, 770), 25)
+            self.xpBarRect = pygame.draw.line(screen, (28,36,192), (100-self.offset,770), (self.leftoverSize+100-self.offset, 770), 25)
+            # self.xpBarEmptyRect = pygame.draw.line(screen, (255,255,255), (100-self.offset,770), (700-self.offset, 770), 25)
         self.connector = pygame.draw.line(screen, (0,0,0), (710-self.offset,770), (740-self.offset, 770), 5)
         self.left = pygame.draw.line(screen, (0,0,0), (740-self.offset,790), (740-self.offset, 750), 6)
         self.top = pygame.draw.line(screen, (0,0,0), (738-self.offset,750), (785-self.offset, 750), 6)
