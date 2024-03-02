@@ -29,6 +29,26 @@ class Map(pygame.sprite.Sprite):
         self.mapY = mapY
         self.cameraX = 0
         self.cameraY = 0
+        self.leftBoundaryX = -350
+        self.leftBoundaryY1 = -350
+        self.leftBoundaryY2 = 1000
+
+        self.rightBoundaryX = 1000
+        self.rightBoundaryY1 = -350
+        self.rightBoundaryY2 = 1000
+
+        self.topBoundaryX1 = -355
+        self.topBoundaryX2 = 1006
+        self.topBoundaryY = -350
+
+        self.bottomBoundaryX1 = -355
+        self.bottomBoundaryX2 = 1006
+        self.bottomBoundaryY = 1000
+
+        self.leftBoundary = pygame.draw.line(transparentSurface, (255, 0, 0), (self.leftBoundaryX, self.leftBoundaryY1), (self.leftBoundaryX, self.leftBoundaryY2), 12)
+        self.rightBoundary = pygame.draw.line(transparentSurface, (255, 0, 0), (self.rightBoundaryX, self.rightBoundaryY1), (self.rightBoundaryX, self.rightBoundaryY2), 12)
+        self.topBoundary = pygame.draw.line(transparentSurface, (255, 0, 0), (self.topBoundaryX1, self.topBoundaryY), (self.topBoundaryX2, self.topBoundaryY), 12)
+        self.bottomBoundary = pygame.draw.line(transparentSurface, (255, 0, 0), (self.bottomBoundaryX1, self.bottomBoundaryY), (self.bottomBoundaryX2, self.bottomBoundaryY), 12)
 
     def get_mapX(self):
         # returns the x coordinate of the map
@@ -38,10 +58,16 @@ class Map(pygame.sprite.Sprite):
         # returns the y coordinate of the map
         return self.mapY
 
+    def update_boundary(self):
+        self.leftBoundary = pygame.draw.line(transparentSurface, (255, 0, 0), (self.leftBoundaryX, self.leftBoundaryY1), (self.leftBoundaryX, self.leftBoundaryY2), 12)
+        self.rightBoundary = pygame.draw.line(transparentSurface, (255, 0, 0), (self.rightBoundaryX, self.rightBoundaryY1), (self.rightBoundaryX, self.rightBoundaryY2), 12)
+        self.topBoundary = pygame.draw.line(transparentSurface, (255, 0, 0), (self.topBoundaryX1, self.topBoundaryY), (self.topBoundaryX2, self.topBoundaryY), 12)
+        self.bottomBoundary = pygame.draw.line(transparentSurface, (255, 0, 0), (self.bottomBoundaryX1, self.bottomBoundaryY), (self.bottomBoundaryX2, self.bottomBoundaryY), 12)
+
 
 class Player(pygame.sprite.Sprite):
     # Player class controls basic functions relating to the player
-    def __init__(self, speed=5, health=50):
+    def __init__(self, speed=4, health=50):
         # inherits from the pygame.sprite.Sprite class
         pygame.sprite.Sprite.__init__(self)
         self.speed = speed
@@ -61,8 +87,15 @@ class Player(pygame.sprite.Sprite):
 
     def move_west(self):
         # moves the player West
-        if self.rect.x > 25:
+        if self.rect.x > m.leftBoundaryX + 25:
             m.cameraX -= self.speed
+            # m.leftBoundaryY += self.speed
+            m.leftBoundaryX += self.speed
+            m.rightBoundaryX += self.speed
+            m.topBoundaryX1 += self.speed
+            m.topBoundaryX2 += self.speed
+            m.bottomBoundaryX1 += self.speed
+            m.bottomBoundaryX2 += self.speed
             n = len(enemies)
             count = 0
             westCount = 0
@@ -81,8 +114,15 @@ class Player(pygame.sprite.Sprite):
 
     def move_east(self):
         # moves the player East
-        if self.rect.x < 800:
+        if self.rect.x < m.rightBoundaryX - 50:
             m.cameraX += self.speed
+            # m.leftBoundaryY -= self.speed
+            m.leftBoundaryX -= self.speed
+            m.rightBoundaryX -= self.speed
+            m.topBoundaryX1 -= self.speed
+            m.topBoundaryX2 -= self.speed
+            m.bottomBoundaryX1 -= self.speed
+            m.bottomBoundaryX2 -= self.speed
             n = len(enemies)
             count = 0
             eastCount = 0
@@ -101,8 +141,15 @@ class Player(pygame.sprite.Sprite):
 
     def move_north(self):
         # moves the player North
-        if self.rect.y > 25:
+        if self.rect.y > m.topBoundaryY + 25:
             m.cameraY -= self.speed
+            m.leftBoundaryY1 += self.speed
+            m.leftBoundaryY2 += self.speed
+            m.rightBoundaryY1 += self.speed
+            m.rightBoundaryY2 += self.speed
+            m.topBoundaryY += self.speed
+            m.bottomBoundaryY += self.speed
+            # m.leftBoundaryX += self.speed
             n = len(enemies)
             count = 0
             northCount = 0
@@ -121,8 +168,15 @@ class Player(pygame.sprite.Sprite):
 
     def move_south(self):
         # moves the player South
-        if self.rect.y < 800:
+        if self.rect.y < m.bottomBoundaryY - 50:
             m.cameraY += self.speed
+            m.leftBoundaryY1 -= self.speed
+            m.leftBoundaryY2 -= self.speed
+            m.rightBoundaryY1 -= self.speed
+            m.rightBoundaryY2 -= self.speed
+            m.topBoundaryY -= self.speed
+            m.bottomBoundaryY -= self.speed
+            # m.leftBoundaryX -= self.speed
             n = len(enemies)
             count = 0
             southCount = 0
@@ -311,17 +365,13 @@ class Bullet(pygame.sprite.Sprite):
 
 class Enemy(pygame.sprite.Sprite):
     # Enemy class controls basic functions relating to the enemy
-    def __init__(self, enemy_x=50, enemy_y= 50, width=0, height=0, image="./images/slime.png"):
+    def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
-        self.enemy_x = enemy_x
-        self.enemy_y = enemy_y
-        self.width = width
-        self.height = height
         self.speed = random.uniform(1.3, 2.5)
-        self.image = image
+        self.image = "./images/slime.png"
         self.rect = enemy1.get_rect().scale_by(2, 2)
-        self.rect.x = random.randint(0, 600)
-        self.rect.y = random.randint(0, 1000)
+        self.rect.x = x
+        self.rect.y = y
         self.inRange = False
         self.northRect = pygame.rect.Rect((self.rect.x, self.rect.y), (10, 10))
         self.northRect.midtop = self.rect.midtop
@@ -344,21 +394,6 @@ class Enemy(pygame.sprite.Sprite):
         self.health = 50
         self.bulletCollisions = []
 
-    def get_enemy_x(self):
-        # returns x position of player
-        return self.enemy_x
-
-    def get_enemy_y(self):
-        # returns y position of player
-        return self.enemy_y
-
-    def get_width(self):
-        # returns the width of the enemy
-        return self.width
-
-    def get_height(self):
-        # returns the height of the enemy
-        return self.height
 
     def get_speed(self):
         # returns speed of player
@@ -687,7 +722,7 @@ p = Player()
 m = Map()
 b = Bullet()
 xpB = XP_Bar()
-enemies = [Enemy(500, 100, 80, 40) for _ in range(25)]
+enemies = [Enemy(20, 50) for _ in range(1)]
 bullets = [Bullet() for _ in range(1)]
 
 # adds ability for text to be on screen
@@ -1021,9 +1056,18 @@ while game:
                     l.bulletCollisions.remove(bullet)
 
 
-    if len(enemies) < 15:
-        enemies.append(Enemy())
+    if len(enemies) < 25:
+        xCoord = random.randint(0,800)
+        yCoord = random.randint(0, 800)
+        enemy_length = len(enemies)
+        count = 0
+        for enemy in enemies:
+            while xCoord == enemy.rect.x or yCoord == enemy.rect.y or (abs(xCoord - enemy.rect.x) < 15 and abs(yCoord - enemy.rect.y) < 15) or (250 <= xCoord <= 550 and 250 <= yCoord <= 550) or xCoord < m.leftBoundaryX or xCoord > m.rightBoundaryX or yCoord < m.topBoundaryY or yCoord > m.bottomBoundaryY:
+                xCoord = random.randint(0,800)
+                yCoord = random.randint(0, 800)
+        enemies.append(Enemy(xCoord, yCoord))
 
+    m.update_boundary()
     display_timer(gameTimeStr, timerFont, (0, 0, 0))
     display_fps(fps, fpsFont, (0,255,0))
     xpB.show_xp_bar()
