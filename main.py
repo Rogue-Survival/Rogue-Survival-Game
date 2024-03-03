@@ -23,6 +23,7 @@ xp = []
 xp_hit = []
 
 class Map(pygame.sprite.Sprite):
+    # Controls map boundaries and map camera
     def __init__(self, mapX=-600, mapY=-800):
         pygame.sprite.Sprite.__init__(self)
         self.mapX = mapX
@@ -59,6 +60,7 @@ class Map(pygame.sprite.Sprite):
         return self.mapY
 
     def update_boundary(self):
+        # keep the map boundaries updated
         self.leftBoundary = pygame.draw.line(transparentSurface, (255, 0, 0), (self.leftBoundaryX, self.leftBoundaryY1), (self.leftBoundaryX, self.leftBoundaryY2), 12)
         self.rightBoundary = pygame.draw.line(transparentSurface, (255, 0, 0), (self.rightBoundaryX, self.rightBoundaryY1), (self.rightBoundaryX, self.rightBoundaryY2), 12)
         self.topBoundary = pygame.draw.line(transparentSurface, (255, 0, 0), (self.topBoundaryX1, self.topBoundaryY), (self.topBoundaryX2, self.topBoundaryY), 12)
@@ -76,6 +78,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = mc_img.get_rect().scale_by(2,2)
         self.rect.x = 400
         self.rect.y = 400
+        self.gold = 0
 
     def get_speed(self):
         # returns speed of player
@@ -195,6 +198,7 @@ class Player(pygame.sprite.Sprite):
 
 
 class BasicAttack(pygame.sprite.Sprite):
+    # Creates Basic Attacks for the Player
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.rect = None
@@ -225,6 +229,8 @@ class BasicAttack(pygame.sprite.Sprite):
 
 
     def attack(self):
+        # Initiate basic attack
+
         # self.east = pygame.draw.line(screen, (160,32,240), (p.rect.x+36, p.rect.y+17), (p.rect.x+80, p.rect.y+17), 6)
         # self.northEast = pygame.draw.line(screen, (160,32,240), (p.rect.x+33, p.rect.y+4), (p.rect.x+60, p.rect.y-22), 6)
         # self.north = pygame.draw.line(screen, (160,32,240), (p.rect.x+18, p.rect.y-4), (p.rect.x+18, p.rect.y-44), 6)
@@ -616,6 +622,7 @@ class Enemy(pygame.sprite.Sprite):
                                     # enemy moves West as a last resort
                                     moveWest += 1
                                 else:
+                                    # if enemy has no other option, go along the y-axis
                                     tempSpeed = random.uniform(0.1, 1)
                                     if tempSpeed < .5:
                                         enemy.rect.x += tempSpeed
@@ -636,12 +643,13 @@ class Enemy(pygame.sprite.Sprite):
                 self.previousPOS = (self.rect.x, self.rect.y)
             if (seconds - self.tempTime) >= 2:
                 if self.rect.x == self.previousPOS[0] and self.rect.y == self.previousPOS[1]:
-                    print("STUCK!!!")
+                    print("Standing Still")
         else:
             self.tempTime = 0
         if stuckCounter:
             if stuckCounter > 1:
-                print("STUCKCOUNTER!!!")
+                # Helps enemies become unstuck on each other
+                # print("STUCKCOUNTER!!!")
                 tempSpeed = random.uniform(0.1, 1)
                 if tempSpeed < .5:
                     enemy.rect.y += tempSpeed
@@ -694,6 +702,7 @@ class Enemy(pygame.sprite.Sprite):
                                     # enemy moves East as a last resort
                                     moveEast += 1
                                 else:
+                                    # if enemy has no other option, go along the y-axis
                                     tempSpeed = random.uniform(0.1, 1)
                                     if tempSpeed < .5:
                                         enemy.rect.x += tempSpeed
@@ -715,12 +724,13 @@ class Enemy(pygame.sprite.Sprite):
                 self.previousPOS = (self.rect.x, self.rect.y)
             if (seconds - self.tempTime) >= 2:
                 if self.rect.x == self.previousPOS[0] and self.rect.y == self.previousPOS[1]:
-                    print("STUCK!!!")
+                    print("Standing Still")
         else:
             self.tempTime = 0
         if stuckCounter:
             if stuckCounter > 1:
-                print("STUCKCOUNTER!!!")
+                # Helps enemies become unstuck on each other
+                # print("STUCKCOUNTER!!!")
                 tempSpeed = random.uniform(0.1, 1)
                 if tempSpeed < .5:
                     enemy.rect.y += tempSpeed
@@ -771,6 +781,7 @@ class Enemy(pygame.sprite.Sprite):
                                     # enemy moves North as a last resort
                                     moveNorth += 1
                                 else:
+                                    # if enemy has no other option, go along the y-axis
                                     tempSpeed = random.uniform(0.1, 1)
                                     if tempSpeed < .5:
                                         enemy.rect.y += tempSpeed
@@ -791,12 +802,13 @@ class Enemy(pygame.sprite.Sprite):
                 self.previousPOS = (self.rect.x, self.rect.y)
             if (seconds - self.tempTime) >= 2:
                 if self.rect.x == self.previousPOS[0] and self.rect.y == self.previousPOS[1]:
-                    print("STUCK!!!")
+                    print("Standing Still")
         else:
             self.tempTime = 0
         if stuckCounter:
             if stuckCounter > 1:
-                print("STUCKCOUNTER!!!")
+                # Helps enemies become unstuck on each other
+                # print("STUCKCOUNTER!!!")
                 tempSpeed = random.uniform(0.1, 1)
                 if tempSpeed < .5:
                     enemy.rect.y += tempSpeed
@@ -849,6 +861,7 @@ class Enemy(pygame.sprite.Sprite):
                                     # enemy moves South as a last resort
                                     moveSouth += 1
                                 else:
+                                    # if enemy has no other option, go along the y-axis
                                     tempSpeed = random.uniform(0.1, 1)
                                     if tempSpeed < .5:
                                         enemy.rect.y += tempSpeed
@@ -868,12 +881,13 @@ class Enemy(pygame.sprite.Sprite):
                 self.previousPOS = (self.rect.x, self.rect.y)
             if (seconds - self.tempTime) >= 2:
                 if self.rect.x == self.previousPOS[0] and self.rect.y == self.previousPOS[1]:
-                    print("STUCK!!!")
+                    print("Standing Still")
         else:
             self.tempTime = 0
         if stuckCounter:
             if stuckCounter > 1:
-                print("STUCKCOUNTER!!!")
+                # Helps enemies become unstuck on each other
+                # print("STUCKCOUNTER!!!")
                 tempSpeed = random.uniform(0.1, 1)
                 if tempSpeed < .5:
                     enemy.rect.y += tempSpeed
@@ -889,6 +903,7 @@ class Enemy(pygame.sprite.Sprite):
 
 
 class XP(pygame.sprite.Sprite):
+    # Controls the location of the XP and the XP hitbox
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
         self.x = x
@@ -899,10 +914,12 @@ class XP(pygame.sprite.Sprite):
 
 
     def xp_stationary(self):
+        # Displays XP in a specific location
         self.rect = pygame.draw.circle(screen, (0,255,0), (self.x, self.y), 5)
         self.hitBoxRect = pygame.draw.circle(transparentSurface, (0,255,35), (self.x, self.y), 50)
 
 class XP_Bar(pygame.sprite.Sprite):
+    # Displays the XP Bar
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.xpBarBorderRect = None
@@ -926,26 +943,31 @@ class XP_Bar(pygame.sprite.Sprite):
 
 
     def show_xp_bar(self):
+        # displays XP bar
         self.xpBarBorderRect = pygame.draw.line(screen, (0,0,0), (90-self.offset,770), (710-self.offset, 770), 45)
         if self.xp:
             self.length = self.xp / self.level_xp_requirement
             if self.length >= 1 or self.length+self.leftover >= 1:
+                # if player XP reached level requirement, increase XP level
                 self.leftover = self.xp - self.level_xp_requirement
                 self.level += 1
                 self.xp = 0
                 self.level_xp_requirement *= 1.25
                 self.length = self.xp / self.level_xp_requirement
                 if self.leftover:
+                    # if any leftover XP from previous level, add it to the new level
                     self.leftoverSize = (((1 / self.level_xp_requirement)*self.total_length)*self.leftover)
                     self.xpBarRect = pygame.draw.line(screen, (28,36,192), (100-self.offset,770), (self.leftoverSize+100-self.offset, 770), 25)
-                    print(self.leftover)
                     self.leftover = 0
             else:
                 self.xpBarRect = pygame.draw.line(screen, (28,36,192), (100-self.offset,770), ((self.total_length*self.length)+self.leftoverSize+100-self.offset, 770), 25)
                 # self.xpBarEmptyRect = pygame.draw.line(screen, (255,255,255), ((self.total_length*self.length)+100-self.offset,770), (700-self.offset, 770), 25)
         else:
+            # Displays if player has zero XP
             self.xpBarRect = pygame.draw.line(screen, (28,36,192), (100-self.offset,770), (self.leftoverSize+100-self.offset, 770), 25)
             # self.xpBarEmptyRect = pygame.draw.line(screen, (255,255,255), (100-self.offset,770), (700-self.offset, 770), 25)
+
+        # Displays level number
         self.connector = pygame.draw.line(screen, (0,0,0), (710-self.offset,770), (740-self.offset, 770), 5)
         self.left = pygame.draw.line(screen, (0,0,0), (740-self.offset,790), (740-self.offset, 750), 6)
         self.top = pygame.draw.line(screen, (0,0,0), (738-self.offset,750), (785-self.offset, 750), 6)
@@ -956,6 +978,7 @@ class XP_Bar(pygame.sprite.Sprite):
         if self.level < 10:
             screen.blit(levelRender, (756-self.offset, 758))
         else:
+            # moves the level number to the left to better accommodate another value fitting into the box
             screen.blit(levelRender, (747-self.offset, 758))
 
 
@@ -1250,16 +1273,23 @@ while game:
                     # despawns the enemy if their health is 0 or below
                     xp.append(XP(enemy.rect.x+18, enemy.rect.y+17))
                     enemies.remove(enemy)
-
+                    chance = random.randint(1,10)
+                    if chance <= 2:
+                        p.gold += 1
                     # self.rect = pygame.draw.circle(screen, (255,255,255), (p.rect.x+18,p.rect.y+17), 10)
                     break
 
         if enemy.rect.colliderect(ba.hitBoxRect) and ba.running and not enemy.meleeAttackCollisions:
+            # Reduce enemy health from the Players basic attack if not hit by that same attack swing
             enemy.health -= 22
             enemy.meleeAttackCollisions.append(1)
             if enemy.health <= 0:
+                # remove enemy from the game if at zero health or below
                 if enemy in enemies:
                     enemies.remove(enemy)
+                    chance = random.randint(1,10)
+                    if chance <= 2:
+                        p.gold += 1
 
 
         if enemy.rect.colliderect(p.rect) or enemy.northRect.colliderect(p.rect) or enemy.eastRect.colliderect(p.rect) or enemy.southRect.colliderect(p.rect) or enemy.westRect.colliderect(p.rect):
@@ -1267,13 +1297,17 @@ while game:
             p.health -= 1
 
     for x in xp:
+        # constantly display the XP
         x.xp_stationary()
         if x.hitBoxRect.colliderect(p.rect):
+            # if player is in range of XP, add it to xp_hit list
             xp_hit.append(x)
             x.xp_stationary()
 
     for x in xp_hit:
+        # for every xp the player has gone near, have the XP fly to the player
         if abs(x.rect.x - p.rect.x) < 35 and abs(x.rect.y - p.rect.y) < 35:
+            # remove the XP from the world and increase player XP
             # print(f'({x.x,x.y}), ({p.rect.x,p.rect.y})')
             if x in xp:
                 xp.remove(x)
@@ -1281,6 +1315,7 @@ while game:
             if x in xp_hit:
                 xp_hit.remove(x)
         else:
+            # have the XP fly to the Player
             if x.rect.x+18 < p.rect.x:
                 x.x += p.speed
             if x.rect.x+18 > p.rect.x:
