@@ -393,6 +393,8 @@ class Enemy(pygame.sprite.Sprite):
         self.midDotRect = pygame.draw.circle(transparentSurface, (0, 50, 0, 100), (self.rect.x+16, self.rect.y + 16), 1)
         self.health = 50
         self.bulletCollisions = []
+        self.tempTime = 0
+        self.previousPOS = ()
 
 
     def get_speed(self):
@@ -440,6 +442,8 @@ class Enemy(pygame.sprite.Sprite):
 
     def follow_mc(self):
         # follows the main character around the map
+        beforeMovement = (self.rect.x, self.rect.y)
+        stuckCounter = False
         if self.rect.x < p.rect.x:
             # enemy moves East
             n = len(enemies)
@@ -447,6 +451,7 @@ class Enemy(pygame.sprite.Sprite):
             moveEast = 0
             moveSouth = 0
             moveWest = 0
+            stuckCounter = 0
             for i in range(n):
                 # iterate through each enemy
                 if self.eastRect.colliderect(p.rect):
@@ -454,7 +459,7 @@ class Enemy(pygame.sprite.Sprite):
                     pass
                 elif self.rect.x == enemies[i].rect.x and self.rect.y == enemies[i].rect.y:
                     # checks if the enemy is checking itself in the list of enemies, and if it is itself, skip
-                    pass
+                    stuckCounter += 1
                 else:
                     if not self.eastRect.colliderect(enemies[i].circleRect):
                         # enemy moves East if unobstructed
@@ -484,7 +489,11 @@ class Enemy(pygame.sprite.Sprite):
                                     moveWest += 1
                                 else:
                                     tempSpeed = random.uniform(0.1, 1)
-                                    enemy.rect.x -= tempSpeed
+                                    if tempSpeed < .5:
+                                        enemy.rect.x += tempSpeed
+                                    else:
+                                        enemy.rect.x -= tempSpeed
+
             if moveEast == (len(enemies) - 1):
                 self.travel_east()
             elif moveNorth == (len(enemies) - 1):
@@ -493,6 +502,25 @@ class Enemy(pygame.sprite.Sprite):
                 self.travel_south()
             elif moveWest == (len(enemies) - 1):
                 self.travel_west()
+        if self.rect.x == beforeMovement[0] and self.rect.y == beforeMovement[1]:
+            if not self.tempTime:
+                self.tempTime = seconds
+                self.previousPOS = (self.rect.x, self.rect.y)
+            if (seconds - self.tempTime) >= 2:
+                if self.rect.x == self.previousPOS[0] and self.rect.y == self.previousPOS[1]:
+                    print("STUCK!!!")
+        else:
+            self.tempTime = 0
+        if stuckCounter:
+            if stuckCounter > 1:
+                print("STUCKCOUNTER!!!")
+                tempSpeed = random.uniform(0.1, 1)
+                if tempSpeed < .5:
+                    enemy.rect.y += tempSpeed
+                else:
+                    enemy.rect.y -= tempSpeed
+                self.stuck = False
+                stuckCounter = 0
 
         if self.rect.x > p.rect.x:
             # enemy moves West
@@ -501,6 +529,7 @@ class Enemy(pygame.sprite.Sprite):
             moveEast = 0
             moveSouth = 0
             moveWest = 0
+            stuckCounter = 0
             for i in range(n):
                 # iterate through each enemy
                 if self.westRect.colliderect(p.rect):
@@ -508,7 +537,7 @@ class Enemy(pygame.sprite.Sprite):
                     pass
                 elif self.rect.x == enemies[i].rect.x and self.rect.y == enemies[i].rect.y:
                     # checks if the enemy is checking itself in the list of enemies, and if it is itself, skip
-                    pass
+                    stuckCounter += 1
                 else:
                     if not self.westRect.colliderect(enemies[i].circleRect):
                         # enemy moves West if unobstructed
@@ -538,7 +567,12 @@ class Enemy(pygame.sprite.Sprite):
                                     moveEast += 1
                                 else:
                                     tempSpeed = random.uniform(0.1, 1)
-                                    enemy.rect.x += tempSpeed
+                                    if tempSpeed < .5:
+                                        enemy.rect.x += tempSpeed
+                                    else:
+                                        enemy.rect.x -= tempSpeed
+
+
             if moveWest == (len(enemies) - 1):
                 self.travel_west()
             elif moveNorth == (len(enemies) - 1):
@@ -547,6 +581,25 @@ class Enemy(pygame.sprite.Sprite):
                 self.travel_south()
             elif moveEast == (len(enemies) - 1):
                 self.travel_east()
+        if self.rect.x == beforeMovement[0] and self.rect.y == beforeMovement[1]:
+            if not self.tempTime:
+                self.tempTime = seconds
+                self.previousPOS = (self.rect.x, self.rect.y)
+            if (seconds - self.tempTime) >= 2:
+                if self.rect.x == self.previousPOS[0] and self.rect.y == self.previousPOS[1]:
+                    print("STUCK!!!")
+        else:
+            self.tempTime = 0
+        if stuckCounter:
+            if stuckCounter > 1:
+                print("STUCKCOUNTER!!!")
+                tempSpeed = random.uniform(0.1, 1)
+                if tempSpeed < .5:
+                    enemy.rect.y += tempSpeed
+                else:
+                    enemy.rect.y -= tempSpeed
+                self.stuck = False
+                stuckCounter = 0
 
         if self.rect.y < p.rect.y:
             # enemy moves South
@@ -555,6 +608,7 @@ class Enemy(pygame.sprite.Sprite):
             moveEast = 0
             moveSouth = 0
             moveWest = 0
+            stuckCounter = 0
             for i in range(n):
                 # iterate through each enemy
                 if self.southRect.colliderect(p.rect):
@@ -562,7 +616,7 @@ class Enemy(pygame.sprite.Sprite):
                     pass
                 elif self.rect.x == enemies[i].rect.x and self.rect.y == enemies[i].rect.y:
                     # checks if the enemy is checking itself in the list of enemies, and if it is itself, skip
-                    pass
+                    stuckCounter += 1
                 else:
                     if not self.southRect.colliderect(enemies[i].circleRect):
                         # enemy moves South if unobstructed
@@ -590,7 +644,11 @@ class Enemy(pygame.sprite.Sprite):
                                     moveNorth += 1
                                 else:
                                     tempSpeed = random.uniform(0.1, 1)
-                                    enemy.rect.y -= tempSpeed
+                                    if tempSpeed < .5:
+                                        enemy.rect.y += tempSpeed
+                                    else:
+                                        enemy.rect.y -= tempSpeed
+
             if moveSouth == (len(enemies) - 1):
                 self.travel_south()
             elif moveEast == (len(enemies) - 1):
@@ -599,6 +657,25 @@ class Enemy(pygame.sprite.Sprite):
                 self.travel_west()
             elif moveNorth == (len(enemies) - 1):
                 self.travel_north()
+        if self.rect.x == beforeMovement[0] and self.rect.y == beforeMovement[1]:
+            if not self.tempTime:
+                self.tempTime = seconds
+                self.previousPOS = (self.rect.x, self.rect.y)
+            if (seconds - self.tempTime) >= 2:
+                if self.rect.x == self.previousPOS[0] and self.rect.y == self.previousPOS[1]:
+                    print("STUCK!!!")
+        else:
+            self.tempTime = 0
+        if stuckCounter:
+            if stuckCounter > 1:
+                print("STUCKCOUNTER!!!")
+                tempSpeed = random.uniform(0.1, 1)
+                if tempSpeed < .5:
+                    enemy.rect.y += tempSpeed
+                else:
+                    enemy.rect.y -= tempSpeed
+                self.stuck = False
+                stuckCounter = 0
 
         if self.rect.y > p.rect.y:
             # enemy moves North
@@ -607,6 +684,7 @@ class Enemy(pygame.sprite.Sprite):
             moveEast = 0
             moveSouth = 0
             moveWest = 0
+            stuckCounter = 0
             for i in range(n):
                 # iterate through each enemy
                 if self.northRect.colliderect(p.rect):
@@ -614,7 +692,7 @@ class Enemy(pygame.sprite.Sprite):
                     pass
                 elif self.rect.x == enemies[i].rect.x and self.rect.y == enemies[i].rect.y:
                     # checks if the enemy is checking itself in the list of enemies, and if it is itself, skip
-                    pass
+                    stuckCounter += 1
                 else:
                     if not self.northRect.colliderect(enemies[i].circleRect):
                         # enemy moves North if unobstructed
@@ -644,7 +722,10 @@ class Enemy(pygame.sprite.Sprite):
                                     moveSouth += 1
                                 else:
                                     tempSpeed = random.uniform(0.1, 1)
-                                    enemy.rect.y += tempSpeed
+                                    if tempSpeed < .5:
+                                        enemy.rect.y += tempSpeed
+                                    else:
+                                        enemy.rect.y -= tempSpeed
             if moveNorth == (len(enemies) - 1):
                 self.travel_north()
             elif moveEast == (len(enemies) - 1):
@@ -653,6 +734,27 @@ class Enemy(pygame.sprite.Sprite):
                 self.travel_west()
             elif moveSouth == (len(enemies) - 1):
                 self.travel_south()
+        if self.rect.x == beforeMovement[0] and self.rect.y == beforeMovement[1]:
+            if not self.tempTime:
+                self.tempTime = seconds
+                self.previousPOS = (self.rect.x, self.rect.y)
+            if (seconds - self.tempTime) >= 2:
+                if self.rect.x == self.previousPOS[0] and self.rect.y == self.previousPOS[1]:
+                    print("STUCK!!!")
+        else:
+            self.tempTime = 0
+        if stuckCounter:
+            if stuckCounter > 1:
+                print("STUCKCOUNTER!!!")
+                tempSpeed = random.uniform(0.1, 1)
+                if tempSpeed < .5:
+                    enemy.rect.y += tempSpeed
+                else:
+                    enemy.rect.y -= tempSpeed
+                self.stuck = False
+                stuckCounter = 0
+
+
 
     def attack_mc(self):
         pass
@@ -1068,7 +1170,7 @@ while game:
                     l.bulletCollisions.remove(bullet)
 
 
-    if len(enemies) < 25:
+    if len(enemies) < 15:
         xCoord = random.randint(-340, 990)
         yCoord = random.randint(-340, 990)
         enemy_length = len(enemies)
