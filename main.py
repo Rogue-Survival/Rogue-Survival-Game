@@ -557,14 +557,14 @@ class Enemy(pygame.sprite.Sprite):
             moveWest = 0
             for i in range(n):
                 # iterate through each enemy
-                if self.eastRect.colliderect(p.rect):
+                if self.eastRect.colliderect(p.rect) or self.southRect.colliderect(p.rect):
                     # if enemy collides with player, do not move
                     pass
                 elif self.rect.x == enemies[i].rect.x and self.rect.y == enemies[i].rect.y:
                     # checks if the enemy is checking itself in the list of enemies, and if it is itself, skip
                     pass
                 else:
-                    if not self.eastRect.colliderect(enemies[i].circleRect) and self.eastRect.colliderect(enemies[i].circleRect):
+                    if not self.eastRect.colliderect(enemies[i].circleRect) and not self.eastRect.colliderect(enemies[i].circleRect):
                         # enemy moves East if unobstructed
                         moveSouthEast += 1
                     else:
@@ -590,7 +590,7 @@ class Enemy(pygame.sprite.Sprite):
                                 elif not self.westRect.colliderect(enemies[i].circleRect):
                                     # enemy moves West as a last resort
                                     moveWest += 1
-            if moveEast == (len(enemies) - 1):
+            if moveSouthEast == (len(enemies) - 1):
                 self.travel_southeast()
             elif moveNorth == (len(enemies) - 1):
                 self.travel_north()
@@ -614,14 +614,14 @@ class Enemy(pygame.sprite.Sprite):
             moveWest = 0
             for i in range(n):
                 # iterate through each enemy
-                if self.eastRect.colliderect(p.rect):
+                if self.westRect.colliderect(p.rect) or self.southRect.colliderect(p.rect):
                     # if enemy collides with player, do not move
                     pass
                 elif self.rect.x == enemies[i].rect.x and self.rect.y == enemies[i].rect.y:
                     # checks if the enemy is checking itself in the list of enemies, and if it is itself, skip
                     pass
                 else:
-                    if not self.westRect.colliderect(enemies[i].circleRect) and self.southRect.colliderect(enemies[i].circleRect):
+                    if not self.westRect.colliderect(enemies[i].circleRect) and not self.southRect.colliderect(enemies[i].circleRect):
                         # enemy moves East if unobstructed
                         moveSouthWest += 1
                     else:
@@ -647,7 +647,7 @@ class Enemy(pygame.sprite.Sprite):
                                 elif not self.westRect.colliderect(enemies[i].circleRect):
                                     # enemy moves West as a last resort
                                     moveWest += 1
-            if moveEast == (len(enemies) - 1):
+            if moveSouthWest == (len(enemies) - 1):
                 self.travel_southwest()
             elif moveNorth == (len(enemies) - 1):
                 self.travel_north()
@@ -658,7 +658,7 @@ class Enemy(pygame.sprite.Sprite):
             elif moveWest == (len(enemies) - 1):
                 self.travel_west()
 
-        if self.rect.x < p.rect.x and self.rect.y < p.rect.y:
+        if self.rect.x < p.rect.x and self.rect.y > p.rect.y:
             # enemy moves North East
             n = len(enemies)
             moveSouthEast = 0
@@ -671,14 +671,14 @@ class Enemy(pygame.sprite.Sprite):
             moveWest = 0
             for i in range(n):
                 # iterate through each enemy
-                if self.eastRect.colliderect(p.rect):
+                if self.eastRect.colliderect(p.rect) or self.northRect.colliderect(p.rect):
                     # if enemy collides with player, do not move
                     pass
                 elif self.rect.x == enemies[i].rect.x and self.rect.y == enemies[i].rect.y:
                     # checks if the enemy is checking itself in the list of enemies, and if it is itself, skip
                     pass
                 else:
-                    if not self.eastRect.colliderect(enemies[i].circleRect)and self.northRect.colliderect(enemies[i].circleRect):
+                    if not self.eastRect.colliderect(enemies[i].circleRect) and not self.northRect.colliderect(enemies[i].circleRect):
                         # enemy moves East if unobstructed
                         moveNorthEast += 1
                     else:
@@ -704,7 +704,7 @@ class Enemy(pygame.sprite.Sprite):
                                 elif not self.westRect.colliderect(enemies[i].circleRect):
                                     # enemy moves West as a last resort
                                     moveWest += 1
-            if moveEast == (len(enemies) - 1):
+            if moveNorthEast == (len(enemies) - 1):
                 self.travel_northeast()
             elif moveNorth == (len(enemies) - 1):
                 self.travel_south()
@@ -715,7 +715,7 @@ class Enemy(pygame.sprite.Sprite):
             elif moveWest == (len(enemies) - 1):
                 self.travel_west()
 
-        if self.rect.x < p.rect.x and self.rect.y < p.rect.y:
+        if self.rect.x < p.rect.x and self.rect.y > p.rect.y:
             # enemy moves North West
             n = len(enemies)
             moveSouthEast = 0
@@ -728,14 +728,14 @@ class Enemy(pygame.sprite.Sprite):
             moveWest = 0
             for i in range(n):
                 # iterate through each enemy
-                if self.eastRect.colliderect(p.rect):
+                if self.westRect.colliderect(p.rect) or self.northRect.colliderect(p.rect):
                     # if enemy collides with player, do not move
                     pass
                 elif self.rect.x == enemies[i].rect.x and self.rect.y == enemies[i].rect.y:
                     # checks if the enemy is checking itself in the list of enemies, and if it is itself, skip
                     pass
                 else:
-                    if not self.westRect.colliderect(enemies[i].circleRect) and self.northRect.colliderect(enemies[i].circleRect):
+                    if not self.westRect.colliderect(enemies[i].circleRect) and not self.northRect.colliderect(enemies[i].circleRect):
                         # enemy moves East if unobstructed
                         moveNorthWest += 1
                     else:
@@ -761,7 +761,7 @@ class Enemy(pygame.sprite.Sprite):
                                 elif not self.westRect.colliderect(enemies[i].circleRect):
                                     # enemy moves West as a last resort
                                     moveWest += 1
-            if moveEast == (len(enemies) - 1):
+            if moveNorthWest == (len(enemies) - 1):
                 self.travel_northwest()
             elif moveNorth == (len(enemies) - 1):
                 self.travel_north()
@@ -923,7 +923,7 @@ class Enemy(pygame.sprite.Sprite):
             elif moveNorth == (len(enemies) - 1):
                 self.travel_north()
 
-        if self.rect.y > p.rect.y  and self.rect.x == p.rect.x:
+        if self.rect.y > p.rect.y and self.rect.x == p.rect.x:
             # enemy moves North
             n = len(enemies)
             moveNorth = 0
