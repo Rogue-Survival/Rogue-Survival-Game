@@ -529,6 +529,9 @@ class Enemy(pygame.sprite.Sprite):
         self.tempTime = 0
         self.previousPOS = ()
         self.meleeAttackCollisions = []
+        self.spawned = []
+        self.spawnTimer = 0
+        self.spawnIndicator = None
 
 
     def get_speed(self):
@@ -541,6 +544,9 @@ class Enemy(pygame.sprite.Sprite):
 
     def generate_enemy(self):
         pass
+
+    def spawn(self):
+        self.spawned.append(1)
 
     def travel_north(self):
         # enemy moves North
@@ -961,11 +967,11 @@ class XP_Bar(pygame.sprite.Sprite):
                     self.leftover = 0
             else:
                 self.xpBarRect = pygame.draw.line(screen, (28,36,192), (100-self.offset,770), ((self.total_length*self.length)+self.leftoverSize+100-self.offset, 770), 25)
-                # self.xpBarEmptyRect = pygame.draw.line(screen, (255,255,255), ((self.total_length*self.length)+100-self.offset,770), (700-self.offset, 770), 25)
+                self.xpBarEmptyRect = pygame.draw.line(screen, (255,255,255), ((self.total_length*self.length)+self.leftoverSize+100-self.offset,770), (700-self.offset, 770), 25)
         else:
             # Displays if player has zero XP
             self.xpBarRect = pygame.draw.line(screen, (28,36,192), (100-self.offset,770), (self.leftoverSize+100-self.offset, 770), 25)
-            # self.xpBarEmptyRect = pygame.draw.line(screen, (255,255,255), (100-self.offset,770), (700-self.offset, 770), 25)
+            self.xpBarEmptyRect = pygame.draw.line(screen, (255,255,255), (self.leftoverSize+100-self.offset,770), (700-self.offset, 770), 25)
 
         # Displays level number
         self.connector = pygame.draw.line(screen, (0,0,0), (710-self.offset,770), (740-self.offset, 770), 5)
@@ -988,8 +994,9 @@ m = Map()
 b = Bullet()
 xpB = XP_Bar()
 ba = BasicAttack()
-enemies = [Enemy(20, 50) for _ in range(1)]
-bullets = [Bullet() for _ in range(1)]
+enemies = []
+bullets = []
+# bullets = [Bullet() for _ in range(1)]
 
 # adds ability for text to be on screen
 def text_objects(text, font):
@@ -1240,56 +1247,82 @@ while game:
             pygame.draw.circle(screen, (255, 255, 255), (bullet.rect.x+18, bullet.rect.y+17), 10)
             bullet.bullet()
 
+
+    if len(enemies) < 15:
+        xCoord = random.randint(-340, 990)
+        yCoord = random.randint(-340, 990)
+        enemy_length = len(enemies)
+        count = 0
+        for enemy in enemies:
+            while xCoord == enemy.rect.x or yCoord == enemy.rect.y or (abs(xCoord - enemy.rect.x) < 15 and abs(yCoord - enemy.rect.y) < 15) or (250 <= xCoord <= 550 and 250 <= yCoord <= 550) or xCoord < m.leftBoundaryX or xCoord > m.rightBoundaryX or yCoord < m.topBoundaryY or yCoord > m.bottomBoundaryY:
+                xCoord = random.randint(-340, 990)
+                yCoord = random.randint(-340, 990)
+        enemies.append(Enemy(xCoord, yCoord))
+
     for enemy in enemies:
-        # for every enemy
-        screen.blit(pygame.transform.scale(enemy1, (35, 30)), (enemy.rect.x, enemy.rect.y))
-        enemy.generate_enemy()
-        enemy.follow_mc()
-        # pygame.draw.rect(screen, (255,0,0), enemy.rect)
-        # pygame.draw.rect(screen, (128,0,128), enemy.northRect)
-        # pygame.draw.rect(screen, (128,0,128), enemy.eastRect)
-        # pygame.draw.rect(screen, (128,0,128), enemy.southRect)
-        # pygame.draw.rect(screen, (128,0,128), enemy.westRect)
-        enemy.circleRect = pygame.draw.circle(transparentSurface, (0, 50, 0, 100), (enemy.rect.x+18, enemy.rect.y + 17), 10)
-        enemy.midDotRect = pygame.draw.circle(transparentSurface, (0, 50, 0, 100), (enemy.rect.x + 16, enemy.rect.y + 16), 1)
-        for bullet in bullets:
-            if enemy.rect.colliderect(bullet.rect) and bullet.bulletValid:
-                if not enemy.bulletCollisions:
-                    # if the enemy has encountered it's first bullet, add to the list and take damage
-                    enemy.bulletCollisions.append(bullet)
-                    enemy.health -= 100
-                elif enemy.bulletCollisions:
-                    # if the list of bullets the enemy has collided with is greater than 0, make sure it is a different bullet in order to deal damage
-                    i = 0
-                    for l in enemy.bulletCollisions:
-                        if bullet.rect.x == enemy.bulletCollisions[i].rect.x and bullet.rect.y == enemy.bulletCollisions[i].rect.y:
-                            pass
-                        elif bullet not in enemy.bulletCollisions and bullet.bulletValid:
-                            enemy.bulletCollisions.append(bullet)
-                            enemy.health -= 100
-                        i += 1
+        # go through each enemy and control the spawning and movements
+        if not enemy.spawned:
+            # enemy.spawnTimer = pygame.time.get_ticks()
+            pygame.draw.circle(screen, (128,0,32), (enemy.rect.x, enemy.rect.y), 16)
+            enemy.spawnTimer += 1
+            if enemy.spawnTimer >= 75:
+                enemy.spawned.append(1)
+                enemy.spawnIndicator = None
+                # screen.blit(pygame.transform.scale(enemy1, (35, 30)), (enemy.rect.x, enemy.rect.y))
+                # enemy.generate_enemy()
+                # enemy.follow_mc()
+                # enemy.spawnTimer = 0
+        else:
+            screen.blit(pygame.transform.scale(enemy1, (35, 30)), (enemy.rect.x, enemy.rect.y))
+            enemy.circleRect = pygame.draw.circle(transparentSurface, (0, 50, 0, 100), (enemy.rect.x+18, enemy.rect.y + 17), 10)
+            enemy.midDotRect = pygame.draw.circle(transparentSurface, (0, 50, 0, 100), (enemy.rect.x + 16, enemy.rect.y + 16), 1)
+            enemy.generate_enemy()
+            enemy.follow_mc()
+            # pygame.draw.rect(screen, (255,0,0), enemy.rect)
+            # pygame.draw.rect(screen, (128,0,128), enemy.northRect)
+            # pygame.draw.rect(screen, (128,0,128), enemy.eastRect)
+            # pygame.draw.rect(screen, (128,0,128), enemy.southRect)
+            # pygame.draw.rect(screen, (128,0,128), enemy.westRect)
 
-                if enemy.health <= 0:
-                    # despawns the enemy if their health is 0 or below
-                    xp.append(XP(enemy.rect.x+18, enemy.rect.y+17))
-                    enemies.remove(enemy)
-                    chance = random.randint(1,10)
-                    if chance <= 2:
-                        p.gold += 1
-                    # self.rect = pygame.draw.circle(screen, (255,255,255), (p.rect.x+18,p.rect.y+17), 10)
-                    break
+            for bullet in bullets:
+                # for each active bullet, if the bullet hits an enemy, deal damage if appropriate conditions met.
+                if enemy.rect.colliderect(bullet.rect) and bullet.bulletValid:
+                    if not enemy.bulletCollisions:
+                        # if the enemy has encountered it's first bullet, add to the list and take damage
+                        enemy.bulletCollisions.append(bullet)
+                        enemy.health -= 100
+                    elif enemy.bulletCollisions:
+                        # if the list of bullets the enemy has collided with is greater than 0, make sure it is a different bullet in order to deal damage
+                        i = 0
+                        for l in enemy.bulletCollisions:
+                            if bullet.rect.x == enemy.bulletCollisions[i].rect.x and bullet.rect.y == enemy.bulletCollisions[i].rect.y:
+                                pass
+                            elif bullet not in enemy.bulletCollisions and bullet.bulletValid:
+                                enemy.bulletCollisions.append(bullet)
+                                enemy.health -= 100
+                            i += 1
 
-        if enemy.rect.colliderect(ba.hitBoxRect) and ba.running and not enemy.meleeAttackCollisions:
-            # Reduce enemy health from the Players basic attack if not hit by that same attack swing
-            enemy.health -= 22
-            enemy.meleeAttackCollisions.append(1)
-            if enemy.health <= 0:
-                # remove enemy from the game if at zero health or below
-                if enemy in enemies:
-                    enemies.remove(enemy)
-                    chance = random.randint(1,10)
-                    if chance <= 2:
-                        p.gold += 1
+            if enemy.rect.colliderect(ba.hitBoxRect) and ba.running and not enemy.meleeAttackCollisions:
+                # Reduce enemy health from the Players basic attack if not hit by that same attack swing
+                enemy.health -= 22
+                enemy.meleeAttackCollisions.append(1)
+                # if enemy.health <= 0:
+                #     # remove enemy from the game if at zero health or below
+                #     if enemy in enemies:
+                #         enemies.remove(enemy)
+                #     chance = random.randint(1,10)
+                #     if chance <= 2:
+                #         p.gold += 1
+
+        if enemy.health <= 0:
+            # despawns the enemy if their health is 0 or below
+            xp.append(XP(enemy.rect.x+18, enemy.rect.y+17))
+            if enemy in enemies:
+                enemies.remove(enemy)
+            chance = random.randint(1,10)
+            if chance <= 2:
+                p.gold += 1
+            # self.rect = pygame.draw.circle(screen, (255,255,255), (p.rect.x+18,p.rect.y+17), 10)
 
 
         if enemy.rect.colliderect(p.rect) or enemy.northRect.colliderect(p.rect) or enemy.eastRect.colliderect(p.rect) or enemy.southRect.colliderect(p.rect) or enemy.westRect.colliderect(p.rect):
@@ -1343,19 +1376,6 @@ while game:
                     l.bulletCollisions.remove(bullet)
 
 
-
-
-    if len(enemies) < 15:
-        xCoord = random.randint(-340, 990)
-        yCoord = random.randint(-340, 990)
-        enemy_length = len(enemies)
-        count = 0
-        for enemy in enemies:
-            while xCoord == enemy.rect.x or yCoord == enemy.rect.y or (abs(xCoord - enemy.rect.x) < 15 and abs(yCoord - enemy.rect.y) < 15) or (250 <= xCoord <= 550 and 250 <= yCoord <= 550) or xCoord < m.leftBoundaryX or xCoord > m.rightBoundaryX or yCoord < m.topBoundaryY or yCoord > m.bottomBoundaryY:
-                xCoord = random.randint(-340, 990)
-                yCoord = random.randint(-340, 990)
-        enemies.append(Enemy(xCoord, yCoord))
-
     ba.attack()
     m.update_boundary()
     display_timer(gameTimeStr, timerFont, (0, 0, 0))
@@ -1364,7 +1384,6 @@ while game:
     index = 0
     numOfEnemies = len(enemies)
     pygame.display.flip()
-    # print(p.health)
     pygame.display.update()
 
 pygame.quit()
