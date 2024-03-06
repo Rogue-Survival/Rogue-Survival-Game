@@ -972,7 +972,7 @@ class Enemy(pygame.sprite.Sprite):
             elif moveWest == (len(enemies) - 1):
                 self.travel_west()
 
-        if self.rect.x < p.rect.x:
+        if self.rect.x < p.rect.x and self.rect.y == p.rect.y:
             # enemy moves East
             n = len(enemies)
             moveNorth = 0
@@ -1050,7 +1050,7 @@ class Enemy(pygame.sprite.Sprite):
                 self.stuck = False
                 stuckCounter = 0
 
-        if self.rect.x > p.rect.x:
+        if self.rect.x > p.rect.x and self.rect.y == p.rect.y:
             # enemy moves West
             n = len(enemies)
             moveNorth = 0
@@ -1129,7 +1129,7 @@ class Enemy(pygame.sprite.Sprite):
                 self.stuck = False
                 stuckCounter = 0
 
-        if self.rect.y < p.rect.y:
+        if self.rect.y < p.rect.y and self.rect.x == p.rect.x:
             # enemy moves South
             n = len(enemies)
             moveNorth = 0
@@ -1205,7 +1205,7 @@ class Enemy(pygame.sprite.Sprite):
                 self.stuck = False
                 stuckCounter = 0
 
-        if self.rect.y > p.rect.y:
+        if self.rect.y > p.rect.y and self.rect.x == p.rect.x:
             # enemy moves North
             n = len(enemies)
             moveNorth = 0
