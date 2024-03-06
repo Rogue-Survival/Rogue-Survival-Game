@@ -169,10 +169,22 @@ class Player(pygame.sprite.Sprite):
 
     def move_northeast(self):
         #moves player north east
-        if self.rect.y > 25 and self.rect.x < 800:
+        if self.rect.y > m.topBoundaryY + 25 and self.rect.x < m.rightBoundaryX - 50:
             Dspeed = self.speed / math.sqrt(2)
-            m.cameraY -= Dspeed
             m.cameraX += Dspeed
+            m.cameraY -= Dspeed
+            m.leftBoundaryY1 += Dspeed
+            m.leftBoundaryY2 += Dspeed
+            m.rightBoundaryY1 += Dspeed
+            m.rightBoundaryY2 += Dspeed
+            m.topBoundaryY += Dspeed
+            m.bottomBoundaryY += Dspeed
+            m.leftBoundaryX -= Dspeed
+            m.rightBoundaryX -= Dspeed
+            m.topBoundaryX1 -= Dspeed
+            m.topBoundaryX2 -= Dspeed
+            m.bottomBoundaryX1 -= Dspeed
+            m.bottomBoundaryX2 -= Dspeed
             n = len(enemies)
             count = 0
             southCount = 0
@@ -196,10 +208,22 @@ class Player(pygame.sprite.Sprite):
                 x.xp_stationary()
 
     def move_northwest(self):
-        if self.rect.x > 25 and self.rect.y > 25:
+        if self.rect.y > m.topBoundaryY + 25 and self.rect.x > m.leftBoundaryX + 25:
             Dspeed = self.speed / math.sqrt(2)
-            m.cameraY -= Dspeed
             m.cameraX -= Dspeed
+            m.cameraY -= Dspeed
+            m.leftBoundaryX += Dspeed
+            m.rightBoundaryX += Dspeed
+            m.topBoundaryX1 += Dspeed
+            m.topBoundaryX2 += Dspeed
+            m.bottomBoundaryX1 += Dspeed
+            m.bottomBoundaryX2 += Dspeed
+            m.leftBoundaryY1 += Dspeed
+            m.leftBoundaryY2 += Dspeed
+            m.rightBoundaryY1 += Dspeed
+            m.rightBoundaryY2 += Dspeed
+            m.topBoundaryY += Dspeed
+            m.bottomBoundaryY += Dspeed
             n = len(enemies)
             count = 0
             northCount = 0
@@ -224,10 +248,22 @@ class Player(pygame.sprite.Sprite):
 
     def move_southeast(self):
         #Moves player south east
-        if self.rect.y < 800 and self.rect.x < 800:
+        if self.rect.y < m.bottomBoundaryY - 50 and self.rect.x < m.rightBoundaryX - 50:
             Dspeed = self.speed / math.sqrt(2)
-            m.cameraY += Dspeed
             m.cameraX += Dspeed
+            m.leftBoundaryX -= Dspeed
+            m.rightBoundaryX -= Dspeed
+            m.topBoundaryX1 -= Dspeed
+            m.topBoundaryX2 -= Dspeed
+            m.bottomBoundaryX1 -= Dspeed
+            m.bottomBoundaryX2 -= Dspeed
+            m.cameraY += Dspeed
+            m.leftBoundaryY1 -= Dspeed
+            m.leftBoundaryY2 -= Dspeed
+            m.rightBoundaryY1 -= Dspeed
+            m.rightBoundaryY2 -= Dspeed
+            m.topBoundaryY -= Dspeed
+            m.bottomBoundaryY -= Dspeed
             n = len(enemies)
             count = 0
             southCount = 0
@@ -252,10 +288,22 @@ class Player(pygame.sprite.Sprite):
 
     def move_southwest(self):
         #moves player south west
-        if self.rect.y < 800 and self.rect.x > 25:
+        if self.rect.y < m.bottomBoundaryY - 50 and self.rect.x > m.leftBoundaryX + 25:
             Dspeed = self.speed / math.sqrt(2)
-            m.cameraY += Dspeed
             m.cameraX -= Dspeed
+            m.leftBoundaryX += Dspeed
+            m.rightBoundaryX += Dspeed
+            m.topBoundaryX1 += Dspeed
+            m.topBoundaryX2 += Dspeed
+            m.bottomBoundaryX1 += Dspeed
+            m.bottomBoundaryX2 += Dspeed
+            m.cameraY += Dspeed
+            m.leftBoundaryY1 -= Dspeed
+            m.leftBoundaryY2 -= Dspeed
+            m.rightBoundaryY1 -= Dspeed
+            m.rightBoundaryY2 -= Dspeed
+            m.topBoundaryY -= Dspeed
+            m.bottomBoundaryY -= Dspeed
             n = len(enemies)
             count = 0
             southCount = 0
