@@ -60,10 +60,10 @@ class Map(pygame.sprite.Sprite):
         return self.mapY
 
     def update_boundary(self):
-        self.leftBoundary = pygame.draw.line(transparentSurface, (255, 0, 0), (self.leftBoundaryX, self.leftBoundaryY1), (self.leftBoundaryX, self.leftBoundaryY2), 12)
-        self.rightBoundary = pygame.draw.line(transparentSurface, (255, 0, 0), (self.rightBoundaryX, self.rightBoundaryY1), (self.rightBoundaryX, self.rightBoundaryY2), 12)
-        self.topBoundary = pygame.draw.line(transparentSurface, (255, 0, 0), (self.topBoundaryX1, self.topBoundaryY), (self.topBoundaryX2, self.topBoundaryY), 12)
-        self.bottomBoundary = pygame.draw.line(transparentSurface, (255, 0, 0), (self.bottomBoundaryX1, self.bottomBoundaryY), (self.bottomBoundaryX2, self.bottomBoundaryY), 12)
+        self.leftBoundary = pygame.draw.line(screen, (255, 0, 0), (self.leftBoundaryX, self.leftBoundaryY1), (self.leftBoundaryX, self.leftBoundaryY2), 12)
+        self.rightBoundary = pygame.draw.line(screen, (255, 0, 0), (self.rightBoundaryX, self.rightBoundaryY1), (self.rightBoundaryX, self.rightBoundaryY2), 12)
+        self.topBoundary = pygame.draw.line(screen, (255, 0, 0), (self.topBoundaryX1, self.topBoundaryY), (self.topBoundaryX2, self.topBoundaryY), 12)
+        self.bottomBoundary = pygame.draw.line(screen, (255, 0, 0), (self.bottomBoundaryX1, self.bottomBoundaryY), (self.bottomBoundaryX2, self.bottomBoundaryY), 12)
 
 
 class Player(pygame.sprite.Sprite):
@@ -169,7 +169,7 @@ class Player(pygame.sprite.Sprite):
 
     def move_northeast(self):
         #moves player north east
-        if self.rect.y > m.topBoundaryY + 25 and self.rect.x < m.rightBoundaryX - 50:
+        if self.rect.y > m.topBoundaryY + 25 and self.rect.x <= m.rightBoundaryX - 50:
             Dspeed = self.speed / math.sqrt(2)
             m.cameraX += Dspeed
             m.cameraY -= Dspeed
@@ -206,6 +206,11 @@ class Player(pygame.sprite.Sprite):
                 x.y += Dspeed
                 x.x -= Dspeed
                 x.xp_stationary()
+        elif self.rect.y > m.topBoundaryY + 25:
+            self.move_north()
+        elif self.rect.x <= m.rightBoundaryX - 50:
+            self.move_east()
+
 
     def move_northwest(self):
         if self.rect.y > m.topBoundaryY + 25 and self.rect.x > m.leftBoundaryX + 25:
@@ -245,6 +250,10 @@ class Player(pygame.sprite.Sprite):
                 x.y += Dspeed
                 x.x += Dspeed
                 x.xp_stationary()
+        elif self.rect.y > m.topBoundaryY + 25:
+            self.move_north()
+        elif self.rect.x > m.leftBoundaryX + 25:
+            self.move_west()
 
     def move_southeast(self):
         #Moves player south east
@@ -285,6 +294,10 @@ class Player(pygame.sprite.Sprite):
                 x.y -= Dspeed
                 x.x -= Dspeed
                 x.xp_stationary()
+        elif self.rect.y < m.bottomBoundaryY - 50:
+            self.move_south()
+        elif self.rect.x < m.rightBoundaryX - 50:
+            self.move_east()
 
     def move_southwest(self):
         #moves player south west
@@ -325,6 +338,11 @@ class Player(pygame.sprite.Sprite):
                 x.y -= Dspeed
                 x.x += Dspeed
                 x.xp_stationary()
+
+        elif self.rect.y < m.bottomBoundaryY - 50:
+            self.move_south()
+        elif self.rect.x > m.leftBoundaryX + 25:
+            self.move_west()
     def move_south(self):
         # moves the player South
         if self.rect.y < m.bottomBoundaryY - 50:
@@ -682,6 +700,7 @@ class Enemy(pygame.sprite.Sprite):
         self.tempTime = 0
         self.previousPOS = ()
         self.meleeAttackCollisions = []
+        self.miniboss = False
 
 
     def get_speed(self):
