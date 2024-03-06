@@ -19,6 +19,7 @@ x = pygame.time.get_ticks()
 
 mc_img = pygame.image.load("./images/MAIN_CHARACTER.png").convert_alpha()
 enemy1 = pygame.image.load("./images/slime.png").convert_alpha()
+#mini_b = pygame.image.load("./images")
 xp = []
 xp_hit = []
 
@@ -167,6 +168,7 @@ class Player(pygame.sprite.Sprite):
                 x.xp_stationary()
 
     def move_northeast(self):
+        #moves player north east
         if self.rect.y > 25 and self.rect.x < 800:
             Dspeed = self.speed / math.sqrt(2)
             m.cameraY -= Dspeed
@@ -177,6 +179,7 @@ class Player(pygame.sprite.Sprite):
             eastCount = 0
             westCount = 0
             for enemy in enemies:
+                # moves the enemy and associated rects due to the effects of the player camera
                 enemy.rect.y += Dspeed
                 enemy.rect.x -= Dspeed
                 enemy.northRect.y = enemy.rect.y - enemy.northYVal
@@ -187,6 +190,10 @@ class Player(pygame.sprite.Sprite):
                 enemy.eastRect.x = enemy.rect.x + enemy.eastXVal
                 enemy.southRect.x = enemy.rect.x + enemy.southXVal
                 enemy.westRect.x = enemy.rect.x - enemy.westXVal
+            for x in xp:
+                x.y += Dspeed
+                x.x -= Dspeed
+                x.xp_stationary()
 
     def move_northwest(self):
         if self.rect.x > 25 and self.rect.y > 25:
@@ -210,8 +217,13 @@ class Player(pygame.sprite.Sprite):
                 enemy.eastRect.x = enemy.rect.x + enemy.eastXVal
                 enemy.southRect.x = enemy.rect.x + enemy.southXVal
                 enemy.westRect.x = enemy.rect.x - enemy.westXVal
+            for x in xp:
+                x.y += Dspeed
+                x.x += Dspeed
+                x.xp_stationary()
 
     def move_southeast(self):
+        #Moves player south east
         if self.rect.y < 800 and self.rect.x < 800:
             Dspeed = self.speed / math.sqrt(2)
             m.cameraY += Dspeed
@@ -233,8 +245,13 @@ class Player(pygame.sprite.Sprite):
                 enemy.eastRect.x = enemy.rect.x + enemy.eastXVal
                 enemy.southRect.x = enemy.rect.x + enemy.southXVal
                 enemy.westRect.x = enemy.rect.x - enemy.westXVal
+            for x in xp:
+                x.y -= Dspeed
+                x.x -= Dspeed
+                x.xp_stationary()
 
     def move_southwest(self):
+        #moves player south west
         if self.rect.y < 800 and self.rect.x > 25:
             Dspeed = self.speed / math.sqrt(2)
             m.cameraY += Dspeed
@@ -256,6 +273,10 @@ class Player(pygame.sprite.Sprite):
                 enemy.eastRect.x = enemy.rect.x + enemy.eastXVal
                 enemy.southRect.x = enemy.rect.x + enemy.southXVal
                 enemy.westRect.x = enemy.rect.x - enemy.westXVal
+            for x in xp:
+                x.y -= Dspeed
+                x.x += Dspeed
+                x.xp_stationary()
     def move_south(self):
         # moves the player South
         if self.rect.y < m.bottomBoundaryY - 50:
@@ -626,6 +647,19 @@ class Enemy(pygame.sprite.Sprite):
     def generate_enemy(self):
         pass
 
+    def travel_northeast(self):
+        Dspeed = self.speed / math.sqrt(2)
+        self.rect.y -= Dspeed
+        self.rect.x += Dspeed
+        self.northRect.y = self.rect.y - self.northYVal
+        self.eastRect.y = self.rect.y + self.eastYVal
+        self.southRect.y = self.rect.y + self.southYVal
+        self.westRect.y = self.rect.y + self.westYVal
+        self.northRect.x = self.rect.x + self.northXVal
+        self.eastRect.x = self.rect.x + self.eastXVal
+        self.southRect.x = self.rect.x + self.southXVal
+        self.westRect.x = self.rect.x - self.westXVal
+
     def travel_northwest(self):
         Dspeed = self.speed / math.sqrt(2)
         self.rect.y -= Dspeed
@@ -702,243 +736,241 @@ class Enemy(pygame.sprite.Sprite):
         beforeMovement = (self.rect.x, self.rect.y)
         stuckCounter = False
 
-        def follow_mc(self):
-            # follows the main character around the map
-            if self.rect.x < p.rect.x and self.rect.y < p.rect.y:
-                # enemy moves South East
-                n = len(enemies)
-                moveSouthEast = 0
-                moveNorthEast = 0
-                moveSouthWest = 0
-                moveNorthWest = 0
-                moveNorth = 0
-                moveEast = 0
-                moveSouth = 0
-                moveWest = 0
-                for i in range(n):
-                    # iterate through each enemy
-                    if self.eastRect.colliderect(p.rect) or self.southRect.colliderect(p.rect):
-                        # if enemy collides with player, do not move
-                        pass
-                    elif self.rect.x == enemies[i].rect.x and self.rect.y == enemies[i].rect.y:
-                        # checks if the enemy is checking itself in the list of enemies, and if it is itself, skip
-                        pass
+        if self.rect.x < p.rect.x and self.rect.y < p.rect.y:
+            # enemy moves South East
+            n = len(enemies)
+            moveSouthEast = 0
+            moveNorthEast = 0
+            moveSouthWest = 0
+            moveNorthWest = 0
+            moveNorth = 0
+            moveEast = 0
+            moveSouth = 0
+            moveWest = 0
+            for i in range(n):
+                # iterate through each enemy
+                if self.eastRect.colliderect(p.rect) or self.southRect.colliderect(p.rect):
+                    # if enemy collides with player, do not move
+                    pass
+                elif self.rect.x == enemies[i].rect.x and self.rect.y == enemies[i].rect.y:
+                    # checks if the enemy is checking itself in the list of enemies, and if it is itself, skip
+                    pass
+                else:
+                    if not self.eastRect.colliderect(enemies[i].circleRect) and not self.eastRect.colliderect(
+                            enemies[i].circleRect):
+                        # enemy moves South East if unobstructed
+                        moveSouthEast += 1
                     else:
-                        if not self.eastRect.colliderect(enemies[i].circleRect) and not self.eastRect.colliderect(
-                                enemies[i].circleRect):
-                            # enemy moves South East if unobstructed
-                            moveSouthEast += 1
-                        else:
-                            if (p.rect.x - self.rect.x) > 50:
-                                # enemy continues trying to move towards player if further than 50 pixels away.
-                                if not self.northRect.colliderect(
-                                        enemies[i].circleRect) and not self.eastRect.colliderect(enemies[i].circleRect):
-                                    # if enemy can go both North and South, pick a random direction
-                                    randomDirection = random.randint(0, 3)
-                                    if randomDirection <= 1:
-                                        # enemy moves North
-                                        moveNorth += 1
-                                    else:
-                                        # enemy moves South
-                                        moveSouth += 1
+                        if (p.rect.x - self.rect.x) > 50:
+                            # enemy continues trying to move towards player if further than 50 pixels away.
+                            if not self.northRect.colliderect(
+                                    enemies[i].circleRect) and not self.eastRect.colliderect(enemies[i].circleRect):
+                                # if enemy can go both North and South, pick a random direction
+                                randomDirection = random.randint(0, 3)
+                                if randomDirection <= 1:
+                                    # enemy moves North
+                                    moveNorth += 1
                                 else:
-                                    # if North and South are not both an option, check which direct is an option
-                                    if not self.northRect.colliderect(enemies[i].circleRect):
-                                        # enemy moves North
-                                        moveNorth += 1
-                                    elif not self.southRect.colliderect(enemies[i].circleRect):
-                                        # enemy moves South
-                                        moveSouth += 1
-                                    elif not self.westRect.colliderect(enemies[i].circleRect):
-                                        # enemy moves West as a last resort
-                                        moveWest += 1
-                if moveSouthEast == (len(enemies) - 1):
-                    self.travel_southeast()
-                elif moveNorth == (len(enemies) - 1):
-                    self.travel_north()
-                elif moveNorth == (len(enemies) - 1):
-                    self.travel_north()
-                elif moveSouth == (len(enemies) - 1):
-                    self.travel_east()
-                elif moveWest == (len(enemies) - 1):
-                    self.travel_west()
+                                    # enemy moves South
+                                    moveSouth += 1
+                            else:
+                                # if North and South are not both an option, check which direct is an option
+                                if not self.northRect.colliderect(enemies[i].circleRect):
+                                    # enemy moves North
+                                    moveNorth += 1
+                                elif not self.southRect.colliderect(enemies[i].circleRect):
+                                    # enemy moves South
+                                    moveSouth += 1
+                                elif not self.westRect.colliderect(enemies[i].circleRect):
+                                    # enemy moves West as a last resort
+                                    moveWest += 1
+            if moveSouthEast == (len(enemies) - 1):
+                self.travel_southeast()
+            elif moveNorth == (len(enemies) - 1):
+                self.travel_north()
+            elif moveNorth == (len(enemies) - 1):
+                self.travel_north()
+            elif moveSouth == (len(enemies) - 1):
+                self.travel_east()
+            elif moveWest == (len(enemies) - 1):
+                self.travel_west()
 
-            if self.rect.x > p.rect.x and self.rect.y < p.rect.y:
-                # enemy moves South West
-                n = len(enemies)
-                moveSouthEast = 0
-                moveNorthEast = 0
-                moveSouthWest = 0
-                moveNorthWest = 0
-                moveNorth = 0
-                moveEast = 0
-                moveSouth = 0
-                moveWest = 0
-                for i in range(n):
-                    # iterate through each enemy
-                    if self.westRect.colliderect(p.rect) or self.southRect.colliderect(p.rect):
-                        # if enemy collides with player, do not move
-                        pass
-                    elif self.rect.x == enemies[i].rect.x and self.rect.y == enemies[i].rect.y:
-                        # checks if the enemy is checking itself in the list of enemies, and if it is itself, skip
-                        pass
+        if self.rect.x > p.rect.x and self.rect.y < p.rect.y:
+            # enemy moves South West
+            n = len(enemies)
+            moveSouthEast = 0
+            moveNorthEast = 0
+            moveSouthWest = 0
+            moveNorthWest = 0
+            moveNorth = 0
+            moveEast = 0
+            moveSouth = 0
+            moveWest = 0
+            for i in range(n):
+                # iterate through each enemy
+                if self.westRect.colliderect(p.rect) or self.southRect.colliderect(p.rect):
+                    # if enemy collides with player, do not move
+                    pass
+                elif self.rect.x == enemies[i].rect.x and self.rect.y == enemies[i].rect.y:
+                    # checks if the enemy is checking itself in the list of enemies, and if it is itself, skip
+                    pass
+                else:
+                    if not self.westRect.colliderect(enemies[i].circleRect) and not self.southRect.colliderect(
+                            enemies[i].circleRect):
+                        # enemy moves South West if unobstructed
+                        moveSouthWest += 1
                     else:
-                        if not self.westRect.colliderect(enemies[i].circleRect) and not self.southRect.colliderect(
-                                enemies[i].circleRect):
-                            # enemy moves South West if unobstructed
-                            moveSouthWest += 1
-                        else:
-                            if (p.rect.x - self.rect.x) > 50:
-                                # enemy continues trying to move towards player if further than 50 pixels away.
-                                if not self.northRect.colliderect(
-                                        enemies[i].circleRect) and not self.eastRect.colliderect(enemies[i].circleRect):
-                                    # if enemy can go both North and South, pick a random direction
-                                    randomDirection = random.randint(0, 3)
-                                    if randomDirection <= 1:
-                                        # enemy moves North
-                                        moveNorth += 1
-                                    else:
-                                        # enemy moves South
-                                        moveSouth += 1
+                        if (p.rect.x - self.rect.x) > 50:
+                            # enemy continues trying to move towards player if further than 50 pixels away.
+                            if not self.northRect.colliderect(
+                                    enemies[i].circleRect) and not self.eastRect.colliderect(enemies[i].circleRect):
+                                # if enemy can go both North and South, pick a random direction
+                                randomDirection = random.randint(0, 3)
+                                if randomDirection <= 1:
+                                    # enemy moves North
+                                    moveNorth += 1
                                 else:
-                                    # if North and South are not both an option, check which direct is an option
-                                    if not self.northRect.colliderect(enemies[i].circleRect):
-                                        # enemy moves North
-                                        moveNorth += 1
-                                    elif not self.southRect.colliderect(enemies[i].circleRect):
-                                        # enemy moves South
-                                        moveSouth += 1
-                                    elif not self.westRect.colliderect(enemies[i].circleRect):
-                                        # enemy moves West as a last resort
-                                        moveWest += 1
-                if moveSouthWest == (len(enemies) - 1):
-                    self.travel_southwest()
-                elif moveNorth == (len(enemies) - 1):
-                    self.travel_north()
-                elif moveNorth == (len(enemies) - 1):
-                    self.travel_north()
-                elif moveSouth == (len(enemies) - 1):
-                    self.travel_east()
-                elif moveWest == (len(enemies) - 1):
-                    self.travel_west()
+                                    # enemy moves South
+                                    moveSouth += 1
+                            else:
+                                # if North and South are not both an option, check which direct is an option
+                                if not self.northRect.colliderect(enemies[i].circleRect):
+                                    # enemy moves North
+                                    moveNorth += 1
+                                elif not self.southRect.colliderect(enemies[i].circleRect):
+                                    # enemy moves South
+                                    moveSouth += 1
+                                elif not self.westRect.colliderect(enemies[i].circleRect):
+                                    # enemy moves West as a last resort
+                                    moveWest += 1
+            if moveSouthWest == (len(enemies) - 1):
+                self.travel_southwest()
+            elif moveNorth == (len(enemies) - 1):
+                self.travel_north()
+            elif moveNorth == (len(enemies) - 1):
+                self.travel_north()
+            elif moveSouth == (len(enemies) - 1):
+                self.travel_east()
+            elif moveWest == (len(enemies) - 1):
+                self.travel_west()
 
-            if self.rect.x < p.rect.x and self.rect.y > p.rect.y:
-                # enemy moves North East
-                n = len(enemies)
-                moveSouthEast = 0
-                moveNorthEast = 0
-                moveSouthWest = 0
-                moveNorthWest = 0
-                moveNorth = 0
-                moveEast = 0
-                moveSouth = 0
-                moveWest = 0
-                for i in range(n):
-                    # iterate through each enemy
-                    if self.eastRect.colliderect(p.rect) or self.northRect.colliderect(p.rect):
-                        # if enemy collides with player, do not move
-                        pass
-                    elif self.rect.x == enemies[i].rect.x and self.rect.y == enemies[i].rect.y:
-                        # checks if the enemy is checking itself in the list of enemies, and if it is itself, skip
-                        pass
+        if self.rect.x < p.rect.x and self.rect.y > p.rect.y:
+            # enemy moves North East
+            n = len(enemies)
+            moveSouthEast = 0
+            moveNorthEast = 0
+            moveSouthWest = 0
+            moveNorthWest = 0
+            moveNorth = 0
+            moveEast = 0
+            moveSouth = 0
+            moveWest = 0
+            for i in range(n):
+                # iterate through each enemy
+                if self.eastRect.colliderect(p.rect) or self.northRect.colliderect(p.rect):
+                    # if enemy collides with player, do not move
+                    pass
+                elif self.rect.x == enemies[i].rect.x and self.rect.y == enemies[i].rect.y:
+                    # checks if the enemy is checking itself in the list of enemies, and if it is itself, skip
+                    pass
+                else:
+                    if not self.eastRect.colliderect(enemies[i].circleRect) and not self.northRect.colliderect(
+                            enemies[i].circleRect):
+                        # enemy moves North East if unobstructed
+                        moveNorthEast += 1
                     else:
-                        if not self.eastRect.colliderect(enemies[i].circleRect) and not self.northRect.colliderect(
-                                enemies[i].circleRect):
-                            # enemy moves North East if unobstructed
-                            moveNorthEast += 1
-                        else:
-                            if (p.rect.x - self.rect.x) > 50:
-                                # enemy continues trying to move towards player if further than 50 pixels away.
-                                if not self.northRect.colliderect(
-                                        enemies[i].circleRect) and not self.eastRect.colliderect(enemies[i].circleRect):
-                                    # if enemy can go both North and South, pick a random direction
-                                    randomDirection = random.randint(0, 3)
-                                    if randomDirection <= 1:
-                                        # enemy moves North
-                                        moveNorth += 1
-                                    else:
-                                        # enemy moves South
-                                        moveSouth += 1
+                        if (p.rect.x - self.rect.x) > 50:
+                            # enemy continues trying to move towards player if further than 50 pixels away.
+                            if not self.northRect.colliderect(
+                                    enemies[i].circleRect) and not self.eastRect.colliderect(enemies[i].circleRect):
+                                # if enemy can go both North and South, pick a random direction
+                                randomDirection = random.randint(0, 3)
+                                if randomDirection <= 1:
+                                    # enemy moves North
+                                    moveNorth += 1
                                 else:
-                                    # if North and South are not both an option, check which direct is an option
-                                    if not self.northRect.colliderect(enemies[i].circleRect):
-                                        # enemy moves North
-                                        moveNorth += 1
-                                    elif not self.southRect.colliderect(enemies[i].circleRect):
-                                        # enemy moves South
-                                        moveSouth += 1
-                                    elif not self.westRect.colliderect(enemies[i].circleRect):
-                                        # enemy moves West as a last resort
-                                        moveWest += 1
-                if moveNorthEast == (len(enemies) - 1):
-                    self.travel_northeast()
-                elif moveNorth == (len(enemies) - 1):
-                    self.travel_south()
-                elif moveNorth == (len(enemies) - 1):
-                    self.travel_north()
-                elif moveSouth == (len(enemies) - 1):
-                    self.travel_east()
-                elif moveWest == (len(enemies) - 1):
-                    self.travel_west()
+                                    # enemy moves South
+                                    moveSouth += 1
+                            else:
+                                # if North and South are not both an option, check which direct is an option
+                                if not self.northRect.colliderect(enemies[i].circleRect):
+                                    # enemy moves North
+                                    moveNorth += 1
+                                elif not self.southRect.colliderect(enemies[i].circleRect):
+                                    # enemy moves South
+                                    moveSouth += 1
+                                elif not self.westRect.colliderect(enemies[i].circleRect):
+                                    # enemy moves West as a last resort
+                                    moveWest += 1
+            if moveNorthEast == (len(enemies) - 1):
+                self.travel_northeast()
+            elif moveNorth == (len(enemies) - 1):
+                self.travel_south()
+            elif moveNorth == (len(enemies) - 1):
+                self.travel_north()
+            elif moveSouth == (len(enemies) - 1):
+                self.travel_east()
+            elif moveWest == (len(enemies) - 1):
+                self.travel_west()
 
-            if self.rect.x > p.rect.x and self.rect.y > p.rect.y:
-                # enemy moves North West
-                n = len(enemies)
-                moveSouthEast = 0
-                moveNorthEast = 0
-                moveSouthWest = 0
-                moveNorthWest = 0
-                moveNorth = 0
-                moveEast = 0
-                moveSouth = 0
-                moveWest = 0
-                for i in range(n):
-                    # iterate through each enemy
-                    if self.westRect.colliderect(p.rect) or self.northRect.colliderect(p.rect):
-                        # if enemy collides with player, do not move
-                        pass
-                    elif self.rect.x == enemies[i].rect.x and self.rect.y == enemies[i].rect.y:
-                        # checks if the enemy is checking itself in the list of enemies, and if it is itself, skip
-                        pass
+        if self.rect.x > p.rect.x and self.rect.y > p.rect.y:
+            # enemy moves North West
+            n = len(enemies)
+            moveSouthEast = 0
+            moveNorthEast = 0
+            moveSouthWest = 0
+            moveNorthWest = 0
+            moveNorth = 0
+            moveEast = 0
+            moveSouth = 0
+            moveWest = 0
+            for i in range(n):
+                # iterate through each enemy
+                if self.westRect.colliderect(p.rect) or self.northRect.colliderect(p.rect):
+                    # if enemy collides with player, do not move
+                    pass
+                elif self.rect.x == enemies[i].rect.x and self.rect.y == enemies[i].rect.y:
+                    # checks if the enemy is checking itself in the list of enemies, and if it is itself, skip
+                    pass
+                else:
+                    if not self.westRect.colliderect(enemies[i].circleRect) and not self.northRect.colliderect(
+                            enemies[i].circleRect):
+                        # enemy moves North West if unobstructed
+                        moveNorthWest += 1
                     else:
-                        if not self.westRect.colliderect(enemies[i].circleRect) and not self.northRect.colliderect(
-                                enemies[i].circleRect):
-                            # enemy moves North West if unobstructed
-                            moveNorthWest += 1
-                        else:
-                            if (p.rect.x - self.rect.x) > 50:
-                                # enemy continues trying to move towards player if further than 50 pixels away.
-                                if not self.northRect.colliderect(
-                                        enemies[i].circleRect) and not self.eastRect.colliderect(enemies[i].circleRect):
-                                    # if enemy can go both North and South, pick a random direction
-                                    randomDirection = random.randint(0, 3)
-                                    if randomDirection <= 1:
-                                        # enemy moves North
-                                        moveNorth += 1
-                                    else:
-                                        # enemy moves South
-                                        moveSouth += 1
+                        if (p.rect.x - self.rect.x) > 50:
+                            # enemy continues trying to move towards player if further than 50 pixels away.
+                            if not self.northRect.colliderect(
+                                    enemies[i].circleRect) and not self.eastRect.colliderect(enemies[i].circleRect):
+                                # if enemy can go both North and South, pick a random direction
+                                randomDirection = random.randint(0, 3)
+                                if randomDirection <= 1:
+                                    # enemy moves North
+                                    moveNorth += 1
                                 else:
-                                    # if North and South are not both an option, check which direct is an option
-                                    if not self.northRect.colliderect(enemies[i].circleRect):
-                                        # enemy moves North
-                                        moveNorth += 1
-                                    elif not self.southRect.colliderect(enemies[i].circleRect):
-                                        # enemy moves South
-                                        moveSouth += 1
-                                    elif not self.westRect.colliderect(enemies[i].circleRect):
-                                        # enemy moves West as a last resort
-                                        moveWest += 1
-                if moveNorthWest == (len(enemies) - 1):
-                    self.travel_northwest()
-                elif moveNorth == (len(enemies) - 1):
-                    self.travel_north()
-                elif moveNorth == (len(enemies) - 1):
-                    self.travel_north()
-                elif moveSouth == (len(enemies) - 1):
-                    self.travel_east()
-                elif moveWest == (len(enemies) - 1):
-                    self.travel_west()
+                                    # enemy moves South
+                                    moveSouth += 1
+                            else:
+                                # if North and South are not both an option, check which direct is an option
+                                if not self.northRect.colliderect(enemies[i].circleRect):
+                                    # enemy moves North
+                                    moveNorth += 1
+                                elif not self.southRect.colliderect(enemies[i].circleRect):
+                                    # enemy moves South
+                                    moveSouth += 1
+                                elif not self.westRect.colliderect(enemies[i].circleRect):
+                                    # enemy moves West as a last resort
+                                    moveWest += 1
+            if moveNorthWest == (len(enemies) - 1):
+                self.travel_northwest()
+            elif moveNorth == (len(enemies) - 1):
+                self.travel_north()
+            elif moveNorth == (len(enemies) - 1):
+                self.travel_north()
+            elif moveSouth == (len(enemies) - 1):
+                self.travel_east()
+            elif moveWest == (len(enemies) - 1):
+                self.travel_west()
 
         if self.rect.x < p.rect.x:
             # enemy moves East
@@ -1255,7 +1287,10 @@ class Enemy(pygame.sprite.Sprite):
     def attack_mc(self):
         pass
 
-
+class Mini_boss(Enemy):
+    #Miniboss class
+    def __init__(self, x, y):
+        self.health = 800
 class XP(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
