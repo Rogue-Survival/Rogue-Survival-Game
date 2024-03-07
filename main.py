@@ -892,7 +892,7 @@ class Enemy(pygame.sprite.Sprite):
                 self.stuck = False
                 stuckCounter = 0
 
-        if self.rect.x > p.rect.x == self.rect.y == p.rect.y:
+        if self.rect.x > p.rect.x and self.rect.y == p.rect.y:
             # enemy moves West
             n = len(enemies)
             moveNorth = 0
