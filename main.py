@@ -196,6 +196,182 @@ class Player(pygame.sprite.Sprite):
                 x.y -= self.speed
                 x.xp_stationary()
 
+    def move_northeast(self):
+        # moves player north east
+        if self.rect.y > m.topBoundaryY + 25 and self.rect.x <= m.rightBoundaryX - 50:
+            Dspeed = self.speed / math.sqrt(2)
+            m.cameraX += Dspeed
+            m.cameraY -= Dspeed
+            m.leftBoundaryY1 += Dspeed
+            m.leftBoundaryY2 += Dspeed
+            m.rightBoundaryY1 += Dspeed
+            m.rightBoundaryY2 += Dspeed
+            m.topBoundaryY += Dspeed
+            m.bottomBoundaryY += Dspeed
+            m.leftBoundaryX -= Dspeed
+            m.rightBoundaryX -= Dspeed
+            m.topBoundaryX1 -= Dspeed
+            m.topBoundaryX2 -= Dspeed
+            m.bottomBoundaryX1 -= Dspeed
+            m.bottomBoundaryX2 -= Dspeed
+            n = len(enemies)
+            count = 0
+            southCount = 0
+            eastCount = 0
+            westCount = 0
+            for enemy in enemies:
+                # moves the enemy and associated rects due to the effects of the player camera
+                enemy.rect.y += Dspeed
+                enemy.rect.x -= Dspeed
+                enemy.northRect.y = enemy.rect.y - enemy.northYVal
+                enemy.eastRect.y = enemy.rect.y + enemy.eastYVal
+                enemy.southRect.y = enemy.rect.y + enemy.southYVal
+                enemy.westRect.y = enemy.rect.y + enemy.westYVal
+                enemy.northRect.x = enemy.rect.x + enemy.northXVal
+                enemy.eastRect.x = enemy.rect.x + enemy.eastXVal
+                enemy.southRect.x = enemy.rect.x + enemy.southXVal
+                enemy.westRect.x = enemy.rect.x - enemy.westXVal
+            for x in xp:
+                x.y += Dspeed
+                x.x -= Dspeed
+                x.xp_stationary()
+        elif self.rect.y > m.topBoundaryY + 25:
+            self.move_north()
+        elif self.rect.x <= m.rightBoundaryX - 50:
+            self.move_east()
+
+    def move_northwest(self):
+        if self.rect.y > m.topBoundaryY + 25 and self.rect.x > m.leftBoundaryX + 25:
+            Dspeed = self.speed / math.sqrt(2)
+            m.cameraX -= Dspeed
+            m.cameraY -= Dspeed
+            m.leftBoundaryX += Dspeed
+            m.rightBoundaryX += Dspeed
+            m.topBoundaryX1 += Dspeed
+            m.topBoundaryX2 += Dspeed
+            m.bottomBoundaryX1 += Dspeed
+            m.bottomBoundaryX2 += Dspeed
+            m.leftBoundaryY1 += Dspeed
+            m.leftBoundaryY2 += Dspeed
+            m.rightBoundaryY1 += Dspeed
+            m.rightBoundaryY2 += Dspeed
+            m.topBoundaryY += Dspeed
+            m.bottomBoundaryY += Dspeed
+            n = len(enemies)
+            count = 0
+            northCount = 0
+            eastCount = 0
+            westCount = 0
+            for enemy in enemies:
+                # moves the enemy and associated rects due to the effects of the player camera
+                enemy.rect.y += Dspeed
+                enemy.rect.x += Dspeed
+                enemy.northRect.y = enemy.rect.y - enemy.northYVal
+                enemy.eastRect.y = enemy.rect.y + enemy.eastYVal
+                enemy.southRect.y = enemy.rect.y + enemy.southYVal
+                enemy.westRect.y = enemy.rect.y + enemy.westYVal
+                enemy.northRect.x = enemy.rect.x + enemy.northXVal
+                enemy.eastRect.x = enemy.rect.x + enemy.eastXVal
+                enemy.southRect.x = enemy.rect.x + enemy.southXVal
+                enemy.westRect.x = enemy.rect.x - enemy.westXVal
+            for x in xp:
+                x.y += Dspeed
+                x.x += Dspeed
+                x.xp_stationary()
+        elif self.rect.y > m.topBoundaryY + 25:
+            self.move_north()
+        elif self.rect.x > m.leftBoundaryX + 25:
+            self.move_west()
+
+    def move_southeast(self):
+        # Moves player south east
+        if self.rect.y < m.bottomBoundaryY - 50 and self.rect.x < m.rightBoundaryX - 50:
+            Dspeed = self.speed / math.sqrt(2)
+            m.cameraX += Dspeed
+            m.leftBoundaryX -= Dspeed
+            m.rightBoundaryX -= Dspeed
+            m.topBoundaryX1 -= Dspeed
+            m.topBoundaryX2 -= Dspeed
+            m.bottomBoundaryX1 -= Dspeed
+            m.bottomBoundaryX2 -= Dspeed
+            m.cameraY += Dspeed
+            m.leftBoundaryY1 -= Dspeed
+            m.leftBoundaryY2 -= Dspeed
+            m.rightBoundaryY1 -= Dspeed
+            m.rightBoundaryY2 -= Dspeed
+            m.topBoundaryY -= Dspeed
+            m.bottomBoundaryY -= Dspeed
+            n = len(enemies)
+            count = 0
+            southCount = 0
+            eastCount = 0
+            westCount = 0
+            for enemy in enemies:
+                # moves the enemy and associated rects due to the effects of the player camera
+                enemy.rect.y -= Dspeed
+                enemy.rect.x -= Dspeed
+                enemy.northRect.y = enemy.rect.y - enemy.northYVal
+                enemy.eastRect.y = enemy.rect.y + enemy.eastYVal
+                enemy.southRect.y = enemy.rect.y + enemy.southYVal
+                enemy.westRect.y = enemy.rect.y + enemy.westYVal
+                enemy.northRect.x = enemy.rect.x + enemy.northXVal
+                enemy.eastRect.x = enemy.rect.x + enemy.eastXVal
+                enemy.southRect.x = enemy.rect.x + enemy.southXVal
+                enemy.westRect.x = enemy.rect.x - enemy.westXVal
+            for x in xp:
+                x.y -= Dspeed
+                x.x -= Dspeed
+                x.xp_stationary()
+        elif self.rect.y < m.bottomBoundaryY - 50:
+            self.move_south()
+        elif self.rect.x < m.rightBoundaryX - 50:
+            self.move_east()
+
+    def move_southwest(self):
+        # moves player south west
+        if self.rect.y < m.bottomBoundaryY - 50 and self.rect.x > m.leftBoundaryX + 25:
+            Dspeed = self.speed / math.sqrt(2)
+            m.cameraX -= Dspeed
+            m.leftBoundaryX += Dspeed
+            m.rightBoundaryX += Dspeed
+            m.topBoundaryX1 += Dspeed
+            m.topBoundaryX2 += Dspeed
+            m.bottomBoundaryX1 += Dspeed
+            m.bottomBoundaryX2 += Dspeed
+            m.cameraY += Dspeed
+            m.leftBoundaryY1 -= Dspeed
+            m.leftBoundaryY2 -= Dspeed
+            m.rightBoundaryY1 -= Dspeed
+            m.rightBoundaryY2 -= Dspeed
+            m.topBoundaryY -= Dspeed
+            m.bottomBoundaryY -= Dspeed
+            n = len(enemies)
+            count = 0
+            southCount = 0
+            eastCount = 0
+            westCount = 0
+            for enemy in enemies:
+                # moves the enemy and associated rects due to the effects of the player camera
+                enemy.rect.y -= Dspeed
+                enemy.rect.x += Dspeed
+                enemy.northRect.y = enemy.rect.y - enemy.northYVal
+                enemy.eastRect.y = enemy.rect.y + enemy.eastYVal
+                enemy.southRect.y = enemy.rect.y + enemy.southYVal
+                enemy.westRect.y = enemy.rect.y + enemy.westYVal
+                enemy.northRect.x = enemy.rect.x + enemy.northXVal
+                enemy.eastRect.x = enemy.rect.x + enemy.eastXVal
+                enemy.southRect.x = enemy.rect.x + enemy.southXVal
+                enemy.westRect.x = enemy.rect.x - enemy.westXVal
+            for x in xp:
+                x.y -= Dspeed
+                x.x += Dspeed
+                x.xp_stationary()
+
+        elif self.rect.y < m.bottomBoundaryY - 50:
+            self.move_south()
+        elif self.rect.x > m.leftBoundaryX + 25:
+            self.move_west()f
+
 
 class BasicAttack(pygame.sprite.Sprite):
     # Creates Basic Attacks for the Player
