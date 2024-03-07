@@ -18,7 +18,11 @@ clock = pygame.time.Clock()
 x = pygame.time.get_ticks()
 
 mc_img = pygame.image.load("./images/MAIN_CHARACTER.png").convert_alpha()
-enemy1 = pygame.image.load("./images/slime.png").convert_alpha()
+enemyOriginal = pygame.image.load("./images/slime.png").convert_alpha()
+enemy1 = pygame.image.load("./images/slime1.png").convert_alpha()
+enemy2 = pygame.image.load("./images/slime2.png").convert_alpha()
+enemy3 = pygame.image.load("./images/slime3.png").convert_alpha()
+enemy4 = pygame.image.load("./images/slime4.png").convert_alpha()
 xp = []
 xp_hit = []
 
@@ -78,6 +82,7 @@ class Player(pygame.sprite.Sprite):
         self.rect = mc_img.get_rect().scale_by(2,2)
         self.rect.x = 400
         self.rect.y = 400
+        self.rect.width = 40
         self.gold = 0
 
     def get_speed(self):
@@ -396,7 +401,6 @@ class Bullet(pygame.sprite.Sprite):
             # print(f'mousePOS.x = {self.mousePOS[0]}, mousePOS.y = {self.mousePOS[1]}')
             # print("**********************************************************************")
 
-
             if (self.rect.x > self.startingPoint[0] and self.rect.y > self.startingPoint[1]) and self.positionReached:
                 # fourth quadrant - continues traveling after reaching mouse position
                 self.rect.y += math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
@@ -501,8 +505,8 @@ class Enemy(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
         self.speed = random.uniform(1.3, 2)
-        self.image = "./images/slime.png"
-        self.rect = enemy1.get_rect().scale_by(2, 2)
+        self.image = "./images/slimeRect.png"
+        self.rect = enemy1.get_rect().scale_by(1, 1)
         self.rect.x = x
         self.rect.y = y
         self.inRange = False
@@ -532,6 +536,7 @@ class Enemy(pygame.sprite.Sprite):
         self.spawned = []
         self.spawnTimer = 0
         self.spawnIndicator = None
+        self.animation = 1
 
 
     def get_speed(self):
@@ -1181,13 +1186,6 @@ def keypressed():
         p.move_south()
         # p.rect.y += 45
 
-    # if key_presses[pygame.K_q]:
-    #     # if 'q' is pressed, fire bullet
-    #     mousePOS = pygame.mouse.get_pos()
-    #     b.mousePOS = (pygame.math.Vector2(mousePOS[0], mousePOS[1]))
-    #     b.startingPoint = pygame.math.Vector2(p.rect.x, p.rect.y)
-    #     b.bullet()
-
     if key_presses[pygame.K_ESCAPE]:
         # if ESC key is pressed, pause game
         pauseGame()
@@ -1274,7 +1272,27 @@ while game:
                 # enemy.follow_mc()
                 # enemy.spawnTimer = 0
         else:
-            screen.blit(pygame.transform.scale(enemy1, (35, 30)), (enemy.rect.x, enemy.rect.y))
+            if enemy.animation <= 15:
+                screen.blit(pygame.transform.scale(enemy4, (45, 40)), (enemy.rect.x-6, enemy.rect.y-6))
+                enemy.animation += 1
+
+            elif enemy.animation <= 30:
+                screen.blit(pygame.transform.scale(enemy3, (45, 40)), (enemy.rect.x-6, enemy.rect.y-6))
+                enemy.animation += 1
+
+            elif enemy.animation <= 45:
+                screen.blit(pygame.transform.scale(enemy2, (45, 40)), (enemy.rect.x-6, enemy.rect.y-6))
+                enemy.animation += 1
+
+            elif enemy.animation <= 60:
+                screen.blit(pygame.transform.scale(enemy1, (45, 40)), (enemy.rect.x-6, enemy.rect.y-6))
+                enemy.animation += 1
+
+            elif enemy.animation > 60:
+                screen.blit(pygame.transform.scale(enemy4, (45, 40)), (enemy.rect.x-6, enemy.rect.y-6))
+                enemy.animation = 1
+
+            # screen.blit(pygame.transform.scale(enemyOriginal, (45, 40)), (enemy.rect.x, enemy.rect.y))
             enemy.circleRect = pygame.draw.circle(transparentSurface, (0, 50, 0, 100), (enemy.rect.x+18, enemy.rect.y + 17), 10)
             enemy.midDotRect = pygame.draw.circle(transparentSurface, (0, 50, 0, 100), (enemy.rect.x + 16, enemy.rect.y + 16), 1)
             enemy.generate_enemy()
@@ -1284,6 +1302,7 @@ while game:
             # pygame.draw.rect(screen, (128,0,128), enemy.eastRect)
             # pygame.draw.rect(screen, (128,0,128), enemy.southRect)
             # pygame.draw.rect(screen, (128,0,128), enemy.westRect)
+
 
             for bullet in bullets:
                 # for each active bullet, if the bullet hits an enemy, deal damage if appropriate conditions met.
@@ -1307,13 +1326,6 @@ while game:
                 # Reduce enemy health from the Players basic attack if not hit by that same attack swing
                 enemy.health -= 22
                 enemy.meleeAttackCollisions.append(1)
-                # if enemy.health <= 0:
-                #     # remove enemy from the game if at zero health or below
-                #     if enemy in enemies:
-                #         enemies.remove(enemy)
-                #     chance = random.randint(1,10)
-                #     if chance <= 2:
-                #         p.gold += 1
 
         if enemy.health <= 0:
             # despawns the enemy if their health is 0 or below
@@ -1323,8 +1335,6 @@ while game:
             chance = random.randint(1,10)
             if chance <= 2:
                 p.gold += 1
-            # self.rect = pygame.draw.circle(screen, (255,255,255), (p.rect.x+18,p.rect.y+17), 10)
-
 
         if enemy.rect.colliderect(p.rect) or enemy.northRect.colliderect(p.rect) or enemy.eastRect.colliderect(p.rect) or enemy.southRect.colliderect(p.rect) or enemy.westRect.colliderect(p.rect):
             # print("COLLIDE!!!")
@@ -1342,7 +1352,6 @@ while game:
         # for every xp the player has gone near, have the XP fly to the player
         if abs(x.rect.x - p.rect.x) < 35 and abs(x.rect.y - p.rect.y) < 35:
             # remove the XP from the world and increase player XP
-            # print(f'({x.x,x.y}), ({p.rect.x,p.rect.y})')
             if x in xp:
                 xp.remove(x)
                 xpB.xp += 1
@@ -1358,7 +1367,6 @@ while game:
                 x.y += p.speed
             if x.rect.y+18 > p.rect.y:
                 x.y -= p.speed
-
 
     for bullet in bullets:
         # check if any of the bullets are actually still colliding with enemies, if not, remove the bullet from the enemies' collision list
@@ -1378,7 +1386,6 @@ while game:
         if bullet.rect.x <= m.leftBoundaryX or bullet.rect.x >= m.rightBoundaryX or bullet.rect.y <= m.topBoundaryY or bullet.rect.y >= m.bottomBoundaryY:
             if bullet in bullets:
                 bullets.remove(bullet)
-
 
     ba.attack()
     m.update_boundary()
