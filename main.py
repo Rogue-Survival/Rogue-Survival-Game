@@ -24,27 +24,27 @@ xp_hit = []
 
 class Map(pygame.sprite.Sprite):
     # Controls map boundaries and map camera
-    def __init__(self, mapX=-600, mapY=-800):
+    def __init__(self, mapX=-800, mapY=-800):
         pygame.sprite.Sprite.__init__(self)
         self.mapX = mapX
         self.mapY = mapY
-        self.cameraX = 0
-        self.cameraY = 0
-        self.leftBoundaryX = -350
-        self.leftBoundaryY1 = -350
-        self.leftBoundaryY2 = 1000
+        self.cameraX = -140
+        self.cameraY = -140
+        self.leftBoundaryX = -245
+        self.leftBoundaryY1 = -235
+        self.leftBoundaryY2 = 1079
 
-        self.rightBoundaryX = 1000
-        self.rightBoundaryY1 = -350
-        self.rightBoundaryY2 = 1000
+        self.rightBoundaryX = 1072
+        self.rightBoundaryY1 = -235
+        self.rightBoundaryY2 = 1079
 
-        self.topBoundaryX1 = -355
-        self.topBoundaryX2 = 1006
-        self.topBoundaryY = -350
+        self.topBoundaryX1 = -240
+        self.topBoundaryX2 = 1072
+        self.topBoundaryY = -230
 
-        self.bottomBoundaryX1 = -355
-        self.bottomBoundaryX2 = 1006
-        self.bottomBoundaryY = 1000
+        self.bottomBoundaryX1 = -240
+        self.bottomBoundaryX2 = 1072
+        self.bottomBoundaryY = 1073
 
         self.leftBoundary = pygame.draw.line(transparentSurface, (255, 0, 0), (self.leftBoundaryX, self.leftBoundaryY1), (self.leftBoundaryX, self.leftBoundaryY2), 12)
         self.rightBoundary = pygame.draw.line(transparentSurface, (255, 0, 0), (self.rightBoundaryX, self.rightBoundaryY1), (self.rightBoundaryX, self.rightBoundaryY2), 12)
@@ -330,7 +330,7 @@ class Bullet(pygame.sprite.Sprite):
     # Bullet class allows the player to shoot bullets at enemies
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.rect = pygame.draw.circle(screen, (255,255,255), (p.rect.x+18,p.rect.y+17), 10)
+        self.rect = pygame.draw.circle(transparentSurface, (255,255,255), (p.rect.x+18,p.rect.y+17), 10)
         self.image = False
         self.startingPoint = pygame.math.Vector2(0,0)
         self.mousePOS = pygame.mouse.get_pos()
@@ -914,7 +914,7 @@ class XP(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.x = x
         self.y = y
-        self.rect = pygame.draw.circle(screen, (0,255,0), (x, y), 5)
+        self.rect = pygame.draw.circle(transparentSurface, (0,255,0), (x, y), 5)
         self.hitBoxRect = pygame.draw.circle(transparentSurface, (0,255,35), (x, y), 50)
 
 
@@ -1026,7 +1026,7 @@ def button(msg,x,y,w,h,ic,ac, action):
 
 
 # loads images
-bg_img = pygame.image.load('./images/island.png').convert_alpha()
+bg_img = pygame.image.load('images/dungeon.png').convert_alpha()
 speedI = pygame.image.load("./images/Noodle.png").convert_alpha()
 
 
@@ -1071,7 +1071,7 @@ def start_game_time():
 
 
 def display_timer(text, font, textColor):
-    gameTimer = font.render(text, True, textColor).convert_alpha()
+    gameTimer = font.render(str(text), True, textColor).convert_alpha()
     screen.blit(gameTimer, (675, 15))
     # timerRect = gameTimer.get_rect()
     # screen.blit(gameTimer, (675, 15), timerRect)
@@ -1221,10 +1221,11 @@ while game:
     keypressed()
 
     # makes the map visible
-    screen.blit(pygame.transform.scale(bg_img, (2250, 2250)), (-800 - m.cameraX, -800 - m.cameraY))
+    # screen.blit(pygame.transform.scale(bg_img, (2250, 2250)), (-800 - m.cameraX, -800 - m.cameraY))
+    screen.blit(bg_img,(-800 - m.cameraX, -800 - m.cameraY))
 
     # makes the main character visible
-    screen.blit(pygame.transform.scale(mc_img, (35, 30)), (p.rect.x, p.rect.y))
+    screen.blit(pygame.transform.scale(mc_img, (40, 35)), (p.rect.x, p.rect.y))
 
     bulletTimer2 = (pygame.time.get_ticks() / 1000)
     # if bulletTimer1
@@ -1254,7 +1255,7 @@ while game:
         enemy_length = len(enemies)
         count = 0
         for enemy in enemies:
-            while xCoord == enemy.rect.x or yCoord == enemy.rect.y or (abs(xCoord - enemy.rect.x) < 15 and abs(yCoord - enemy.rect.y) < 15) or (250 <= xCoord <= 550 and 250 <= yCoord <= 550) or xCoord < m.leftBoundaryX or xCoord > m.rightBoundaryX or yCoord < m.topBoundaryY or yCoord > m.bottomBoundaryY:
+            while xCoord == enemy.rect.x or yCoord == enemy.rect.y or (abs(xCoord - enemy.rect.x) < 30 and abs(yCoord - enemy.rect.y) < 30) or (250 <= xCoord <= 550 and 250 <= yCoord <= 550) or xCoord < m.leftBoundaryX or xCoord > m.rightBoundaryX or yCoord < m.topBoundaryY or yCoord > m.bottomBoundaryY or abs(xCoord - m.leftBoundaryX) < 25 or abs(xCoord - m.rightBoundaryX) < 25 or abs(yCoord - m.topBoundaryY) < 25 or abs(yCoord - m.bottomBoundaryY) < 25:
                 xCoord = random.randint(-340, 990)
                 yCoord = random.randint(-340, 990)
         enemies.append(Enemy(xCoord, yCoord))
@@ -1374,6 +1375,9 @@ while game:
             for l in enemiesNotHit:
                 if bullet in l.bulletCollisions:
                     l.bulletCollisions.remove(bullet)
+        if bullet.rect.x <= m.leftBoundaryX or bullet.rect.x >= m.rightBoundaryX or bullet.rect.y <= m.topBoundaryY or bullet.rect.y >= m.bottomBoundaryY:
+            if bullet in bullets:
+                bullets.remove(bullet)
 
 
     ba.attack()
