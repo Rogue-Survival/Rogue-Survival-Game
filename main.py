@@ -148,6 +148,12 @@ class Player(pygame.sprite.Sprite):
                 sk.eastRect.x = sk.rect.x + sk.eastXVal
                 sk.southRect.x = sk.rect.x + sk.southXVal
                 sk.westRect.x = sk.rect.x - sk.westXVal
+            if ee.activate and not ee.felled:
+                ee.rect.x += self.speed
+                ee.northRect.x = ee.rect.x + ee.northXVal
+                ee.eastRect.x = ee.rect.x + ee.eastXVal
+                ee.southRect.x = ee.rect.x + ee.southXVal
+                ee.westRect.x = ee.rect.x - ee.westXVal
 
     def move_east(self):
         # moves the player East
@@ -187,6 +193,12 @@ class Player(pygame.sprite.Sprite):
                 sk.eastRect.x = sk.rect.x + sk.eastXVal
                 sk.southRect.x = sk.rect.x + sk.southXVal
                 sk.westRect.x = sk.rect.x - sk.westXVal
+            if ee.activate and not ee.felled:
+                ee.rect.x -= self.speed
+                ee.northRect.x = ee.rect.x + ee.northXVal
+                ee.eastRect.x = ee.rect.x + ee.eastXVal
+                ee.southRect.x = ee.rect.x + ee.southXVal
+                ee.westRect.x = ee.rect.x - ee.westXVal
 
     def move_north(self):
         # moves the player North
@@ -226,6 +238,12 @@ class Player(pygame.sprite.Sprite):
                 sk.eastRect.y = sk.rect.y + sk.eastYVal
                 sk.southRect.y = sk.rect.y + sk.southYVal
                 sk.westRect.y = sk.rect.y + sk.westYVal
+            if ee.activate and not ee.felled:
+                ee.rect.y += self.speed
+                ee.northRect.y = ee.rect.y - ee.northYVal
+                ee.eastRect.y = ee.rect.y + ee.eastYVal
+                ee.southRect.y = ee.rect.y + ee.southYVal
+                ee.westRect.y = ee.rect.y + ee.westYVal
 
     def move_south(self):
         # moves the player South
@@ -265,6 +283,12 @@ class Player(pygame.sprite.Sprite):
                 sk.eastRect.y = sk.rect.y + sk.eastYVal
                 sk.southRect.y = sk.rect.y + sk.southYVal
                 sk.westRect.y = sk.rect.y + sk.westYVal
+            if ee.activate and not ee.felled:
+                ee.rect.y -= self.speed
+                ee.northRect.y = ee.rect.y - ee.northYVal
+                ee.eastRect.y = ee.rect.y + ee.eastYVal
+                ee.southRect.y = ee.rect.y + ee.southYVal
+                ee.westRect.y = ee.rect.y + ee.westYVal
 
     def move_northeast(self):
         # moves player north east
@@ -327,6 +351,17 @@ class Player(pygame.sprite.Sprite):
                 sk.eastRect.x = sk.rect.x + sk.eastXVal
                 sk.southRect.x = sk.rect.x + sk.southXVal
                 sk.westRect.x = sk.rect.x - sk.westXVal
+            if ee.activate and not ee.felled:
+                ee.rect.y += Dspeed
+                ee.rect.x -= Dspeed
+                ee.northRect.y = ee.rect.y - ee.northYVal
+                ee.eastRect.y = ee.rect.y + ee.eastYVal
+                ee.southRect.y = ee.rect.y + ee.southYVal
+                ee.westRect.y = ee.rect.y + ee.westYVal
+                ee.northRect.x = ee.rect.x + ee.northXVal
+                ee.eastRect.x = ee.rect.x + ee.eastXVal
+                ee.southRect.x = ee.rect.x + ee.southXVal
+                ee.westRect.x = ee.rect.x - ee.westXVal
         elif self.rect.y > m.topBoundaryY + 25:
             self.move_north()
         elif self.rect.x <= m.rightBoundaryX - 50:
@@ -392,6 +427,17 @@ class Player(pygame.sprite.Sprite):
                 sk.eastRect.x = sk.rect.x + sk.eastXVal
                 sk.southRect.x = sk.rect.x + sk.southXVal
                 sk.westRect.x = sk.rect.x - sk.westXVal
+            if ee.activate and not ee.felled:
+                ee.rect.y += Dspeed
+                ee.rect.x += Dspeed
+                ee.northRect.y = ee.rect.y - ee.northYVal
+                ee.eastRect.y = ee.rect.y + ee.eastYVal
+                ee.southRect.y = ee.rect.y + ee.southYVal
+                ee.westRect.y = ee.rect.y + ee.westYVal
+                ee.northRect.x = ee.rect.x + ee.northXVal
+                ee.eastRect.x = ee.rect.x + ee.eastXVal
+                ee.southRect.x = ee.rect.x + ee.southXVal
+                ee.westRect.x = ee.rect.x - ee.westXVal
         elif self.rect.y > m.topBoundaryY + 25:
             self.move_north()
         elif self.rect.x > m.leftBoundaryX + 25:
@@ -458,6 +504,17 @@ class Player(pygame.sprite.Sprite):
                 sk.eastRect.x = sk.rect.x + sk.eastXVal
                 sk.southRect.x = sk.rect.x + sk.southXVal
                 sk.westRect.x = sk.rect.x - sk.westXVal
+            if ee.activate and not ee.felled:
+                ee.rect.y -= Dspeed
+                ee.rect.x -= Dspeed
+                ee.northRect.y = ee.rect.y - ee.northYVal
+                ee.eastRect.y = ee.rect.y + ee.eastYVal
+                ee.southRect.y = ee.rect.y + ee.southYVal
+                ee.westRect.y = ee.rect.y + ee.westYVal
+                ee.northRect.x = ee.rect.x + ee.northXVal
+                ee.eastRect.x = ee.rect.x + ee.eastXVal
+                ee.southRect.x = ee.rect.x + ee.southXVal
+                ee.westRect.x = ee.rect.x - ee.westXVal
         elif self.rect.y < m.bottomBoundaryY - 50:
             self.move_south()
         elif self.rect.x < m.rightBoundaryX - 50:
@@ -524,6 +581,17 @@ class Player(pygame.sprite.Sprite):
                 sk.eastRect.y = sk.rect.y + sk.eastYVal
                 sk.southRect.y = sk.rect.y + sk.southYVal
                 sk.westRect.y = sk.rect.y + sk.westYVal
+            if ee.activate and not ee.felled:
+                ee.rect.x += Dspeed
+                ee.rect.y -= Dspeed
+                ee.northRect.x = ee.rect.x + ee.northXVal
+                ee.eastRect.x = ee.rect.x + ee.eastXVal
+                ee.southRect.x = ee.rect.x + ee.southXVal
+                ee.westRect.x = ee.rect.x - ee.westXVal
+                ee.northRect.y = ee.rect.y - ee.northYVal
+                ee.eastRect.y = ee.rect.y + ee.eastYVal
+                ee.southRect.y = ee.rect.y + ee.southYVal
+                ee.westRect.y = ee.rect.y + ee.westYVal
 
         elif self.rect.y < m.bottomBoundaryY - 50:
             self.move_south()
@@ -1646,10 +1714,10 @@ class Bat(Enemy):
 class mini(Enemy):
     def __init__(self, x, y):
         super().__init__(x, y)
-        self.rect = minib1.get_rect().scale_by(2,2)
+        self.rect = minib1.get_rect().scale_by(1,1)
         self.rect.x = x
         self.rect.y = y
-        self.rect.width = 50
+        self.rect.width = 20
         self.health = 2500
         self.speed = 1
         self.travel_southeast()
@@ -1928,7 +1996,7 @@ class XP_Bar(pygame.sprite.Sprite):
 p = Player()
 m = Map()
 b = Bullet()
-minibo = mini(0,0)
+ee = mini(0,0)
 sk = skeletonKing(0,0)
 xpB = XP_Bar()
 ba = BasicAttack()
@@ -2392,10 +2460,10 @@ while game:
             p.health -= 1
 
     if int(minutes) == 0 and int(seconds) == 0:
-        minibo.activate = True
-    if minibo.activate and not minibo.felled:
-        enemies.append(minibo)
-        screen.blit(minib1, (40,45) ,(minibo.rect.x,minibo.rect.y))
+        ee.activate = True
+    if ee.activate and not ee.felled:
+        ee.follow_mc()
+        screen.blit(pygame.transform.scale(minib1, (40,45)), (ee.rect.x, ee.rect.y))
 
 
     if int(minutes) == 5 and int(seconds) == 0:
