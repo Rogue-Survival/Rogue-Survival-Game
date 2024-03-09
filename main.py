@@ -1652,7 +1652,6 @@ class mini(Enemy):
         self.rect.width = 50
         self.health = 2500
         self.speed = 1
-        self.follow_mc()
         self.travel_southeast()
         self.travel_southwest()
         self.travel_northwest()
@@ -1664,6 +1663,24 @@ class mini(Enemy):
         self.mini = True
         self.felled = False
         self.activate = False
+
+    def follow_mc(self):
+        if self.rect.x < p.rect.x and self.rect.y == p.rect.y:
+            self.travel_east()
+        if self.rect.x > p.rect.x and self.rect.y == p.rect.y:
+            self.travel_west()
+        if self.rect.y < p.rect.y and self.rect.x == p.rect.x:
+            self.travel_south()
+        if self.rect.y > p.rect.y and self.rect.x == p.rect.x:
+            self.travel_north()
+        if self.rect.x < p.rect.x and self.rect.y < p.rect.y:
+            self.travel_southeast()
+        if self.rect.x < p.rect.x and self.rect.y > p.rect.y:
+            self.travel_southwest()
+        if self.rect.x > p.rect.x and self.rect.y < p.rect.y:
+            self.travel_northeast()
+        if self.rect.x < p.rect.x and self.rect.y < p.rect.y:
+            self.travel_northwest()
 
 
 
@@ -1911,7 +1928,7 @@ class XP_Bar(pygame.sprite.Sprite):
 p = Player()
 m = Map()
 b = Bullet()
-minibo = mini()
+minibo = mini(0,0)
 sk = skeletonKing(0,0)
 xpB = XP_Bar()
 ba = BasicAttack()
@@ -2374,11 +2391,11 @@ while game:
             # print("COLLIDE!!!")
             p.health -= 1
 
-    if int(minutes) == 2 and int(seconds) == 0:
+    if int(minutes) == 0 and int(seconds) == 0:
         minibo.activate = True
     if minibo.activate and not minibo.felled:
         enemies.append(minibo)
-        screen.blit(minib1, (40,45) (enemy.rect.x,enemy.rect.y))
+        screen.blit(minib1, (40,45) ,(minibo.rect.x,minibo.rect.y))
 
 
     if int(minutes) == 5 and int(seconds) == 0:
