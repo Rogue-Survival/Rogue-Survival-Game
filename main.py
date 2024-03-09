@@ -29,7 +29,10 @@ enemy4 = pygame.image.load("./images/slime4.png").convert_alpha()
 batImg1 = pygame.image.load("./images/bat1.png").convert_alpha()
 batImg2 = pygame.image.load("./images/bat2.png").convert_alpha()
 
-
+minib1 = pygame.image.load("./images/EarthElemental1.png").convert_alpha()
+minib2 = pygame.image.load("./images/EarthElemental2.png").convert_alpha()
+minib3 = pygame.image.load("./images/EarthElemental3.png").convert_alpha()
+minib4 = pygame.image.load("./images/EarthElemental4.png").convert_alpha()
 
 skeletonKing1 = pygame.image.load("./images/skeletonKing1.png").convert_alpha()
 skeletonKing2 = pygame.image.load("./images/skeletonKing2.png").convert_alpha()
@@ -868,8 +871,8 @@ class Enemy(pygame.sprite.Sprite):
         self.spawnIndicator = None
         self.animation = 1
         self.bat = False
-        self.skeletonKing = False
         self.mini = False
+        self.skeletonKing = False
         self.enemyLength = 0
         self.enemyList = None
 
@@ -1643,12 +1646,12 @@ class Bat(Enemy):
 class mini(Enemy):
     def __init__(self, x, y):
         super().__init__(x, y)
-        self.rect = enemyOriginal.get_rect().scale_by(2,2)
+        self.rect = minib1.get_rect().scale_by(2,2)
         self.rect.x = x
         self.rect.y = y
         self.rect.width = 50
         self.health = 2500
-        self.speed = 2
+        self.speed = 1
         self.follow_mc()
         self.travel_southeast()
         self.travel_southwest()
@@ -1659,6 +1662,8 @@ class mini(Enemy):
         self.travel_south()
         self.travel_west()
         self.mini = True
+        self.felled = False
+        self.activate = False
 
 
 
@@ -1906,6 +1911,7 @@ class XP_Bar(pygame.sprite.Sprite):
 p = Player()
 m = Map()
 b = Bullet()
+minibo = mini()
 sk = skeletonKing(0,0)
 xpB = XP_Bar()
 ba = BasicAttack()
@@ -2175,7 +2181,6 @@ while game:
 
     # makes the main character visible
     screen.blit(pygame.transform.scale(mc_img, (40, 35)), (p.rect.x, p.rect.y))
-
     bulletTimer2 = (pygame.time.get_ticks() / 1000)
     # if bulletTimer1
     if seconds % b.bulletIncrement == 0:
@@ -2368,6 +2373,12 @@ while game:
         if bat.rect.colliderect(p.rect) or bat.northRect.colliderect(p.rect) or bat.eastRect.colliderect(p.rect) or bat.southRect.colliderect(p.rect) or bat.westRect.colliderect(p.rect):
             # print("COLLIDE!!!")
             p.health -= 1
+
+    if int(minutes) == 2 and int(seconds) == 0:
+        minibo.activate = True
+    if minibo.activate and not minibo.felled:
+        enemies.append(minibo)
+        screen.blit(minib1, (40,45) (enemy.rect.x,enemy.rect.y))
 
 
     if int(minutes) == 5 and int(seconds) == 0:
