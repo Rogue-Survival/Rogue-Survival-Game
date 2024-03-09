@@ -1741,13 +1741,13 @@ class mini(Enemy):
             self.travel_south()
         if self.rect.y > p.rect.y and self.rect.x == p.rect.x:
             self.travel_north()
-        if self.rect.x < p.rect.x and self.rect.y < p.rect.y:
+        if self.rect.x > p.rect.x and self.rect.y > p.rect.y:
             self.travel_southeast()
-        if self.rect.x < p.rect.x and self.rect.y > p.rect.y:
-            self.travel_southwest()
         if self.rect.x > p.rect.x and self.rect.y < p.rect.y:
+            self.travel_southwest()
+        if self.rect.x < p.rect.x and self.rect.y > p.rect.y:
             self.travel_northeast()
-        if self.rect.x < p.rect.x and self.rect.y < p.rect.y:
+        if self.rect.x > p.rect.x and self.rect.y > p.rect.y:
             self.travel_northwest()
 
 
