@@ -29,10 +29,10 @@ enemy4 = pygame.image.load("./images/slime4.png").convert_alpha()
 batImg1 = pygame.image.load("./images/bat1.png").convert_alpha()
 batImg2 = pygame.image.load("./images/bat2.png").convert_alpha()
 
-minib1 = pygame.image.load("./images/EarthElemental1.png").convert_alpha()
-minib2 = pygame.image.load("./images/EarthElemental2.png").convert_alpha()
-minib3 = pygame.image.load("./images/EarthElemental3.png").convert_alpha()
-minib4 = pygame.image.load("./images/EarthElemental4.png").convert_alpha()
+minibee1 = pygame.image.load("./images/EarthElemental1.png").convert_alpha()
+minibee2 = pygame.image.load("./images/EarthElemental2.png").convert_alpha()
+minibee3 = pygame.image.load("./images/EarthElemental3.png").convert_alpha()
+minibee4 = pygame.image.load("./images/EarthElemental4.png").convert_alpha()
 
 skeletonKing1 = pygame.image.load("./images/skeletonKing1.png").convert_alpha()
 skeletonKing2 = pygame.image.load("./images/skeletonKing2.png").convert_alpha()
@@ -992,6 +992,7 @@ class Enemy(pygame.sprite.Sprite):
         self.westRect.x = self.rect.x - self.westXVal
 
     def travel_northeast(self):
+        # Enemy moves north-east
         Dspeed = self.speed / math.sqrt(2)
         self.rect.y -= Dspeed
         self.rect.x += Dspeed
@@ -1005,6 +1006,7 @@ class Enemy(pygame.sprite.Sprite):
         self.westRect.x = self.rect.x - self.westXVal
 
     def travel_northwest(self):
+        # Eneny moves north-west
         Dspeed = self.speed / math.sqrt(2)
         self.rect.y -= Dspeed
         self.rect.x -= Dspeed
@@ -1018,6 +1020,7 @@ class Enemy(pygame.sprite.Sprite):
         self.westRect.x = self.rect.x - self.westXVal
 
     def travel_southeast(self):
+        # Enemy moves south-east
         Dspeed = self.speed / math.sqrt(2)
         self.rect.y += Dspeed
         self.rect.x += Dspeed
@@ -1031,6 +1034,7 @@ class Enemy(pygame.sprite.Sprite):
         self.westRect.x = self.rect.x - self.westXVal
 
     def travel_southwest(self):
+        # Enemy moves soouth-west
         Dspeed = self.speed / math.sqrt(2)
         self.rect.y += Dspeed
         self.rect.x -= Dspeed
@@ -1711,15 +1715,16 @@ class Bat(Enemy):
         self.travel_south()
         self.travel_west()
         self.bat = True
-class mini(Enemy):
+class miniee(Enemy):
+    #Earth Elemental Miniboss
     def __init__(self, x, y):
         super().__init__(x, y)
-        self.rect = minib1.get_rect().scale_by(1,1)
+        self.rect = minibee1.get_rect().scale_by(1,1)
         self.rect.x = x
         self.rect.y = y
         self.rect.width = 20
-        self.health = 2500
-        self.speed = 1
+        self.health = 3000
+        self.speed = 3
         self.travel_southeast()
         self.travel_southwest()
         self.travel_northwest()
@@ -1733,21 +1738,22 @@ class mini(Enemy):
         self.activate = False
 
     def follow_mc(self):
+        #Miniboss movment
         if self.rect.x < p.rect.x and self.rect.y == p.rect.y:
             self.travel_east()
-        if self.rect.x > p.rect.x and self.rect.y == p.rect.y:
+        elif self.rect.x > p.rect.x and self.rect.y == p.rect.y:
             self.travel_west()
-        if self.rect.y < p.rect.y and self.rect.x == p.rect.x:
+        elif self.rect.y < p.rect.y and self.rect.x == p.rect.x:
             self.travel_south()
-        if self.rect.y > p.rect.y and self.rect.x == p.rect.x:
+        elif self.rect.y > p.rect.y and self.rect.x == p.rect.x:
             self.travel_north()
-        if self.rect.x < p.rect.x and self.rect.y < p.rect.y:
+        elif self.rect.x < p.rect.x and self.rect.y < p.rect.y:
             self.travel_southeast()
-        if self.rect.x > p.rect.x and self.rect.y < p.rect.y:
+        elif self.rect.x > p.rect.x and self.rect.y < p.rect.y:
             self.travel_southwest()
-        if self.rect.x < p.rect.x and self.rect.y > p.rect.y:
+        elif self.rect.x < p.rect.x and self.rect.y > p.rect.y:
             self.travel_northeast()
-        if self.rect.x > p.rect.x and self.rect.y > p.rect.y:
+        elif self.rect.x > p.rect.x and self.rect.y > p.rect.y:
             self.travel_northwest()
 
 
@@ -1996,7 +2002,7 @@ class XP_Bar(pygame.sprite.Sprite):
 p = Player()
 m = Map()
 b = Bullet()
-ee = mini(0,0)
+ee = miniee(0,0)
 sk = skeletonKing(0,0)
 xpB = XP_Bar()
 ba = BasicAttack()
@@ -2463,7 +2469,8 @@ while game:
         ee.activate = True
     if ee.activate and not ee.felled:
         ee.follow_mc()
-        screen.blit(pygame.transform.scale(minib1, (40,45)), (ee.rect.x, ee.rect.y))
+        screen.blit(pygame.transform.scale(minibee1, (40,45)), (ee.rect.x, ee.rect.y))
+
 
 
     if int(minutes) == 5 and int(seconds) == 0:
