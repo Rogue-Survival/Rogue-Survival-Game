@@ -29,6 +29,8 @@ enemy4 = pygame.image.load("./images/slime4.png").convert_alpha()
 batImg1 = pygame.image.load("./images/bat1.png").convert_alpha()
 batImg2 = pygame.image.load("./images/bat2.png").convert_alpha()
 
+
+
 skeletonKing1 = pygame.image.load("./images/skeletonKing1.png").convert_alpha()
 skeletonKing2 = pygame.image.load("./images/skeletonKing2.png").convert_alpha()
 skeletonKing3 = pygame.image.load("./images/skeletonKing3.png").convert_alpha()
@@ -867,6 +869,7 @@ class Enemy(pygame.sprite.Sprite):
         self.animation = 1
         self.bat = False
         self.skeletonKing = False
+        self.mini = False
         self.enemyLength = 0
         self.enemyList = None
 
@@ -1583,11 +1586,35 @@ class Bat(Enemy):
         self.health = 215
         self.speed = random.uniform(.6, .8)
         self.follow_mc()
+        self.travel_southeast()
+        self.travel_southwest()
+        self.travel_northwest()
+        self.travel_northeast()
         self.travel_north()
         self.travel_east()
         self.travel_south()
         self.travel_west()
         self.bat = True
+class mini(Enemy):
+    def __init__(self, x, y):
+        super().__init__(x, y)
+        self.rect = enemyOriginal.get_rect().scale_by(2,2)
+        self.rect.x = x
+        self.rect.y = y
+        self.rect.width = 50
+        self.health = 2500
+        self.speed = 2
+        self.follow_mc()
+        self.travel_southeast()
+        self.travel_southwest()
+        self.travel_northwest()
+        self.travel_northeast()
+        self.travel_north()
+        self.travel_east()
+        self.travel_south()
+        self.travel_west()
+        self.mini = True
+
 
 
 
