@@ -18,13 +18,23 @@ clock = pygame.time.Clock()
 x = pygame.time.get_ticks()
 
 mc_img = pygame.image.load("./images/MAIN_CHARACTER.png").convert_alpha()
+
 enemyOriginal = pygame.image.load("./images/slime.png").convert_alpha()
+
 enemy1 = pygame.image.load("./images/slime1.png").convert_alpha()
 enemy2 = pygame.image.load("./images/slime2.png").convert_alpha()
 enemy3 = pygame.image.load("./images/slime3.png").convert_alpha()
 enemy4 = pygame.image.load("./images/slime4.png").convert_alpha()
+
 batImg1 = pygame.image.load("./images/bat1.png").convert_alpha()
 batImg2 = pygame.image.load("./images/bat2.png").convert_alpha()
+
+skeletonKing1 = pygame.image.load("./images/skeletonKing1.png").convert_alpha()
+skeletonKing2 = pygame.image.load("./images/skeletonKing2.png").convert_alpha()
+skeletonKing3 = pygame.image.load("./images/skeletonKing3.png").convert_alpha()
+skeletonKing4 = pygame.image.load("./images/skeletonKing4.png").convert_alpha()
+
+
 xp = []
 xp_hit = []
 
@@ -127,6 +137,12 @@ class Player(pygame.sprite.Sprite):
             for x in xp:
                 x.x += self.speed
                 x.xp_stationary()
+            if sk.spawned:
+                sk.rect.x += self.speed
+                sk.northRect.x = sk.rect.x + sk.northXVal
+                sk.eastRect.x = sk.rect.x + sk.eastXVal
+                sk.southRect.x = sk.rect.x + sk.southXVal
+                sk.westRect.x = sk.rect.x - sk.westXVal
 
     def move_east(self):
         # moves the player East
@@ -160,6 +176,12 @@ class Player(pygame.sprite.Sprite):
             for x in xp:
                 x.x -= self.speed
                 x.xp_stationary()
+            if sk.spawned:
+                sk.rect.x -= self.speed
+                sk.northRect.x = sk.rect.x + sk.northXVal
+                sk.eastRect.x = sk.rect.x + sk.eastXVal
+                sk.southRect.x = sk.rect.x + sk.southXVal
+                sk.westRect.x = sk.rect.x - sk.westXVal
 
     def move_north(self):
         # moves the player North
@@ -193,6 +215,12 @@ class Player(pygame.sprite.Sprite):
             for x in xp:
                 x.y += self.speed
                 x.xp_stationary()
+            if sk.spawned:
+                sk.rect.y += self.speed
+                sk.northRect.y = sk.rect.y - sk.northYVal
+                sk.eastRect.y = sk.rect.y + sk.eastYVal
+                sk.southRect.y = sk.rect.y + sk.southYVal
+                sk.westRect.y = sk.rect.y + sk.westYVal
 
     def move_south(self):
         # moves the player South
@@ -226,6 +254,12 @@ class Player(pygame.sprite.Sprite):
             for x in xp:
                 x.y -= self.speed
                 x.xp_stationary()
+            if sk.spawned:
+                sk.rect.y -= self.speed
+                sk.northRect.y = sk.rect.y - sk.northYVal
+                sk.eastRect.y = sk.rect.y + sk.eastYVal
+                sk.southRect.y = sk.rect.y + sk.southYVal
+                sk.westRect.y = sk.rect.y + sk.westYVal
 
 
 class BasicAttack(pygame.sprite.Sprite):
@@ -566,6 +600,7 @@ class Enemy(pygame.sprite.Sprite):
         self.spawnIndicator = None
         self.animation = 1
         self.bat = False
+        self.skeletonKing = False
         self.enemyLength = 0
         self.enemyList = None
 
@@ -964,13 +999,175 @@ class Bat(Enemy):
         self.rect.y = y
         self.rect.width = 40
         self.health = 215
-        self.speed = .6
+        self.speed = random.uniform(.6, .8)
         self.follow_mc()
         self.travel_north()
         self.travel_east()
         self.travel_south()
         self.travel_west()
         self.bat = True
+
+
+
+
+class skeletonKing(Enemy):
+    def __init__(self, x, y):
+        super().__init__(x, y)
+        self.rect = batImg1.get_rect().scale_by(1, 1)
+        self.rect.x = x
+        self.rect.y = y
+        self.rect.width = 40
+        self.midBoxRect = pygame.draw.rect(screen, (255,0,0), pygame.Rect(self.rect.x+122,self.rect.y+85,20,20))
+        self.health = 5000
+        self.speed = 2
+        self.skeletonKing = True
+        self.xCoord = 0
+        self.yCoord = 0
+        # self.legRectEven = None
+        # self.legRectEvenRight = None
+        # self.legRectOddLeft = None
+        # self.legRectOddRight = None
+        self.leftLegRect = pygame.draw.rect(transparentSurface, (255,0,0), pygame.Rect(self.rect.x+50,self.rect.y+170,20,10))
+        self.rightLegRect = pygame.draw.rect(transparentSurface, (255,0,0), pygame.Rect(self.rect.x+226,self.rect.y+190,22,10))
+        self.animationImage = 0
+        self.mainLeftLegRect = pygame.draw.rect(transparentSurface, (255,0,0), pygame.Rect(self.rect.x+17,self.rect.y+188,22,12))
+        self.mainRightLegRect = pygame.draw.rect(transparentSurface, (255,0,0), pygame.Rect(self.rect.x+226,self.rect.y+190,22,10))
+        self.runActivation = False
+        self.runCounter = 0
+        self.animationInterval = 8
+        self.runTarget = ()
+        self.targetAquired = False
+        self.felled = False
+        self.activate = False
+
+
+    def generate_enemy(self):
+        # print('1')
+        # self.legRectEvenLeft = pygame.draw.rect(screen, (255,0,0), pygame.Rect(self.rect.x+17,self.rect.y+188,22,12))
+        # self.legRectEvenRight = pygame.draw.rect(screen, (255,0,0), pygame.Rect(self.rect.x+185,self.rect.y+170,18,10))
+        # self.legRectOddLeft = pygame.draw.rect(screen, (255,0,0), pygame.Rect(self.rect.x+50,self.rect.y+170,35,12))
+        # self.legRectOddRight = pygame.draw.rect(screen, (255,0,0), pygame.Rect(self.rect.x+226,self.rect.y+191,22,10))
+        # pygame.draw.rect(screen, (0,255,0), p.rect)
+        # self.legRectEven = pygame.draw.rect(screen, (255,0,0), (255,4))
+        if not self.spawned:
+            # print('2')
+            self.xCoord = random.randint(-340, 990)
+            self.yCoord = random.randint(-340, 990)
+            while (abs(self.xCoord - p.rect.x) < 30 and abs(self.yCoord - p.rect.y) < 30) or (250 <= self.xCoord <= 550 and 250 <= self.yCoord <= 550) or self.xCoord < m.leftBoundaryX or self.xCoord > m.rightBoundaryX or self.yCoord < m.topBoundaryY or self.yCoord > m.bottomBoundaryY or abs(self.xCoord - m.leftBoundaryX) < 75 or abs(self.xCoord - m.rightBoundaryX) < 75 or abs(self.yCoord - m.topBoundaryY) < 75 or abs(self.yCoord - m.bottomBoundaryY) < 75:
+                self.xCoord = random.randint(-340, 990)
+                self.yCoord = random.randint(-340, 990)
+                # print("AHHHHHH")
+
+            self.rect.x = self.xCoord
+            self.rect.y = self.yCoord
+            self.spawned.append(1)
+        else:
+            # print('3')
+            # if self.runCounter > 100:
+            # print(abs(self.rect.x - p.rect.x), abs(self.rect.y - p.rect.y))
+            if p.rect.x > self.midBoxRect.x:
+                if abs(self.mainRightLegRect.x - p.rect.x) >= 300 or abs(self.mainRightLegRect.y - p.rect.y) >= 300 or (abs(self.mainRightLegRect.x - p.rect.x) + abs(self.mainRightLegRect.y - p.rect.y)) > 400:
+                    if not self.targetAquired:
+                        self.runTarget = (p.rect.x, p.rect.y)
+                        self.targetAquired = True
+                    self.runCounter += 1
+                    self.speed = 7
+                    self.animationInterval = 3
+            if p.rect.x < self.midBoxRect.x:
+                if abs(self.mainLeftLegRect.x - p.rect.x) >= 300 or abs(self.mainLeftLegRect.y - p.rect.y) >= 300 or (abs(self.mainLeftLegRect.x - p.rect.x) + abs(self.mainLeftLegRect.y - p.rect.y)) > 400:
+                    if not self.targetAquired:
+                        self.runTarget = (p.rect.x, p.rect.y)
+                        self.targetAquired = True
+                    self.runCounter += 1
+                    self.speed = 7
+                    self.animationInterval = 3
+            if self.runCounter > 50 or self.rect.colliderect(p.rect):
+                self.targetAquired = False
+                self.runTarget = ()
+                self.runCounter = 0
+                self.speed = 1
+                self.animationInterval = 15
+            if self.animation <= self.animationInterval:
+                screen.blit(skeletonKing1, (self.rect.x-30, self.rect.y-75))
+                self.leftLegRect = pygame.draw.rect(transparentSurface, (255,0,0), pygame.Rect(self.rect.x+50,self.rect.y+170,20,10))
+                self.rightLegRect = pygame.draw.rect(transparentSurface, (255,0,0), pygame.Rect(self.rect.x+226,self.rect.y+190,22,10))
+                self.animation += 1
+                self.animationImage = 1
+            elif self.animation <= self.animationInterval * 2:
+                screen.blit(skeletonKing2, (self.rect.x-30, self.rect.y-75))
+                self.leftLegRect = pygame.draw.rect(transparentSurface, (255,0,0), pygame.Rect(self.rect.x+17,self.rect.y+188,22,12))
+                self.rightLegRect = pygame.draw.rect(transparentSurface, (255,0,0), pygame.Rect(self.rect.x+185,self.rect.y+170,18,10))
+                self.animation += 1
+                self.animationImage = 2
+            elif self.animation <= self.animationInterval * 3:
+                screen.blit(skeletonKing3, (self.rect.x-30, self.rect.y-75))
+                self.leftLegRect = pygame.draw.rect(transparentSurface, (255,0,0), pygame.Rect(self.rect.x+66,self.rect.y+170,20,10))
+                self.rightLegRect = pygame.draw.rect(transparentSurface, (255,0,0), pygame.Rect(self.rect.x+226,self.rect.y+191,22,10))
+                self.animation += 1
+                self.animationImage = 3
+            elif self.animation <= self.animationInterval * 4:
+                screen.blit(skeletonKing4, (self.rect.x-30, self.rect.y-75))
+                self.leftLegRect = pygame.draw.rect(transparentSurface, (255,0,0), pygame.Rect(self.rect.x+17,self.rect.y+188,22,12))
+                self.rightLegRect = pygame.draw.rect(transparentSurface, (255,0,0), pygame.Rect(self.rect.x+185,self.rect.y+170,18,10))
+                self.animation += 1
+                self.animationImage = 4
+            elif self.animation > self.animationInterval * 4:
+                screen.blit(skeletonKing1, (self.rect.x-30, self.rect.y-75))
+                self.animation = 1
+                self.animationImage = 1
+            self.rect.height = 195
+            self.rect.width = 265
+            self.midBoxRect = pygame.draw.rect(transparentSurface, (255,0,0), pygame.Rect(self.rect.x+122,self.rect.y+85,20,20))
+            self.mainLeftLegRect = pygame.draw.rect(transparentSurface, (255,0,0), pygame.Rect(self.rect.x+17,self.rect.y+188,22,12))
+            self.mainRightLegRect = pygame.draw.rect(transparentSurface, (255,0,0), pygame.Rect(self.rect.x+226,self.rect.y+190,22,10))
+
+            # pygame.draw.rect(screen, (125,125,125), self.rect)
+            # pygame.draw.rect(screen, (128,0,128), self.northRect)
+            # pygame.draw.rect(screen, (128,0,128), self.eastRect)
+            # pygame.draw.rect(screen, (128,0,128), self.southRect)
+            # pygame.draw.rect(screen, (128,0,128), self.westRect)
+        self.follow_mc()
+        self.runCounter += 1
+
+
+    def follow_mc(self):
+
+        # if not self.rect.colliderect(p.rect):
+        if self.mainRightLegRect.x < p.rect.x+12:
+            # if player is to the right of main right leg
+            self.rect.x += self.speed
+        elif p.rect.x+12 > self.midBoxRect.x and p.rect.x+12 < self.mainRightLegRect.x:
+            self.rect.x -= self.speed
+        if self.mainRightLegRect.y != p.rect.y+13:
+            if self.mainRightLegRect.y < p.rect.y+13:
+                # if the player is to the south of the enemy
+                self.rect.y += self.speed
+            if self.mainRightLegRect.y > p.rect.y+13:
+                # if the player is to the north of the enemy
+                self.rect.y -= self.speed
+
+        if self.mainLeftLegRect.x > p.rect.x+12:
+            self.rect.x -= self.speed
+        elif p.rect.x+12 <= self.midBoxRect.x and p.rect.x+12 > self.mainLeftLegRect.x:
+            self.rect.x += self.speed
+        if self.mainLeftLegRect.y != p.rect.y+13:
+            if self.mainLeftLegRect.y < p.rect.y+13:
+                # if the player is to the south of the enemy
+                self.rect.y += self.speed
+            if self.mainLeftLegRect.y > p.rect.y+13:
+                # if the player is to the north of the enemy
+                self.rect.y -= self.speed
+
+    def attack(self):
+        # pygame.draw.rect(screen, (140,38,28), enemy.midDotRect)
+        for enemy in enemies:
+            if self.leftLegRect.colliderect(enemy.midDotRect) or self.rightLegRect.colliderect(enemy.midDotRect):
+                    if enemy in enemies:
+                        enemies.remove(enemy)
+                        # print("ENEMY REMOVED!!!")
+                        # print("----------------")
+            if self.leftLegRect.colliderect(p.rect) or self.rightLegRect.colliderect(p.rect):
+                p.health -= 24
 
 
 class XP(pygame.sprite.Sprite):
@@ -1055,6 +1252,7 @@ class XP_Bar(pygame.sprite.Sprite):
 p = Player()
 m = Map()
 b = Bullet()
+sk = skeletonKing(0,0)
 xpB = XP_Bar()
 ba = BasicAttack()
 enemies = []
@@ -1280,6 +1478,34 @@ while game:
     # screen.blit(pygame.transform.scale(bg_img, (2250, 2250)), (-800 - m.cameraX, -800 - m.cameraY))
     screen.blit(bg_img,(-800 - m.cameraX, -800 - m.cameraY))
 
+    for x in xp:
+        # constantly display the XP
+        x.xp_stationary()
+        if x.hitBoxRect.colliderect(p.rect):
+            # if player is in range of XP, add it to xp_hit list
+            xp_hit.append(x)
+            x.xp_stationary()
+
+    for x in xp_hit:
+        # for every xp the player has gone near, have the XP fly to the player
+        if abs(x.rect.x - p.rect.x) < 35 and abs(x.rect.y - p.rect.y) < 35:
+            # remove the XP from the world and increase player XP
+            if x in xp:
+                xp.remove(x)
+                xpB.xp += 1
+            if x in xp_hit:
+                xp_hit.remove(x)
+        else:
+            # have the XP fly to the Player
+            if x.rect.x+18 < p.rect.x:
+                x.x += p.speed
+            if x.rect.x+18 > p.rect.x:
+                x.x -= p.speed
+            if x.rect.y+18 < p.rect.y:
+                x.y += p.speed
+            if x.rect.y+18 > p.rect.y:
+                x.y -= p.speed
+
     # makes the main character visible
     screen.blit(pygame.transform.scale(mc_img, (40, 35)), (p.rect.x, p.rect.y))
 
@@ -1363,10 +1589,11 @@ while game:
 
             # screen.blit(pygame.transform.scale(enemyOriginal, (45, 40)), (enemy.rect.x, enemy.rect.y))
             enemy.circleRect = pygame.draw.circle(transparentSurface, (0, 50, 0, 100), (enemy.rect.x+18, enemy.rect.y + 17), 10)
-            enemy.midDotRect = pygame.draw.circle(transparentSurface, (0, 50, 0, 100), (enemy.rect.x + 16, enemy.rect.y + 16), 1)
+            enemy.midDotRect = pygame.draw.circle(transparentSurface, (0, 50, 0, 100), (enemy.rect.x + 16, enemy.rect.y + 16), 8)
             enemy.generate_enemy()
             enemy.follow_mc()
             # pygame.draw.rect(screen, (255,0,0), enemy.rect)
+            # pygame.draw.rect(screen, (255,0,0), enemy.midDotRect)
             # pygame.draw.rect(screen, (128,0,128), enemy.northRect)
             # pygame.draw.rect(screen, (128,0,128), enemy.eastRect)
             # pygame.draw.rect(screen, (128,0,128), enemy.southRect)
@@ -1470,33 +1697,14 @@ while game:
             # print("COLLIDE!!!")
             p.health -= 1
 
-    for x in xp:
-        # constantly display the XP
-        x.xp_stationary()
-        if x.hitBoxRect.colliderect(p.rect):
-            # if player is in range of XP, add it to xp_hit list
-            xp_hit.append(x)
-            x.xp_stationary()
 
-    for x in xp_hit:
-        # for every xp the player has gone near, have the XP fly to the player
-        if abs(x.rect.x - p.rect.x) < 35 and abs(x.rect.y - p.rect.y) < 35:
-            # remove the XP from the world and increase player XP
-            if x in xp:
-                xp.remove(x)
-                xpB.xp += 1
-            if x in xp_hit:
-                xp_hit.remove(x)
-        else:
-            # have the XP fly to the Player
-            if x.rect.x+18 < p.rect.x:
-                x.x += p.speed
-            if x.rect.x+18 > p.rect.x:
-                x.x -= p.speed
-            if x.rect.y+18 < p.rect.y:
-                x.y += p.speed
-            if x.rect.y+18 > p.rect.y:
-                x.y -= p.speed
+    if int(minutes) == 5 and int(seconds) == 0:
+        sk.activate = True
+    if sk.activate and not sk.felled:
+        sk.generate_enemy()
+        sk.attack()
+
+
 
     for bullet in bullets:
         # check if any of the bullets are actually still colliding with enemies, if not, remove the bullet from the enemies' collision list
@@ -1527,6 +1735,7 @@ while game:
     #             pygame.draw.rect(screen, (128,0,128), bat.eastRect)
     #             pygame.draw.rect(screen, (128,0,128), bat.southRect)
     #             pygame.draw.rect(screen, (128,0,128), bat.westRect)
+
 
     ba.attack()
     m.update_boundary()
