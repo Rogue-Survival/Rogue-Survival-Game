@@ -137,7 +137,7 @@ class Player(pygame.sprite.Sprite):
             for x in xp:
                 x.x += self.speed
                 x.xp_stationary()
-            if sk.spawned:
+            if sk.activate and not sk.felled:
                 sk.rect.x += self.speed
                 sk.northRect.x = sk.rect.x + sk.northXVal
                 sk.eastRect.x = sk.rect.x + sk.eastXVal
@@ -176,7 +176,7 @@ class Player(pygame.sprite.Sprite):
             for x in xp:
                 x.x -= self.speed
                 x.xp_stationary()
-            if sk.spawned:
+            if sk.activate and not sk.felled:
                 sk.rect.x -= self.speed
                 sk.northRect.x = sk.rect.x + sk.northXVal
                 sk.eastRect.x = sk.rect.x + sk.eastXVal
@@ -215,7 +215,7 @@ class Player(pygame.sprite.Sprite):
             for x in xp:
                 x.y += self.speed
                 x.xp_stationary()
-            if sk.spawned:
+            if sk.activate and not sk.felled:
                 sk.rect.y += self.speed
                 sk.northRect.y = sk.rect.y - sk.northYVal
                 sk.eastRect.y = sk.rect.y + sk.eastYVal
@@ -254,7 +254,7 @@ class Player(pygame.sprite.Sprite):
             for x in xp:
                 x.y -= self.speed
                 x.xp_stationary()
-            if sk.spawned:
+            if sk.activate and not sk.felled:
                 sk.rect.y -= self.speed
                 sk.northRect.y = sk.rect.y - sk.northYVal
                 sk.eastRect.y = sk.rect.y + sk.eastYVal
@@ -389,6 +389,8 @@ class BasicAttack(pygame.sprite.Sprite):
 
             for enemy in enemies:
                 enemy.meleeAttackCollisions.clear()
+            if sk.activate and not sk.felled:
+                sk.meleeAttackCollisions.clear()
 
 
 class Bullet(pygame.sprite.Sprite):
@@ -1623,6 +1625,11 @@ while game:
                 enemy.health -= 22
                 enemy.meleeAttackCollisions.append(1)
 
+            if sk.activate and not sk.felled:
+                if sk.rect.colliderect(ba.hitBoxRect) and ba.running and not sk.meleeAttackCollisions:
+                    sk.health -= 22
+                    sk.meleeAttackCollisions.append(1)
+
         if enemy.health <= 0:
             # despawns the enemy if their health is 0 or below
             xp.append(XP(enemy.rect.x+18, enemy.rect.y+17))
@@ -1662,7 +1669,7 @@ while game:
             bat.follow_mc()
 
             for bullet in bullets:
-                # for each active bullet, if the bullet hits an bat, deal damage if appropriate conditions met.
+                # for each active bullet, if the bullet hits a bat, deal damage if appropriate conditions met.
                 if bat.rect.colliderect(bullet.rect) and bullet.bulletValid:
                     if not bat.bulletCollisions:
                         # if the bat has encountered it's first bullet, add to the list and take damage
@@ -1704,7 +1711,37 @@ while game:
         sk.generate_enemy()
         sk.attack()
 
-
+    if sk.activate and not sk.felled:
+        for bullet in bullets:
+            # for each active bullet, if the bullet hits the skeleton king boss, deal damage if appropriate conditions met.
+            if sk.rect.colliderect(bullet.rect) and bullet.bulletValid:
+                if not sk.bulletCollisions:
+                    # if the skeleton king boss has encountered it's first bullet, add to the list and take damage
+                    sk.bulletCollisions.append(bullet)
+                    sk.health -= 300
+                    # print('1')
+                elif sk.bulletCollisions:
+                    # if the list of bullets the skeleton king boss has collided with is greater than 0, make sure it is a different bullet in order to deal damage
+                    i = 0
+                    for l in sk.bulletCollisions:
+                        if bullet.rect.x == sk.bulletCollisions[i].rect.x and bullet.rect.y == sk.bulletCollisions[i].rect.y:
+                            pass
+                        elif bullet not in sk.bulletCollisions and bullet.bulletValid:
+                            sk.bulletCollisions.append(bullet)
+                            sk.health -= 300
+                            # print('2')
+                        i += 1
+        for bullet in bullets:
+            # removes expired bullets from the skeleton king boss bullet collision list
+            if bullet in sk.bulletCollisions and not sk.rect.colliderect(bullet.rect):
+                sk.bulletCollisions.remove(bullet)
+                # print("BULLET REMOVED")
+        if sk.bulletCollisions:
+            # backup to remove expired bullets from the skeleton king boss bullet collision list
+            for g in sk.bulletCollisions:
+                if not g.rect.colliderect(sk.rect):
+                    sk.bulletCollisions.remove(g)
+                    # print("BULLET REMOVED-2")
 
     for bullet in bullets:
         # check if any of the bullets are actually still colliding with enemies, if not, remove the bullet from the enemies' collision list
@@ -1725,6 +1762,13 @@ while game:
             if bullet in bullets:
                 bullets.remove(bullet)
 
+    # print(sk.bulletCollisions)
+    # print(sk.health)
+
+    if sk.health <= 0:
+        sk.felled = True
+        sk.activate = False
+        sk.rect = None
 
     # for bat in bats:
     #     if bat.spawned:
