@@ -728,6 +728,11 @@ class BasicAttack(pygame.sprite.Sprite):
                 enemy.meleeAttackCollisions.clear()
             if sk.activate and not sk.felled:
                 sk.meleeAttackCollisions.clear()
+            if ee.activate and not sk.felled:
+                ee.meleeAttackCollisions.clear()
+            for bat in bats:
+                bat.meleeAttackCollisions.clear()
+
 
 
 class Bullet(pygame.sprite.Sprite):
@@ -2390,6 +2395,11 @@ while game:
                 if sk.rect.colliderect(ba.hitBoxRect) and ba.running and not sk.meleeAttackCollisions:
                     sk.health -= 22
                     sk.meleeAttackCollisions.append(1)
+            if ee.activate and not ee.felled:
+                if ee.rect.colliderect(ba.hitBoxRect) and ba.running and not ee.meleeAttackCollisions:
+                    # Reduce health from the mini boss from Players basic attack if not hit by that same attack swing
+                    ee.health -= 22
+                    ee.meleeAttackCollisions.append(1)
 
         if enemy.health <= 0:
             # despawns the enemy if their health is 0 or below
@@ -2449,7 +2459,7 @@ while game:
 
             if bat.rect.colliderect(ba.hitBoxRect) and ba.running and not bat.meleeAttackCollisions:
                 # Reduce bat health from the Players basic attack if not hit by that same attack swing
-                bat.health -= 22
+                bat.health -= 200
                 bat.meleeAttackCollisions.append(1)
 
         if bat.health <= 0:
@@ -2470,6 +2480,38 @@ while game:
     if ee.activate and not ee.felled:
         ee.follow_mc()
         screen.blit(pygame.transform.scale(minibee1, (40,45)), (ee.rect.x, ee.rect.y))
+    if ee.activate and not ee.felled:
+        for bullet in bullets:
+            # for each active bullet, if the bullet hits ee, deal damage if appropriate.
+            if ee.rect.colliderect(bullet.rect) and bullet.bulletValid:
+                if not ee.bulletCollisions:
+                    # If ee has been hit by its forst bullet add to list to take damage.
+                    ee.bulletCollisions.append(bullet)
+                    ee.health -= 3000
+                    # print('1')
+                elif ee.bulletCollisions:
+                    # if the list of bullets that have collided ee is greater than 0, make sure it is a different bullet in order to deal damage
+                    i = 0
+                    for l in ee.bulletCollisions:
+                        if bullet.rect.x == ee.bulletCollisions[i].rect.x and bullet.rect.y == ee.bulletCollisions[i].rect.y:
+                            pass
+                        elif bullet not in ee.bulletCollisions and bullet.bulletValid:
+                            ee.bulletCollisions.append(bullet)
+                            ee.health -= 300
+                        i += 1
+        for bullet in bullets:
+            # removes expired bullets
+            if bullet in ee.bulletCollisions and not ee.rect.colliderect(bullet.rect):
+                ee.bulletCollisions.remove(bullet)
+        if ee.bulletCollisions:
+            # backup to remove expired bullets from the bullet collision list
+            for g in ee.bulletCollisions:
+                if not g.rect.colliderect(ee.rect):
+                    ee.bulletCollisions.remove(g)
+    if ee.health <= 0:
+        ee.felled = True
+        ee.activate = False
+        ee.rect = None
 
 
 
