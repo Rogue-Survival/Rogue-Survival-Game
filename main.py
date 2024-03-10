@@ -905,6 +905,22 @@ class Bullet(pygame.sprite.Sprite):
                     # print("YEP2")
                 self.counterX += 1
                 self.counterY += 1
+class calctargets():
+    def calcclosest3(self,enemies,p):
+        closesttargets = []
+        for enemy in enemies:
+            xcor = enemy.rect.x - p.rect.x
+            ycor = enemy.rect.y - p.rect.y
+            distance = math.sqrt(xcor**2 + ycor**2)
+            closesttargets.append(enemy, distance)
+
+        closesttargets.sort(key=lambda x: x[1])
+        closest_three = closesttargets[:3]
+        closest_three_targets =  [enemy[0] for enemy in closest_three]
+        return closest_three_targets
+
+
+
 
 class Enemy(pygame.sprite.Sprite):
     # Enemy class controls basic functions relating to the enemy
@@ -2014,6 +2030,7 @@ ba = BasicAttack()
 enemies = []
 bats = []
 bullets = []
+
 # bullets = [Bullet() for _ in range(1)]
 
 # adds ability for text to be on screen
@@ -2509,6 +2526,7 @@ while game:
                 if not g.rect.colliderect(ee.rect):
                     ee.bulletCollisions.remove(g)
     if ee.health <= 0:
+    # Makes sure ee is actually dead
         ee.felled = True
         ee.activate = False
         ee.rect = None
