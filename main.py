@@ -913,7 +913,7 @@ class calctargets():
             xcor = enemy.rect.x - p.rect.x
             ycor = enemy.rect.y - p.rect.y
             distance = math.sqrt(xcor**2 + ycor**2)
-            closest3targets.append(enemy, distance)
+            closest3targets.append((enemy, distance))
 
         #sorts and condenses the list to 3 targets.
         closest3targets.sort(key=lambda x: x[1])
@@ -928,7 +928,7 @@ class calctargets():
             xcor = enemy.rect.x - p.rect.x
             ycor = enemy.rect.y - p.rect.y
             distance = math.sqrt(xcor ** 2 + ycor ** 2)
-            farthesttarget.append(enemy, distance)
+            farthesttarget.append((enemy, distance))
 
         # sorts and condenses the list to 3 targets.
         farthesttarget.sort(key=lambda x: x[1], reverse=True)
@@ -1752,6 +1752,8 @@ class Bat(Enemy):
         self.travel_south()
         self.travel_west()
         self.bat = True
+
+#First mini Boss clas code \/
 class miniee(Enemy):
     #Earth Elemental Miniboss
     def __init__(self, x, y):
@@ -1773,6 +1775,9 @@ class miniee(Enemy):
         self.mini = True
         self.felled = False
         self.activate = False
+        self.notattacking = True
+        self.isattacking = False
+        self.attack_timer = pygame.time.get_ticks() / 1000
 
     def follow_mc(self):
         #Miniboss movment
@@ -1792,6 +1797,17 @@ class miniee(Enemy):
             self.travel_northeast()
         elif self.rect.x > p.rect.x and self.rect.y > p.rect.y:
             self.travel_northwest()
+    def aoehit(self):
+        xdis = self.rect.x - p.rect.x
+        ydis = self.rect.y - p.rect.y
+        distance = math.sqrt(xdis**2 + ydis**2)
+        if distance <= 20 and self.notattacking == True:
+            self.notattacking = False
+            self.isattacking = True
+            print("attacking")
+        if self.isattacking == True:
+            pygame.draw.circle(screen, (252, 161, 3), (self.rect.x, self.rect.y), 40)
+
 
 
 
@@ -2507,12 +2523,14 @@ while game:
         if bat.rect.colliderect(p.rect) or bat.northRect.colliderect(p.rect) or bat.eastRect.colliderect(p.rect) or bat.southRect.colliderect(p.rect) or bat.westRect.colliderect(p.rect):
             # print("COLLIDE!!!")
             p.health -= 1
-
+#First mini boss section \/
     if int(minutes) == 0 and int(seconds) == 0:
         ee.activate = True
     if ee.activate and not ee.felled:
-        ee.follow_mc()
         screen.blit(pygame.transform.scale(minibee1, (40,45)), (ee.rect.x, ee.rect.y))
+        ee.aoehit()
+        if ee.notattacking == True:
+            ee.follow_mc()
     if ee.activate and not ee.felled:
         for bullet in bullets:
             # for each active bullet, if the bullet hits ee, deal damage if appropriate.
@@ -2546,6 +2564,7 @@ while game:
         ee.felled = True
         ee.activate = False
         ee.rect = None
+#End of first mini Boss section
 
 
 
