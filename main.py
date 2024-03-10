@@ -936,6 +936,13 @@ class calctargets():
         farthest_one = farthesttarget[:1]
         return farthest_one
 
+    def calcdistance(self):
+            xcor = self.rect.x - p.rect.x
+            ycor = self.rect.y - p.rect.y
+            distance = math.sqrt(xcor ** 2 + ycor ** 2)
+            return distance
+
+
 
 
 
@@ -1789,34 +1796,33 @@ class miniee(Enemy):
 
     def follow_mc(self):
         #Miniboss movment
-        if self.rect.x < p.rect.x and self.rect.y == p.rect.y:
+        if self.rect.x < p.rect.x and self.rect.y == p.rect.y and not self.rect.colliderect(p.rect):
             self.travel_east()
-        elif self.rect.x > p.rect.x and self.rect.y == p.rect.y:
+        elif self.rect.x > p.rect.x and self.rect.y == p.rect.y and not self.rect.colliderect(p.rect):
             self.travel_west()
-        elif self.rect.y < p.rect.y and self.rect.x == p.rect.x:
+        elif self.rect.y < p.rect.y and self.rect.x == p.rect.x and not self.rect.colliderect(p.rect):
             self.travel_south()
-        elif self.rect.y > p.rect.y and self.rect.x == p.rect.x:
+        elif self.rect.y > p.rect.y and self.rect.x == p.rect.x and not self.rect.colliderect(p.rect):
             self.travel_north()
-        elif self.rect.x < p.rect.x and self.rect.y < p.rect.y:
+        elif self.rect.x < p.rect.x and self.rect.y < p.rect.y and not self.rect.colliderect(p.rect):
             self.travel_southeast()
-        elif self.rect.x > p.rect.x and self.rect.y < p.rect.y:
+        elif self.rect.x > p.rect.x and self.rect.y < p.rect.y and not self.rect.colliderect(p.rect):
             self.travel_southwest()
-        elif self.rect.x < p.rect.x and self.rect.y > p.rect.y:
+        elif self.rect.x < p.rect.x and self.rect.y > p.rect.y and not self.rect.colliderect(p.rect):
             self.travel_northeast()
-        elif self.rect.x > p.rect.x and self.rect.y > p.rect.y:
+        elif self.rect.x > p.rect.x and self.rect.y > p.rect.y and not self.rect.colliderect(p.rect):
             self.travel_northwest()
     def aoehit(self):
-        xdis = self.rect.x - p.rect.x
-        ydis = self.rect.y - p.rect.y
-        distance = math.sqrt(xdis**2 + ydis**2)
-        if distance <= 80 and self.notattacking == True and (int(self.attack_timer) - self.lastatt >= 12):
+        calctargets.calcdistance(self)
+        print(calctargets.calcdistance(self))
+        if calctargets.calcdistance(self) <= 80 and self.notattacking == True and (int(self.attack_timer) - self.lastatt >= 12):
             self.lastatt = int(self.attack_timer)
             self.notattacking = False
             self.isattacking = True
             #print("attacking")
             self.aoestart = int(self.attack_timer)
             p.orspeed = p.speed
-            self.rumblespeed = (p.speed*.60)
+            self.rumblespeed = (p.speed*.55)
         if self.isattacking == True:
             self.attackarea = pygame.draw.circle(screen, (252, 161, 3), (self.rect.x+18, self.rect.y+20), 240 , 1)
             self.rumblearea = pygame.draw.circle(screen, (252, 161, 3), (self.rect.x + 18, self.rect.y + 20), ((self.attack_timer - self.aoestart)*80))
