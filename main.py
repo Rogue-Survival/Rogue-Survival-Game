@@ -1813,7 +1813,7 @@ class miniee(Enemy):
             self.lastatt = int(self.attack_timer)
             self.notattacking = False
             self.isattacking = True
-            print("attacking")
+            #print("attacking")
             self.aoestart = int(self.attack_timer)
             p.orspeed = p.speed
             self.rumblespeed = (p.speed*.60)
