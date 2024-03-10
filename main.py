@@ -1777,7 +1777,10 @@ class miniee(Enemy):
         self.activate = False
         self.notattacking = True
         self.isattacking = False
-        self.attack_timer = pygame.time.get_ticks() / 1000
+        self.attack_timer = 0
+        self.lastatt = 0
+        self.attackdur = 5
+        self.attacrect = None
 
     def follow_mc(self):
         #Miniboss movment
@@ -1801,12 +1804,18 @@ class miniee(Enemy):
         xdis = self.rect.x - p.rect.x
         ydis = self.rect.y - p.rect.y
         distance = math.sqrt(xdis**2 + ydis**2)
-        if distance <= 20 and self.notattacking == True:
+        print(self.attack_timer)
+        if distance <= 20 and self.notattacking == True and (self.attack_timer - self.lastatt >= 12):
+            self.lastatt = self.attack_timer
             self.notattacking = False
             self.isattacking = True
             print("attacking")
         if self.isattacking == True:
-            pygame.draw.circle(screen, (252, 161, 3), (self.rect.x, self.rect.y), 40)
+            self.attacrect = pygame.draw.circle(screen, (252, 161, 3), (self.rect.x+18, self.rect.y+20), 40)
+            if (self.attack_timer == (self.lastatt + self.attackdur)):
+                self.attacrect = None
+                self.isattacking = False
+                self.notattacking = True
 
 
 
@@ -2272,11 +2281,11 @@ bulletTimer2 = 0
 while game:
     # the core game loop
     start_game_time()
-
     fps = clock.get_fps()
 
     clock.tick(60)
     # sets the fps to 60
+    ee.attack_timer = int(pygame.time.get_ticks() / 1000)
 
     # pygame.time.delay(5)
     # adds a very small delay to make it feel more like a game
