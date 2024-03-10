@@ -90,7 +90,7 @@ class Map(pygame.sprite.Sprite):
 
 class Player(pygame.sprite.Sprite):
     # Player class controls basic functions relating to the player
-    def __init__(self, speed=4, health=50):
+    def __init__(self, speed=4, health=100):
         # inherits from the pygame.sprite.Sprite class
         pygame.sprite.Sprite.__init__(self)
         self.speed = speed
@@ -101,6 +101,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = 400
         self.rect.width = 40
         self.gold = 0
+        self.orspeed = 0
 
     def get_speed(self):
         # returns speed of player
@@ -1779,8 +1780,12 @@ class miniee(Enemy):
         self.isattacking = False
         self.attack_timer = 0
         self.lastatt = 0
-        self.attackdur = 5
-        self.attacrect = None
+        self.attackdur = 3
+        self.attackarea = None
+        self.attackrect = None
+        self.rumblearea = None
+        self.aoestart = 0
+        self.rumblespeed = p.speed-1.8
 
     def follow_mc(self):
         #Miniboss movment
@@ -1804,18 +1809,35 @@ class miniee(Enemy):
         xdis = self.rect.x - p.rect.x
         ydis = self.rect.y - p.rect.y
         distance = math.sqrt(xdis**2 + ydis**2)
-        print(self.attack_timer)
-        if distance <= 20 and self.notattacking == True and (self.attack_timer - self.lastatt >= 12):
-            self.lastatt = self.attack_timer
+        if distance <= 80 and self.notattacking == True and (int(self.attack_timer) - self.lastatt >= 12):
+            self.lastatt = int(self.attack_timer)
             self.notattacking = False
             self.isattacking = True
             print("attacking")
+            self.aoestart = int(self.attack_timer)
+            p.orspeed = p.speed
+            self.rumblespeed = (p.speed*.7)
         if self.isattacking == True:
-            self.attacrect = pygame.draw.circle(screen, (252, 161, 3), (self.rect.x+18, self.rect.y+20), 40)
-            if (self.attack_timer == (self.lastatt + self.attackdur)):
-                self.attacrect = None
-                self.isattacking = False
+            self.attackarea = pygame.draw.circle(screen, (252, 161, 3), (self.rect.x+18, self.rect.y+20), 240 , 1)
+            self.rumblearea = pygame.draw.circle(screen, (252, 161, 3), (self.rect.x + 18, self.rect.y + 20), ((self.attack_timer - self.aoestart)*80))
+            if (int(self.attack_timer) == (self.lastatt + self.attackdur)):
+                self.attacrect = self.attackarea = pygame.draw.circle(screen, (252, 161, 3), (self.rect.x+18, self.rect.y+20), 240)
+                if self.isattacking == True:
+                    if p.rect.colliderect(self.rumblearea):
+                        p.speed = self.rumblespeed
+                    else:
+                        p.speed = p.orspeed
+                if p.rect.colliderect(self.attacrect):
+                    print("Player hit")
+                    p.health -= 50
+                    print(p.health)
+            if (int(self.attack_timer) == (self.lastatt + self.attackdur)):
                 self.notattacking = True
+                self.isattacking = False
+                self.attackarea = None
+                self.attackrect = None
+                p.speed = p.orspeed
+
 
 
 
@@ -2285,7 +2307,6 @@ while game:
 
     clock.tick(60)
     # sets the fps to 60
-    ee.attack_timer = int(pygame.time.get_ticks() / 1000)
 
     # pygame.time.delay(5)
     # adds a very small delay to make it feel more like a game
@@ -2536,6 +2557,7 @@ while game:
     if int(minutes) == 0 and int(seconds) == 0:
         ee.activate = True
     if ee.activate and not ee.felled:
+        ee.attack_timer = (pygame.time.get_ticks() / 1000)
         screen.blit(pygame.transform.scale(minibee1, (40,45)), (ee.rect.x, ee.rect.y))
         ee.aoehit()
         if ee.notattacking == True:
