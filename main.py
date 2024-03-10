@@ -34,6 +34,10 @@ skeletonKing2 = pygame.image.load("./images/skeletonKing2.png").convert_alpha()
 skeletonKing3 = pygame.image.load("./images/skeletonKing3.png").convert_alpha()
 skeletonKing4 = pygame.image.load("./images/skeletonKing4.png").convert_alpha()
 
+tallScroll = pygame.image.load("./images/tall.png").convert_alpha()
+mediumScroll = pygame.image.load("./images/medium2.png").convert_alpha()
+dungeonBackground = pygame.image.load("./images/dungeonBackground2.png").convert_alpha()
+
 
 xp = []
 xp_hit = []
@@ -1186,6 +1190,10 @@ class XP(pygame.sprite.Sprite):
         self.rect = pygame.draw.circle(screen, (0,255,0), (self.x, self.y), 5)
         self.hitBoxRect = pygame.draw.circle(transparentSurface, (0,255,35), (self.x, self.y), 50)
 
+speed_item_visible = True
+game = True
+gameTimerOn = False
+# gameTime = 0
 
 class XP_Bar(pygame.sprite.Sprite):
     # Displays the XP Bar
@@ -1206,9 +1214,20 @@ class XP_Bar(pygame.sprite.Sprite):
         self.left = None
         self.level_background = None
         self.level_font = pygame.font.SysFont('futura', 42)
+        self.upgradeTitle_font = pygame.font.SysFont('Jenson', 24) # 'Caslon', 'Garamond'
+        self.upgradeDesc_font = pygame.font.SysFont('Garamond', 22) # 'Caslon', 'Garamond'
         self.offset = 35
         self.leftover = 0
         self.leftoverSize = 0
+        self.levelMenu = False
+        self.greyScreen = pygame.Surface((800,800), pygame.SRCALPHA)
+        self.pauseTimer = 0
+        self.availableUpgrades = []
+        self.selectedUpgradeChoices = False
+        self.option1 = None
+        self.option2= None
+        self.buttonRect1 = None
+        self.buttonRect2 = None
 
     def show_xp_bar(self):
         # displays XP bar
@@ -1216,7 +1235,143 @@ class XP_Bar(pygame.sprite.Sprite):
         if self.xp:
             self.length = self.xp / self.level_xp_requirement
             if self.length >= 1 or self.length+self.leftover >= 1:
-                # if player XP reached level requirement, increase XP level
+                # if player XP reached level requirement, increase XP level and give the Player an upgrade choice
+                self.levelMenu = True
+                # tempTimer = gameTimeStr
+                while self.levelMenu:
+                    # while level menu is active
+                    global gameTimerStr
+                    # gameTimerOn = False
+                    global gameTime
+                    tempTimer = pygame.time.get_ticks() - gameTime
+                    self.pauseTimer = tempTimer
+                    if pygame.key.get_pressed()[pygame.K_2]:
+                        self.levelMenu = False
+                        gameTimerStr = tempTimer
+                        # gameTimerOn = True
+                        gameTime -= tempTimer
+                        self.timeAfterPause = gameTime
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                            self.levelMenu = False
+                            global game
+                            game = False
+                        if event.type == pygame.MOUSEBUTTONDOWN:
+                            if self.buttonRect1.collidepoint(event.pos):
+                                if self.option1 == 'BA-Dam':
+                                    self.basic_attack_damage_upgrade(0)
+                                if self.option1 == 'BA-Ran':
+                                    self.basic_attack_range_upgrade(0)
+                                if self.option1 == 'BA-Spe':
+                                    self.basic_attack_speed_upgrade(0)
+                                if self.option1 == 'Mov-Spe':
+                                    self.move_speed_upgrade(0)
+                                if self.option1 == 'Dod-Cha':
+                                    self.dodge_chance_upgrade(0)
+                                if self.option1 == 'Bul-Dam':
+                                    self.bullet_damage_upgrade(0)
+                                if self.option1 == 'Bul-Ran':
+                                    self.bullet_range_upgrade(0)
+                                if self.option1 == 'Bul-Spe':
+                                    self.bullet_speed_upgrade(0)
+                            elif self.buttonRect2.collidepoint(event.pos):
+                                if self.option2 == 'BA-Dam':
+                                    self.basic_attack_damage_upgrade(0)
+                                if self.option2 == 'BA-Ran':
+                                    self.basic_attack_range_upgrade(0)
+                                if self.option2 == 'BA-Spe':
+                                    self.basic_attack_speed_upgrade(0)
+                                if self.option2 == 'Mov-Spe':
+                                    self.move_speed_upgrade(0)
+                                if self.option2 == 'Dod-Cha':
+                                    self.dodge_chance_upgrade(0)
+                                if self.option2 == 'Bul-Dam':
+                                    self.bullet_damage_upgrade(0)
+                                if self.option2 == 'Bul-Ran':
+                                    self.bullet_range_upgrade(0)
+                                if self.option2 == 'Bul-Spe':
+                                    self.bullet_speed_upgrade(0)
+                    # self.greyScreen.fill((128,128,128,160))
+                    # screen.blit(self.greyScreen, (0,0))
+                    screen.blit(dungeonBackground, (0,0))
+                    screen.blit(mediumScroll, (100,225))
+                    screen.blit(mediumScroll, (450,225))
+                    upgradeTitle1Render = self.upgradeTitle_font.render('OPTION 1', True, (0, 0, 0))
+                    screen.blit(upgradeTitle1Render, (202, 330))
+                    upgradeTitle2Render = self.upgradeTitle_font.render('OPTION 2', True, (0, 0, 0))
+                    screen.blit(upgradeTitle2Render, (550, 330))
+
+                    self.buttonRect1 = pygame.Rect(100,222, 285, 370)
+                    self.buttonRect2 = pygame.Rect(450,222, 285, 370)
+
+                    pygame.draw.rect(transparentSurface, (0,0,255), self.buttonRect1)
+                    pygame.draw.rect(transparentSurface, (0,0,255), self.buttonRect2)
+
+                    if not self.selectedUpgradeChoices:
+                        # if two random options have not been generated, then generate them
+                        self.availableUpgrades = ['BA-Dam', 'BA-Ran', 'BA-Spe', 'Mov-Spe', 'Dod-Cha', 'Bul-Dam', 'Bul-Ran', 'Bul-Spe']
+                        randomUpgrade1 = random.randint(0, (len(self.availableUpgrades) - 1))
+                        self.option1 = self.availableUpgrades[randomUpgrade1]
+                        randomUpgrade2 = random.randint(0, (len(self.availableUpgrades) - 1))
+                        while randomUpgrade2 == randomUpgrade1:
+                            # checks to make sure two options are not the same
+                            randomUpgrade2 = random.randint(0, (len(self.availableUpgrades) - 1))
+                        self.option2 = self.availableUpgrades[randomUpgrade2]
+                        self.selectedUpgradeChoices = True
+                        self.TwoUpgradeChoices = [self.availableUpgrades[randomUpgrade1], self.availableUpgrades[randomUpgrade2]]
+                        # print(self.option1)
+                        # print(self.option2)
+
+                        self.buttonRect1 = pygame.Rect(100,222, 285, 370)
+                        self.buttonRect2 = pygame.Rect(450,222, 285, 370)
+
+                    if self.selectedUpgradeChoices:
+                        # if two random choices have been generated, call appropriate function and blit the information to the screen.
+                        if 'BA-Dam' in self.TwoUpgradeChoices:
+                            if self.option1 == 'BA-Dam':
+                                self.basic_attack_damage_upgrade(1)
+                            else:
+                                self.basic_attack_damage_upgrade(2)
+                        if 'BA-Ran' in self.TwoUpgradeChoices:
+                            if self.option1 == 'BA-Ran':
+                                self.basic_attack_range_upgrade(1)
+                            else:
+                                self.basic_attack_range_upgrade(2)
+                        if 'BA-Spe' in self.TwoUpgradeChoices:
+                            if self.option1 == 'BA-Spe':
+                                self.basic_attack_speed_upgrade(1)
+                            else:
+                                self.basic_attack_speed_upgrade(2)
+                        if 'Mov-Spe' in self.TwoUpgradeChoices:
+                            if self.option1 == 'Mov-Spe':
+                                self.move_speed_upgrade(1)
+                            else:
+                                self.move_speed_upgrade(2)
+                        if 'Dod-Cha' in self.TwoUpgradeChoices:
+                            if self.option1 == 'Dod-Cha':
+                                self.dodge_chance_upgrade(1)
+                            else:
+                                self.dodge_chance_upgrade(2)
+                        if 'Bul-Dam' in self.TwoUpgradeChoices:
+                            if self.option1 == 'Bul-Dam':
+                                self.bullet_damage_upgrade(1)
+                            else:
+                                self.bullet_damage_upgrade(2)
+                        if 'Bul-Ran' in self.TwoUpgradeChoices:
+                            if self.option1 == 'Bul-Ran':
+                                self.bullet_range_upgrade(1)
+                            else:
+                                self.bullet_range_upgrade(2)
+                        if 'Bul-Spe' in self.TwoUpgradeChoices:
+                            if self.option1 == 'Bul-Spe':
+                                self.bullet_speed_upgrade(1)
+                            else:
+                                self.bullet_speed_upgrade(2)
+
+                    clock.tick(15)
+                    pygame.display.update()
+
+
                 self.leftover = self.xp - self.level_xp_requirement
                 self.level += 1
                 self.xp = 0
@@ -1248,6 +1403,151 @@ class XP_Bar(pygame.sprite.Sprite):
         else:
             # moves the level number to the left to better accommodate another value fitting into the box
             screen.blit(levelRender, (747-self.offset, 758))
+
+    def basic_attack_damage_upgrade(self, option):
+        # display information regarding the basic attack damage upgrade and if selected, implement the upgrade.
+        if option == 1:
+            upgradeBaDam1Render = self.upgradeDesc_font.render('Increase Basic Attack', True, (0, 0, 0))
+            screen.blit(upgradeBaDam1Render, (150, 365))
+            upgradeBaDam2Render = self.upgradeDesc_font.render('Damage by 5%.', True, (0, 0, 0))
+            screen.blit(upgradeBaDam2Render, (150, 390))
+
+        elif option == 2:
+            upgradeBaDam1Render = self.upgradeDesc_font.render('Increase Basic Attack', True, (0, 0, 0))
+            screen.blit(upgradeBaDam1Render, (500, 365))
+            upgradeBaDam2Render = self.upgradeDesc_font.render('Damage by 5%.', True, (0, 0, 0))
+            screen.blit(upgradeBaDam2Render, (500, 390))
+
+        elif not option:
+            self.selectedUpgradeChoices = False
+            self.levelMenu = False
+
+    def basic_attack_range_upgrade(self, option):
+        # display information regarding the basic attack range upgrade and if selected, implement the upgrade.
+        if option == 1:
+            upgradeBaRa1Render = self.upgradeDesc_font.render('Increase Basic Attack', True, (0, 0, 0))
+            screen.blit(upgradeBaRa1Render, (150, 365))
+            upgradeBaRa2Render = self.upgradeDesc_font.render('Range by 5%.', True, (0, 0, 0))
+            screen.blit(upgradeBaRa2Render, (150, 390))
+
+        elif option == 2:
+            upgradeBaRa1Render = self.upgradeDesc_font.render('Increase Basic Attack', True, (0, 0, 0))
+            screen.blit(upgradeBaRa1Render, (500, 365))
+            upgradeBaRa2Render = self.upgradeDesc_font.render('Range by 5%.', True, (0, 0, 0))
+            screen.blit(upgradeBaRa2Render, (500, 390))
+
+        elif not option:
+            self.selectedUpgradeChoices = False
+            self.levelMenu = False
+
+    def basic_attack_speed_upgrade(self, option):
+        # display information regarding the basic attack speed upgrade and if selected, implement the upgrade.
+        if option == 1:
+            upgradeBaSpe1Render = self.upgradeDesc_font.render('Increase Basic Attack', True, (0, 0, 0))
+            screen.blit(upgradeBaSpe1Render, (150, 365))
+            upgradeBaSpe2Render = self.upgradeDesc_font.render('Speed by 5%.', True, (0, 0, 0))
+            screen.blit(upgradeBaSpe2Render, (150, 390))
+
+        elif option == 2:
+            upgradeBaSpe1Render = self.upgradeDesc_font.render('Increase Basic Attack', True, (0, 0, 0))
+            screen.blit(upgradeBaSpe1Render, (500, 365))
+            upgradeBaSpe2Render = self.upgradeDesc_font.render('Speed by 5%.', True, (0, 0, 0))
+            screen.blit(upgradeBaSpe2Render, (500, 390))
+
+        elif not option:
+            self.selectedUpgradeChoices = False
+            self.levelMenu = False
+
+    def move_speed_upgrade(self, option):
+        # display information regarding the movement speed upgrade and if selected, implement the upgrade.
+        if option == 1:
+            upgradeBaSpe1Render = self.upgradeDesc_font.render('Increase Player Move', True, (0, 0, 0))
+            screen.blit(upgradeBaSpe1Render, (150, 365))
+            upgradeBaSpe2Render = self.upgradeDesc_font.render('Speed by 5%.', True, (0, 0, 0))
+            screen.blit(upgradeBaSpe2Render, (150, 390))
+
+        elif option == 2:
+            upgradeBaSpe1Render = self.upgradeDesc_font.render('Increase Player Move', True, (0, 0, 0))
+            screen.blit(upgradeBaSpe1Render, (500, 365))
+            upgradeBaSpe2Render = self.upgradeDesc_font.render('Speed by 5%.', True, (0, 0, 0))
+            screen.blit(upgradeBaSpe2Render, (500, 390))
+
+        elif not option:
+            self.selectedUpgradeChoices = False
+            self.levelMenu = False
+
+    def dodge_chance_upgrade(self, option):
+        # display information regarding the dodge chance upgrade and if selected, implement the upgrade.
+        if option == 1:
+            upgradeDodge1Render = self.upgradeDesc_font.render('Increase Dodge', True, (0, 0, 0))
+            screen.blit(upgradeDodge1Render, (150, 365))
+            upgradeDodge2Render = self.upgradeDesc_font.render('Chance by 2%.', True, (0, 0, 0))
+            screen.blit(upgradeDodge2Render, (150, 390))
+
+        elif option == 2:
+            upgradeDodge1Render = self.upgradeDesc_font.render('Increase Dodge', True, (0, 0, 0))
+            screen.blit(upgradeDodge1Render, (500, 365))
+            upgradeDodge2Render = self.upgradeDesc_font.render('Chance by 2%.', True, (0, 0, 0))
+            screen.blit(upgradeDodge2Render, (500, 390))
+
+        elif not option:
+            self.selectedUpgradeChoices = False
+            self.levelMenu = False
+
+    def bullet_damage_upgrade(self, option):
+        # display information regarding the bullet damage upgrade and if selected, implement the upgrade.
+        if option == 1:
+            upgradeBulDam1Render = self.upgradeDesc_font.render('Increase Bullet', True, (0, 0, 0))
+            screen.blit(upgradeBulDam1Render, (150, 365))
+            upgradeBulDam2Render = self.upgradeDesc_font.render('Damage by 5%.', True, (0, 0, 0))
+            screen.blit(upgradeBulDam2Render, (150, 390))
+
+        elif option == 2:
+            upgradeBulDam1Render = self.upgradeDesc_font.render('Increase Bullet', True, (0, 0, 0))
+            screen.blit(upgradeBulDam1Render, (500, 365))
+            upgradeBulDam2Render = self.upgradeDesc_font.render('Damage by 5%.', True, (0, 0, 0))
+            screen.blit(upgradeBulDam2Render, (500, 390))
+
+        elif not option:
+            self.selectedUpgradeChoices = False
+            self.levelMenu = False
+
+    def bullet_range_upgrade(self, option):
+        # display information regarding the bullet range upgrade and if selected, implement the upgrade.
+        if option == 1:
+            upgradeBulRan1Render = self.upgradeDesc_font.render('Increase Bullet', True, (0, 0, 0))
+            screen.blit(upgradeBulRan1Render, (150, 365))
+            upgradeBulRan2Render = self.upgradeDesc_font.render('Range by 5%.', True, (0, 0, 0))
+            screen.blit(upgradeBulRan2Render, (150, 390))
+
+        elif option == 2:
+            upgradeBulDam1Render = self.upgradeDesc_font.render('Increase Bullet', True, (0, 0, 0))
+            screen.blit(upgradeBulDam1Render, (500, 365))
+            upgradeBulRan2Render = self.upgradeDesc_font.render('Range by 5%.', True, (0, 0, 0))
+            screen.blit(upgradeBulRan2Render, (500, 390))
+
+        elif not option:
+            self.selectedUpgradeChoices = False
+            self.levelMenu = False
+
+    def bullet_speed_upgrade(self, option):
+        # display information regarding the bullet speed upgrade and if selected, implement the upgrade.
+        if option == 1:
+            upgradeBulSpe1Render = self.upgradeDesc_font.render('Increase Bullet', True, (0, 0, 0))
+            screen.blit(upgradeBulSpe1Render, (150, 365))
+            upgradeBulSpe2Render = self.upgradeDesc_font.render('Speed by 5%.', True, (0, 0, 0))
+            screen.blit(upgradeBulSpe2Render, (150, 390))
+
+        elif option == 2:
+            upgradeBulSpe1Render = self.upgradeDesc_font.render('Increase Bullet', True, (0, 0, 0))
+            screen.blit(upgradeBulSpe1Render, (500, 365))
+            upgradeBulSpe2Render = self.upgradeDesc_font.render('Speed by 5%.', True, (0, 0, 0))
+            screen.blit(upgradeBulSpe2Render, (500, 390))
+
+        elif not option:
+            self.selectedUpgradeChoices = False
+            self.levelMenu = False
+
 
 
 # initializes the Player and Enemy classes
@@ -1294,9 +1594,7 @@ bg_img = pygame.image.load('images/dungeon.png').convert_alpha()
 speedI = pygame.image.load("./images/Noodle.png").convert_alpha()
 
 
-speed_item_visible = True
-game = True
-gameTimerOn = False
+
 
 
 timerFont = pygame.font.SysFont('futura', 64)
@@ -1308,7 +1606,12 @@ seconds = 0
 
 
 def start_game_time():
-    gameTime = pygame.time.get_ticks()
+    global gameTime
+    if xpB.pauseTimer:
+        gameTime = pygame.time.get_ticks() - xpB.pauseTimer
+    else:
+        gameTime = pygame.time.get_ticks()
+    # print(gameTime)
     global gameTimeStr
     gameTimeStr = int(gameTime/1000)
     if gameTimeStr < 60:
@@ -1461,7 +1764,6 @@ while game:
 
     clock.tick(60)
     # sets the fps to 60
-
     # pygame.time.delay(5)
     # adds a very small delay to make it feel more like a game
 
@@ -1511,7 +1813,9 @@ while game:
     # makes the main character visible
     screen.blit(pygame.transform.scale(mc_img, (40, 35)), (p.rect.x, p.rect.y))
 
-    bulletTimer2 = (pygame.time.get_ticks() / 1000)
+    # bulletTimer2 = (pygame.time.get_ticks() / 1000)
+    global gameTime
+    bulletTimer2 = gameTime / 1000
     # if bulletTimer1
     if seconds % b.bulletIncrement == 0:
         activateBullet = True
@@ -1638,7 +1942,7 @@ while game:
             chance = random.randint(1,10)
             if chance <= 2:
                 p.gold += 1
-
+        # print(gameTime)
         if enemy.rect.colliderect(p.rect) or enemy.northRect.colliderect(p.rect) or enemy.eastRect.colliderect(p.rect) or enemy.southRect.colliderect(p.rect) or enemy.westRect.colliderect(p.rect):
             # print("COLLIDE!!!")
             p.health -= 1
@@ -1780,6 +2084,9 @@ while game:
     #             pygame.draw.rect(screen, (128,0,128), bat.southRect)
     #             pygame.draw.rect(screen, (128,0,128), bat.westRect)
 
+
+
+    # screen.blit(pygame.transform.scale(mc_img, (40, 35)), (p.rect.x, p.rect.y))
 
     ba.attack()
     m.update_boundary()
