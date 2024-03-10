@@ -1785,7 +1785,7 @@ class miniee(Enemy):
         self.attackrect = None
         self.rumblearea = None
         self.aoestart = 0
-        self.rumblespeed = p.speed-1.8
+        self.rumblespeed = 0
 
     def follow_mc(self):
         #Miniboss movment
@@ -1816,17 +1816,16 @@ class miniee(Enemy):
             print("attacking")
             self.aoestart = int(self.attack_timer)
             p.orspeed = p.speed
-            self.rumblespeed = (p.speed*.7)
+            self.rumblespeed = (p.speed*.60)
         if self.isattacking == True:
             self.attackarea = pygame.draw.circle(screen, (252, 161, 3), (self.rect.x+18, self.rect.y+20), 240 , 1)
             self.rumblearea = pygame.draw.circle(screen, (252, 161, 3), (self.rect.x + 18, self.rect.y + 20), ((self.attack_timer - self.aoestart)*80))
+            if p.rect.colliderect(self.rumblearea):
+                p.speed = self.rumblespeed
+            else:
+                p.speed = p.orspeed
             if (int(self.attack_timer) == (self.lastatt + self.attackdur)):
                 self.attacrect = self.attackarea = pygame.draw.circle(screen, (252, 161, 3), (self.rect.x+18, self.rect.y+20), 240)
-                if self.isattacking == True:
-                    if p.rect.colliderect(self.rumblearea):
-                        p.speed = self.rumblespeed
-                    else:
-                        p.speed = p.orspeed
                 if p.rect.colliderect(self.attacrect):
                     print("Player hit")
                     p.health -= 50
