@@ -1890,11 +1890,6 @@ class miniee(Enemy):
             #print("player hit")
 
 
-
-
-
-
-
 class skeletonKing(Enemy):
     def __init__(self, x, y):
         super().__init__(x, y)
@@ -2641,7 +2636,7 @@ while game:
                 if not ee.bulletCollisions:
                     # If ee has been hit by its forst bullet add to list to take damage.
                     ee.bulletCollisions.append(bullet)
-                    ee.health -= p.bulletdamage
+                    ee.health -= p.bulletdamage + 100
                     # print(ee.health)
                     # print('1')
                 elif ee.bulletCollisions:
@@ -2652,7 +2647,7 @@ while game:
                             pass
                         elif bullet not in ee.bulletCollisions and bullet.bulletValid:
                             ee.bulletCollisions.append(bullet)
-                            ee.health -= p.bulletdamage
+                            ee.health -= p.bulletdamage + 100
                             #print(ee.health)
                         i += 1
         for bullet in bullets:
