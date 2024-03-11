@@ -1807,7 +1807,7 @@ class miniee(Enemy):
         self.rect.x = x
         self.rect.y = y
         self.rect.width = 20
-        self.health = 3000
+        self.health = 2500
         self.speed = 3
         self.travel_southeast()
         self.travel_southwest()
@@ -2632,10 +2632,11 @@ while game:
         for bullet in bullets:
             # for each active bullet, if the bullet hits ee, deal damage if appropriate.
             if ee.rect.colliderect(bullet.rect) and bullet.bulletValid:
+
                 if not ee.bulletCollisions:
                     # If ee has been hit by its forst bullet add to list to take damage.
                     ee.bulletCollisions.append(bullet)
-                    ee.health -= p.bulletdamage + 5000
+                    ee.health -= p.bulletdamage
                     # print('1')
                 elif ee.bulletCollisions:
                     # if the list of bullets that have collided ee is greater than 0, make sure it is a different bullet in order to deal damage
@@ -2680,6 +2681,7 @@ while game:
         bup.upgradeout = False
         p.bulletdamage += 100
         bup.upgradeactive = True
+        print(p.bulletdamage)
 
 
 #End of first mini Boss section
