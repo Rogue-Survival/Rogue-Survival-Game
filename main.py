@@ -1799,6 +1799,7 @@ class miniee(Enemy):
         self.aoestart = 0
         self.rumblespeed = 0
         self.hitdamage = 25
+        self.animation = 0
 
     def follow_mc(self):
         #Miniboss movment
@@ -2577,10 +2578,24 @@ while game:
         ee.activate = True
     if ee.activate and not ee.felled:
         ee.attack_timer = (pygame.time.get_ticks() / 1000)
-        screen.blit(pygame.transform.scale(minibee1, (40,45)), (ee.rect.x, ee.rect.y))
         ee.aoehit()
-        if ee.notattacking == True:
-            ee.follow_mc()
+        print(ee.animation)
+        if ee.animation<=15:
+            screen.blit(pygame.transform.scale(minibee1, (40,45)), (ee.rect.x, ee.rect.y))
+            ee.animation += 1
+        if ee.animation<=30:
+            screen.blit(pygame.transform.scale(minibee2, (40,45)), (ee.rect.x, ee.rect.y))
+            ee.animation += 1
+        if ee.animation<=45:
+            screen.blit(pygame.transform.scale(minibee3, (40,45)), (ee.rect.x, ee.rect.y))
+            ee.animation += 1
+        if ee.animation<=60:
+            screen.blit(pygame.transform.scale(minibee4, (40,45)), (ee.rect.x, ee.rect.y))
+            ee.animation += 1
+        if ee.animation == 60:
+            ee.animation = 0
+    if ee.notattacking == True:
+        ee.follow_mc()
     if ee.activate and not ee.felled:
         for bullet in bullets:
             # for each active bullet, if the bullet hits ee, deal damage if appropriate.
