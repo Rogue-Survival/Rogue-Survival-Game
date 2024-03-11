@@ -909,7 +909,7 @@ class Bullet(pygame.sprite.Sprite):
                 self.counterX += 1
                 self.counterY += 1
 class calctargets():
-    def calcclosest3(self,t1,o1,p,n1):
+    def calcclosest(t1,o1,n1):
         closesttargets = []
         for t1 in o1:
             #itterates through the enemies and checks thier distances then adds them to the list
@@ -922,9 +922,9 @@ class calctargets():
         closesttargets.sort(key=lambda x: x[1])
         closest = closesttargets[:n1]
         closest_targets =  [t1[0] for t1 in closest]
-        return closest_targets
+        return print(closest_targets)s
 
-    def calcfarthest(self,t1,o1,p,n1):
+    def calcfarthest(t1,o1,n1):
         farthesttarget = []
         for t1 in o1:
             # itterates through the enemies and checks thier distances then adds them to the list
@@ -2306,6 +2306,8 @@ def keypressed():
     if key_presses[pygame.K_ESCAPE]:
         # if ESC key is pressed, pause game
         pauseGame()
+    if key_presses[pygame.K_SPACE]:
+        calctargets.calcclosest(t1=enemy,o1=enemies,n1=3)
 
 activateBullet = True
 bulletTimer1 = 2
