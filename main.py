@@ -909,20 +909,20 @@ class Bullet(pygame.sprite.Sprite):
                 self.counterX += 1
                 self.counterY += 1
 class calctargets():
-    def calcclosest3(self,enemies,p):
-        closest3targets = []
-        for enemy in enemies:
+    def calcclosest3(self,t,o,p,n):
+        closesttargets = []
+        for t in o:
             #itterates through the enemies and checks thier distances then adds them to the list
-            xcor = enemy.rect.x - p.rect.x
-            ycor = enemy.rect.y - p.rect.y
+            xcor = t.rect.x - p.rect.x
+            ycor = t.rect.y - p.rect.y
             distance = math.sqrt(xcor**2 + ycor**2)
-            closest3targets.append((enemy, distance))
+            closesttargets.append((t, distance))
 
-        #sorts and condenses the list to 3 targets.
-        closest3targets.sort(key=lambda x: x[1])
-        closest_three = closest3targets[:3]
-        closest_three_targets =  [enemy[0] for enemy in closest_three]
-        return closest_three_targets
+        #sorts and condenses the list to n targets.
+        closesttargets.sort(key=lambda x: x[1])
+        closest = closesttargets[:n]
+        closest_targets =  [t[0] for t in closest]
+        return closest_targets
 
     def calcfarthest(self,enemies,p):
         farthesttarget = []
