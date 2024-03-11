@@ -787,6 +787,8 @@ class Bullet(pygame.sprite.Sprite):
         self.bulletDistance = 20
         self.angle = 200
         self.positionReached = False
+        self.shooting = False
+        self.overflow = 0
 
     def bullet(self):
         # bullet movement
@@ -1834,6 +1836,7 @@ class miniee(Enemy):
         self.animation = 0
         self.lastauto = 0
         self.attackspeed = 2
+        self.speedsnap = False
 
     def follow_mc(self):
         #Miniboss movment
@@ -2406,26 +2409,28 @@ while game:
 
     # makes the main character visible
     screen.blit(pygame.transform.scale(mc_img, (40, 35)), (p.rect.x, p.rect.y))
-    bulletTimer2 = (pygame.time.get_ticks() / 1000)
+    if b.shooting == True:
+        bulletTimer2 = (pygame.time.get_ticks() / 1000) - b.overflow
     # if bulletTimer1
-    if seconds % b.bulletIncrement == 0:
-        activateBullet = True
-    if bulletTimer2 > bulletTimer1:
-        # controls the speed of shooting the bullets
-        bullets.append(Bullet())
+    if b.shooting == True:
+        if seconds % b.bulletIncrement == 0:
+            activateBullet = True
+        if bulletTimer2 > bulletTimer1:
+            # controls the speed of shooting the bullets
+            bullets.append(Bullet())
+            for bullet in bullets:
+                bullet.mousePOS = pygame.mouse.get_pos()
+                bullet.mousePOS = (pygame.math.Vector2(bullet.mousePOS[0], bullet.mousePOS[1]))
+                bullet.startingPoint = pygame.math.Vector2(p.rect.x, p.rect.y)
+                bullet.bullet()
+            bulletTimer1 += b.bulletIncrement
+            activateBullet = False
+            # print(activateBullet)
         for bullet in bullets:
-            bullet.mousePOS = pygame.mouse.get_pos()
-            bullet.mousePOS = (pygame.math.Vector2(bullet.mousePOS[0], bullet.mousePOS[1]))
-            bullet.startingPoint = pygame.math.Vector2(p.rect.x, p.rect.y)
-            bullet.bullet()
-        bulletTimer1 += b.bulletIncrement
-        activateBullet = False
-        # print(activateBullet)
-    for bullet in bullets:
-        if bullet.bulletValid:
-            # if bullet ability has been activated
-            pygame.draw.circle(screen, (255, 255, 255), (bullet.rect.x+18, bullet.rect.y+17), 10)
-            bullet.bullet()
+            if bullet.bulletValid:
+                # if bullet ability has been activated
+                pygame.draw.circle(screen, (255, 255, 255), (bullet.rect.x+18, bullet.rect.y+17), 10)
+                bullet.bullet()
 
 
     if len(enemies) < 15:
@@ -2497,23 +2502,24 @@ while game:
             # pygame.draw.rect(screen, (128,0,128), enemy.westRect)
 
 
-            for bullet in bullets:
-                # for each active bullet, if the bullet hits an enemy, deal damage if appropriate conditions met.
-                if enemy.rect.colliderect(bullet.rect) and bullet.bulletValid:
-                    if not enemy.bulletCollisions:
-                        # if the enemy has encountered it's first bullet, add to the list and take damage
-                        enemy.bulletCollisions.append(bullet)
-                        enemy.health -= p.bulletdamage
-                    elif enemy.bulletCollisions:
-                        # if the list of bullets the enemy has collided with is greater than 0, make sure it is a different bullet in order to deal damage
-                        i = 0
-                        for l in enemy.bulletCollisions:
-                            if bullet.rect.x == enemy.bulletCollisions[i].rect.x and bullet.rect.y == enemy.bulletCollisions[i].rect.y:
-                                pass
-                            elif bullet not in enemy.bulletCollisions and bullet.bulletValid:
-                                enemy.bulletCollisions.append(bullet)
-                                enemy.health -= p.bulletdamage
-                            i += 1
+            if b.shooting == True:
+                for bullet in bullets:
+                    # for each active bullet, if the bullet hits an enemy, deal damage if appropriate conditions met.
+                    if enemy.rect.colliderect(bullet.rect) and bullet.bulletValid:
+                        if not enemy.bulletCollisions:
+                            # if the enemy has encountered it's first bullet, add to the list and take damage
+                            enemy.bulletCollisions.append(bullet)
+                            enemy.health -= p.bulletdamage
+                        elif enemy.bulletCollisions:
+                            # if the list of bullets the enemy has collided with is greater than 0, make sure it is a different bullet in order to deal damage
+                            i = 0
+                            for l in enemy.bulletCollisions:
+                                if bullet.rect.x == enemy.bulletCollisions[i].rect.x and bullet.rect.y == enemy.bulletCollisions[i].rect.y:
+                                    pass
+                                elif bullet not in enemy.bulletCollisions and bullet.bulletValid:
+                                    enemy.bulletCollisions.append(bullet)
+                                    enemy.health -= p.bulletdamage
+                                i += 1
 
             if enemy.rect.colliderect(ba.hitBoxRect) and ba.running and not enemy.meleeAttackCollisions:
                 # Reduce enemy health from the Players basic attack if not hit by that same attack swing
@@ -2527,7 +2533,7 @@ while game:
             if ee.activate and not ee.felled:
                 if ee.rect.colliderect(ba.hitBoxRect) and ba.running and not ee.meleeAttackCollisions:
                     # Reduce health from the mini boss from Players basic attack if not hit by that same attack swing
-                    ee.health -= p.meleedamage
+                    ee.health -= p.meleedamage + 10000
                     ee.meleeAttackCollisions.append(1)
 
         if enemy.health <= 0:
@@ -2568,23 +2574,24 @@ while game:
             # bat.generate_enemy()
             bat.follow_mc()
 
-            for bullet in bullets:
-                # for each active bullet, if the bullet hits a bat, deal damage if appropriate conditions met.
-                if bat.rect.colliderect(bullet.rect) and bullet.bulletValid:
-                    if not bat.bulletCollisions:
-                        # if the bat has encountered it's first bullet, add to the list and take damage
-                        bat.bulletCollisions.append(bullet)
-                        bat.health -= p.bulletdamage
-                    elif bat.bulletCollisions:
-                        # if the list of bullets the bat has collided with is greater than 0, make sure it is a different bullet in order to deal damage
-                        i = 0
-                        for l in bat.bulletCollisions:
-                            if bullet.rect.x == bat.bulletCollisions[i].rect.x and bullet.rect.y == bat.bulletCollisions[i].rect.y:
-                                pass
-                            elif bullet not in bat.bulletCollisions and bullet.bulletValid:
-                                bat.bulletCollisions.append(bullet)
-                                bat.health -= p.bulletdamage
-                            i += 1
+            if b.shooting == True:
+                for bullet in bullets:
+                    # for each active bullet, if the bullet hits a bat, deal damage if appropriate conditions met.
+                    if bat.rect.colliderect(bullet.rect) and bullet.bulletValid:
+                        if not bat.bulletCollisions:
+                            # if the bat has encountered it's first bullet, add to the list and take damage
+                            bat.bulletCollisions.append(bullet)
+                            bat.health -= p.bulletdamage
+                        elif bat.bulletCollisions:
+                            # if the list of bullets the bat has collided with is greater than 0, make sure it is a different bullet in order to deal damage
+                            i = 0
+                            for l in bat.bulletCollisions:
+                                if bullet.rect.x == bat.bulletCollisions[i].rect.x and bullet.rect.y == bat.bulletCollisions[i].rect.y:
+                                    pass
+                                elif bullet not in bat.bulletCollisions and bullet.bulletValid:
+                                    bat.bulletCollisions.append(bullet)
+                                    bat.health -= p.bulletdamage
+                                i += 1
 
             if bat.rect.colliderect(ba.hitBoxRect) and ba.running and not bat.meleeAttackCollisions:
                 # Reduce bat health from the Players basic attack if not hit by that same attack swing
@@ -2629,42 +2636,45 @@ while game:
             ee.follow_mc()
             ee.autohitplayer()
     if ee.activate and not ee.felled:
-        for bullet in bullets:
-            # for each active bullet, if the bullet hits ee, deal damage if appropriate.
-            if ee.rect.colliderect(bullet.rect) and bullet.bulletValid:
+        if b.shooting == True:
+            for bullet in bullets:
+                # for each active bullet, if the bullet hits ee, deal damage if appropriate.
+                if ee.rect.colliderect(bullet.rect) and bullet.bulletValid:
 
-                if not ee.bulletCollisions:
-                    # If ee has been hit by its forst bullet add to list to take damage.
-                    ee.bulletCollisions.append(bullet)
-                    ee.health -= p.bulletdamage + 100
-                    # print(ee.health)
-                    # print('1')
-                elif ee.bulletCollisions:
-                    # if the list of bullets that have collided ee is greater than 0, make sure it is a different bullet in order to deal damage
-                    i = 0
-                    for l in ee.bulletCollisions:
-                        if bullet.rect.x == ee.bulletCollisions[i].rect.x and bullet.rect.y == ee.bulletCollisions[i].rect.y:
-                            pass
-                        elif bullet not in ee.bulletCollisions and bullet.bulletValid:
-                            ee.bulletCollisions.append(bullet)
-                            ee.health -= p.bulletdamage + 100
-                            #print(ee.health)
-                        i += 1
-        for bullet in bullets:
-            # removes expired bullets
-            if bullet in ee.bulletCollisions and not ee.rect.colliderect(bullet.rect):
-                ee.bulletCollisions.remove(bullet)
-        if ee.bulletCollisions:
-            # backup to remove expired bullets from the bullet collision list
-            for g in ee.bulletCollisions:
-                if not g.rect.colliderect(ee.rect):
-                    ee.bulletCollisions.remove(g)
+                    if not ee.bulletCollisions:
+                        # If ee has been hit by its first bullet add to list to take damage.
+                        ee.bulletCollisions.append(bullet)
+                        ee.health -= p.bulletdamage + 100
+                        # print(ee.health)
+                        # print('1')
+                    elif ee.bulletCollisions:
+                        # if the list of bullets that have collided ee is greater than 0, make sure it is a different bullet in order to deal damage
+                        i = 0
+                        for l in ee.bulletCollisions:
+                            if bullet.rect.x == ee.bulletCollisions[i].rect.x and bullet.rect.y == ee.bulletCollisions[i].rect.y:
+                                pass
+                            elif bullet not in ee.bulletCollisions and bullet.bulletValid:
+                                ee.bulletCollisions.append(bullet)
+                                ee.health -= p.bulletdamage + 100
+                                #print(ee.health)
+                            i += 1
+            for bullet in bullets:
+                # removes expired bullets
+                if bullet in ee.bulletCollisions and not ee.rect.colliderect(bullet.rect):
+                    ee.bulletCollisions.remove(bullet)
+            if ee.bulletCollisions:
+                # backup to remove expired bullets from the bullet collision list
+                for g in ee.bulletCollisions:
+                    if not g.rect.colliderect(ee.rect):
+                        ee.bulletCollisions.remove(g)
     if ee.health <= 0:
     # Makes sure ee is actually dead
         ee.felled = True
         ee.activate = False
     if ee.felled and bup.upgradeactive == False:
         bup.upgradeout = True
+        if p.orspeed > p.speed:
+            p.speed = p.orspeed
         if bup.animation<=15:
             screen.blit(pygame.transform.scale(bullet_upgrade, (40, 45)), (bup.rect.x, bup.rect.y))
             bup.animation += 1
@@ -2681,11 +2691,10 @@ while game:
             bup.animation = 0
     if p.rect.colliderect(bup.rect) and bup.upgradeactive == False:
         bup.upgradeout = False
-        p.bulletdamage += 100
+        b.shooting = True
+        b.overflow = (pygame.time.get_ticks() / 1000)
         bup.upgradeactive = True
-        print(p.bulletdamage)
-
-
+        # print(p.bulletdamage)
 #End of first mini Boss section
 
 
@@ -2697,55 +2706,52 @@ while game:
         sk.attack()
 
     if sk.activate and not sk.felled:
-        for bullet in bullets:
-            # for each active bullet, if the bullet hits the skeleton king boss, deal damage if appropriate conditions met.
-            if sk.rect.colliderect(bullet.rect) and bullet.bulletValid:
-                if not sk.bulletCollisions:
-                    # if the skeleton king boss has encountered it's first bullet, add to the list and take damage
-                    sk.bulletCollisions.append(bullet)
-                    sk.health -= 300
-                    # print('1')
-                elif sk.bulletCollisions:
-                    # if the list of bullets the skeleton king boss has collided with is greater than 0, make sure it is a different bullet in order to deal damage
-                    i = 0
-                    for l in sk.bulletCollisions:
-                        if bullet.rect.x == sk.bulletCollisions[i].rect.x and bullet.rect.y == sk.bulletCollisions[i].rect.y:
-                            pass
-                        elif bullet not in sk.bulletCollisions and bullet.bulletValid:
-                            sk.bulletCollisions.append(bullet)
-                            sk.health -= 300
-                            # print('2')
-                        i += 1
-        for bullet in bullets:
-            # removes expired bullets from the skeleton king boss bullet collision list
-            if bullet in sk.bulletCollisions and not sk.rect.colliderect(bullet.rect):
-                sk.bulletCollisions.remove(bullet)
-                # print("BULLET REMOVED")
-        if sk.bulletCollisions:
-            # backup to remove expired bullets from the skeleton king boss bullet collision list
-            for g in sk.bulletCollisions:
-                if not g.rect.colliderect(sk.rect):
-                    sk.bulletCollisions.remove(g)
-                    # print("BULLET REMOVED-2")
+        if b.shooting == True:
+            for bullet in bullets:
+                # for each active bullet, if the bullet hits the skeleton king boss, deal damage if appropriate conditions met.
+                if sk.rect.colliderect(bullet.rect) and bullet.bulletValid:
+                    if not sk.bulletCollisions:
+                        # if the skeleton king boss has encountered it's first bullet, add to the list and take damage
+                        sk.bulletCollisions.append(bullet)
+                        sk.health -= 300
+                        # print('1')
+                    elif sk.bulletCollisions:
+                        # if the list of bullets the skeleton king boss has collided with is greater than 0, make sure it is a different bullet in order to deal damage
+                        i = 0
+                        for l in sk.bulletCollisions:
+                            if bullet.rect.x == sk.bulletCollisions[i].rect.x and bullet.rect.y == sk.bulletCollisions[i].rect.y:
+                                pass
+                            elif bullet not in sk.bulletCollisions and bullet.bulletValid:
+                                sk.bulletCollisions.append(bullet)
+                                sk.health -= 300
+                                # print('2')
+                            i += 1
+            if sk.bulletCollisions:
+                # backup to remove expired bullets from the skeleton king boss bullet collision list
+                for g in sk.bulletCollisions:
+                    if not g.rect.colliderect(sk.rect):
+                        sk.bulletCollisions.remove(g)
+                        # print("BULLET REMOVED-2")
 
-    for bullet in bullets:
-        # check if any of the bullets are actually still colliding with enemies, if not, remove the bullet from the enemies' collision list
-        counter = 0
-        enemiesHit = []
-        enemiesNotHit = []
-        for enemy in enemies:
-            if bullet.rect.colliderect(enemy.rect):
-                counter += 1
-                enemiesHit.append(enemy)
-            else:
-                enemiesNotHit.append(enemy)
-        if not counter:
-            for l in enemiesNotHit:
-                if bullet in l.bulletCollisions:
-                    l.bulletCollisions.remove(bullet)
-        if bullet.rect.x <= m.leftBoundaryX or bullet.rect.x >= m.rightBoundaryX or bullet.rect.y <= m.topBoundaryY or bullet.rect.y >= m.bottomBoundaryY:
-            if bullet in bullets:
-                bullets.remove(bullet)
+    if b.shooting == True:
+        for bullet in bullets:
+            # check if any of the bullets are actually still colliding with enemies, if not, remove the bullet from the enemies' collision list
+            counter = 0
+            enemiesHit = []
+            enemiesNotHit = []
+            for enemy in enemies:
+                if bullet.rect.colliderect(enemy.rect):
+                    counter += 1
+                    enemiesHit.append(enemy)
+                else:
+                    enemiesNotHit.append(enemy)
+            if not counter:
+                for l in enemiesNotHit:
+                    if bullet in l.bulletCollisions:
+                        l.bulletCollisions.remove(bullet)
+            if bullet.rect.x <= m.leftBoundaryX or bullet.rect.x >= m.rightBoundaryX or bullet.rect.y <= m.topBoundaryY or bullet.rect.y >= m.bottomBoundaryY:
+                if bullet in bullets:
+                    bullets.remove(bullet)
 
     # print(sk.bulletCollisions)
     # print(sk.health)
