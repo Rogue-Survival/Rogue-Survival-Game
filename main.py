@@ -933,7 +933,7 @@ class calctargets():
             distance = math.sqrt(xcor ** 2 + ycor ** 2)
             farthesttarget.append((t1, distance))
 
-        # sorts and condenses the list to 3 targets.
+        # sorts and condenses the list to targets.
         farthesttarget.sort(key=lambda x: x[1], reverse=True)
         farthest_one = farthesttarget[:1]
         return farthest_one
