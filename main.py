@@ -100,6 +100,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = 400
         self.rect.width = 40
         self.gold = 0
+        self.dodgeChance = 0
 
     def get_speed(self):
         # returns speed of player
@@ -296,6 +297,8 @@ class BasicAttack(pygame.sprite.Sprite):
         self.running = False
         self.finished = False
 
+        self.damage = 20
+
 
     def attack(self):
         # Initiate basic attack
@@ -413,6 +416,7 @@ class Bullet(pygame.sprite.Sprite):
         self.bulletDistance = 20
         self.angle = 200
         self.positionReached = False
+        self.damage = 20
 
     def bullet(self):
         # bullet movement
@@ -1173,7 +1177,11 @@ class skeletonKing(Enemy):
                         # print("ENEMY REMOVED!!!")
                         # print("----------------")
             if self.leftLegRect.colliderect(p.rect) or self.rightLegRect.colliderect(p.rect):
-                p.health -= 24
+                checkingDodge = random.randint(0,100)
+                if checkingDodge <= p.dodgeChance:
+                    pass
+                else:
+                    p.health -= 24
 
 
 class XP(pygame.sprite.Sprite):
@@ -1228,6 +1236,7 @@ class XP_Bar(pygame.sprite.Sprite):
         self.option2= None
         self.buttonRect1 = None
         self.buttonRect2 = None
+        self.selected = False
 
     def show_xp_bar(self):
         # displays XP bar
@@ -1237,6 +1246,7 @@ class XP_Bar(pygame.sprite.Sprite):
             if self.length >= 1 or self.length+self.leftover >= 1:
                 # if player XP reached level requirement, increase XP level and give the Player an upgrade choice
                 self.levelMenu = True
+                self.selected = False
                 # tempTimer = gameTimeStr
                 while self.levelMenu:
                     # while level menu is active
@@ -1307,7 +1317,7 @@ class XP_Bar(pygame.sprite.Sprite):
                     pygame.draw.rect(transparentSurface, (0,0,255), self.buttonRect1)
                     pygame.draw.rect(transparentSurface, (0,0,255), self.buttonRect2)
 
-                    if not self.selectedUpgradeChoices:
+                    if not self.selectedUpgradeChoices and not self.selected:
                         # if two random options have not been generated, then generate them
                         self.availableUpgrades = ['BA-Dam', 'BA-Ran', 'BA-Spe', 'Mov-Spe', 'Dod-Cha', 'Bul-Dam', 'Bul-Ran', 'Bul-Spe']
                         randomUpgrade1 = random.randint(0, (len(self.availableUpgrades) - 1))
@@ -1319,8 +1329,8 @@ class XP_Bar(pygame.sprite.Sprite):
                         self.option2 = self.availableUpgrades[randomUpgrade2]
                         self.selectedUpgradeChoices = True
                         self.TwoUpgradeChoices = [self.availableUpgrades[randomUpgrade1], self.availableUpgrades[randomUpgrade2]]
-                        # print(self.option1)
-                        # print(self.option2)
+                        print(self.option1)
+                        print(self.option2)
 
                         self.buttonRect1 = pygame.Rect(100,222, 285, 370)
                         self.buttonRect2 = pygame.Rect(450,222, 285, 370)
@@ -1409,18 +1419,20 @@ class XP_Bar(pygame.sprite.Sprite):
         if option == 1:
             upgradeBaDam1Render = self.upgradeDesc_font.render('Increase Basic Attack', True, (0, 0, 0))
             screen.blit(upgradeBaDam1Render, (150, 365))
-            upgradeBaDam2Render = self.upgradeDesc_font.render('Damage by 5%.', True, (0, 0, 0))
+            upgradeBaDam2Render = self.upgradeDesc_font.render('Damage by 10%.', True, (0, 0, 0))
             screen.blit(upgradeBaDam2Render, (150, 390))
 
         elif option == 2:
             upgradeBaDam1Render = self.upgradeDesc_font.render('Increase Basic Attack', True, (0, 0, 0))
             screen.blit(upgradeBaDam1Render, (500, 365))
-            upgradeBaDam2Render = self.upgradeDesc_font.render('Damage by 5%.', True, (0, 0, 0))
+            upgradeBaDam2Render = self.upgradeDesc_font.render('Damage by 10%.', True, (0, 0, 0))
             screen.blit(upgradeBaDam2Render, (500, 390))
 
         elif not option:
+            ba.damage *= 1.1
             self.selectedUpgradeChoices = False
             self.levelMenu = False
+            self.selected = True
 
     def basic_attack_range_upgrade(self, option):
         # display information regarding the basic attack range upgrade and if selected, implement the upgrade.
@@ -1439,6 +1451,7 @@ class XP_Bar(pygame.sprite.Sprite):
         elif not option:
             self.selectedUpgradeChoices = False
             self.levelMenu = False
+            self.selected = True
 
     def basic_attack_speed_upgrade(self, option):
         # display information regarding the basic attack speed upgrade and if selected, implement the upgrade.
@@ -1457,24 +1470,27 @@ class XP_Bar(pygame.sprite.Sprite):
         elif not option:
             self.selectedUpgradeChoices = False
             self.levelMenu = False
+            self.selected = True
 
     def move_speed_upgrade(self, option):
         # display information regarding the movement speed upgrade and if selected, implement the upgrade.
         if option == 1:
             upgradeBaSpe1Render = self.upgradeDesc_font.render('Increase Player Move', True, (0, 0, 0))
             screen.blit(upgradeBaSpe1Render, (150, 365))
-            upgradeBaSpe2Render = self.upgradeDesc_font.render('Speed by 5%.', True, (0, 0, 0))
+            upgradeBaSpe2Render = self.upgradeDesc_font.render('Speed by 10%.', True, (0, 0, 0))
             screen.blit(upgradeBaSpe2Render, (150, 390))
 
         elif option == 2:
             upgradeBaSpe1Render = self.upgradeDesc_font.render('Increase Player Move', True, (0, 0, 0))
             screen.blit(upgradeBaSpe1Render, (500, 365))
-            upgradeBaSpe2Render = self.upgradeDesc_font.render('Speed by 5%.', True, (0, 0, 0))
+            upgradeBaSpe2Render = self.upgradeDesc_font.render('Speed by 10%.', True, (0, 0, 0))
             screen.blit(upgradeBaSpe2Render, (500, 390))
 
         elif not option:
+            p.speed *= 1.1
             self.selectedUpgradeChoices = False
             self.levelMenu = False
+            self.selected = True
 
     def dodge_chance_upgrade(self, option):
         # display information regarding the dodge chance upgrade and if selected, implement the upgrade.
@@ -1491,62 +1507,70 @@ class XP_Bar(pygame.sprite.Sprite):
             screen.blit(upgradeDodge2Render, (500, 390))
 
         elif not option:
+            p.dodgeChance += 2
             self.selectedUpgradeChoices = False
             self.levelMenu = False
+            self.selected = True
 
     def bullet_damage_upgrade(self, option):
         # display information regarding the bullet damage upgrade and if selected, implement the upgrade.
         if option == 1:
             upgradeBulDam1Render = self.upgradeDesc_font.render('Increase Bullet', True, (0, 0, 0))
             screen.blit(upgradeBulDam1Render, (150, 365))
-            upgradeBulDam2Render = self.upgradeDesc_font.render('Damage by 5%.', True, (0, 0, 0))
+            upgradeBulDam2Render = self.upgradeDesc_font.render('Damage by 10%.', True, (0, 0, 0))
             screen.blit(upgradeBulDam2Render, (150, 390))
 
         elif option == 2:
             upgradeBulDam1Render = self.upgradeDesc_font.render('Increase Bullet', True, (0, 0, 0))
             screen.blit(upgradeBulDam1Render, (500, 365))
-            upgradeBulDam2Render = self.upgradeDesc_font.render('Damage by 5%.', True, (0, 0, 0))
+            upgradeBulDam2Render = self.upgradeDesc_font.render('Damage by 10%.', True, (0, 0, 0))
             screen.blit(upgradeBulDam2Render, (500, 390))
 
         elif not option:
+            b.damage *= 1.1
             self.selectedUpgradeChoices = False
             self.levelMenu = False
+            self.selected = True
 
     def bullet_range_upgrade(self, option):
         # display information regarding the bullet range upgrade and if selected, implement the upgrade.
         if option == 1:
             upgradeBulRan1Render = self.upgradeDesc_font.render('Increase Bullet', True, (0, 0, 0))
             screen.blit(upgradeBulRan1Render, (150, 365))
-            upgradeBulRan2Render = self.upgradeDesc_font.render('Range by 5%.', True, (0, 0, 0))
+            upgradeBulRan2Render = self.upgradeDesc_font.render('Range by 10%.', True, (0, 0, 0))
             screen.blit(upgradeBulRan2Render, (150, 390))
 
         elif option == 2:
             upgradeBulDam1Render = self.upgradeDesc_font.render('Increase Bullet', True, (0, 0, 0))
             screen.blit(upgradeBulDam1Render, (500, 365))
-            upgradeBulRan2Render = self.upgradeDesc_font.render('Range by 5%.', True, (0, 0, 0))
+            upgradeBulRan2Render = self.upgradeDesc_font.render('Range by 10%.', True, (0, 0, 0))
             screen.blit(upgradeBulRan2Render, (500, 390))
 
         elif not option:
+            b.bulletDistance += 5
             self.selectedUpgradeChoices = False
             self.levelMenu = False
+            self.selected = True
 
     def bullet_speed_upgrade(self, option):
         # display information regarding the bullet speed upgrade and if selected, implement the upgrade.
         if option == 1:
             upgradeBulSpe1Render = self.upgradeDesc_font.render('Increase Bullet', True, (0, 0, 0))
             screen.blit(upgradeBulSpe1Render, (150, 365))
-            upgradeBulSpe2Render = self.upgradeDesc_font.render('Speed by 5%.', True, (0, 0, 0))
+            upgradeBulSpe2Render = self.upgradeDesc_font.render('Speed by 10%.', True, (0, 0, 0))
             screen.blit(upgradeBulSpe2Render, (150, 390))
 
         elif option == 2:
             upgradeBulSpe1Render = self.upgradeDesc_font.render('Increase Bullet', True, (0, 0, 0))
             screen.blit(upgradeBulSpe1Render, (500, 365))
-            upgradeBulSpe2Render = self.upgradeDesc_font.render('Speed by 5%.', True, (0, 0, 0))
+            upgradeBulSpe2Render = self.upgradeDesc_font.render('Speed by 10%.', True, (0, 0, 0))
             screen.blit(upgradeBulSpe2Render, (500, 390))
 
         elif not option:
+            b.bulletIncrement *= .9
             self.selectedUpgradeChoices = False
             self.levelMenu = False
+            self.selected = True
 
 
 
@@ -1912,7 +1936,7 @@ while game:
                     if not enemy.bulletCollisions:
                         # if the enemy has encountered it's first bullet, add to the list and take damage
                         enemy.bulletCollisions.append(bullet)
-                        enemy.health -= 100
+                        enemy.health -= b.damage
                     elif enemy.bulletCollisions:
                         # if the list of bullets the enemy has collided with is greater than 0, make sure it is a different bullet in order to deal damage
                         i = 0
@@ -1926,12 +1950,12 @@ while game:
 
             if enemy.rect.colliderect(ba.hitBoxRect) and ba.running and not enemy.meleeAttackCollisions:
                 # Reduce enemy health from the Players basic attack if not hit by that same attack swing
-                enemy.health -= 22
+                enemy.health -= ba.damage
                 enemy.meleeAttackCollisions.append(1)
 
             if sk.activate and not sk.felled:
                 if sk.rect.colliderect(ba.hitBoxRect) and ba.running and not sk.meleeAttackCollisions:
-                    sk.health -= 22
+                    sk.health -= ba.damage
                     sk.meleeAttackCollisions.append(1)
 
         if enemy.health <= 0:
@@ -1945,7 +1969,11 @@ while game:
         # print(gameTime)
         if enemy.rect.colliderect(p.rect) or enemy.northRect.colliderect(p.rect) or enemy.eastRect.colliderect(p.rect) or enemy.southRect.colliderect(p.rect) or enemy.westRect.colliderect(p.rect):
             # print("COLLIDE!!!")
-            p.health -= 1
+            checkingDodge = random.randint(0,100)
+            if checkingDodge <= p.dodgeChance:
+                pass
+            else:
+                p.health -= 15
 
     for bat in bats:
         if not bat.spawned:
@@ -1978,7 +2006,7 @@ while game:
                     if not bat.bulletCollisions:
                         # if the bat has encountered it's first bullet, add to the list and take damage
                         bat.bulletCollisions.append(bullet)
-                        bat.health -= 300
+                        bat.health -= b.damage
                     elif bat.bulletCollisions:
                         # if the list of bullets the bat has collided with is greater than 0, make sure it is a different bullet in order to deal damage
                         i = 0
@@ -1987,12 +2015,12 @@ while game:
                                 pass
                             elif bullet not in bat.bulletCollisions and bullet.bulletValid:
                                 bat.bulletCollisions.append(bullet)
-                                bat.health -= 300
+                                bat.health -= b.damage
                             i += 1
 
             if bat.rect.colliderect(ba.hitBoxRect) and ba.running and not bat.meleeAttackCollisions:
                 # Reduce bat health from the Players basic attack if not hit by that same attack swing
-                bat.health -= 22
+                bat.health -= ba.damage
                 bat.meleeAttackCollisions.append(1)
 
         if bat.health <= 0:
@@ -2006,7 +2034,11 @@ while game:
 
         if bat.rect.colliderect(p.rect) or bat.northRect.colliderect(p.rect) or bat.eastRect.colliderect(p.rect) or bat.southRect.colliderect(p.rect) or bat.westRect.colliderect(p.rect):
             # print("COLLIDE!!!")
-            p.health -= 1
+            checkingDodge = random.randint(0,100)
+            if checkingDodge <= p.dodgeChance:
+                pass
+            else:
+                p.health -= 15
 
 
     if int(minutes) == 5 and int(seconds) == 0:
@@ -2022,7 +2054,7 @@ while game:
                 if not sk.bulletCollisions:
                     # if the skeleton king boss has encountered it's first bullet, add to the list and take damage
                     sk.bulletCollisions.append(bullet)
-                    sk.health -= 300
+                    sk.health -= b.damage
                     # print('1')
                 elif sk.bulletCollisions:
                     # if the list of bullets the skeleton king boss has collided with is greater than 0, make sure it is a different bullet in order to deal damage
