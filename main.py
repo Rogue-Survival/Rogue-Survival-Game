@@ -102,6 +102,8 @@ class Player(pygame.sprite.Sprite):
         self.rect.width = 40
         self.gold = 0
         self.orspeed = 0
+        self.bulletdamage = 25
+        self.meleedamage = 50
 
     def get_speed(self):
         # returns speed of player
@@ -1793,6 +1795,7 @@ class miniee(Enemy):
         self.rumblearea = None
         self.aoestart = 0
         self.rumblespeed = 0
+        self.hitdamage = 25
 
     def follow_mc(self):
         #Miniboss movment
@@ -1814,7 +1817,6 @@ class miniee(Enemy):
             self.travel_northwest()
     def aoehit(self):
         calctargets.calcdistance(self)
-        print(calctargets.calcdistance(self))
         if calctargets.calcdistance(self) <= 80 and self.notattacking == True and (int(self.attack_timer) - self.lastatt >= 12):
             self.lastatt = int(self.attack_timer)
             self.notattacking = False
@@ -1825,13 +1827,13 @@ class miniee(Enemy):
             self.rumblespeed = (p.speed*.55)
         if self.isattacking == True:
             self.attackarea = pygame.draw.circle(screen, (252, 161, 3), (self.rect.x+18, self.rect.y+20), 240 , 1)
-            self.rumblearea = pygame.draw.circle(screen, (252, 161, 3), (self.rect.x + 18, self.rect.y + 20), ((self.attack_timer - self.aoestart)*80))
+            self.rumblearea = pygame.draw.circle(screen, (209, 10, 10), (self.rect.x + 18, self.rect.y + 20), ((self.attack_timer - self.aoestart)*80),1)
             if p.rect.colliderect(self.rumblearea):
                 p.speed = self.rumblespeed
             else:
                 p.speed = p.orspeed
             if (int(self.attack_timer) == (self.lastatt + self.attackdur)):
-                self.attacrect = self.attackarea = pygame.draw.circle(screen, (252, 161, 3), (self.rect.x+18, self.rect.y+20), 240)
+                self.attacrect = self.attackarea = pygame.draw.circle(screen, (209, 10, 10), (self.rect.x+18, self.rect.y+20), 240, 1)
                 if p.rect.colliderect(self.attacrect):
                     print("Player hit")
                     p.health -= 50
@@ -1842,6 +1844,10 @@ class miniee(Enemy):
                 self.attackarea = None
                 self.attackrect = None
                 p.speed = p.orspeed
+
+    def autohitplayer(self):
+        if self.rect.colliderect(p.rect):
+            p.health -= self.hitdamage
 
 
 
@@ -2458,7 +2464,7 @@ while game:
                     if not enemy.bulletCollisions:
                         # if the enemy has encountered it's first bullet, add to the list and take damage
                         enemy.bulletCollisions.append(bullet)
-                        enemy.health -= 100
+                        enemy.health -= p.bulletdamage
                     elif enemy.bulletCollisions:
                         # if the list of bullets the enemy has collided with is greater than 0, make sure it is a different bullet in order to deal damage
                         i = 0
@@ -2467,22 +2473,22 @@ while game:
                                 pass
                             elif bullet not in enemy.bulletCollisions and bullet.bulletValid:
                                 enemy.bulletCollisions.append(bullet)
-                                enemy.health -= 100
+                                enemy.health -= p.bulletdamage
                             i += 1
 
             if enemy.rect.colliderect(ba.hitBoxRect) and ba.running and not enemy.meleeAttackCollisions:
                 # Reduce enemy health from the Players basic attack if not hit by that same attack swing
-                enemy.health -= 22
+                enemy.health -= p.meleedamage
                 enemy.meleeAttackCollisions.append(1)
 
             if sk.activate and not sk.felled:
                 if sk.rect.colliderect(ba.hitBoxRect) and ba.running and not sk.meleeAttackCollisions:
-                    sk.health -= 22
+                    sk.health -= p.meleedamage
                     sk.meleeAttackCollisions.append(1)
             if ee.activate and not ee.felled:
                 if ee.rect.colliderect(ba.hitBoxRect) and ba.running and not ee.meleeAttackCollisions:
                     # Reduce health from the mini boss from Players basic attack if not hit by that same attack swing
-                    ee.health -= 22
+                    ee.health -= p.meleedamage
                     ee.meleeAttackCollisions.append(1)
 
         if enemy.health <= 0:
@@ -2529,7 +2535,7 @@ while game:
                     if not bat.bulletCollisions:
                         # if the bat has encountered it's first bullet, add to the list and take damage
                         bat.bulletCollisions.append(bullet)
-                        bat.health -= 300
+                        bat.health -= p.bulletdamage
                     elif bat.bulletCollisions:
                         # if the list of bullets the bat has collided with is greater than 0, make sure it is a different bullet in order to deal damage
                         i = 0
@@ -2538,12 +2544,12 @@ while game:
                                 pass
                             elif bullet not in bat.bulletCollisions and bullet.bulletValid:
                                 bat.bulletCollisions.append(bullet)
-                                bat.health -= 300
+                                bat.health -= p.bulletdamage
                             i += 1
 
             if bat.rect.colliderect(ba.hitBoxRect) and ba.running and not bat.meleeAttackCollisions:
                 # Reduce bat health from the Players basic attack if not hit by that same attack swing
-                bat.health -= 200
+                bat.health -= p.meleedamage
                 bat.meleeAttackCollisions.append(1)
 
         if bat.health <= 0:
@@ -2574,7 +2580,7 @@ while game:
                 if not ee.bulletCollisions:
                     # If ee has been hit by its forst bullet add to list to take damage.
                     ee.bulletCollisions.append(bullet)
-                    ee.health -= 3000
+                    ee.health -= p.bulletdamage
                     # print('1')
                 elif ee.bulletCollisions:
                     # if the list of bullets that have collided ee is greater than 0, make sure it is a different bullet in order to deal damage
@@ -2584,7 +2590,7 @@ while game:
                             pass
                         elif bullet not in ee.bulletCollisions and bullet.bulletValid:
                             ee.bulletCollisions.append(bullet)
-                            ee.health -= 300
+                            ee.health -= p.bulletdamage
                         i += 1
         for bullet in bullets:
             # removes expired bullets
