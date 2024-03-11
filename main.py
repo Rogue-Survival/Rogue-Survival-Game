@@ -298,6 +298,8 @@ class BasicAttack(pygame.sprite.Sprite):
         self.finished = False
 
         self.damage = 20
+        self.bulletTimer = 0
+        self.timerTarget = 40
 
 
     def attack(self):
@@ -314,7 +316,7 @@ class BasicAttack(pygame.sprite.Sprite):
 
         total_time = pygame.time.get_ticks() / 1000
 
-        if int(total_time) % 2 == 0 and total_time > 1 and not self.east:
+        if self.bulletTimer > self.timerTarget and total_time > 1 and not self.east:
             self.running = True
             self.rect = pygame.draw.line(screen, (160,32,240), (p.rect.x+36, p.rect.y+17), (p.rect.x+80, p.rect.y+17), 6)
             self.eastCounter += 1
@@ -373,7 +375,7 @@ class BasicAttack(pygame.sprite.Sprite):
                 self.running = False
                 self.finished = True
 
-        if int(total_time) % 2 != 0 and self.east:
+        if self.bulletTimer > self.timerTarget+(self.timerTarget *2) and self.east:
             self.east = False
             self.northEast = False
             self.north = False
@@ -398,6 +400,8 @@ class BasicAttack(pygame.sprite.Sprite):
                 enemy.meleeAttackCollisions.clear()
             if sk.activate and not sk.felled:
                 sk.meleeAttackCollisions.clear()
+            self.bulletTimer = 0
+        self.bulletTimer += 1
 
 
 class Bullet(pygame.sprite.Sprite):
@@ -1329,8 +1333,8 @@ class XP_Bar(pygame.sprite.Sprite):
                         self.option2 = self.availableUpgrades[randomUpgrade2]
                         self.selectedUpgradeChoices = True
                         self.TwoUpgradeChoices = [self.availableUpgrades[randomUpgrade1], self.availableUpgrades[randomUpgrade2]]
-                        print(self.option1)
-                        print(self.option2)
+                        # print(self.option1)
+                        # print(self.option2)
 
                         self.buttonRect1 = pygame.Rect(100,222, 285, 370)
                         self.buttonRect2 = pygame.Rect(450,222, 285, 370)
@@ -1468,6 +1472,7 @@ class XP_Bar(pygame.sprite.Sprite):
             screen.blit(upgradeBaSpe2Render, (500, 390))
 
         elif not option:
+            ba.timerTarget *= .9
             self.selectedUpgradeChoices = False
             self.levelMenu = False
             self.selected = True
