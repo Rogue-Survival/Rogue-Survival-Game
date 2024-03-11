@@ -39,6 +39,8 @@ skeletonKing2 = pygame.image.load("./images/skeletonKing2.png").convert_alpha()
 skeletonKing3 = pygame.image.load("./images/skeletonKing3.png").convert_alpha()
 skeletonKing4 = pygame.image.load("./images/skeletonKing4.png").convert_alpha()
 
+bullet_upgrade = pygame.image.load("./images/Noodle.png").convert_alpha()
+
 
 xp = []
 xp_hit = []
@@ -158,6 +160,8 @@ class Player(pygame.sprite.Sprite):
                 ee.eastRect.x = ee.rect.x + ee.eastXVal
                 ee.southRect.x = ee.rect.x + ee.southXVal
                 ee.westRect.x = ee.rect.x - ee.westXVal
+            if bup.upgradeout:
+                bup.rect.x += self.speed
 
     def move_east(self):
         # moves the player East
@@ -203,6 +207,8 @@ class Player(pygame.sprite.Sprite):
                 ee.eastRect.x = ee.rect.x + ee.eastXVal
                 ee.southRect.x = ee.rect.x + ee.southXVal
                 ee.westRect.x = ee.rect.x - ee.westXVal
+            if bup.upgradeout:
+                bup.rect.x -= self.speed
 
     def move_north(self):
         # moves the player North
@@ -248,6 +254,8 @@ class Player(pygame.sprite.Sprite):
                 ee.eastRect.y = ee.rect.y + ee.eastYVal
                 ee.southRect.y = ee.rect.y + ee.southYVal
                 ee.westRect.y = ee.rect.y + ee.westYVal
+            if bup.upgradeout:
+                bup.rect.y += self.speed
 
     def move_south(self):
         # moves the player South
@@ -293,6 +301,8 @@ class Player(pygame.sprite.Sprite):
                 ee.eastRect.y = ee.rect.y + ee.eastYVal
                 ee.southRect.y = ee.rect.y + ee.southYVal
                 ee.westRect.y = ee.rect.y + ee.westYVal
+            if bup.upgradeout:
+                bup.rect.y -= self.speed
 
     def move_northeast(self):
         # moves player north east
@@ -366,6 +376,9 @@ class Player(pygame.sprite.Sprite):
                 ee.eastRect.x = ee.rect.x + ee.eastXVal
                 ee.southRect.x = ee.rect.x + ee.southXVal
                 ee.westRect.x = ee.rect.x - ee.westXVal
+            if bup.upgradeout:
+                bup.rect.x -= Dspeed
+                bup.rect.y += Dspeed
         elif self.rect.y > m.topBoundaryY + 25:
             self.move_north()
         elif self.rect.x <= m.rightBoundaryX - 50:
@@ -442,6 +455,9 @@ class Player(pygame.sprite.Sprite):
                 ee.eastRect.x = ee.rect.x + ee.eastXVal
                 ee.southRect.x = ee.rect.x + ee.southXVal
                 ee.westRect.x = ee.rect.x - ee.westXVal
+            if bup.upgradeout:
+                bup.rect.x += Dspeed
+                bup.rect.y += Dspeed
         elif self.rect.y > m.topBoundaryY + 25:
             self.move_north()
         elif self.rect.x > m.leftBoundaryX + 25:
@@ -519,6 +535,9 @@ class Player(pygame.sprite.Sprite):
                 ee.eastRect.x = ee.rect.x + ee.eastXVal
                 ee.southRect.x = ee.rect.x + ee.southXVal
                 ee.westRect.x = ee.rect.x - ee.westXVal
+            if bup.upgradeout:
+                bup.rect.x -= Dspeed
+                bup.rect.y -= Dspeed
         elif self.rect.y < m.bottomBoundaryY - 50:
             self.move_south()
         elif self.rect.x < m.rightBoundaryX - 50:
@@ -596,6 +615,9 @@ class Player(pygame.sprite.Sprite):
                 ee.eastRect.y = ee.rect.y + ee.eastYVal
                 ee.southRect.y = ee.rect.y + ee.southYVal
                 ee.westRect.y = ee.rect.y + ee.westYVal
+            if bup.upgradeout:
+                bup.rect.x += Dspeed
+                bup.rect.y -= Dspeed
 
         elif self.rect.y < m.bottomBoundaryY - 50:
             self.move_south()
@@ -736,6 +758,16 @@ class BasicAttack(pygame.sprite.Sprite):
                 ee.meleeAttackCollisions.clear()
             for bat in bats:
                 bat.meleeAttackCollisions.clear()
+
+class Bullet_Upgrade():
+    def __init__(self):
+        self.rect = bullet_upgrade.get_rect().scale_by(1,1)
+        self.rect.x = 0
+        self.rect.y = 0
+        self.upgradeout = True
+        self.upgradeactive = False
+        self.animation = 0
+
 
 
 
@@ -2108,6 +2140,7 @@ ba = BasicAttack()
 enemies = []
 bats = []
 bullets = []
+bup = Bullet_Upgrade()
 
 # bullets = [Bullet() for _ in range(1)]
 
@@ -2577,22 +2610,24 @@ while game:
     if ee.activate and not ee.felled:
         ee.attack_timer = (pygame.time.get_ticks() / 1000)
         ee.aoehit()
+        bup.rect.x = ee.rect.x
+        bup.rect.y = ee.rect.y
         if ee.animation<=15:
             screen.blit(pygame.transform.scale(minibee1, (40,45)), (ee.rect.x, ee.rect.y))
             ee.animation += 1
-        if ee.animation<=30:
+        elif ee.animation<=30:
             screen.blit(pygame.transform.scale(minibee2, (40,45)), (ee.rect.x, ee.rect.y))
             ee.animation += 1
-        if ee.animation<=45:
+        elif ee.animation<=45:
             screen.blit(pygame.transform.scale(minibee3, (40,45)), (ee.rect.x, ee.rect.y))
             ee.animation += 1
-        if ee.animation<=60:
+        elif ee.animation<=60:
             screen.blit(pygame.transform.scale(minibee4, (40,45)), (ee.rect.x, ee.rect.y))
             ee.animation += 1
         if ee.animation == 60:
             ee.animation = 0
-    if ee.notattacking == True:
-        ee.follow_mc()
+        if ee.notattacking == True:
+            ee.follow_mc()
     if ee.activate and not ee.felled:
         for bullet in bullets:
             # for each active bullet, if the bullet hits ee, deal damage if appropriate.
@@ -2600,7 +2635,7 @@ while game:
                 if not ee.bulletCollisions:
                     # If ee has been hit by its forst bullet add to list to take damage.
                     ee.bulletCollisions.append(bullet)
-                    ee.health -= p.bulletdamage
+                    ee.health -= p.bulletdamage + 5000
                     # print('1')
                 elif ee.bulletCollisions:
                     # if the list of bullets that have collided ee is greater than 0, make sure it is a different bullet in order to deal damage
@@ -2625,7 +2660,28 @@ while game:
     # Makes sure ee is actually dead
         ee.felled = True
         ee.activate = False
-        ee.rect = None
+    if ee.felled and bup.upgradeactive == False:
+        bup.upgradeout = True
+        if bup.animation<=15:
+            screen.blit(pygame.transform.scale(bullet_upgrade, (40, 45)), (bup.rect.x, bup.rect.y))
+            bup.animation += 1
+        elif bup.animation<=30:
+            screen.blit(pygame.transform.scale(bullet_upgrade, (40, 45)), (bup.rect.x, bup.rect.y+5))
+            bup.animation += 1
+        elif bup.animation<=45:
+            screen.blit(pygame.transform.scale(bullet_upgrade, (40, 45)), (bup.rect.x, bup.rect.y+10))
+            bup.animation += 1
+        elif bup.animation<=60:
+            screen.blit(pygame.transform.scale(bullet_upgrade, (40, 45)), (bup.rect.x, bup.rect.y+5))
+            bup.animation += 1
+        if bup.animation == 60:
+            bup.animation = 0
+    if p.rect.colliderect(bup.rect) and bup.upgradeactive == False:
+        bup.upgradeout = False
+        p.bulletdamage += 100
+        bup.upgradeactive = True
+
+
 #End of first mini Boss section
 
 
