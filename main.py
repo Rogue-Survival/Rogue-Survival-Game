@@ -1832,6 +1832,8 @@ class miniee(Enemy):
         self.rumblespeed = 0
         self.hitdamage = 25
         self.animation = 0
+        self.lastauto = 0
+        self.attackspeed = 2
 
     def follow_mc(self):
         #Miniboss movment
@@ -1871,9 +1873,9 @@ class miniee(Enemy):
             if (int(self.attack_timer) == (self.lastatt + self.attackdur)):
                 self.attacrect = self.attackarea = pygame.draw.circle(screen, (209, 10, 10), (self.rect.x+18, self.rect.y+20), 240, 1)
                 if p.rect.colliderect(self.attacrect):
-                    print("Player hit")
                     p.health -= 50
-                    print(p.health)
+                    # print("Player hit")
+                    # print(p.health)
             if (int(self.attack_timer) == (self.lastatt + self.attackdur)):
                 self.notattacking = True
                 self.isattacking = False
@@ -1882,8 +1884,10 @@ class miniee(Enemy):
                 p.speed = p.orspeed
 
     def autohitplayer(self):
-        if self.rect.colliderect(p.rect):
+        if self.rect.colliderect(p.rect) and (self.attack_timer - self.lastauto) >=self.attackspeed:
+            self.lastauto = self.attack_timer
             p.health -= self.hitdamage
+            #print("player hit")
 
 
 
@@ -2628,6 +2632,7 @@ while game:
             ee.animation = 0
         if ee.notattacking == True:
             ee.follow_mc()
+            ee.autohitplayer()
     if ee.activate and not ee.felled:
         for bullet in bullets:
             # for each active bullet, if the bullet hits ee, deal damage if appropriate.
@@ -2637,6 +2642,7 @@ while game:
                     # If ee has been hit by its forst bullet add to list to take damage.
                     ee.bulletCollisions.append(bullet)
                     ee.health -= p.bulletdamage
+                    # print(ee.health)
                     # print('1')
                 elif ee.bulletCollisions:
                     # if the list of bullets that have collided ee is greater than 0, make sure it is a different bullet in order to deal damage
@@ -2647,6 +2653,7 @@ while game:
                         elif bullet not in ee.bulletCollisions and bullet.bulletValid:
                             ee.bulletCollisions.append(bullet)
                             ee.health -= p.bulletdamage
+                            #print(ee.health)
                         i += 1
         for bullet in bullets:
             # removes expired bullets
