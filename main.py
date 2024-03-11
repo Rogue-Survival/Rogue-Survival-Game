@@ -104,6 +104,7 @@ class Player(pygame.sprite.Sprite):
         self.orspeed = 0
         self.bulletdamage = 25
         self.meleedamage = 50
+        self.check = False
 
     def get_speed(self):
         # returns speed of player
@@ -909,20 +910,22 @@ class Bullet(pygame.sprite.Sprite):
                 self.counterX += 1
                 self.counterY += 1
 class calctargets():
-    def calcclosest(t1,o1,n1):
-        closesttargets = []
+    import math
+
+    def calcclosest(t1, o1, n1):
+        closest_targets = []
+        close = []
+        # Iterate through the enemies and checks their distances then adds them to the list
         for t1 in o1:
-            #itterates through the enemies and checks thier distances then adds them to the list
             xcor = t1.rect.x - p.rect.x
             ycor = t1.rect.y - p.rect.y
-            distance = math.sqrt(xcor**2 + ycor**2)
-            closesttargets.append((t1, distance))
+            distance = math.sqrt(xcor ** 2 + ycor ** 2)
+            close.append((t1, distance))
 
-        #sorts and condenses the list to n targets.
-        closesttargets.sort(key=lambda x: x[1])
-        closest = closesttargets[:n1]
-        closest_targets =  [t1[0] for t1 in closest]
-        return print(closest_targets)s
+        # Sorts and condenses the list to n closest targets.
+        sorted_close = sorted(close, key=lambda x: x[1])
+        closest_targets = sorted_close[:n1]
+        return print(closest_targets)
 
     def calcfarthest(t1,o1,n1):
         farthesttarget = []
@@ -935,7 +938,7 @@ class calctargets():
 
         # sorts and condenses the list to targets.
         farthesttarget.sort(key=lambda x: x[1], reverse=True)
-        farthest_one = farthesttarget[:1]
+        farthest_one = farthesttarget[:n1]
         return farthest_one
 
     def calcdistance(self):
@@ -2257,6 +2260,7 @@ def keypressed():
     key_presses = pygame.key.get_pressed()
     # stores the keys that are pressed
 
+
     if key_presses[pygame.K_w] and key_presses[pygame.K_d]:
         p.move_northeast()
 
@@ -2307,7 +2311,9 @@ def keypressed():
         # if ESC key is pressed, pause game
         pauseGame()
     if key_presses[pygame.K_SPACE]:
-        calctargets.calcclosest(t1=enemy,o1=enemies,n1=3)
+        if p.check == False:
+            calctargets.calcfarthest(t1=enemy,o1=enemies,n1=3)
+            p.check = True
 
 activateBullet = True
 bulletTimer1 = 2
