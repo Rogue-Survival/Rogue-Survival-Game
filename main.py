@@ -2311,10 +2311,8 @@ def keypressed():
     if key_presses[pygame.K_ESCAPE]:
         # if ESC key is pressed, pause game
         pauseGame()
-    if key_presses[pygame.K_SPACE]:
-        if p.check == False:
-            calctargets.calcfarthest(t1=enemy,o1=enemies,n1=3)
-            p.check = True
+    #if key_presses[pygame.K_SPACE]:
+        # Dash maybe
 
 activateBullet = True
 bulletTimer1 = 2
@@ -2579,7 +2577,6 @@ while game:
     if ee.activate and not ee.felled:
         ee.attack_timer = (pygame.time.get_ticks() / 1000)
         ee.aoehit()
-        print(ee.animation)
         if ee.animation<=15:
             screen.blit(pygame.transform.scale(minibee1, (40,45)), (ee.rect.x, ee.rect.y))
             ee.animation += 1
