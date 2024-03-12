@@ -36,6 +36,12 @@ skeletonKing4 = pygame.image.load("./images/skeletonKing4.png").convert_alpha()
 
 tallScroll = pygame.image.load("./images/tall.png").convert_alpha()
 mediumScroll = pygame.image.load("./images/medium2.png").convert_alpha()
+
+horizontalScroll = pygame.image.load("./images/horizontalScroll.png").convert_alpha()
+horizontalScroll = pygame.transform.scale_by(horizontalScroll, 0.3)
+buttonScroll = pygame.image.load("./images/buttonScroll.png").convert_alpha()
+buttonScroll = pygame.transform.scale_by(buttonScroll, 0.4)
+
 dungeonBackground = pygame.image.load("./images/dungeonBackground2.png").convert_alpha()
 
 
@@ -1626,18 +1632,24 @@ def button(msg,x,y,w,h,ic,ac, action):
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
     # print(click)
-
+    global pause
     if x+w > mouse[0] > x and y+h > mouse[1] > y:
         pygame.draw.rect(screen, ac, (x, y, w, h), border_radius=20)
         if click[0] == 1 and action != None:
             if action == "Settings":
+                pause = False
                 settingsMenu()
             elif action == "Fullscreen Toggle":
-                 fullscreenToggle()
+                pause = False
+                fullscreenToggle()
+            elif action == "Credits":
+                pause = False
+                credits()
+
     else:
         pygame.draw.rect(screen, ic, (x, y, w, h), border_radius=20)
 
-    smallText = pygame.font.SysFont("monospace", 20, bold=True)
+    smallText = pygame.font.SysFont('Garamond', 20, bold=True)
     textSurf, textRect = text_objects(msg, smallText)
     textRect.center = ( (x+(w/2)), (y+(h/2)) )
     screen.blit(textSurf, textRect)
@@ -1713,48 +1725,83 @@ def fullscreenToggle():
     window = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
     pygame.display.update()
 
-
-def pauseGame():
+def credits():
+    startTime = pygame.time.get_ticks()
     info = pygame.display.Info()
     screen_width, screen_height = info.current_w, info.current_h
+    global pause # risky
     pause = True
 
     while pause:
-        if pygame.key.get_pressed()[pygame.K_1]:
+        if pygame.key.get_pressed()[pygame.K_ESCAPE] and (pygame.time.get_ticks() - startTime >= 500):
+            pause = False
+            settingsMenu()
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                game = False
+        screen.blit(dungeonBackground, (0, 0))
+
+        largeText = pygame.font.SysFont('Garamond', 100, bold=True)
+        TextSurf, TextRect = text_objects("Credits", largeText)
+        TextRect.center = ((screen_width/2), (screen_height/3.3))
+        screen.blit(horizontalScroll, (screen_width/2 - 288, screen_height/10))
+        screen.blit(TextSurf, TextRect)
+        # need to put credits in here
+
+        pygame.display.update()
+        clock.tick(15)
+
+
+def pauseGame():
+    startTime = pygame.time.get_ticks()
+    info = pygame.display.Info()
+    screen_width, screen_height = info.current_w, info.current_h
+    global pause # risky
+    pause = True
+
+    while pause:
+        if pygame.key.get_pressed()[pygame.K_ESCAPE] and (pygame.time.get_ticks() - startTime >= 500):
             pause = False
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 game = False
-        screen.fill((255, 255, 255))
-        # surf = transparentSurface
-        # screen.blit(surf, (0, 0))
+        screen.blit(dungeonBackground, (0, 0))
 
-        largeText = pygame.font.SysFont('monospace', 115)
+        largeText = pygame.font.SysFont('Garamond', 100, bold=True)
         TextSurf, TextRect = text_objects("Paused", largeText)
-        TextRect.center = ((400), (200))
-        button("Settings", ((screen_width/8)*3), ((screen_height/4)*3), (screen_width/4), (screen_height/8), (202, 186, 227), (227, 186, 186), "Settings")
+        TextRect.center = ((screen_width/2), (screen_height/3.3))
+        screen.blit(horizontalScroll, (screen_width/2 - 288, screen_height/10))
+        button("Settings", ((screen_width/2)-100), (screen_height/1.6), 200, 100, (247, 167, 82),
+               (184, 120, 51), "Settings")
         screen.blit(TextSurf, TextRect)
 
-        # key_presses = pygame.key.get_pressed()
         pygame.display.update()
         clock.tick(15)
 
 def settingsMenu():
+    startTime = pygame.time.get_ticks()
     info = pygame.display.Info()
     screen_width, screen_height = info.current_w, info.current_h
+    global pause # risky
     pause = True
 
     while pause:
-        if pygame.key.get_pressed()[pygame.K_ESCAPE]:
+        if pygame.key.get_pressed()[pygame.K_ESCAPE] and (pygame.time.get_ticks() - startTime >= 500):
             pause = False
+            pauseGame()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 game = False
-        screen.fill((255, 255, 255))
-        largeText = pygame.font.SysFont('monospace', 115)
+        # screen.fill((255, 255, 255))
+        screen.blit(dungeonBackground, (0, 0))
+        largeText = pygame.font.SysFont('Garamond', 100, bold=True)
         TextSurf, TextRect = text_objects("Settings", largeText)
-        TextRect.center = ((400), (200))
-        button("Fullscreen", ((screen_width/8)*3), ((screen_height/4)*2), (screen_width/4), (screen_height/8), (202, 186, 227), (227, 186, 186), "Fullscreen Toggle")
+        # TextRect.center = ((400), (220))
+        TextRect.center = ((screen_width/2), (screen_height/3.3))
+        screen.blit(horizontalScroll, (screen_width/2 - 288, screen_height/10))
+        button("Fullscreen", (screen_width/4)-100, (screen_height/1.6), 200, 100, (247, 167, 82), (184, 120, 51), "Fullscreen Toggle")
+        button("Credits", (screen_width/1.3)-100, (screen_height/1.6), 200,
+               100, (247, 167, 82), (184, 120, 51), "Credits")
         screen.blit(TextSurf, TextRect)
 
         pygame.display.update()
