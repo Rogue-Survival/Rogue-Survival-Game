@@ -1495,7 +1495,7 @@ class Enemy(pygame.sprite.Sprite):
                         if (p.rect.x - self.rect.x) > 50:
                             # enemy continues trying to move towards player if further than 50 pixels away.
                             if not self.northRect.colliderect(
-                                    self.enemyList[i].circleRect) and not self.eastRect.colliderect(self.enemyList[i].circleRect):
+                                    self.enemyList[i].circleRect) and not self.westRect.colliderect(self.enemyList[i].circleRect):
                                 # if enemy can go both North and South, pick a random direction
                                 randomDirection = random.randint(0, 3)
                                 if randomDirection <= 1:
@@ -1656,8 +1656,8 @@ class Enemy(pygame.sprite.Sprite):
                     else:
                         if (p.rect.x - self.rect.x) > 50:
                             # enemy continues trying to move towards player if further than 50 pixels away.
-                            if not self.northRect.colliderect(
-                                    self.enemyList[i].circleRect) and not self.eastRect.colliderect(self.enemyList[i].circleRect):
+                            if not self.westRect.colliderect(
+                                    self.enemyList[i].circleRect) and not self.southRect.colliderect(self.enemyList[i].circleRect):
                                 # if enemy can go both North and South, pick a random direction
                                 randomDirection = random.randint(0, 3)
                                 if randomDirection <= 1:
@@ -1737,8 +1737,8 @@ class Enemy(pygame.sprite.Sprite):
                     else:
                         if (p.rect.x - self.rect.x) > 50:
                             # enemy continues trying to move towards player if further than 50 pixels away.
-                            if not self.northRect.colliderect(
-                                    self.enemyList[i].circleRect) and not self.eastRect.colliderect(self.enemyList[i].circleRect):
+                            if not self.eastRect.colliderect(
+                                    self.enemyList[i].circleRect) and not self.southRect.colliderect(self.enemyList[i].circleRect):
                                 # if enemy can go both North and South, pick a random direction
                                 randomDirection = random.randint(0, 3)
                                 if randomDirection <= 1:
