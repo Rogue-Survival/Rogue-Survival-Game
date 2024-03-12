@@ -1528,9 +1528,9 @@ class Enemy(pygame.sprite.Sprite):
                 self.travel_southeast()
             elif moveNorth == self.enemyLength -1:
                 self.travel_north()
-            elif moveNorth == self.enemyLength -1:
-                self.travel_north()
             elif moveSouth == self.enemyLength -1:
+                self.travel_south()
+            elif moveEast == self.enemyLength -1:
                 self.travel_east()
             elif moveWest == self.enemyLength -1:
                 self.travel_west()
@@ -1609,9 +1609,9 @@ class Enemy(pygame.sprite.Sprite):
                 self.travel_southwest()
             elif moveNorth == self.enemyLength -1:
                 self.travel_north()
-            elif moveNorth == self.enemyLength -1:
-                self.travel_north()
             elif moveSouth == self.enemyLength -1:
+                self.travel_south()
+            elif moveEast == self.enemyLength -1:
                 self.travel_east()
             elif moveWest == self.enemyLength -1:
                 self.travel_west()
@@ -1688,13 +1688,13 @@ class Enemy(pygame.sprite.Sprite):
                                         enemy.rect.y -= tempSpeed
             if moveNorthEast == self.enemyLength -1:
                 self.travel_northeast()
-            elif moveNorth == self.enemyLength -1:
+            elif moveSouth == self.enemyLength -1:
                 self.travel_south()
             elif moveNorth == self.enemyLength -1:
                 self.travel_north()
             elif moveWest == self.enemyLength -1:
                 self.travel_west()
-            elif moveSouth == self.enemyLength -1:
+            elif moveEast == self.enemyLength -1:
                 self.travel_east()
         if stuckCounter:
             if stuckCounter > 1:
@@ -1769,12 +1769,12 @@ class Enemy(pygame.sprite.Sprite):
                                         enemy.rect.y -= tempSpeed
             if moveNorthWest == self.enemyLength -1:
                 self.travel_northwest()
-            elif moveNorth == self.enemyLength -1:
-                self.travel_north()
-            elif moveNorth == self.enemyLength -1:
-                self.travel_north()
-            elif moveSouth == self.enemyLength -1:
+            elif moveEast == self.enemyLength -1:
                 self.travel_east()
+            elif moveSouth == self.enemyLength -1:
+                self.travel_south()
+            elif moveNorth == self.enemyLength -1:
+                self.travel_north()
             elif moveWest == self.enemyLength -1:
                 self.travel_west()
         if stuckCounter:
