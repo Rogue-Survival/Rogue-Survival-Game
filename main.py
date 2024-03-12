@@ -1485,7 +1485,7 @@ class Enemy(pygame.sprite.Sprite):
                     pass
                 elif self.rect.x == self.enemyList[i].rect.x and self.rect.y == self.enemyList[i].rect.y:
                     # checks if the enemy is checking itself in the list of enemies, and if it is itself, skip
-                    pass
+                    stuckCounter += 1
                 else:
                     if not self.eastRect.colliderect(self.enemyList[i].circleRect) and not self.southRect.colliderect(
                             self.enemyList[i].circleRect):
@@ -1500,10 +1500,12 @@ class Enemy(pygame.sprite.Sprite):
                                 randomDirection = random.randint(0, 3)
                                 if randomDirection <= 1:
                                     # enemy moves North
+                                    self.rect.y -= 1
                                     moveNorth += 1
                                 else:
-                                    # enemy moves South
-                                    moveSouth += 1
+                                    # enemy moves west
+                                    self.rect.x -= 1
+                                    moveWest += 1
                             else:
                                 # if North and South are not both an option, check which direct is an option
                                 if not self.northRect.colliderect(self.enemyList[i].circleRect):
@@ -1539,8 +1541,10 @@ class Enemy(pygame.sprite.Sprite):
                 tempSpeed = random.uniform(0.1, 1)
                 if tempSpeed < .5:
                     self.rect.y += tempSpeed
+                    self.rect.x -= tempSpeed
                 else:
                     self.rect.y -= tempSpeed
+                    self.rect.x += tempSpeed
                 self.stuck = False
                 stuckCounter = 0
 
@@ -1562,7 +1566,7 @@ class Enemy(pygame.sprite.Sprite):
                     pass
                 elif self.rect.x == self.enemyList[i].rect.x and self.rect.y == self.enemyList[i].rect.y:
                     # checks if the enemy is checking itself in the list of enemies, and if it is itself, skip
-                    pass
+                    stuckCounter += 1
                 else:
                     if not self.westRect.colliderect(self.enemyList[i].circleRect) and not self.southRect.colliderect(
                             self.enemyList[i].circleRect):
@@ -1577,10 +1581,12 @@ class Enemy(pygame.sprite.Sprite):
                                 randomDirection = random.randint(0, 3)
                                 if randomDirection <= 1:
                                     # enemy moves North
+                                    self.rect.y -= 1
                                     moveNorth += 1
                                 else:
-                                    # enemy moves South
-                                    moveSouth += 1
+                                    # enemy moves east
+                                    self.rect.x += 1
+                                    moveEast += 1
                             else:
                                 # if North and South are not both an option, check which direct is an option
                                 if not self.northRect.colliderect(self.enemyList[i].circleRect):
@@ -1616,8 +1622,10 @@ class Enemy(pygame.sprite.Sprite):
                 tempSpeed = random.uniform(0.1, 1)
                 if tempSpeed < .5:
                     self.rect.y += tempSpeed
+                    self.rect.x -= tempSpeed
                 else:
                     self.rect.y -= tempSpeed
+                    self.rect.x += tempSpeed
                 self.stuck = False
                 stuckCounter = 0
 
@@ -1639,7 +1647,7 @@ class Enemy(pygame.sprite.Sprite):
                     pass
                 elif self.rect.x == self.enemyList[i].rect.x and self.rect.y == self.enemyList[i].rect.y:
                     # checks if the enemy is checking itself in the list of enemies, and if it is itself, skip
-                    pass
+                    stuckCounter += 1
                 else:
                     if not self.eastRect.colliderect(self.enemyList[i].circleRect) and not self.northRect.colliderect(
                             self.enemyList[i].circleRect):
@@ -1653,10 +1661,12 @@ class Enemy(pygame.sprite.Sprite):
                                 # if enemy can go both North and South, pick a random direction
                                 randomDirection = random.randint(0, 3)
                                 if randomDirection <= 1:
-                                    # enemy moves North
-                                    moveNorth += 1
+                                    # enemy moves west
+                                    self.rect.x -= 1
+                                    moveWest += 1
                                 else:
                                     # enemy moves South
+                                    self.rect.y += 1
                                     moveSouth += 1
                             else:
                                 # if North and South are not both an option, check which direct is an option
@@ -1682,10 +1692,10 @@ class Enemy(pygame.sprite.Sprite):
                 self.travel_south()
             elif moveNorth == self.enemyLength -1:
                 self.travel_north()
-            elif moveSouth == self.enemyLength -1:
-                self.travel_east()
             elif moveWest == self.enemyLength -1:
                 self.travel_west()
+            elif moveSouth == self.enemyLength -1:
+                self.travel_east()
         if stuckCounter:
             if stuckCounter > 1:
                 # Helps enemies become unstuck on each other
@@ -1693,8 +1703,10 @@ class Enemy(pygame.sprite.Sprite):
                 tempSpeed = random.uniform(0.1, 1)
                 if tempSpeed < .5:
                     self.rect.y += tempSpeed
+                    self.rect.x -= tempSpeed
                 else:
                     self.rect.y -= tempSpeed
+                    self.rect.x += tempSpeed
                 self.stuck = False
                 stuckCounter = 0
 
@@ -1716,7 +1728,7 @@ class Enemy(pygame.sprite.Sprite):
                     pass
                 elif self.rect.x == self.enemyList[i].rect.x and self.rect.y == self.enemyList[i].rect.y:
                     # checks if the enemy is checking itself in the list of enemies, and if it is itself, skip
-                    pass
+                    stuckCounter += 1
                 else:
                     if not self.westRect.colliderect(self.enemyList[i].circleRect) and not self.northRect.colliderect(
                             self.enemyList[i].circleRect):
@@ -1730,10 +1742,12 @@ class Enemy(pygame.sprite.Sprite):
                                 # if enemy can go both North and South, pick a random direction
                                 randomDirection = random.randint(0, 3)
                                 if randomDirection <= 1:
-                                    # enemy moves North
-                                    moveNorth += 1
+                                    # enemy moves east
+                                    self.rect.x += 1
+                                    moveEast += 1
                                 else:
                                     # enemy moves South
+                                    self.rect.y += 1
                                     moveSouth += 1
                             else:
                                 # if North and South are not both an option, check which direct is an option
@@ -1770,8 +1784,10 @@ class Enemy(pygame.sprite.Sprite):
                 tempSpeed = random.uniform(0.1, 1)
                 if tempSpeed < .5:
                     self.rect.y += tempSpeed
+                    self.rect.x -= tempSpeed
                 else:
                     self.rect.y -= tempSpeed
+                    self.rect.x += tempSpeed
                 self.stuck = False
                 stuckCounter = 0
 
