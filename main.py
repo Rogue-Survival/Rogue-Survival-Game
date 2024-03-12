@@ -1500,11 +1500,9 @@ class Enemy(pygame.sprite.Sprite):
                                 randomDirection = random.randint(0, 3)
                                 if randomDirection <= 1:
                                     # enemy moves North
-                                    self.rect.y -= 1
                                     moveNorth += 1
                                 else:
                                     # enemy moves south
-                                    self.rect.y += 1
                                     moveSouth += 1
                             else:
                                 # if North and South are not both an option, check which direct is an option
@@ -1581,11 +1579,9 @@ class Enemy(pygame.sprite.Sprite):
                                 randomDirection = random.randint(0, 3)
                                 if randomDirection <= 1:
                                     # enemy moves North
-                                    self.rect.y -= 1
                                     moveNorth += 1
                                 else:
                                     # enemy moves south
-                                    self.rect.x += 1
                                     moveSouth += 1
                             else:
                                 # if North and South are not both an option, check which direct is an option
@@ -1662,11 +1658,9 @@ class Enemy(pygame.sprite.Sprite):
                                 randomDirection = random.randint(0, 3)
                                 if randomDirection <= 1:
                                     # enemy moves west
-                                    self.rect.x -= 1
                                     moveNorth += 1
                                 else:
                                     # enemy moves South
-                                    self.rect.y += 1
                                     moveSouth += 1
                             else:
                                 # if North and South are not both an option, check which direct is an option
@@ -1743,11 +1737,9 @@ class Enemy(pygame.sprite.Sprite):
                                 randomDirection = random.randint(0, 3)
                                 if randomDirection <= 1:
                                     # enemy moves north
-                                    self.rect.y -= 1
                                     moveNorth += 1
                                 else:
                                     # enemy moves South
-                                    self.rect.y += 1
                                     moveSouth += 1
                             else:
                                 # if North and South are not both an option, check which direct is an option
