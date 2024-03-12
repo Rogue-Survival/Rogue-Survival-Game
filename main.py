@@ -278,7 +278,7 @@ class BasicAttack(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.rect = None
-        self.hitBoxRect = pygame.draw.circle(transparentSurface, (255,255,255), (p.rect.x+19, p.rect.y+19), 64)
+        self.hitBoxRect = pygame.draw.circle(transparentSurface, (255,255,255), (p.rect.x+19, p.rect.y+19), 78)
 
         self.east = False
         self.northEast = False
@@ -304,75 +304,81 @@ class BasicAttack(pygame.sprite.Sprite):
         self.finished = False
 
         self.damage = 20
-        self.bulletTimer = 0
+        self.BasicAttackTimer = 0
         self.timerTarget = 40
+        self.rangeIncrease = 10
+        self.hitBoxRadius = 78
 
 
     def attack(self):
         # Initiate basic attack
 
-        # self.east = pygame.draw.line(screen, (160,32,240), (p.rect.x+36, p.rect.y+17), (p.rect.x+80, p.rect.y+17), 6)
-        # self.northEast = pygame.draw.line(screen, (160,32,240), (p.rect.x+33, p.rect.y+4), (p.rect.x+60, p.rect.y-22), 6)
-        # self.north = pygame.draw.line(screen, (160,32,240), (p.rect.x+18, p.rect.y-4), (p.rect.x+18, p.rect.y-44), 6)
-        # self.northWest = pygame.draw.line(screen, (160,32,240), (p.rect.x, p.rect.y+4), (p.rect.x-27, p.rect.y-22), 6)
-        # self.west = pygame.draw.line(screen, (160,32,240), (p.rect.x, p.rect.y+17), (p.rect.x-44, p.rect.y+17), 6)
-        # self.southWest = pygame.draw.line(screen, (160,32,240), (p.rect.x, p.rect.y+32), (p.rect.x-27, p.rect.y+60), 6)
-        # self.south = pygame.draw.line(screen, (160,32,240), (p.rect.x+18, p.rect.y+32), (p.rect.x+18, p.rect.y+78), 6)
-        # self.southEast = pygame.draw.line(screen, (160,32,240), (p.rect.x+33, p.rect.y+32), (p.rect.x+64, p.rect.y+60), 6)
-
+        # self.east = pygame.draw.line(screen, (160,32,240), (p.rect.x+36, p.rect.y+17), (p.rect.x+80+self.rangeIncrease, p.rect.y+17), 6)
+        # self.northEast = pygame.draw.line(screen, (160,32,240), (p.rect.x+33, p.rect.y+4), (p.rect.x+60+self.rangeIncrease, p.rect.y-22-self.rangeIncrease), 6)
+        # self.north = pygame.draw.line(screen, (160,32,240), (p.rect.x+18, p.rect.y-4), (p.rect.x+18, p.rect.y-44-self.rangeIncrease), 6)
+        # self.northWest = pygame.draw.line(screen, (160,32,240), (p.rect.x, p.rect.y+4), (p.rect.x-27-self.rangeIncrease, p.rect.y-22-self.rangeIncrease), 6)
+        # self.west = pygame.draw.line(screen, (160,32,240), (p.rect.x, p.rect.y+17), (p.rect.x-44-self.rangeIncrease, p.rect.y+17), 6)
+        # self.southWest = pygame.draw.line(screen, (160,32,240), (p.rect.x, p.rect.y+32), (p.rect.x-27-self.rangeIncrease, p.rect.y+60+self.rangeIncrease), 6)
+        # self.south = pygame.draw.line(screen, (160,32,240), (p.rect.x+18, p.rect.y+32), (p.rect.x+18, p.rect.y+78+self.rangeIncrease), 6)
+        # self.southEast = pygame.draw.line(screen, (160,32,240), (p.rect.x+33, p.rect.y+32), (p.rect.x+64+self.rangeIncrease, p.rect.y+60+self.rangeIncrease), 6)
+        # pygame.draw.circle(screen, (255,255,255), (p.rect.x+19, p.rect.y+19), self.hitBoxRadius)
+        '''
+        10:78, 20:91, 30:105, 40:119, 50:133, 60:147, 70:161, 80:175, 90:189, 100:203
+        [14,14,14,14,14,14,14,14,14]
+        '''
         total_time = pygame.time.get_ticks() / 1000
-
-        if self.bulletTimer > self.timerTarget and total_time > 1 and not self.east:
+        self.hitBoxRect = pygame.draw.circle(transparentSurface, (255,255,255), (p.rect.x+19, p.rect.y+19), self.hitBoxRadius)
+        if self.BasicAttackTimer > self.timerTarget and total_time > 1 and not self.east:
             self.running = True
-            self.rect = pygame.draw.line(screen, (160,32,240), (p.rect.x+36, p.rect.y+17), (p.rect.x+80, p.rect.y+17), 6)
+            self.rect = pygame.draw.line(screen, (160,32,240), (p.rect.x+36, p.rect.y+17), (p.rect.x+80+self.rangeIncrease, p.rect.y+17), 6)
             self.eastCounter += 1
             if self.eastCounter > 2:
                 self.rect = None
                 self.east = True
         if self.east and not self.northEast:
-            self.rect = pygame.draw.line(screen, (160,32,240), (p.rect.x+33, p.rect.y+4), (p.rect.x+60, p.rect.y-22), 6)
+            self.rect = pygame.draw.line(screen, (160,32,240), (p.rect.x+33, p.rect.y+4), (p.rect.x+60+self.rangeIncrease, p.rect.y-22-self.rangeIncrease), 6)
             self.northEastCounter += 1
             if self.northEastCounter > 2:
                 self.rect = None
                 self.northEast = True
         if self.northEast and not self.north:
-            self.rect = pygame.draw.line(screen, (160,32,240), (p.rect.x+18, p.rect.y-4), (p.rect.x+18, p.rect.y-44), 6)
+            self.rect = pygame.draw.line(screen, (160,32,240), (p.rect.x+18, p.rect.y-4), (p.rect.x+18, p.rect.y-44-self.rangeIncrease), 6)
             self.northCounter += 1
             if self.northCounter > 2:
                 self.rect = None
                 self.north = True
         if self.north and not self.northWest:
-            self.rect = pygame.draw.line(screen, (160,32,240), (p.rect.x, p.rect.y+4), (p.rect.x-27, p.rect.y-22), 6)
+            self.rect = pygame.draw.line(screen, (160,32,240), (p.rect.x, p.rect.y+4), (p.rect.x-27-self.rangeIncrease, p.rect.y-22-self.rangeIncrease), 6)
             self.northWestCounter += 1
             if self.northWestCounter > 2:
                 self.rect = None
                 self.northWest = True
         if self.northWest and not self.west:
-            self.rect = pygame.draw.line(screen, (160,32,240), (p.rect.x, p.rect.y+17), (p.rect.x-44, p.rect.y+17), 6)
+            self.rect = pygame.draw.line(screen, (160,32,240), (p.rect.x, p.rect.y+17), (p.rect.x-44-self.rangeIncrease, p.rect.y+17), 6)
             self.westCounter += 1
             if self.westCounter > 2:
                 self.rect = None
                 self.west = True
         if self.west and not self.southWest:
-            self.rect = pygame.draw.line(screen, (160,32,240), (p.rect.x, p.rect.y+32), (p.rect.x-27, p.rect.y+60), 6)
+            self.rect = pygame.draw.line(screen, (160,32,240), (p.rect.x, p.rect.y+32), (p.rect.x-27-self.rangeIncrease, p.rect.y+60+self.rangeIncrease), 6)
             self.southWestCounter += 1
             if self.southWestCounter > 2:
                 self.rect = None
                 self.southWest = True
         if self.southWest and not self.south:
-            self.rect = pygame.draw.line(screen, (160,32,240), (p.rect.x+18, p.rect.y+32), (p.rect.x+18, p.rect.y+78), 6)
+            self.rect = pygame.draw.line(screen, (160,32,240), (p.rect.x+18, p.rect.y+32), (p.rect.x+18, p.rect.y+78+self.rangeIncrease), 6)
             self.southCounter += 1
             if self.southCounter > 2:
                 self.rect = None
                 self.south = True
         if self.south and not self.southEast:
-            self.rect = pygame.draw.line(screen, (160,32,240), (p.rect.x+33, p.rect.y+32), (p.rect.x+64, p.rect.y+60), 6)
+            self.rect = pygame.draw.line(screen, (160,32,240), (p.rect.x+33, p.rect.y+32), (p.rect.x+64+self.rangeIncrease, p.rect.y+60+self.rangeIncrease), 6)
             self.southEastCounter += 1
             if self.southEastCounter > 2:
                 self.rect = None
                 self.southEast = True
         if self.southEast and not self.eastEND:
-            self.rect = pygame.draw.line(screen, (160,32,240), (p.rect.x+36, p.rect.y+17), (p.rect.x+80, p.rect.y+17), 6)
+            self.rect = pygame.draw.line(screen, (160,32,240), (p.rect.x+36, p.rect.y+17), (p.rect.x+80+self.rangeIncrease, p.rect.y+17), 6)
             # new_time = pygame.time.get_ticks()
             self.eastENDCounter += 1
             if self.eastENDCounter > 1:
@@ -381,7 +387,7 @@ class BasicAttack(pygame.sprite.Sprite):
                 self.running = False
                 self.finished = True
 
-        if self.bulletTimer > self.timerTarget+(self.timerTarget *2) and self.east:
+        if self.BasicAttackTimer > self.timerTarget+(self.timerTarget *2) and self.east:
             self.east = False
             self.northEast = False
             self.north = False
@@ -406,8 +412,8 @@ class BasicAttack(pygame.sprite.Sprite):
                 enemy.meleeAttackCollisions.clear()
             if sk.activate and not sk.felled:
                 sk.meleeAttackCollisions.clear()
-            self.bulletTimer = 0
-        self.bulletTimer += 1
+            self.BasicAttackTimer = 0
+        self.BasicAttackTimer += 1
 
 
 class Bullet(pygame.sprite.Sprite):
@@ -1449,16 +1455,18 @@ class XP_Bar(pygame.sprite.Sprite):
         if option == 1:
             upgradeBaRa1Render = self.upgradeDesc_font.render('Increase Basic Attack', True, (0, 0, 0))
             screen.blit(upgradeBaRa1Render, (150, 365))
-            upgradeBaRa2Render = self.upgradeDesc_font.render('Range by 5%.', True, (0, 0, 0))
+            upgradeBaRa2Render = self.upgradeDesc_font.render('Range by 10%.', True, (0, 0, 0))
             screen.blit(upgradeBaRa2Render, (150, 390))
 
         elif option == 2:
             upgradeBaRa1Render = self.upgradeDesc_font.render('Increase Basic Attack', True, (0, 0, 0))
             screen.blit(upgradeBaRa1Render, (500, 365))
-            upgradeBaRa2Render = self.upgradeDesc_font.render('Range by 5%.', True, (0, 0, 0))
+            upgradeBaRa2Render = self.upgradeDesc_font.render('Range by 10%.', True, (0, 0, 0))
             screen.blit(upgradeBaRa2Render, (500, 390))
 
         elif not option:
+            ba.rangeIncrease += 10
+            ba.hitBoxRadius += 14
             self.selectedUpgradeChoices = False
             self.levelMenu = False
             self.selected = True
