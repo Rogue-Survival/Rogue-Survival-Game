@@ -1503,7 +1503,7 @@ class Enemy(pygame.sprite.Sprite):
                                     moveNorth += 1
                                 else:
                                     # enemy moves south
-                                    moveSouth += 1
+                                    moveWest += 1
                             else:
                                 # if North and South are not both an option, check which direct is an option
                                 if not self.northRect.colliderect(self.enemyList[i].circleRect):
@@ -1574,15 +1574,15 @@ class Enemy(pygame.sprite.Sprite):
                         if (p.rect.x - self.rect.x) > 50:
                             # enemy continues trying to move towards player if further than 50 pixels away.
                             if not self.northRect.colliderect(
-                                    self.enemyList[i].circleRect) and not self.southRect.colliderect(self.enemyList[i].circleRect):
+                                    self.enemyList[i].circleRect) and not self.eastRect.colliderect(self.enemyList[i].circleRect):
                                 # if enemy can go both North and South, pick a random direction
                                 randomDirection = random.randint(0, 3)
                                 if randomDirection <= 1:
                                     # enemy moves North
                                     moveNorth += 1
                                 else:
-                                    # enemy moves south
-                                    moveSouth += 1
+                                    # enemy moves east
+                                    moveEast += 1
                             else:
                                 # if North and South are not both an option, check which direct is an option
                                 if not self.northRect.colliderect(self.enemyList[i].circleRect):
@@ -1652,13 +1652,13 @@ class Enemy(pygame.sprite.Sprite):
                     else:
                         if (p.rect.x - self.rect.x) > 50:
                             # enemy continues trying to move towards player if further than 50 pixels away.
-                            if not self.northRect.colliderect(
+                            if not self.westRect.colliderect(
                                     self.enemyList[i].circleRect) and not self.southRect.colliderect(self.enemyList[i].circleRect):
                                 # if enemy can go both North and South, pick a random direction
                                 randomDirection = random.randint(0, 3)
                                 if randomDirection <= 1:
                                     # enemy moves west
-                                    moveNorth += 1
+                                    moveWest += 1
                                 else:
                                     # enemy moves South
                                     moveSouth += 1
@@ -1731,13 +1731,13 @@ class Enemy(pygame.sprite.Sprite):
                     else:
                         if (p.rect.x - self.rect.x) > 50:
                             # enemy continues trying to move towards player if further than 50 pixels away.
-                            if not self.northRect.colliderect(
+                            if not self.eastRect.colliderect(
                                     self.enemyList[i].circleRect) and not self.southRect.colliderect(self.enemyList[i].circleRect):
                                 # if enemy can go both North and South, pick a random direction
                                 randomDirection = random.randint(0, 3)
                                 if randomDirection <= 1:
-                                    # enemy moves north
-                                    moveNorth += 1
+                                    # enemy moves east
+                                    moveEast += 1
                                 else:
                                     # enemy moves South
                                     moveSouth += 1
