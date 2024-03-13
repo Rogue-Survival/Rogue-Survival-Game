@@ -1848,22 +1848,22 @@ class miniee(Enemy):
 
     def follow_mc(self):
         #Miniboss movment
-        if self.rect.x < p.rect.x and self.rect.y == p.rect.y and not self.rect.colliderect(p.rect):
+        if self.rect.x < p.rect.x and not self.rect.colliderect(p.rect):
             self.travel_east()
-        elif self.rect.x > p.rect.x and self.rect.y == p.rect.y and not self.rect.colliderect(p.rect):
+        if self.rect.x > p.rect.x and not self.rect.colliderect(p.rect):
             self.travel_west()
-        elif self.rect.y < p.rect.y and self.rect.x == p.rect.x and not self.rect.colliderect(p.rect):
+        if self.rect.y < p.rect.y and not self.rect.colliderect(p.rect):
             self.travel_south()
-        elif self.rect.y > p.rect.y and self.rect.x == p.rect.x and not self.rect.colliderect(p.rect):
+        if self.rect.y > p.rect.y and not self.rect.colliderect(p.rect):
             self.travel_north()
-        elif self.rect.x < p.rect.x and self.rect.y < p.rect.y and not self.rect.colliderect(p.rect):
+        '''if self.rect.x < p.rect.x and self.rect.y < p.rect.y and not self.rect.colliderect(p.rect):
             self.travel_southeast()
-        elif self.rect.x > p.rect.x and self.rect.y < p.rect.y and not self.rect.colliderect(p.rect):
+        if self.rect.x > p.rect.x and self.rect.y < p.rect.y and not self.rect.colliderect(p.rect):
             self.travel_southwest()
-        elif self.rect.x < p.rect.x and self.rect.y > p.rect.y and not self.rect.colliderect(p.rect):
+        if self.rect.x < p.rect.x and self.rect.y > p.rect.y and not self.rect.colliderect(p.rect):
             self.travel_northeast()
-        elif self.rect.x > p.rect.x and self.rect.y > p.rect.y and not self.rect.colliderect(p.rect):
-            self.travel_northwest()
+        if self.rect.x > p.rect.x and self.rect.y > p.rect.y and not self.rect.colliderect(p.rect):
+            self.travel_northwest()'''
     def aoehit(self):
         calctargets.calcdistance(self)
         if calctargets.calcdistance(self) <= 80 and self.notattacking == True and (int(self.attack_timer) - self.lastatt >= 12):
