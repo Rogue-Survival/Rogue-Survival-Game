@@ -1641,6 +1641,7 @@ def button(msg,x,y,w,h,ic,ac, action):
                 settingsMenu()
             elif action == "Fullscreen Toggle":
                 fullscreenToggle()
+                pygame.display.update()
             elif action == "Credits":
                 pause = False
                 credits()
@@ -1740,6 +1741,10 @@ def credits():
     pause = True
 
     while pause:
+        global gameTimerStr
+        global gameTime
+        tempTimer = pygame.time.get_ticks() - gameTime
+        xpB.pauseTimer = tempTimer
         if pygame.key.get_pressed()[pygame.K_ESCAPE] and (pygame.time.get_ticks() - startTime >= 500):
             pause = False
             settingsMenu()
@@ -1792,8 +1797,15 @@ def pauseGame():
     pause = True
 
     while pause:
+        global gameTimerStr
+        global gameTime
+        tempTimer = pygame.time.get_ticks() - gameTime
+        xpB.pauseTimer = tempTimer
         if pygame.key.get_pressed()[pygame.K_ESCAPE] and (pygame.time.get_ticks() - startTime >= 500):
             pause = False
+            gameTimerStr = tempTimer
+            gameTime -= tempTimer
+            xpB.timeAfterPause = gameTime
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 game = False
@@ -1803,9 +1815,9 @@ def pauseGame():
         TextSurf, TextRect = text_objects("Paused", largeText)
         TextRect.center = ((screen_width/2), (screen_height/3.3))
         screen.blit(horizontalScroll, (screen_width/2 - 288, screen_height/10))
-        button("Settings", ((screen_width/4)-100), (screen_height/1.6), 200, 100, (247, 167, 82),
+        button("Settings", ((screen_width/4)-100), (screen_height/2), 200, 100, (247, 167, 82),
                (184, 120, 51), "Settings")
-        button("Close :(", (screen_width / 1.3) - 100, (screen_height / 1.6), 200,
+        button("Close :(", (screen_width / 1.3) - 100, (screen_height / 2), 200,
                100, (247, 167, 82),
                (184, 120, 51), "Quit")
         screen.blit(TextSurf, TextRect)
@@ -1821,6 +1833,10 @@ def settingsMenu():
     pause = True
 
     while pause:
+        global gameTimerStr
+        global gameTime
+        tempTimer = pygame.time.get_ticks() - gameTime
+        xpB.pauseTimer = tempTimer
         if pygame.key.get_pressed()[pygame.K_ESCAPE] and (pygame.time.get_ticks() - startTime >= 500):
             pause = False
             pauseGame()
@@ -1834,8 +1850,9 @@ def settingsMenu():
         # TextRect.center = ((400), (220))
         TextRect.center = ((screen_width/2), (screen_height/3.3))
         screen.blit(horizontalScroll, (screen_width/2 - 288, screen_height/10))
-        button("Fullscreen", (screen_width/4)-100, (screen_height/1.6), 200, 100, (247, 167, 82), (184, 120, 51), "Fullscreen Toggle")
-        button("Credits", (screen_width/1.3)-100, (screen_height/1.6), 200,
+        button("Fullscreen", (screen_width/4)-100, (screen_height/1.4), 200, 100, (247, 167, 82),
+               (184, 120, 51), "Fullscreen Toggle")
+        button("Credits", (screen_width/1.3)-100, (screen_height/1.4), 200,
                100, (247, 167, 82), (184, 120, 51), "Credits")
         screen.blit(TextSurf, TextRect)
 
@@ -2232,7 +2249,7 @@ while game:
 
 
     # screen.blit(pygame.transform.scale(mc_img, (40, 35)), (p.rect.x, p.rect.y))
-
+    print(gameTime)
     ba.attack()
     m.update_boundary()
     display_timer(gameTimeStr, timerFont, (0, 0, 0))
