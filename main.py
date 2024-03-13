@@ -1215,7 +1215,6 @@ class XP(pygame.sprite.Sprite):
         self.hitBoxRect = pygame.draw.circle(transparentSurface, (0,255,35), (self.x, self.y), 50)
 
 speed_item_visible = True
-game = True
 gameTimerOn = False
 # gameTime = 0
 
@@ -1616,6 +1615,7 @@ def button(msg,x,y,w,h,ic,ac, action):
     click = pygame.mouse.get_pressed()
     # print(click)
     global pause
+    global game
     if x+w > mouse[0] > x and y+h > mouse[1] > y:
         pygame.draw.rect(screen, ac, (x, y, w, h), border_radius=20)
         if click[0] == 1 and action != None:
@@ -1623,21 +1623,18 @@ def button(msg,x,y,w,h,ic,ac, action):
                 pause = False
                 settingsMenu()
             elif action == "Fullscreen Toggle":
-                pause = False
                 fullscreenToggle()
             elif action == "Credits":
                 pause = False
                 credits()
             elif action == "Quit":
-                global game
                 game = False
                 pygame.quit()
             elif action == "Play":
                 global intro
-                global maingame
                 pause = False
                 intro = False
-                maingame = True
+                game = True
 
     else:
         pygame.draw.rect(screen, ic, (x, y, w, h), border_radius=20)
@@ -1758,13 +1755,14 @@ def mainMenu():
 
         screen.blit(dungeonBackground, (0, 0))
         largeText = pygame.font.SysFont('Garamond', 100, bold=True)
-        TextSurf, TextRect = text_objects("Rogue Survival", largeText)
+        TextSurf, TextRect = text_objects("Rogue!", largeText)
         TextRect.center = ((screen_width / 2), (screen_height / 3.3))
         screen.blit(horizontalScroll, (screen_width / 2 - 288, screen_height / 10))
         button("Play!", (screen_width / 4) - 100, (screen_height / 1.6), 200, 100, (247, 167, 82), (184, 120, 51),
                "Play")
         button("Close :(", (screen_width / 1.3) - 100, (screen_height / 1.6), 200,
-               100, (247, 167, 82), (184, 120, 51), "Quit")
+               100, (247, 167, 82),
+               (184, 120, 51), "Quit")
         screen.blit(TextSurf, TextRect)
         pygame.display.update()
         clock.tick(15)
@@ -1788,8 +1786,11 @@ def pauseGame():
         TextSurf, TextRect = text_objects("Paused", largeText)
         TextRect.center = ((screen_width/2), (screen_height/3.3))
         screen.blit(horizontalScroll, (screen_width/2 - 288, screen_height/10))
-        button("Settings", ((screen_width/2)-100), (screen_height/1.6), 200, 100, (247, 167, 82),
+        button("Settings", ((screen_width/4)-100), (screen_height/1.6), 200, 100, (247, 167, 82),
                (184, 120, 51), "Settings")
+        button("Close :(", (screen_width / 1.3) - 100, (screen_height / 1.6), 200,
+               100, (247, 167, 82),
+               (184, 120, 51), "Quit")
         screen.blit(TextSurf, TextRect)
 
         pygame.display.update()
@@ -1873,6 +1874,7 @@ def keypressed():
 activateBullet = True
 bulletTimer1 = 2
 bulletTimer2 = 0
+mainMenu()
 
 while game:
     # the core game loop
