@@ -2619,7 +2619,7 @@ while game:
             # print("COLLIDE!!!")
             p.health -= 1
 #First mini boss section \/
-    if int(minutes) == 0 and int(seconds) == 0:
+    if int(minutes) == 2 and int(seconds) == 30:
         ee.activate = True
     if ee.activate and not ee.felled:
         ee.attack_timer = (pygame.time.get_ticks() / 1000)
@@ -2652,7 +2652,7 @@ while game:
                     if not ee.bulletCollisions:
                         # If ee has been hit by its first bullet add to list to take damage.
                         ee.bulletCollisions.append(bullet)
-                        ee.health -= p.bulletdamage + 100
+                        ee.health -= p.bulletdamage
                         # print(ee.health)
                         # print('1')
                     elif ee.bulletCollisions:
@@ -2663,7 +2663,7 @@ while game:
                                 pass
                             elif bullet not in ee.bulletCollisions and bullet.bulletValid:
                                 ee.bulletCollisions.append(bullet)
-                                ee.health -= p.bulletdamage + 100
+                                ee.health -= p.bulletdamage
                                 #print(ee.health)
                             i += 1
             for bullet in bullets:
