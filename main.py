@@ -1628,6 +1628,16 @@ def button(msg,x,y,w,h,ic,ac, action):
             elif action == "Credits":
                 pause = False
                 credits()
+            elif action == "Quit":
+                global game
+                game = False
+                pygame.quit()
+            elif action == "Play":
+                global intro
+                global maingame
+                pause = False
+                intro = False
+                maingame = True
 
     else:
         pygame.draw.rect(screen, ic, (x, y, w, h), border_radius=20)
@@ -1752,9 +1762,9 @@ def mainMenu():
         TextRect.center = ((screen_width / 2), (screen_height / 3.3))
         screen.blit(horizontalScroll, (screen_width / 2 - 288, screen_height / 10))
         button("Play!", (screen_width / 4) - 100, (screen_height / 1.6), 200, 100, (247, 167, 82), (184, 120, 51),
-               "")
+               "Play")
         button("Close :(", (screen_width / 1.3) - 100, (screen_height / 1.6), 200,
-               100, (247, 167, 82), (184, 120, 51), "Credits")
+               100, (247, 167, 82), (184, 120, 51), "Quit")
         screen.blit(TextSurf, TextRect)
         pygame.display.update()
         clock.tick(15)
