@@ -429,12 +429,18 @@ class Bullet(pygame.sprite.Sprite):
         self.bulletIncrement = .5
         self.counterX = 0
         self.counterY = 0
-        self.bulletDistance = 20
+        self.bulletDistance = 12
         self.angle = 200
         self.positionReached = False
         self.damage = 20
+        self.goFourthA = False
+        self.goThirdA = False
+        self.goSecondA = False
+        self.goFirstA = False
 
     def bullet(self):
+        # print(self.bulletDistance)
+        # print(self.damage)
         # bullet movement
         # self.mousePOS = pygame.math.Vector2(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
         playerVector = pygame.math.Vector2(self.startingPoint[0], self.startingPoint[1])
@@ -466,13 +472,17 @@ class Bullet(pygame.sprite.Sprite):
             # print(f'{newTriangle[1]}/{newTriangle[0]}')
             self.angle = (numpy.rad2deg(numpy.arctan(newTriangle[1]/newTriangle[0])))
         # print(self.angle)
-        if self.counterX > self.bulletDistance or self.counterY > self.bulletDistance: #or ((self.rect.x - self.mousePOS[0] < 5 or self.mousePOS[0] - self.rect.x > 5) and (self.rect.y - self.mousePOS[1] < 5 or self.mousePOS[1] - self.rect.y > 5)):
+        if self.counterX >= self.bulletDistance or self.counterY >= self.bulletDistance: #or ((self.rect.x - self.mousePOS[0] < 5 or self.mousePOS[0] - self.rect.x > 5) and (self.rect.y - self.mousePOS[1] < 5 or self.mousePOS[1] - self.rect.y > 5)):
             self.rect.x = p.rect.x
             self.rect.y = p.rect.y
             self.bulletValid = False
             self.positionReached = False
             self.counterX = 0
             self.counterY = 0
+            self.goFourthA = False
+            self.goThirdA = False
+            self.goSecondA = False
+            self.goFirstA = False
             bulletsNum = len(enemies)
             bulletCounter = 0
             for bullet in bullets:
@@ -493,6 +503,8 @@ class Bullet(pygame.sprite.Sprite):
                 self.rect.x += math.cos(self.angle * (2*math.pi/360)) * self.bulletSpeed
                 self.counterX += 1
                 self.counterY += 1
+                # print(self.counterX)
+                # print(self.counterY)
                 # print('-------------------')
                 # print("fourth quadrant - CONTINUING JOURNEY")
                 # print('-------------------')
@@ -527,12 +539,13 @@ class Bullet(pygame.sprite.Sprite):
                 # print("first quadrant - CONTINUING JOURNEY")
                 # print('-------------------')
                 # print("4")
-            elif self.rect.x < self.mousePOS[0] and self.rect.y < self.mousePOS[1]:
+            elif self.rect.x < self.mousePOS[0] and self.rect.y < self.mousePOS[1] or self.goFourthA:
                 # fourth quadrant - travels to mouse position
                 self.rect.y += math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
                 self.rect.x += math.cos(self.angle * (2*math.pi/360)) * self.bulletSpeed
                 self.counterX += 1
                 self.counterY += 1
+                self.goFourthA = True
                 # print(self.counterX)
                 # print(self.counterY)
                 if self.mousePOS[1] - self.rect.y < 10 and self.mousePOS[0] - self.rect.x < 10:
@@ -541,36 +554,39 @@ class Bullet(pygame.sprite.Sprite):
                 # print("fourth quadrant")
                 # print('-------------------')
                 # print("5")
-            elif self.rect.x > self.mousePOS[0] and self.rect.y < self.mousePOS[1]:
+            elif self.rect.x > self.mousePOS[0] and self.rect.y < self.mousePOS[1] and not abs(self.mousePOS[0] - self.startingPoint[0]) < 12 or self.goThirdA:
                 # third quadrant - travels to mouse position
                 self.rect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
                 self.rect.x -= math.cos(self.angle * (2*math.pi/360)) * self.bulletSpeed
                 self.counterX += 1
                 self.counterY += 1
+                self.goThirdA = True
                 if self.mousePOS[1] - self.rect.y <= 10 and self.rect.x - self.mousePOS[0] <= 10:
                     self.positionReached = True
                 # print('-------------------')
                 # print("third quadrant")
                 # print('-------------------')
                 # print("6")
-            elif self.rect.x > self.mousePOS[0] and self.rect.y > self.mousePOS[1]:
+            elif self.rect.x > self.mousePOS[0] and self.rect.y > self.mousePOS[1] or self.goSecondA:
                 # second quadrant - travels to mouse position
                 self.rect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
                 self.rect.x -= math.cos(self.angle * (2*math.pi/360)) * self.bulletSpeed
                 self.counterX += 1
                 self.counterY += 1
+                self.goSecondA = True
                 if self.rect.y - self.mousePOS[1] <= 10 and self.mousePOS[0] - self.rect.x <= 10:
                     self.positionReached = True
                 # print('-------------------')
                 # print("second quadrant")
                 # print('-------------------')
                 # print("7")
-            elif self.rect.x < self.mousePOS[0] and self.rect.y > self.mousePOS[1]:
+            elif self.rect.x < self.mousePOS[0] and self.rect.y > self.mousePOS[1] or self.goFirstA:
                 # first quadrant - travels to mouse position
                 self.rect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
                 self.rect.x += math.cos(self.angle * (2*math.pi/360)) * self.bulletSpeed
                 self.counterX += 1
                 self.counterY += 1
+                self.goFirstA = True
                 if self.rect.y - self.mousePOS[1] <= 10 and self.mousePOS[0] - self.rect.x <= 10:
                     self.positionReached = True
                 # print('-------------------')
@@ -578,11 +594,11 @@ class Bullet(pygame.sprite.Sprite):
                 # print('-------------------')
                 # print("8")
             else:
-                if self.mousePOS[1] > self.startingPoint[1] and (abs(self.mousePOS[0]) - abs(self.startingPoint[0])) < 15:
+                # if self.mousePOS[1] == self.startingPoint
+                if self.mousePOS[1] >= self.startingPoint[1] and (abs(self.mousePOS[0]) - self.startingPoint[0]) < 15:
                     self.rect.y += math.sin(90 * (2*math.pi/360)) * self.bulletSpeed
                     # print("YEP")
-                elif self.mousePOS[1] < self.startingPoint[1] and (abs(self.mousePOS[0]) - abs(self.startingPoint[0])) < 15:
-                    self.rect.y -= math.sin(90 * (2*math.pi/360)) * self.bulletSpeed
+                elif self.mousePOS[1] <= self.startingPoint[1] and (abs(self.mousePOS[0]) - self.startingPoint[0]) < 15:
                     self.rect.y -= math.sin(90 * (2*math.pi/360)) * self.bulletSpeed
                     # print("YEP2")
                 self.counterX += 1
@@ -1475,13 +1491,13 @@ class XP_Bar(pygame.sprite.Sprite):
         if option == 1:
             upgradeBaSpe1Render = self.upgradeDesc_font.render('Increase Basic Attack', True, (0, 0, 0))
             screen.blit(upgradeBaSpe1Render, (150, 365))
-            upgradeBaSpe2Render = self.upgradeDesc_font.render('Speed by 5%.', True, (0, 0, 0))
+            upgradeBaSpe2Render = self.upgradeDesc_font.render('Speed by 10%.', True, (0, 0, 0))
             screen.blit(upgradeBaSpe2Render, (150, 390))
 
         elif option == 2:
             upgradeBaSpe1Render = self.upgradeDesc_font.render('Increase Basic Attack', True, (0, 0, 0))
             screen.blit(upgradeBaSpe1Render, (500, 365))
-            upgradeBaSpe2Render = self.upgradeDesc_font.render('Speed by 5%.', True, (0, 0, 0))
+            upgradeBaSpe2Render = self.upgradeDesc_font.render('Speed by 10%.', True, (0, 0, 0))
             screen.blit(upgradeBaSpe2Render, (500, 390))
 
         elif not option:
@@ -1555,17 +1571,18 @@ class XP_Bar(pygame.sprite.Sprite):
         if option == 1:
             upgradeBulRan1Render = self.upgradeDesc_font.render('Increase Bullet', True, (0, 0, 0))
             screen.blit(upgradeBulRan1Render, (150, 365))
-            upgradeBulRan2Render = self.upgradeDesc_font.render('Range by 10%.', True, (0, 0, 0))
+            upgradeBulRan2Render = self.upgradeDesc_font.render('Range by 25%.', True, (0, 0, 0))
             screen.blit(upgradeBulRan2Render, (150, 390))
 
         elif option == 2:
             upgradeBulDam1Render = self.upgradeDesc_font.render('Increase Bullet', True, (0, 0, 0))
             screen.blit(upgradeBulDam1Render, (500, 365))
-            upgradeBulRan2Render = self.upgradeDesc_font.render('Range by 10%.', True, (0, 0, 0))
+            upgradeBulRan2Render = self.upgradeDesc_font.render('Range by 25%.', True, (0, 0, 0))
             screen.blit(upgradeBulRan2Render, (500, 390))
 
         elif not option:
-            b.bulletDistance += 5
+            b.bulletDistance *= 1.25
+            # print(b.bulletDistance)
             self.selectedUpgradeChoices = False
             self.levelMenu = False
             self.selected = True
