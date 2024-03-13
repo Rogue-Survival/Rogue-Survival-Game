@@ -1733,7 +1733,31 @@ def credits():
 
         pygame.display.update()
         clock.tick(15)
+def mainMenu():
+    info = pygame.display.Info()
+    screen_width, screen_height = info.current_w, info.current_h
+    global intro
+    intro = True
 
+    while intro:
+        for event in pygame.event.get():
+            print(event)
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+
+        screen.blit(dungeonBackground, (0, 0))
+        largeText = pygame.font.SysFont('Garamond', 100, bold=True)
+        TextSurf, TextRect = text_objects("Rogue Survival", largeText)
+        TextRect.center = ((screen_width / 2), (screen_height / 3.3))
+        screen.blit(horizontalScroll, (screen_width / 2 - 288, screen_height / 10))
+        button("Play!", (screen_width / 4) - 100, (screen_height / 1.6), 200, 100, (247, 167, 82), (184, 120, 51),
+               "")
+        button("Close :(", (screen_width / 1.3) - 100, (screen_height / 1.6), 200,
+               100, (247, 167, 82), (184, 120, 51), "Credits")
+        screen.blit(TextSurf, TextRect)
+        pygame.display.update()
+        clock.tick(15)
 
 def pauseGame():
     startTime = pygame.time.get_ticks()
