@@ -1232,7 +1232,6 @@ class XP(pygame.sprite.Sprite):
         self.hitBoxRect = pygame.draw.circle(transparentSurface, (0,255,35), (self.x, self.y), 50)
 
 speed_item_visible = True
-game = True
 gameTimerOn = False
 # gameTime = 0
 
@@ -1373,8 +1372,7 @@ class XP_Bar(pygame.sprite.Sprite):
 
                     if not self.selectedUpgradeChoices and not self.selected:
                         # if two random options have not been generated, then generate them
-                        # self.availableUpgrades = ['BA-Dam', 'BA-Ran', 'BA-Spe', 'Mov-Spe', 'Dod-Cha', 'Bul-Dam', 'Bul-Ran', 'Bul-Spe']
-                        self.availableUpgrades = [ 'Bul-Ran', 'Bul-Spe',]
+                        self.availableUpgrades = ['BA-Dam', 'BA-Ran', 'BA-Spe', 'Mov-Spe', 'Dod-Cha', 'Bul-Dam', 'Bul-Ran', 'Bul-Spe']
                         randomUpgrade1 = random.randint(0, (len(self.availableUpgrades) - 1))
                         self.option1 = self.availableUpgrades[randomUpgrade1]
                         randomUpgrade2 = random.randint(0, (len(self.availableUpgrades) - 1))
@@ -1656,6 +1654,7 @@ def button(msg,x,y,w,h,ic,ac, action):
     click = pygame.mouse.get_pressed()
     # print(click)
     global pause
+    global game
     if x+w > mouse[0] > x and y+h > mouse[1] > y:
         pygame.draw.rect(screen, ac, (x, y, w, h), border_radius=20)
         if click[0] == 1 and action != None:
@@ -1663,11 +1662,19 @@ def button(msg,x,y,w,h,ic,ac, action):
                 pause = False
                 settingsMenu()
             elif action == "Fullscreen Toggle":
-                pause = False
                 fullscreenToggle()
+                pygame.display.update()
             elif action == "Credits":
                 pause = False
                 credits()
+            elif action == "Quit":
+                game = False
+                pygame.quit()
+            elif action == "Play":
+                global intro
+                pause = False
+                intro = False
+                game = True
 
     else:
         pygame.draw.rect(screen, ic, (x, y, w, h), border_radius=20)
@@ -1756,6 +1763,10 @@ def credits():
     pause = True
 
     while pause:
+        global gameTimerStr
+        global gameTime
+        tempTimer = pygame.time.get_ticks() - gameTime
+        xpB.pauseTimer = tempTimer
         if pygame.key.get_pressed()[pygame.K_ESCAPE] and (pygame.time.get_ticks() - startTime >= 500):
             pause = False
             settingsMenu()
@@ -1773,7 +1784,32 @@ def credits():
 
         pygame.display.update()
         clock.tick(15)
+def mainMenu():
+    info = pygame.display.Info()
+    screen_width, screen_height = info.current_w, info.current_h
+    global intro
+    intro = True
 
+    while intro:
+        for event in pygame.event.get():
+            print(event)
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+
+        screen.blit(dungeonBackground, (0, 0))
+        largeText = pygame.font.SysFont('Garamond', 100, bold=True)
+        TextSurf, TextRect = text_objects("Rogue!", largeText)
+        TextRect.center = ((screen_width / 2), (screen_height / 3.3))
+        screen.blit(horizontalScroll, (screen_width / 2 - 288, screen_height / 10))
+        button("Play!", (screen_width / 4) - 100, (screen_height / 1.6), 200, 100, (247, 167, 82), (184, 120, 51),
+               "Play")
+        button("Close :(", (screen_width / 1.3) - 100, (screen_height / 1.6), 200,
+               100, (247, 167, 82),
+               (184, 120, 51), "Quit")
+        screen.blit(TextSurf, TextRect)
+        pygame.display.update()
+        clock.tick(15)
 
 def pauseGame():
     startTime = pygame.time.get_ticks()
@@ -1783,8 +1819,15 @@ def pauseGame():
     pause = True
 
     while pause:
+        global gameTimerStr
+        global gameTime
+        tempTimer = pygame.time.get_ticks() - gameTime
+        xpB.pauseTimer = tempTimer
         if pygame.key.get_pressed()[pygame.K_ESCAPE] and (pygame.time.get_ticks() - startTime >= 500):
             pause = False
+            gameTimerStr = tempTimer
+            gameTime -= tempTimer
+            xpB.timeAfterPause = gameTime
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 game = False
@@ -1794,8 +1837,11 @@ def pauseGame():
         TextSurf, TextRect = text_objects("Paused", largeText)
         TextRect.center = ((screen_width/2), (screen_height/3.3))
         screen.blit(horizontalScroll, (screen_width/2 - 288, screen_height/10))
-        button("Settings", ((screen_width/2)-100), (screen_height/1.6), 200, 100, (247, 167, 82),
+        button("Settings", ((screen_width/4)-100), (screen_height/2), 200, 100, (247, 167, 82),
                (184, 120, 51), "Settings")
+        button("Close :(", (screen_width / 1.3) - 100, (screen_height / 2), 200,
+               100, (247, 167, 82),
+               (184, 120, 51), "Quit")
         screen.blit(TextSurf, TextRect)
 
         pygame.display.update()
@@ -1809,6 +1855,10 @@ def settingsMenu():
     pause = True
 
     while pause:
+        global gameTimerStr
+        global gameTime
+        tempTimer = pygame.time.get_ticks() - gameTime
+        xpB.pauseTimer = tempTimer
         if pygame.key.get_pressed()[pygame.K_ESCAPE] and (pygame.time.get_ticks() - startTime >= 500):
             pause = False
             pauseGame()
@@ -1822,8 +1872,9 @@ def settingsMenu():
         # TextRect.center = ((400), (220))
         TextRect.center = ((screen_width/2), (screen_height/3.3))
         screen.blit(horizontalScroll, (screen_width/2 - 288, screen_height/10))
-        button("Fullscreen", (screen_width/4)-100, (screen_height/1.6), 200, 100, (247, 167, 82), (184, 120, 51), "Fullscreen Toggle")
-        button("Credits", (screen_width/1.3)-100, (screen_height/1.6), 200,
+        button("Fullscreen", (screen_width/4)-100, (screen_height/1.4), 200, 100, (247, 167, 82),
+               (184, 120, 51), "Fullscreen Toggle")
+        button("Credits", (screen_width/1.3)-100, (screen_height/1.4), 200,
                100, (247, 167, 82), (184, 120, 51), "Credits")
         screen.blit(TextSurf, TextRect)
 
@@ -1879,6 +1930,7 @@ def keypressed():
 activateBullet = True
 bulletTimer1 = 2
 bulletTimer2 = 0
+mainMenu()
 
 while game:
     # the core game loop
@@ -2219,9 +2271,7 @@ while game:
 
 
     # screen.blit(pygame.transform.scale(mc_img, (40, 35)), (p.rect.x, p.rect.y))
-    for c in bullets:
-        # print(b.damage)
-        print(c.bulletDistance)
+
     ba.attack()
     m.update_boundary()
     display_timer(gameTimeStr, timerFont, (0, 0, 0))
