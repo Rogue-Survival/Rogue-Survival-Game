@@ -490,16 +490,10 @@ class Bullet(pygame.sprite.Sprite):
             for bullet in bullets:
                 if bullet.rect.x == bullets[bulletCounter].rect.x and bullet.rect.y == bullets[bulletCounter].rect.y:
                     bullets.remove(bullet)
-                    # print("BULLET REMOVED!!!")
                 bulletCounter += 1
         else:
             self.bulletValid = True
-            # print("**********************************************************************")
-            # print(f'rect.x = {self.rect.x}, rect.y = {self.rect.x}')
-            # print(f'mousePOS.x = {self.mousePOS[0]}, mousePOS.y = {self.mousePOS[1]}')
-            # print("**********************************************************************")
-
-            if (self.rect.x > self.startingPoint[0] and self.rect.y > self.startingPoint[1]) and self.positionReached:
+            if (self.rect.x >= self.startingPoint[0] and self.rect.y >= self.startingPoint[1]) and self.positionReached:
                 # fourth quadrant - continues traveling after reaching mouse position
                 self.rect.y += math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
                 self.rect.x += math.cos(self.angle * (2*math.pi/360)) * self.bulletSpeed
@@ -507,41 +501,41 @@ class Bullet(pygame.sprite.Sprite):
                 self.counterY += 1
                 # print(self.counterX)
                 # print(self.counterY)
-                # print('-------------------')
-                # print("fourth quadrant - CONTINUING JOURNEY")
-                # print('-------------------')
-                # print("1")
-            elif (self.rect.x < self.startingPoint[0] and self.rect.y > self.startingPoint[1]) and self.positionReached:
+                print('-------------------')
+                print("fourth quadrant - CONTINUING JOURNEY")
+                print('-------------------')
+                print("1")
+            elif (self.rect.x <= self.startingPoint[0] and self.rect.y >= self.startingPoint[1]) and self.positionReached:
                 # third quadrant - continues traveling after reaching mouse position
                 self.rect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
                 self.rect.x -= math.cos(self.angle * (2*math.pi/360)) * self.bulletSpeed
                 self.counterX += 1
                 self.counterY += 1
-                # print('-------------------')
-                # print("third quadrant - CONTINUING JOURNEY")
-                # print('-------------------')
-                # print("2")
-            elif (self.rect.x < self.startingPoint[0] and self.rect.y < self.startingPoint[1]) and self.positionReached:
+                print('-------------------')
+                print("third quadrant - CONTINUING JOURNEY")
+                print('-------------------')
+                print("2")
+            elif (self.rect.x <= self.startingPoint[0] and self.rect.y <= self.startingPoint[1]) and self.positionReached:
                 # second quadrant - continues traveling after reaching mouse position
                 self.rect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
                 self.rect.x -= math.cos(self.angle * (2*math.pi/360)) * self.bulletSpeed
                 self.counterX += 1
                 self.counterY += 1
-                # print('-------------------')
-                # print("second quadrant - CONTINUING JOURNEY")
-                # print('-------------------')
-                # print("3")
-            elif (self.rect.x > self.startingPoint[0] and self.rect.y < self.startingPoint[1]) and self.positionReached:
+                print('-------------------')
+                print("second quadrant - CONTINUING JOURNEY")
+                print('-------------------')
+                print("3")
+            elif (self.rect.x >= self.startingPoint[0] and self.rect.y <= self.startingPoint[1]) and self.positionReached:
                 # first quadrant - continues traveling after reaching mouse position
                 self.rect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
                 self.rect.x += math.cos(self.angle * (2*math.pi/360)) * self.bulletSpeed
                 self.counterX += 1
                 self.counterY += 1
-                # print('-------------------')
-                # print("first quadrant - CONTINUING JOURNEY")
-                # print('-------------------')
-                # print("4")
-            elif self.rect.x < self.mousePOS[0] and self.rect.y < self.mousePOS[1] or self.goFourthA:
+                print('-------------------')
+                print("first quadrant - CONTINUING JOURNEY")
+                print('-------------------')
+                print("4")
+            elif self.rect.x <= self.mousePOS[0] and self.rect.y <= self.mousePOS[1] and not self.mousePOS[1] <= self.startingPoint[1] and not self.mousePOS[0] <= self.startingPoint[0] or self.goFourthA and not self.goFirstA and not self.goSecondA and not self.goThirdA:
                 # fourth quadrant - travels to mouse position
                 self.rect.y += math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
                 self.rect.x += math.cos(self.angle * (2*math.pi/360)) * self.bulletSpeed
@@ -552,11 +546,11 @@ class Bullet(pygame.sprite.Sprite):
                 # print(self.counterY)
                 if self.mousePOS[1] - self.rect.y < 10 and self.mousePOS[0] - self.rect.x < 10:
                     self.positionReached = True
-                # print('-------------------')
-                # print("fourth quadrant")
-                # print('-------------------')
-                # print("5")
-            elif self.rect.x > self.mousePOS[0] and self.rect.y < self.mousePOS[1] and not abs(self.mousePOS[0] - self.startingPoint[0]) < 12 or self.goThirdA:
+                print('-------------------')
+                print("fourth quadrant")
+                print('-------------------')
+                print("5")
+            elif self.rect.x >= self.mousePOS[0] and self.rect.y <= self.mousePOS[1] and not abs(self.mousePOS[0] - self.startingPoint[0]) < 12 or self.goThirdA and not self.goFirstA and not self.goSecondA and not self.goFourthA:
                 # third quadrant - travels to mouse position
                 self.rect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
                 self.rect.x -= math.cos(self.angle * (2*math.pi/360)) * self.bulletSpeed
@@ -565,11 +559,11 @@ class Bullet(pygame.sprite.Sprite):
                 self.goThirdA = True
                 if self.mousePOS[1] - self.rect.y <= 10 and self.rect.x - self.mousePOS[0] <= 10:
                     self.positionReached = True
-                # print('-------------------')
-                # print("third quadrant")
-                # print('-------------------')
-                # print("6")
-            elif self.rect.x > self.mousePOS[0] and self.rect.y > self.mousePOS[1] or self.goSecondA:
+                print('-------------------')
+                print("third quadrant")
+                print('-------------------')
+                print("6")
+            elif self.rect.x >= self.mousePOS[0] and self.rect.y >= self.mousePOS[1] or self.goSecondA and not self.goFirstA and not self.goThirdA and not self.goFourthA:
                 # second quadrant - travels to mouse position
                 self.rect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
                 self.rect.x -= math.cos(self.angle * (2*math.pi/360)) * self.bulletSpeed
@@ -578,11 +572,11 @@ class Bullet(pygame.sprite.Sprite):
                 self.goSecondA = True
                 if self.rect.y - self.mousePOS[1] <= 10 and self.mousePOS[0] - self.rect.x <= 10:
                     self.positionReached = True
-                # print('-------------------')
-                # print("second quadrant")
-                # print('-------------------')
-                # print("7")
-            elif self.rect.x < self.mousePOS[0] and self.rect.y > self.mousePOS[1] or self.goFirstA:
+                print('-------------------')
+                print("second quadrant")
+                print('-------------------')
+                print("7")
+            elif self.rect.x <= self.mousePOS[0] and self.rect.y >= self.mousePOS[1] or self.goFirstA and not self.goSecondA and not self.goThirdA and not self.goFourthA:
                 # first quadrant - travels to mouse position
                 self.rect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
                 self.rect.x += math.cos(self.angle * (2*math.pi/360)) * self.bulletSpeed
@@ -591,18 +585,21 @@ class Bullet(pygame.sprite.Sprite):
                 self.goFirstA = True
                 if self.rect.y - self.mousePOS[1] <= 10 and self.mousePOS[0] - self.rect.x <= 10:
                     self.positionReached = True
-                # print('-------------------')
-                # print("first quadrant")
-                # print('-------------------')
-                # print("8")
+                print('-------------------')
+                print("first quadrant")
+                print('-------------------')
+                print("8")
             else:
                 # if self.mousePOS[1] == self.startingPoint
                 if self.mousePOS[1] >= self.startingPoint[1] and (abs(self.mousePOS[0]) - self.startingPoint[0]) < 15:
                     self.rect.y += math.sin(90 * (2*math.pi/360)) * self.bulletSpeed
-                    # print("YEP")
+                    print("YEP")
                 elif self.mousePOS[1] <= self.startingPoint[1] and (abs(self.mousePOS[0]) - self.startingPoint[0]) < 15:
                     self.rect.y -= math.sin(90 * (2*math.pi/360)) * self.bulletSpeed
-                    # print("YEP2")
+                    print("YEP2")
+                elif abs(self.mousePOS[1] - self.startingPoint[1]) <= 5 and self.mousePOS[0] >= self.startingPoint[0]:
+                    print("YERRRRRRRRRRRRRRRRRRR")
+                    self.rect.x += math.cos(self.angle * (2*math.pi/360)) * self.bulletSpeed
                 self.counterX += 1
                 self.counterY += 1
 
@@ -2244,6 +2241,25 @@ while game:
                 enemiesNotHit.append(enemy)
         if not counter:
             for l in enemiesNotHit:
+                if bullet in l.bulletCollisions:
+                    l.bulletCollisions.remove(bullet)
+        if bullet.rect.x <= m.leftBoundaryX or bullet.rect.x >= m.rightBoundaryX or bullet.rect.y <= m.topBoundaryY or bullet.rect.y >= m.bottomBoundaryY:
+            if bullet in bullets:
+                bullets.remove(bullet)
+
+    for bullet in bullets:
+        # check if any of the bullets are actually still colliding with enemies, if not, remove the bullet from the enemies' collision list
+        counter = 0
+        batsHit = []
+        batsNotHit = []
+        for bat in bats:
+            if bullet.rect.colliderect(bat.rect):
+                counter += 1
+                batsHit.append(bat)
+            else:
+                batsNotHit.append(bat)
+        if not counter:
+            for l in batsNotHit:
                 if bullet in l.bulletCollisions:
                     l.bulletCollisions.remove(bullet)
         if bullet.rect.x <= m.leftBoundaryX or bullet.rect.x >= m.rightBoundaryX or bullet.rect.y <= m.topBoundaryY or bullet.rect.y >= m.bottomBoundaryY:
