@@ -1893,6 +1893,8 @@ def button(msg, x, y, w, h, ic, ac, action):
                 activateBullet = True
                 bulletTimer1 = 2
                 bulletTimer2 = 0
+            elif action == "MainMenu":
+                mainMenu()
     else:
         pygame.draw.rect(screen, ic, (x, y, w, h), border_radius=20)
 
@@ -2072,9 +2074,9 @@ def pauseGame():
         # shows the buttons needed on the pause menu
         button("Settings", ((screen_width/4)-100), (screen_height/2), 200, 100, (247, 167, 82),
                (184, 120, 51), "Settings")
-        button("Close :(", (screen_width / 1.3) - 100, (screen_height / 2), 200,
+        button("Main Menu", (screen_width / 1.3) - 100, (screen_height / 2), 200,
                100, (247, 167, 82),
-               (184, 120, 51), "Quit")
+               (184, 120, 51), "MainMenu")
         # puts the menu text on the screen
         screen.blit(TextSurf, TextRect)
 
