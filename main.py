@@ -44,7 +44,9 @@ buttonScroll = pygame.transform.scale_by(buttonScroll, 0.4)
 
 dungeonBackground = pygame.image.load("./images/dungeonBackground2.png").convert_alpha()
 
-
+# instantiating pause function for later
+pause = True
+# instantiating the XP arrays
 xp = []
 xp_hit = []
 
@@ -1655,6 +1657,9 @@ def button(msg,x,y,w,h,ic,ac, action):
     # print(click)
     global pause
     global game
+    global activateBullet
+    global bulletTimer1
+    global bulletTimer2
     if x+w > mouse[0] > x and y+h > mouse[1] > y:
         pygame.draw.rect(screen, ac, (x, y, w, h), border_radius=20)
         if click[0] == 1 and action != None:
@@ -1671,10 +1676,11 @@ def button(msg,x,y,w,h,ic,ac, action):
                 game = False
                 pygame.quit()
             elif action == "Play":
-                global intro
                 pause = False
-                intro = False
                 game = True
+                activateBullet = True
+                bulletTimer1 = 2
+                bulletTimer2 = 0
 
     else:
         pygame.draw.rect(screen, ic, (x, y, w, h), border_radius=20)
@@ -1747,7 +1753,7 @@ def display_fps(text, font, textColor):
     # print(fpsDisplay)
     screen.blit(fpsDisplay, (0, 0))
 
-# adds the ability to fullscreen the game
+# adds the ability to fullscreen the game (not toggle yet)
 def fullscreenToggle():
     # info = pygame.display.Info()  # get the size of the current screen
     # screen_width, screen_height = info.current_w, info.current_h
@@ -1787,10 +1793,9 @@ def credits():
 def mainMenu():
     info = pygame.display.Info()
     screen_width, screen_height = info.current_w, info.current_h
-    global intro
-    intro = True
+    global pause
 
-    while intro:
+    while pause:
         for event in pygame.event.get():
             print(event)
             if event.type == pygame.QUIT:
@@ -1798,9 +1803,11 @@ def mainMenu():
                 quit()
 
         screen.blit(dungeonBackground, (0, 0))
-        largeText = pygame.font.SysFont('Garamond', 100, bold=True)
-        TextSurf, TextRect = text_objects("Rogue!", largeText)
-        TextRect.center = ((screen_width / 2), (screen_height / 3.3))
+        largeText = pygame.font.SysFont('Garamond', 80, bold=True)
+        TextSurf, TextRect = text_objects("Rogue", largeText)
+        TextSurf2, TextRect2 = text_objects("Survival", largeText)
+        TextRect.center = ((screen_width / 2), (screen_height / 3.3)-40)
+        TextRect2.center = ((screen_width/2), (screen_height/3.3)+40)
         screen.blit(horizontalScroll, (screen_width / 2 - 288, screen_height / 10))
         button("Play!", (screen_width / 4) - 100, (screen_height / 1.6), 200, 100, (247, 167, 82), (184, 120, 51),
                "Play")
@@ -1808,6 +1815,7 @@ def mainMenu():
                100, (247, 167, 82),
                (184, 120, 51), "Quit")
         screen.blit(TextSurf, TextRect)
+        screen.blit(TextSurf2, TextRect2)
         pygame.display.update()
         clock.tick(15)
 
@@ -1926,12 +1934,11 @@ def keypressed():
     if key_presses[pygame.K_ESCAPE]:
         # if ESC key is pressed, pause game
         pauseGame()
+mainMenu()
 
 activateBullet = True
 bulletTimer1 = 2
 bulletTimer2 = 0
-mainMenu()
-
 while game:
     # the core game loop
     start_game_time()
