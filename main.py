@@ -410,6 +410,8 @@ class BasicAttack(pygame.sprite.Sprite):
 
             for enemy in enemies:
                 enemy.meleeAttackCollisions.clear()
+            for bat in bats:
+                bat.meleeAttackCollisions.clear()
             if sk.activate and not sk.felled:
                 sk.meleeAttackCollisions.clear()
             self.BasicAttackTimer = 0
@@ -1215,7 +1217,6 @@ class skeletonKing(Enemy):
                 else:
                     p.health -= 24
 
-
 class XP(pygame.sprite.Sprite):
     # Controls the location of the XP and the XP hitbox
     def __init__(self, x, y):
@@ -1260,7 +1261,6 @@ class XP_Bar(pygame.sprite.Sprite):
         self.leftover = 0
         self.leftoverSize = 0
         self.levelMenu = False
-        self.greyScreen = pygame.Surface((800,800), pygame.SRCALPHA)
         self.pauseTimer = 0
         self.availableUpgrades = []
         self.selectedUpgradeChoices = False
@@ -1293,6 +1293,28 @@ class XP_Bar(pygame.sprite.Sprite):
                         # gameTimerOn = True
                         gameTime -= tempTimer
                         self.timeAfterPause = gameTime
+
+                        """
+                        global xpB
+                        global xp
+                        global sk
+                        global ba
+                        global p
+                        global m
+                        global b
+                        xpB = XP_Bar()
+                        xp.clear()
+                        enemies.clear()
+                        bats.clear()
+                        bullets.clear()
+                        sk = skeletonKing(0,0)
+                        ba = BasicAttack()
+                        p = Player()
+                        m = Map()
+                        b = Bullet()
+                        Last thing I think is the timer to have the timer reset, which it currently does not.
+                        """
+
                     for event in pygame.event.get():
                         if event.type == pygame.QUIT:
                             self.levelMenu = False
@@ -1351,7 +1373,8 @@ class XP_Bar(pygame.sprite.Sprite):
 
                     if not self.selectedUpgradeChoices and not self.selected:
                         # if two random options have not been generated, then generate them
-                        self.availableUpgrades = ['BA-Dam', 'BA-Ran', 'BA-Spe', 'Mov-Spe', 'Dod-Cha', 'Bul-Dam', 'Bul-Ran', 'Bul-Spe']
+                        # self.availableUpgrades = ['BA-Dam', 'BA-Ran', 'BA-Spe', 'Mov-Spe', 'Dod-Cha', 'Bul-Dam', 'Bul-Ran', 'Bul-Spe']
+                        self.availableUpgrades = [ 'Bul-Ran', 'Bul-Spe',]
                         randomUpgrade1 = random.randint(0, (len(self.availableUpgrades) - 1))
                         self.option1 = self.availableUpgrades[randomUpgrade1]
                         randomUpgrade2 = random.randint(0, (len(self.availableUpgrades) - 1))
@@ -1572,17 +1595,17 @@ class XP_Bar(pygame.sprite.Sprite):
         if option == 1:
             upgradeBulRan1Render = self.upgradeDesc_font.render('Increase Bullet', True, (0, 0, 0))
             screen.blit(upgradeBulRan1Render, (150, 365))
-            upgradeBulRan2Render = self.upgradeDesc_font.render('Range by 25%.', True, (0, 0, 0))
+            upgradeBulRan2Render = self.upgradeDesc_font.render('Range by 10%.', True, (0, 0, 0))
             screen.blit(upgradeBulRan2Render, (150, 390))
 
         elif option == 2:
             upgradeBulDam1Render = self.upgradeDesc_font.render('Increase Bullet', True, (0, 0, 0))
             screen.blit(upgradeBulDam1Render, (500, 365))
-            upgradeBulRan2Render = self.upgradeDesc_font.render('Range by 25%.', True, (0, 0, 0))
+            upgradeBulRan2Render = self.upgradeDesc_font.render('Range by 10%.', True, (0, 0, 0))
             screen.blit(upgradeBulRan2Render, (500, 390))
 
         elif not option:
-            b.bulletDistance *= 1.25
+            b.bulletDistance *= 1.1
             # print(b.bulletDistance)
             self.selectedUpgradeChoices = False
             self.levelMenu = False
@@ -1593,17 +1616,17 @@ class XP_Bar(pygame.sprite.Sprite):
         if option == 1:
             upgradeBulSpe1Render = self.upgradeDesc_font.render('Increase Bullet', True, (0, 0, 0))
             screen.blit(upgradeBulSpe1Render, (150, 365))
-            upgradeBulSpe2Render = self.upgradeDesc_font.render('Speed by 10%.', True, (0, 0, 0))
+            upgradeBulSpe2Render = self.upgradeDesc_font.render('Speed by 5%.', True, (0, 0, 0))
             screen.blit(upgradeBulSpe2Render, (150, 390))
 
         elif option == 2:
             upgradeBulSpe1Render = self.upgradeDesc_font.render('Increase Bullet', True, (0, 0, 0))
             screen.blit(upgradeBulSpe1Render, (500, 365))
-            upgradeBulSpe2Render = self.upgradeDesc_font.render('Speed by 10%.', True, (0, 0, 0))
+            upgradeBulSpe2Render = self.upgradeDesc_font.render('Speed by 5%.', True, (0, 0, 0))
             screen.blit(upgradeBulSpe2Render, (500, 390))
 
         elif not option:
-            b.bulletIncrement *= .9
+            b.bulletIncrement *= .95
             self.selectedUpgradeChoices = False
             self.levelMenu = False
             self.selected = True
@@ -1922,7 +1945,7 @@ while game:
         activateBullet = True
     if bulletTimer2 > bulletTimer1:
         # controls the speed of shooting the bullets
-        bullets.append(Bullet())
+        bullets.append(b)
         for bullet in bullets:
             bullet.mousePOS = pygame.mouse.get_pos()
             bullet.mousePOS = (pygame.math.Vector2(bullet.mousePOS[0], bullet.mousePOS[1]))
@@ -2022,7 +2045,7 @@ while game:
                                 pass
                             elif bullet not in enemy.bulletCollisions and bullet.bulletValid:
                                 enemy.bulletCollisions.append(bullet)
-                                enemy.health -= 100
+                                enemy.health -= b.damage
                             i += 1
 
             if enemy.rect.colliderect(ba.hitBoxRect) and ba.running and not enemy.meleeAttackCollisions:
@@ -2196,7 +2219,9 @@ while game:
 
 
     # screen.blit(pygame.transform.scale(mc_img, (40, 35)), (p.rect.x, p.rect.y))
-
+    for c in bullets:
+        # print(b.damage)
+        print(c.bulletDistance)
     ba.attack()
     m.update_boundary()
     display_timer(gameTimeStr, timerFont, (0, 0, 0))
