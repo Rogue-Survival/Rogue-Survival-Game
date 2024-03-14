@@ -17,31 +17,29 @@ pygame.display.set_caption("Rogue Survival")
 clock = pygame.time.Clock()
 x = pygame.time.get_ticks()
 
+# initializing the images of the main character and some enemies
 mc_img = pygame.image.load("./images/MAIN_CHARACTER.png").convert_alpha()
-
 enemyOriginal = pygame.image.load("./images/slime.png").convert_alpha()
-
 enemy1 = pygame.image.load("./images/slime1.png").convert_alpha()
 enemy2 = pygame.image.load("./images/slime2.png").convert_alpha()
 enemy3 = pygame.image.load("./images/slime3.png").convert_alpha()
 enemy4 = pygame.image.load("./images/slime4.png").convert_alpha()
-
 batImg1 = pygame.image.load("./images/bat1.png").convert_alpha()
 batImg2 = pygame.image.load("./images/bat2.png").convert_alpha()
-
 skeletonKing1 = pygame.image.load("./images/skeletonKing1.png").convert_alpha()
 skeletonKing2 = pygame.image.load("./images/skeletonKing2.png").convert_alpha()
 skeletonKing3 = pygame.image.load("./images/skeletonKing3.png").convert_alpha()
 skeletonKing4 = pygame.image.load("./images/skeletonKing4.png").convert_alpha()
 
+# initializing images of scrolls used for buttons and backgrounds
 tallScroll = pygame.image.load("./images/tall.png").convert_alpha()
 mediumScroll = pygame.image.load("./images/medium2.png").convert_alpha()
-
 horizontalScroll = pygame.image.load("./images/horizontalScroll.png").convert_alpha()
 horizontalScroll = pygame.transform.scale_by(horizontalScroll, 0.3)
 buttonScroll = pygame.image.load("./images/buttonScroll.png").convert_alpha()
 buttonScroll = pygame.transform.scale_by(buttonScroll, 0.4)
 
+# initializing the dungeon background
 dungeonBackground = pygame.image.load("./images/dungeonBackground2.png").convert_alpha()
 
 # instantiating pause function for later
@@ -49,6 +47,7 @@ pause = True
 # instantiating the XP arrays
 xp = []
 xp_hit = []
+
 
 class Map(pygame.sprite.Sprite):
     # Controls map boundaries and map camera
@@ -280,7 +279,7 @@ class BasicAttack(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.rect = None
-        self.hitBoxRect = pygame.draw.circle(transparentSurface, (255,255,255), (p.rect.x+19, p.rect.y+19), 78)
+        self.hitBoxRect = pygame.draw.circle(transparentSurface, (255, 255, 255), (p.rect.x+19, p.rect.y+19), 78)
 
         self.east = False
         self.northEast = False
@@ -311,18 +310,25 @@ class BasicAttack(pygame.sprite.Sprite):
         self.rangeIncrease = 10
         self.hitBoxRadius = 78
 
-
     def attack(self):
         # Initiate basic attack
 
-        # self.east = pygame.draw.line(screen, (160,32,240), (p.rect.x+36, p.rect.y+17), (p.rect.x+80+self.rangeIncrease, p.rect.y+17), 6)
-        # self.northEast = pygame.draw.line(screen, (160,32,240), (p.rect.x+33, p.rect.y+4), (p.rect.x+60+self.rangeIncrease, p.rect.y-22-self.rangeIncrease), 6)
-        # self.north = pygame.draw.line(screen, (160,32,240), (p.rect.x+18, p.rect.y-4), (p.rect.x+18, p.rect.y-44-self.rangeIncrease), 6)
-        # self.northWest = pygame.draw.line(screen, (160,32,240), (p.rect.x, p.rect.y+4), (p.rect.x-27-self.rangeIncrease, p.rect.y-22-self.rangeIncrease), 6)
-        # self.west = pygame.draw.line(screen, (160,32,240), (p.rect.x, p.rect.y+17), (p.rect.x-44-self.rangeIncrease, p.rect.y+17), 6)
-        # self.southWest = pygame.draw.line(screen, (160,32,240), (p.rect.x, p.rect.y+32), (p.rect.x-27-self.rangeIncrease, p.rect.y+60+self.rangeIncrease), 6)
-        # self.south = pygame.draw.line(screen, (160,32,240), (p.rect.x+18, p.rect.y+32), (p.rect.x+18, p.rect.y+78+self.rangeIncrease), 6)
-        # self.southEast = pygame.draw.line(screen, (160,32,240), (p.rect.x+33, p.rect.y+32), (p.rect.x+64+self.rangeIncrease, p.rect.y+60+self.rangeIncrease), 6)
+        # self.east = pygame.draw.line(screen, (160,32,240), (p.rect.x+36, p.rect.y+17),
+        # (p.rect.x+80+self.rangeIncrease, p.rect.y+17), 6)
+        # self.northEast = pygame.draw.line(screen, (160,32,240), (p.rect.x+33, p.rect.y+4),
+        # (p.rect.x+60+self.rangeIncrease, p.rect.y-22-self.rangeIncrease), 6)
+        # self.north = pygame.draw.line(screen, (160,32,240), (p.rect.x+18, p.rect.y-4), (p.rect.x+18,
+        # p.rect.y-44-self.rangeIncrease), 6)
+        # self.northWest = pygame.draw.line(screen, (160,32,240), (p.rect.x, p.rect.y+4),
+        # (p.rect.x-27-self.rangeIncrease, p.rect.y-22-self.rangeIncrease), 6)
+        # self.west = pygame.draw.line(screen, (160,32,240), (p.rect.x, p.rect.y+17), (p.rect.x-44-self.rangeIncrease,
+        # p.rect.y+17), 6)
+        # self.southWest = pygame.draw.line(screen, (160,32,240), (p.rect.x, p.rect.y+32),
+        # (p.rect.x-27-self.rangeIncrease, p.rect.y+60+self.rangeIncrease), 6)
+        # self.south = pygame.draw.line(screen, (160,32,240), (p.rect.x+18, p.rect.y+32), (p.rect.x+18,
+        # p.rect.y+78+self.rangeIncrease), 6)
+        # self.southEast = pygame.draw.line(screen, (160,32,240), (p.rect.x+33, p.rect.y+32),
+        # (p.rect.x+64+self.rangeIncrease, p.rect.y+60+self.rangeIncrease), 6)
         # pygame.draw.circle(screen, (255,255,255), (p.rect.x+19, p.rect.y+19), self.hitBoxRadius)
         '''
         10:78, 20:91, 30:105, 40:119, 50:133, 60:147, 70:161, 80:175, 90:189, 100:203
@@ -604,6 +610,7 @@ class Bullet(pygame.sprite.Sprite):
             if self.rect.x > m.rightBoundaryX or self.rect.x < m.leftBoundaryX or self.rect.y > m.bottomBoundaryY or self.rect.y < m.topBoundaryY:
                 self.rect = pygame.draw.circle(transparentSurface, (255,255,255), (p.rect.x+18,p.rect.y+17), 10)
                 self.kill()
+
 
 class Enemy(pygame.sprite.Sprite):
     # Enemy class controls basic functions relating to the enemy
@@ -1064,7 +1071,8 @@ class Bat(Enemy):
 
     def decide_action(self):
         # time to run at player (If within a certain distance from player, then just run, ignore shooting)
-        # time to stop and shoot at player (get close enough to player to shoot but keep distance, doesn't run if too close)
+        # time to stop and shoot at player (get close enough to player to shoot but keep distance,
+        # doesn't run if too close)
         self.shoot()
 
     def find_angle(self):
@@ -1213,7 +1221,6 @@ class skeletonKing(Enemy):
         self.felled = False
         self.activate = False
 
-
     def generate_enemy(self):
         # print('1')
         # self.legRectEvenLeft = pygame.draw.rect(screen, (255,0,0), pygame.Rect(self.rect.x+17,self.rect.y+188,22,12))
@@ -1302,7 +1309,6 @@ class skeletonKing(Enemy):
         self.follow_mc()
         self.runCounter += 1
 
-
     def follow_mc(self):
 
         # if not self.rect.colliderect(p.rect):
@@ -1345,6 +1351,7 @@ class skeletonKing(Enemy):
                     pass
                 else:
                     p.health -= 24
+
 
 class XP(pygame.sprite.Sprite):
     # Controls the location of the XP and the XP hitbox
@@ -1518,7 +1525,8 @@ class XP_Bar(pygame.sprite.Sprite):
                         self.buttonRect2 = pygame.Rect(450,222, 285, 370)
 
                     if self.selectedUpgradeChoices:
-                        # if two random choices have been generated, call appropriate function and blit the information to the screen.
+                        # if two random choices have been generated, call appropriate function and blit the information
+                        # to the screen.
                         if 'BA-Dam' in self.TwoUpgradeChoices:
                             if self.option1 == 'BA-Dam':
                                 self.basic_attack_damage_upgrade(1)
@@ -1562,7 +1570,6 @@ class XP_Bar(pygame.sprite.Sprite):
 
                     clock.tick(15)
                     pygame.display.update()
-
 
                 self.leftover = self.xp - self.level_xp_requirement
                 self.level += 1
@@ -1772,10 +1779,12 @@ bats = []
 bullets = []
 # bullets = [Bullet() for _ in range(1)]
 
+
 # adds ability for text to be on screen
 def text_objects(text, font):
     textSurface = font.render(text, True, (0, 0, 0))
     return textSurface, textSurface.get_rect()
+
 
 # adding the ability to implement buttons
 def button(msg,x,y,w,h,ic,ac, action):
@@ -1787,6 +1796,7 @@ def button(msg,x,y,w,h,ic,ac, action):
     global activateBullet
     global bulletTimer1
     global bulletTimer2
+    # does a specific action based on button text and if it was clicked
     if x+w > mouse[0] > x and y+h > mouse[1] > y:
         pygame.draw.rect(screen, ac, (x, y, w, h), border_radius=20)
         if click[0] == 1 and action != None:
@@ -1808,7 +1818,6 @@ def button(msg,x,y,w,h,ic,ac, action):
                 activateBullet = True
                 bulletTimer1 = 2
                 bulletTimer2 = 0
-
     else:
         pygame.draw.rect(screen, ic, (x, y, w, h), border_radius=20)
 
@@ -1823,9 +1832,7 @@ bg_img = pygame.image.load('images/dungeon.png').convert_alpha()
 speedI = pygame.image.load("./images/Noodle.png").convert_alpha()
 
 
-
-
-
+# setting up the fonts for the timer and the fps tracker
 timerFont = pygame.font.SysFont('futura', 64)
 fpsFont = pygame.font.SysFont('futura', 28)
 
@@ -1834,6 +1841,7 @@ minutes = 0
 seconds = 0
 
 
+# starts keeping track of the time within the game
 def start_game_time():
     global gameTime
     if xpB.pauseTimer:
@@ -1866,6 +1874,7 @@ def start_game_time():
         gameTimeStr = f'00:{int(seconds)}'
 
 
+# function to display the game timer to show how long you have been in-game
 def display_timer(text, font, textColor):
     gameTimer = font.render(str(text), True, textColor).convert_alpha()
     screen.blit(gameTimer, (675, 15))
@@ -1873,6 +1882,7 @@ def display_timer(text, font, textColor):
     # screen.blit(gameTimer, (675, 15), timerRect)
 
 
+# function to show the frames per second in the corner
 def display_fps(text, font, textColor):
     text = str(int(text))
     # print(text)
@@ -1880,14 +1890,14 @@ def display_fps(text, font, textColor):
     # print(fpsDisplay)
     screen.blit(fpsDisplay, (0, 0))
 
+
 # adds the ability to fullscreen the game (not toggle yet)
 def fullscreenToggle():
-    # info = pygame.display.Info()  # get the size of the current screen
-    # screen_width, screen_height = info.current_w, info.current_h
-    # window_width, window_height = screen_width - 10, screen_height - 50
     window = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
     pygame.display.update()
 
+
+# function to show the credits menu, which will contain the credits to all resources used
 def credits():
     startTime = pygame.time.get_ticks()
     info = pygame.display.Info()
@@ -1900,23 +1910,29 @@ def credits():
         global gameTime
         tempTimer = pygame.time.get_ticks() - gameTime
         xpB.pauseTimer = tempTimer
+        # if you press escape, you go back to the settings menu
         if pygame.key.get_pressed()[pygame.K_ESCAPE] and (pygame.time.get_ticks() - startTime >= 500):
             pause = False
             settingsMenu()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 game = False
+        # setting menu background
         screen.blit(dungeonBackground, (0, 0))
-
+        # establishing text for menu
         largeText = pygame.font.SysFont('Garamond', 100, bold=True)
         TextSurf, TextRect = text_objects("Credits", largeText)
         TextRect.center = ((screen_width/2), (screen_height/3.3))
         screen.blit(horizontalScroll, (screen_width/2 - 288, screen_height/10))
+        # putting text on menu
         screen.blit(TextSurf, TextRect)
         # need to put credits in here
 
         pygame.display.update()
         clock.tick(15)
+
+
+#function to show the Main Menu before the game starts
 def mainMenu():
     info = pygame.display.Info()
     screen_width, screen_height = info.current_w, info.current_h
@@ -1928,23 +1944,27 @@ def mainMenu():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-
+        # sets the main menu background
         screen.blit(dungeonBackground, (0, 0))
+        # establishing the text for the title on the menu
         largeText = pygame.font.SysFont('Garamond', 80, bold=True)
         TextSurf, TextRect = text_objects("Rogue", largeText)
         TextSurf2, TextRect2 = text_objects("Survival", largeText)
         TextRect.center = ((screen_width / 2), (screen_height / 3.3)-40)
         TextRect2.center = ((screen_width/2), (screen_height/3.3)+40)
         screen.blit(horizontalScroll, (screen_width / 2 - 288, screen_height / 10))
+        # displays the buttons available on the Main Menu
         button("Play!", (screen_width / 4) - 100, (screen_height / 1.6), 200, 100, (247, 167, 82), (184, 120, 51),
                "Play")
         button("Close :(", (screen_width / 1.3) - 100, (screen_height / 1.6), 200,
                100, (247, 167, 82),
                (184, 120, 51), "Quit")
+        # puts all of the text on the screen
         screen.blit(TextSurf, TextRect)
         screen.blit(TextSurf2, TextRect2)
         pygame.display.update()
         clock.tick(15)
+
 
 def pauseGame():
     startTime = pygame.time.get_ticks()
@@ -1954,10 +1974,12 @@ def pauseGame():
     pause = True
 
     while pause:
+        # tracks the time when you entered menu to set it back to that afterwards
         global gameTimerStr
         global gameTime
         tempTimer = pygame.time.get_ticks() - gameTime
         xpB.pauseTimer = tempTimer
+        # if you hit escape you go back to the game and the time is put back to when you paused
         if pygame.key.get_pressed()[pygame.K_ESCAPE] and (pygame.time.get_ticks() - startTime >= 500):
             pause = False
             gameTimerStr = tempTimer
@@ -1972,16 +1994,20 @@ def pauseGame():
         TextSurf, TextRect = text_objects("Paused", largeText)
         TextRect.center = ((screen_width/2), (screen_height/3.3))
         screen.blit(horizontalScroll, (screen_width/2 - 288, screen_height/10))
+        # shows the buttons needed on the pause menu
         button("Settings", ((screen_width/4)-100), (screen_height/2), 200, 100, (247, 167, 82),
                (184, 120, 51), "Settings")
         button("Close :(", (screen_width / 1.3) - 100, (screen_height / 2), 200,
                100, (247, 167, 82),
                (184, 120, 51), "Quit")
+        # puts the menu text on the screen
         screen.blit(TextSurf, TextRect)
 
         pygame.display.update()
         clock.tick(15)
 
+
+# function to run the settings menu, which is accessible through the pause menu
 def settingsMenu():
     startTime = pygame.time.get_ticks()
     info = pygame.display.Info()
@@ -1990,35 +2016,39 @@ def settingsMenu():
     pause = True
 
     while pause:
+        # tracks the current time to set it back when you leave the menu
         global gameTimerStr
         global gameTime
         tempTimer = pygame.time.get_ticks() - gameTime
         xpB.pauseTimer = tempTimer
+        # if you press escape, go back to the pause menu
         if pygame.key.get_pressed()[pygame.K_ESCAPE] and (pygame.time.get_ticks() - startTime >= 500):
             pause = False
             pauseGame()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 game = False
-        # screen.fill((255, 255, 255))
         screen.blit(dungeonBackground, (0, 0))
         largeText = pygame.font.SysFont('Garamond', 100, bold=True)
         TextSurf, TextRect = text_objects("Settings", largeText)
-        # TextRect.center = ((400), (220))
         TextRect.center = ((screen_width/2), (screen_height/3.3))
         screen.blit(horizontalScroll, (screen_width/2 - 288, screen_height/10))
+        # putting the needed buttons on the settings Menu
         button("Fullscreen", (screen_width/4)-100, (screen_height/1.4), 200, 100, (247, 167, 82),
                (184, 120, 51), "Fullscreen Toggle")
         button("Credits", (screen_width/1.3)-100, (screen_height/1.4), 200,
                100, (247, 167, 82), (184, 120, 51), "Credits")
+        # putting the menu text on the screen
         screen.blit(TextSurf, TextRect)
 
         pygame.display.update()
         clock.tick(15)
 
+
 # unpausing func for the buttons
 def unPause():
     pause = False
+
 
 # def to store all the keypress functions
 def keypressed():
@@ -2061,11 +2091,17 @@ def keypressed():
     if key_presses[pygame.K_ESCAPE]:
         # if ESC key is pressed, pause game
         pauseGame()
+
+
+# begin the game by opening to the main menu, which has a play button to start the game
 mainMenu()
 
+# activating the character shooting and needed variables to maintain it
 activateBullet = True
 bulletTimer1 = 2
 bulletTimer2 = 0
+
+# game is now running
 while game:
     # the core game loop
     start_game_time()
