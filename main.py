@@ -17,6 +17,10 @@ pygame.display.set_caption("Rogue Survival")
 clock = pygame.time.Clock()
 x = pygame.time.get_ticks()
 
+# instantiating a game time string for when the player dies
+prevGameTime = 0
+
+
 # initializing the images of the main character and some enemies
 mc_img = pygame.image.load("./images/MAIN_CHARACTER.png").convert_alpha()
 enemyOriginal = pygame.image.load("./images/slime.png").convert_alpha()
@@ -42,7 +46,8 @@ buttonScroll = pygame.transform.scale_by(buttonScroll, 0.4)
 # initializing the dungeon background
 dungeonBackground = pygame.image.load("./images/dungeonBackground2.png").convert_alpha()
 
-# instantiating pause function for later
+# instantiating pause and gameTime function for later
+gameTime = 0
 pause = True
 # instantiating the XP arrays
 xp = []
@@ -102,6 +107,7 @@ class Player(pygame.sprite.Sprite):
         self.speed = speed
         self.image = "./images/MAIN_CHARACTER.png"
         self.health = health
+        self.death = False
         self.rect = mc_img.get_rect().scale_by(2, 2)
         self.rect.x = 400
         self.rect.y = 400
@@ -1855,6 +1861,28 @@ bullets = []
 # bullets = [Bullet() for _ in range(1)]
 
 
+def resetStats():
+    global gameTime
+    global xpB
+    global xp
+    global sk
+    global ba
+    global p
+    global m
+    global b
+    xpB = XP_Bar()
+    xp.clear()
+    enemies.clear()
+    bats.clear()
+    bullets.clear()
+    sk = skeletonKing(0, 0)
+    ba = BasicAttack()
+    p = Player()
+    m = Map()
+    b = Bullet()
+    gameTime = 0
+
+
 # adds ability for text to be on screen
 def text_objects(text, font):
     textSurface = font.render(text, True, (0, 0, 0))
@@ -1888,6 +1916,8 @@ def button(msg, x, y, w, h, ic, ac, action):
                 game = False
                 pygame.quit()
             elif action == "Play":
+                if p.death:
+                    resetStats()
                 pause = False
                 game = True
                 activateBullet = True
@@ -1927,9 +1957,9 @@ def start_game_time():
         gameTime = pygame.time.get_ticks()
     # print(gameTime)
     global gameTimeStr
-    gameTimeStr = int(gameTime/1000)
+    gameTimeStr = int((gameTime-prevGameTime)/1000)
     if gameTimeStr < 60:
-        gameTimeStr = str(int(gameTime/1000))
+        gameTimeStr = str(int((gameTime-prevGameTime)/1000))
         global seconds
         seconds = int(gameTimeStr) % 60
     elif gameTimeStr >= 60:
@@ -2039,6 +2069,38 @@ def mainMenu():
         # puts all of the text on the screen
         screen.blit(TextSurf, TextRect)
         screen.blit(TextSurf2, TextRect2)
+        pygame.display.update()
+        clock.tick(15)
+
+
+def deathScreen():
+    info = pygame.display.Info()
+    screen_width, screen_height = info.current_w, info.current_h
+    global pause
+    pause = True
+    while pause:
+        global gameTimerStr
+        global gameTime
+        tempTimer = pygame.time.get_ticks() - gameTime
+        xpB.pauseTimer = tempTimer
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                game = False
+        screen.blit(dungeonBackground, (0, 0))
+
+        largeText = pygame.font.SysFont('Garamond', 70, bold=True)
+        TextSurf, TextRect = text_objects("YOU DIED", largeText)
+        TextRect.center = ((screen_width / 2), (screen_height / 3.3))
+        screen.blit(horizontalScroll, (screen_width / 2 - 288, screen_height / 10))
+        # shows the buttons needed on the pause menu
+        button("Main Menu", ((screen_width / 4) - 100), (screen_height / 2), 200, 100, (247, 167, 82),
+               (184, 120, 51), "MainMenu")
+        button("Quit", (screen_width / 1.3) - 100, (screen_height / 2), 200,
+               100, (247, 167, 82),
+               (184, 120, 51), "Quit")
+        # puts the menu text on the screen
+        screen.blit(TextSurf, TextRect)
+
         pygame.display.update()
         clock.tick(15)
 
@@ -2201,6 +2263,16 @@ while game:
     # cycling through the possible key presses
     keypressed()
 
+    # if the player reaches no health, show the death screen
+    if p.health <= 0:
+        prevGameTime = gameTime
+        p.death = True
+        deathScreen()
+        while p.death:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    p.death = False
+                    game = False
     # makes the map visible
     # screen.blit(pygame.transform.scale(bg_img, (2250, 2250)), (-800 - m.cameraX, -800 - m.cameraY))
     screen.blit(bg_img, (-800 - m.cameraX, -800 - m.cameraY))
@@ -2237,7 +2309,6 @@ while game:
     screen.blit(pygame.transform.scale(mc_img, (40, 35)), (p.rect.x, p.rect.y))
 
     # bulletTimer2 = (pygame.time.get_ticks() / 1000)
-    global gameTime
     bulletTimer2 = gameTime / 1000
     # if bulletTimer1
     if seconds % b.bulletIncrement == 0:
