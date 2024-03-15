@@ -464,6 +464,8 @@ class Bullet(pygame.sprite.Sprite):
         self.goThirdA = False
         self.goSecondA = False
         self.goFirstA = False
+        self.bulletCounter = 0
+        self.bulletSpawnSpeed = 45
 
     def bullet(self):
         # print(self.bulletDistance)
@@ -1684,7 +1686,8 @@ class XP_Bar():
             screen.blit(upgradeBulSpe2Render, (500, 390))
 
         elif not option:
-            b.bulletIncrement *= .95
+            # b.bulletIncrement *= .95
+            b.bulletSpawnSpeed *= .95
             self.selectedUpgradeChoices = False
             self.levelMenu = False
             self.selected = True
@@ -2177,7 +2180,8 @@ while game:
     # if bulletTimer1
     if seconds % b.bulletIncrement == 0:
         activateBullet = True
-    if bulletTimer2 > bulletTimer1:
+    # if bulletTimer2 > bulletTimer1:
+    if b.bulletCounter >= b.bulletSpawnSpeed:
         # controls the speed of shooting the bullets
         bullets.append(b)
         for bullet in bullets:
@@ -2187,6 +2191,7 @@ while game:
             bullet.bullet()
         bulletTimer1 += b.bulletIncrement
         activateBullet = False
+        b.bulletCounter = 0
         # print(activateBullet)
     for bullet in bullets:
         if bullet.bulletValid:
@@ -2515,7 +2520,7 @@ while game:
     #     pygame.draw.rect(screen, (255,0,0), enemy.rect)
     #
     # pygame.draw.rect(screen, (0,255,0), p.rect)
-
+    b.bulletCounter += 1
     ba.attack()
     m.update_boundary()
     display_timer(gameTimeStr, timerFont, (0, 0, 0))
