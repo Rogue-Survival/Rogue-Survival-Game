@@ -2,6 +2,7 @@ import pygame
 import random
 import math
 import numpy
+import sys
 
 # initializes the pygame library
 pygame.init()
@@ -100,12 +101,12 @@ class Map():
 
 class Player(pygame.sprite.Sprite):
     # Player class controls basic functions relating to the player
-    def __init__(self, speed=4, health=50):
+    def __init__(self):
         # inherits from the pygame.sprite.Sprite class
         pygame.sprite.Sprite.__init__(self)
-        self.speed = speed
+        self.speed = 4
+        self.health = 500
         self.image = "./images/MAIN_CHARACTER.png"
-        self.health = health
         self.death = False
         self.rect = mc_img.get_rect().scale_by(2, 2)
         self.rect.x = 400
@@ -114,33 +115,27 @@ class Player(pygame.sprite.Sprite):
         self.gold = 0
         self.dodgeChance = 0
         self.death = True
+        self.health_font = pygame.font.SysFont('futura', 46)
         # self.playerGroup = pygame.sprite.Group()
         # self.playerGroup.add(self.rect)
 
-    def get_speed(self):
-        # returns speed of player
-        return self.speed
-
-    def get_image(self):
-        # returns image of player
-        return self.image
+    def display_health(self):
+        # displays health to the screen
+        healthString = f"HP: {str(self.health)}"
+        healthDisplay = self.health_font.render(healthString, True, (255,0,0))
+        screen.blit(healthDisplay, (350, 10))
 
     def move_west(self):
-        # moves the player West
+        # moves the player and camera West, while moving every other entity in the opposite direction
         if self.rect.x > m.leftBoundaryX + 25:
+            # checks if player is within map boundaries
             m.cameraX -= self.speed
-            # m.leftBoundaryY += self.speed
             m.leftBoundaryX += self.speed
             m.rightBoundaryX += self.speed
             m.topBoundaryX1 += self.speed
             m.topBoundaryX2 += self.speed
             m.bottomBoundaryX1 += self.speed
             m.bottomBoundaryX2 += self.speed
-            n = len(enemies)
-            count = 0
-            westCount = 0
-            northCount = 0
-            southCount = 0
             for enemy in enemies:
                 # moves the enemy and associated rects due to the effects of the player camera
                 enemy.rect.x += self.speed
@@ -149,15 +144,18 @@ class Player(pygame.sprite.Sprite):
                 enemy.southRect.x = enemy.rect.x + enemy.southXVal
                 enemy.westRect.x = enemy.rect.x - enemy.westXVal
             for bat in bats:
+                # moves the bats and associated rects due to the effects of the player camera
                 bat.rect.x += self.speed
                 bat.northRect.x = bat.rect.x + bat.northXVal
                 bat.eastRect.x = bat.rect.x + bat.eastXVal
                 bat.southRect.x = bat.rect.x + bat.southXVal
                 bat.westRect.x = bat.rect.x - bat.westXVal
             for x in xp:
+                # moves the XP due to the effects of the player camera
                 x.x += self.speed
                 x.xp_stationary()
             if sk.activate and not sk.felled:
+                # moves the skeleton king when spawned in due to the effects of the player camera
                 sk.rect.x += self.speed
                 sk.northRect.x = sk.rect.x + sk.northXVal
                 sk.eastRect.x = sk.rect.x + sk.eastXVal
@@ -165,8 +163,9 @@ class Player(pygame.sprite.Sprite):
                 sk.westRect.x = sk.rect.x - sk.westXVal
 
     def move_east(self):
-        # moves the player East
+        # moves the player and camera East, while moving every other entity in the opposite direction
         if self.rect.x < m.rightBoundaryX - 50:
+            # checks if player is within map boundaries
             m.cameraX += self.speed
             # m.leftBoundaryY -= self.speed
             m.leftBoundaryX -= self.speed
@@ -175,11 +174,6 @@ class Player(pygame.sprite.Sprite):
             m.topBoundaryX2 -= self.speed
             m.bottomBoundaryX1 -= self.speed
             m.bottomBoundaryX2 -= self.speed
-            n = len(enemies)
-            count = 0
-            eastCount = 0
-            northCount = 0
-            southCount = 0
             for enemy in enemies:
                 # moves the enemy and associated rects due to the effects of the player camera
                 enemy.rect.x -= self.speed
@@ -188,15 +182,18 @@ class Player(pygame.sprite.Sprite):
                 enemy.southRect.x = enemy.rect.x + enemy.southXVal
                 enemy.westRect.x = enemy.rect.x - enemy.westXVal
             for bat in bats:
+                # moves the bats and associated rects due to the effects of the player camera
                 bat.rect.x -= self.speed
                 bat.northRect.x = bat.rect.x + bat.northXVal
                 bat.eastRect.x = bat.rect.x + bat.eastXVal
                 bat.southRect.x = bat.rect.x + bat.southXVal
                 bat.westRect.x = bat.rect.x - bat.westXVal
             for x in xp:
+                # moves the XP due to the effects of the player camera
                 x.x -= self.speed
                 x.xp_stationary()
             if sk.activate and not sk.felled:
+                # moves the skeleton king when spawned in due to the effects of the player camera
                 sk.rect.x -= self.speed
                 sk.northRect.x = sk.rect.x + sk.northXVal
                 sk.eastRect.x = sk.rect.x + sk.eastXVal
@@ -204,8 +201,9 @@ class Player(pygame.sprite.Sprite):
                 sk.westRect.x = sk.rect.x - sk.westXVal
 
     def move_north(self):
-        # moves the player North
+        # moves the player and camera North, while moving every other entity in the opposite direction
         if self.rect.y > m.topBoundaryY + 25:
+            # checks if player is within map boundaries
             m.cameraY -= self.speed
             m.leftBoundaryY1 += self.speed
             m.leftBoundaryY2 += self.speed
@@ -213,12 +211,6 @@ class Player(pygame.sprite.Sprite):
             m.rightBoundaryY2 += self.speed
             m.topBoundaryY += self.speed
             m.bottomBoundaryY += self.speed
-            # m.leftBoundaryX += self.speed
-            n = len(enemies)
-            count = 0
-            northCount = 0
-            eastCount = 0
-            westCount = 0
             for enemy in enemies:
                 # moves the enemy and associated rects due to the effects of the player camera
                 enemy.rect.y += self.speed
@@ -227,15 +219,18 @@ class Player(pygame.sprite.Sprite):
                 enemy.southRect.y = enemy.rect.y + enemy.southYVal
                 enemy.westRect.y = enemy.rect.y + enemy.westYVal
             for bat in bats:
+                # moves the bats and associated rects due to the effects of the player camera
                 bat.rect.y += self.speed
                 bat.northRect.y = bat.rect.y - bat.northYVal
                 bat.eastRect.y = bat.rect.y + bat.eastYVal
                 bat.southRect.y = bat.rect.y + bat.southYVal
                 bat.westRect.y = bat.rect.y + bat.westYVal
             for x in xp:
+                # moves the XP due to the effects of the player camera
                 x.y += self.speed
                 x.xp_stationary()
             if sk.activate and not sk.felled:
+                # moves the skeleton king when spawned in due to the effects of the player camera
                 sk.rect.y += self.speed
                 sk.northRect.y = sk.rect.y - sk.northYVal
                 sk.eastRect.y = sk.rect.y + sk.eastYVal
@@ -243,8 +238,9 @@ class Player(pygame.sprite.Sprite):
                 sk.westRect.y = sk.rect.y + sk.westYVal
 
     def move_south(self):
-        # moves the player South
+        # moves the player and camera South, while moving every other entity in the opposite direction
         if self.rect.y < m.bottomBoundaryY - 50:
+            # checks if player is within map boundaries
             m.cameraY += self.speed
             m.leftBoundaryY1 -= self.speed
             m.leftBoundaryY2 -= self.speed
@@ -252,12 +248,6 @@ class Player(pygame.sprite.Sprite):
             m.rightBoundaryY2 -= self.speed
             m.topBoundaryY -= self.speed
             m.bottomBoundaryY -= self.speed
-            # m.leftBoundaryX -= self.speed
-            n = len(enemies)
-            count = 0
-            southCount = 0
-            eastCount = 0
-            westCount = 0
             for enemy in enemies:
                 # moves the enemy and associated rects due to the effects of the player camera
                 enemy.rect.y -= self.speed
@@ -266,15 +256,18 @@ class Player(pygame.sprite.Sprite):
                 enemy.southRect.y = enemy.rect.y + enemy.southYVal
                 enemy.westRect.y = enemy.rect.y + enemy.westYVal
             for bat in bats:
+                # moves the bats and associated rects due to the effects of the player camera
                 bat.rect.y -= self.speed
                 bat.northRect.y = bat.rect.y - bat.northYVal
                 bat.eastRect.y = bat.rect.y + bat.eastYVal
                 bat.southRect.y = bat.rect.y + bat.southYVal
                 bat.westRect.y = bat.rect.y + bat.westYVal
             for x in xp:
+                # moves the XP due to the effects of the player camera
                 x.y -= self.speed
                 x.xp_stationary()
             if sk.activate and not sk.felled:
+                # moves the skeleton king when spawned in due to the effects of the player camera
                 sk.rect.y -= self.speed
                 sk.northRect.y = sk.rect.y - sk.northYVal
                 sk.eastRect.y = sk.rect.y + sk.eastYVal
@@ -311,40 +304,19 @@ class BasicAttack():
         self.running = False
         self.finished = False
 
-        self.damage = 20
+        self.damage = 45
         self.BasicAttackTimer = 0
         self.timerTarget = 40
         self.rangeIncrease = 10
         self.hitBoxRadius = 78
 
     def attack(self):
-        # Initiate basic attack
-
-        # self.east = pygame.draw.line(screen, (160,32,240), (p.rect.x+36, p.rect.y+17),
-        # (p.rect.x+80+self.rangeIncrease, p.rect.y+17), 6)
-        # self.northEast = pygame.draw.line(screen, (160,32,240), (p.rect.x+33, p.rect.y+4),
-        # (p.rect.x+60+self.rangeIncrease, p.rect.y-22-self.rangeIncrease), 6)
-        # self.north = pygame.draw.line(screen, (160,32,240), (p.rect.x+18, p.rect.y-4), (p.rect.x+18,
-        # p.rect.y-44-self.rangeIncrease), 6)
-        # self.northWest = pygame.draw.line(screen, (160,32,240), (p.rect.x, p.rect.y+4),
-        # (p.rect.x-27-self.rangeIncrease, p.rect.y-22-self.rangeIncrease), 6)
-        # self.west = pygame.draw.line(screen, (160,32,240), (p.rect.x, p.rect.y+17), (p.rect.x-44-self.rangeIncrease,
-        # p.rect.y+17), 6)
-        # self.southWest = pygame.draw.line(screen, (160,32,240), (p.rect.x, p.rect.y+32),
-        # (p.rect.x-27-self.rangeIncrease, p.rect.y+60+self.rangeIncrease), 6)
-        # self.south = pygame.draw.line(screen, (160,32,240), (p.rect.x+18, p.rect.y+32), (p.rect.x+18,
-        # p.rect.y+78+self.rangeIncrease), 6)
-        # self.southEast = pygame.draw.line(screen, (160,32,240), (p.rect.x+33, p.rect.y+32),
-        # (p.rect.x+64+self.rangeIncrease, p.rect.y+60+self.rangeIncrease), 6)
-        # pygame.draw.circle(screen, (255,255,255), (p.rect.x+19, p.rect.y+19), self.hitBoxRadius)
-        '''
-        10:78, 20:91, 30:105, 40:119, 50:133, 60:147, 70:161, 80:175, 90:189, 100:203
-        [14,14,14,14,14,14,14,14,14]
-        '''
+        # goes through various animations and hitbox creations for basic attacks to hit all enemies
         total_time = pygame.time.get_ticks() / 1000
         self.hitBoxRect = pygame.draw.circle(transparentSurface, (255, 255, 255),
                                              (p.rect.x+19, p.rect.y+19), self.hitBoxRadius)
         if self.BasicAttackTimer > self.timerTarget and total_time > 1 and not self.east:
+            # start with the sword at the east position and then go in a counter-clockwise direction
             self.running = True
             self.rect = pygame.draw.line(screen, (160, 32, 240), (p.rect.x+36, p.rect.y+17),
                                          (p.rect.x+80+self.rangeIncrease, p.rect.y+17), 6)
@@ -404,7 +376,6 @@ class BasicAttack():
         if self.southEast and not self.eastEND:
             self.rect = pygame.draw.line(screen, (160, 32, 240), (p.rect.x+36, p.rect.y+17),
                                          (p.rect.x+80+self.rangeIncrease, p.rect.y+17), 6)
-            # new_time = pygame.time.get_ticks()
             self.eastENDCounter += 1
             if self.eastENDCounter > 1:
                 self.rect = None
@@ -413,6 +384,7 @@ class BasicAttack():
                 self.finished = True
 
         if self.BasicAttackTimer > self.timerTarget+(self.timerTarget * 2) and self.east:
+            # reset basic attack variables if the basic attack finished
             self.east = False
             self.northEast = False
             self.north = False
@@ -434,10 +406,13 @@ class BasicAttack():
             self.eastENDCounter = 0
 
             for enemy in enemies:
+                # clear the hitbox for all enemies
                 enemy.meleeAttackCollisions.clear()
             for bat in bats:
+                # clear the hitbox for all bats
                 bat.meleeAttackCollisions.clear()
             if sk.activate and not sk.felled:
+                # clear the hitbox for the skeleton king
                 sk.meleeAttackCollisions.clear()
             self.BasicAttackTimer = 0
         self.BasicAttackTimer += 1
@@ -468,47 +443,27 @@ class Bullet(pygame.sprite.Sprite):
         self.bulletSpawnSpeed = 45
 
     def bullet(self):
-        # print(self.bulletDistance)
-        # print(self.damage)
-        # bullet movement
-        # self.mousePOS = pygame.math.Vector2(pygame.mouse.get_pos()[0], pygame.mouse.get_pos()[1])
-        playerVector = pygame.math.Vector2(self.startingPoint[0], self.startingPoint[1])
-        mouseVector = pygame.math.Vector2(self.mousePOS[0], self.mousePOS[1])
-        # print(f'playerVector: ({self.startingPoint[0]}, {self.startingPoint[1]}),
-        # mouseVector: ({self.mousePOS[0]}, {self.mousePOS[1]})')
-        # self.angle = playerVector.angle_to(mouseVector)
         if self.mousePOS[0] > self.startingPoint[0] and self.mousePOS[1] < self.startingPoint[1]:
             # first quadrant
             newTriangle = pygame.math.Vector2(self.mousePOS[0] - self.startingPoint[0], self.mousePOS[1] -
                                               self.startingPoint[1])
-            # print(newTriangle)
-            # print(f'{newTriangle[1]}/{newTriangle[0]}')
             self.angle = -(numpy.rad2deg(numpy.arctan(newTriangle[1]/newTriangle[0])))
         elif self.mousePOS[0] > self.startingPoint[0] and self.mousePOS[1] > self.startingPoint[1]:
             # fourth quadrant
             newTriangle = pygame.math.Vector2(self.mousePOS[0] - self.startingPoint[0], self.mousePOS[1] -
                                               self.startingPoint[1])
-            # print(newTriangle)
-            # print(f'{newTriangle[1]}/{newTriangle[0]}')
             self.angle = (numpy.rad2deg(numpy.arctan(newTriangle[1]/newTriangle[0])))
         elif self.mousePOS[0] < self.startingPoint[0] and self.mousePOS[1] < self.startingPoint[1]:
             # second quadrant
             newTriangle = pygame.math.Vector2(self.startingPoint[0] - self.mousePOS[0], self.startingPoint[1] -
                                               self.mousePOS[1])
-            # print(newTriangle)
-            # print(f'{newTriangle[1]}/{newTriangle[0]}')
             self.angle = (numpy.rad2deg(numpy.arctan(newTriangle[1]/newTriangle[0])))
         elif self.mousePOS[0] < self.startingPoint[0] and self.mousePOS[1] > self.startingPoint[1]:
             # second quadrant
             newTriangle = pygame.math.Vector2(self.startingPoint[0] - self.mousePOS[0], self.startingPoint[1] -
                                               self.mousePOS[1])
-            # print(newTriangle)
-            # print(f'{newTriangle[1]}/{newTriangle[0]}')
             self.angle = (numpy.rad2deg(numpy.arctan(newTriangle[1]/newTriangle[0])))
-        # print(self.angle)
         if self.counterX >= self.bulletDistance or self.counterY >= self.bulletDistance:  # or
-            # ((self.rect.x - self.mousePOS[0] < 5 or self.mousePOS[0] - self.rect.x > 5) and
-            # (self.rect.y - self.mousePOS[1] < 5 or self.mousePOS[1] - self.rect.y > 5)):
             self.rect.x = p.rect.x
             self.rect.y = p.rect.y
             self.bulletValid = False
@@ -533,12 +488,7 @@ class Bullet(pygame.sprite.Sprite):
                 self.rect.x += math.cos(self.angle * (2*math.pi/360)) * self.bulletSpeed
                 self.counterX += 1
                 self.counterY += 1
-                # print(self.counterX)
-                # print(self.counterY)
-                # print('-------------------')
-                # print("fourth quadrant - CONTINUING JOURNEY")
-                # print('-------------------')
-                # print("1")
+
             elif ((self.rect.x <= self.startingPoint[0] and self.rect.y >= self.startingPoint[1]) and
                   self.positionReached):
                 # third quadrant - continues traveling after reaching mouse position
@@ -546,10 +496,7 @@ class Bullet(pygame.sprite.Sprite):
                 self.rect.x -= math.cos(self.angle * (2*math.pi/360)) * self.bulletSpeed
                 self.counterX += 1
                 self.counterY += 1
-                # print('-------------------')
-                # print("third quadrant - CONTINUING JOURNEY")
-                # print('-------------------')
-                # print("2")
+
             elif ((self.rect.x <= self.startingPoint[0] and self.rect.y <= self.startingPoint[1]) and
                   self.positionReached):
                 # second quadrant - continues traveling after reaching mouse position
@@ -557,10 +504,7 @@ class Bullet(pygame.sprite.Sprite):
                 self.rect.x -= math.cos(self.angle * (2*math.pi/360)) * self.bulletSpeed
                 self.counterX += 1
                 self.counterY += 1
-                # print('-------------------')
-                # print("second quadrant - CONTINUING JOURNEY")
-                # print('-------------------')
-                # print("3")
+
             elif ((self.rect.x >= self.startingPoint[0] and self.rect.y <= self.startingPoint[1]) and
                   self.positionReached):
                 # first quadrant - continues traveling after reaching mouse position
@@ -568,10 +512,7 @@ class Bullet(pygame.sprite.Sprite):
                 self.rect.x += math.cos(self.angle * (2*math.pi/360)) * self.bulletSpeed
                 self.counterX += 1
                 self.counterY += 1
-                # print('-------------------')
-                # print("first quadrant - CONTINUING JOURNEY")
-                # print('-------------------')
-                # print("4")
+
             elif self.rect.x <= self.mousePOS[0] and self.rect.y <= self.mousePOS[1] and not self.mousePOS[1] <= self.startingPoint[1] and not self.mousePOS[0] <= self.startingPoint[0] or self.goFourthA and not self.goFirstA and not self.goSecondA and not self.goThirdA:
                 # fourth quadrant - travels to mouse position
                 self.rect.y += math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
@@ -579,14 +520,9 @@ class Bullet(pygame.sprite.Sprite):
                 self.counterX += 1
                 self.counterY += 1
                 self.goFourthA = True
-                # print(self.counterX)
-                # print(self.counterY)
                 if self.mousePOS[1] - self.rect.y < 10 and self.mousePOS[0] - self.rect.x < 10:
                     self.positionReached = True
-                # print('-------------------')
-                # print("fourth quadrant")
-                # print('-------------------')
-                # print("5")
+
             elif (self.rect.x >= self.mousePOS[0] and self.rect.y <= self.mousePOS[1] and
                   not abs(self.mousePOS[0] - self.startingPoint[0]) < 12 or self.goThirdA and not self.goFirstA and not
                   self.goSecondA and not self.goFourthA):
@@ -598,12 +534,9 @@ class Bullet(pygame.sprite.Sprite):
                 self.goThirdA = True
                 if self.mousePOS[1] - self.rect.y <= 10 and self.rect.x - self.mousePOS[0] <= 10:
                     self.positionReached = True
-                # print('-------------------')
-                # print("third quadrant")
-                # print('-------------------')
-                # print("6")
+
             elif (self.rect.x >= self.mousePOS[0] and self.rect.y >= self.mousePOS[1] or self.goSecondA and not
-            self.goFirstA and not self.goThirdA and not self.goFourthA):
+                    self.goFirstA and not self.goThirdA and not self.goFourthA):
                 # second quadrant - travels to mouse position
                 self.rect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
                 self.rect.x -= math.cos(self.angle * (2*math.pi/360)) * self.bulletSpeed
@@ -612,10 +545,7 @@ class Bullet(pygame.sprite.Sprite):
                 self.goSecondA = True
                 if self.rect.y - self.mousePOS[1] <= 10 and self.mousePOS[0] - self.rect.x <= 10:
                     self.positionReached = True
-                # print('-------------------')
-                # print("second quadrant")
-                # print('-------------------')
-                # print("7")
+
             elif self.rect.x <= self.mousePOS[0] and self.rect.y >= self.mousePOS[1] or self.goFirstA and not self.goSecondA and not self.goThirdA and not self.goFourthA:
                 # first quadrant - travels to mouse position
                 self.rect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
@@ -625,12 +555,9 @@ class Bullet(pygame.sprite.Sprite):
                 self.goFirstA = True
                 if self.rect.y - self.mousePOS[1] <= 10 and self.mousePOS[0] - self.rect.x <= 10:
                     self.positionReached = True
-                # print('-------------------')
-                # print("first quadrant")
-                # print('-------------------')
-                # print("8")
+
             else:
-                # if self.mousePOS[1] == self.startingPoint
+                # calculates directions for if the bullet is perfectly above or beside the Player
                 if self.mousePOS[1] >= self.startingPoint[1] and (abs(self.mousePOS[0]) - self.startingPoint[0]) < 15:
                     self.rect.y += math.sin(90 * (2*math.pi/360)) * self.bulletSpeed
                 elif self.mousePOS[1] <= self.startingPoint[1] and (abs(self.mousePOS[0]) - self.startingPoint[0]) < 15:
@@ -640,6 +567,7 @@ class Bullet(pygame.sprite.Sprite):
                 self.counterX += 1
                 self.counterY += 1
             if self.rect.x > m.rightBoundaryX or self.rect.x < m.leftBoundaryX or self.rect.y > m.bottomBoundaryY or self.rect.y < m.topBoundaryY:
+                # destroy the bullet if it goes out of the map boundaries
                 self.rect = pygame.draw.circle(transparentSurface, (255, 255, 255), (p.rect.x+18, p.rect.y+17), 10)
                 self.kill()
 
@@ -700,6 +628,7 @@ class Enemy(pygame.sprite.Sprite):
         pass
 
     def spawn(self):
+        # allows programmer to know if this enemy has spawned
         self.spawned.append(1)
 
     def travel_north(self):
@@ -739,9 +668,11 @@ class Enemy(pygame.sprite.Sprite):
         beforeMovement = (self.rect.x, self.rect.y)
         stuckCounter = False
         if self.bat:
+            # if the enemy is a bat
             self.enemyList = bats
             self.enemyLength = len(bats)
         else:
+            # if the enemy is a slime
             self.enemyList = enemies
             self.enemyLength = len(enemies)
         if self.rect.x < p.rect.x:
@@ -787,13 +718,12 @@ class Enemy(pygame.sprite.Sprite):
                                     # enemy moves West as a last resort
                                     moveWest += 1
                                 else:
-                                    # if enemy has no other option, go along the y-axis
+                                    # if enemy has no other option, go along the x-axis
                                     tempSpeed = random.uniform(0.1, 1)
                                     if tempSpeed < .5:
                                         self.rect.x += tempSpeed
                                     else:
                                         self.rect.x -= tempSpeed
-                                    # print("UNSTUCK-1")
 
             if moveEast == self.enemyLength - 1:
                 self.travel_east()
@@ -814,9 +744,9 @@ class Enemy(pygame.sprite.Sprite):
         else:
             self.tempTime = 0
         if stuckCounter:
+            # helps detect if enemies are stuck
             if stuckCounter > 1:
                 # Helps enemies become unstuck on each other
-                # print("STUCKCOUNTER!!!")
                 tempSpeed = random.uniform(0.1, 1)
                 if tempSpeed < .5:
                     self.rect.y += tempSpeed
@@ -869,13 +799,12 @@ class Enemy(pygame.sprite.Sprite):
                                     # enemy moves East as a last resort
                                     moveEast += 1
                                 else:
-                                    # if enemy has no other option, go along the y-axis
+                                    # if enemy has no other option, go along the x-axis in a random direction
                                     tempSpeed = random.uniform(0.1, 1)
                                     if tempSpeed < .5:
                                         self.rect.x += tempSpeed
                                     else:
                                         self.rect.x -= tempSpeed
-                                    # print("UNSTUCK-1")
 
             if moveWest == self.enemyLength - 1:
                 self.travel_west()
@@ -896,6 +825,7 @@ class Enemy(pygame.sprite.Sprite):
         else:
             self.tempTime = 0
         if stuckCounter:
+            # helps detect if enemies are stuck
             if stuckCounter > 1:
                 # Helps enemies become unstuck on each other
                 # print("STUCKCOUNTER!!!")
@@ -955,7 +885,6 @@ class Enemy(pygame.sprite.Sprite):
                                         self.rect.y += tempSpeed
                                     else:
                                         self.rect.y -= tempSpeed
-                                    # print("UNSTUCK-1")
 
             if moveSouth == self.enemyLength - 1:
                 self.travel_south()
@@ -976,9 +905,9 @@ class Enemy(pygame.sprite.Sprite):
         else:
             self.tempTime = 0
         if stuckCounter:
+            # helps detect if enemies are stuck
             if stuckCounter > 1:
                 # Helps enemies become unstuck on each other
-                # print("STUCKCOUNTER!!!")
                 tempSpeed = random.uniform(0.1, 1)
                 if tempSpeed < .5:
                     self.rect.y += tempSpeed
@@ -1037,7 +966,6 @@ class Enemy(pygame.sprite.Sprite):
                                         self.rect.y += tempSpeed
                                     else:
                                         self.rect.y -= tempSpeed
-                                    # print("UNSTUCK-1")
 
             if moveNorth == self.enemyLength - 1:
                 self.travel_north()
@@ -1058,9 +986,9 @@ class Enemy(pygame.sprite.Sprite):
         else:
             self.tempTime = 0
         if stuckCounter:
+            # helps detect if enemies are stuck
             if stuckCounter > 1:
                 # Helps enemies become unstuck on each other
-                # print("STUCKCOUNTER!!!")
                 tempSpeed = random.uniform(0.1, 1)
                 if tempSpeed < .5:
                     self.rect.y += tempSpeed
@@ -1092,6 +1020,7 @@ class Bat(Enemy):
 
 
 class skeletonKing(Enemy):
+    # this class is the games first boss
     def __init__(self, x, y):
         super().__init__(x, y)
         self.rect = batImg1.get_rect().scale_by(1, 1)
@@ -1100,15 +1029,11 @@ class skeletonKing(Enemy):
         self.rect.width = 40
         self.midBoxRect = pygame.draw.rect(screen, (255, 0, 0), pygame.Rect(self.rect.x+122,
                                                                             self.rect.y+85, 20, 20))
-        self.health = 5000
-        self.speed = 2
+        self.health = 1250
+        self.speed = 1.25
         self.skeletonKing = True
         self.xCoord = 0
         self.yCoord = 0
-        # self.legRectEven = None
-        # self.legRectEvenRight = None
-        # self.legRectOddLeft = None
-        # self.legRectOddRight = None
         self.leftLegRect = pygame.draw.rect(transparentSurface, (255, 0, 0),
                                             pygame.Rect(self.rect.x+50, self.rect.y+170, 20, 10))
         self.rightLegRect = pygame.draw.rect(transparentSurface, (255, 0, 0),
@@ -1129,14 +1054,7 @@ class skeletonKing(Enemy):
         self.playerCollideCounter = 0
 
     def generate_enemy(self):
-        # print('1')
-        # self.legRectEvenLeft = pygame.draw.rect(screen, (255,0,0), pygame.Rect(self.rect.x+17,self.rect.y+188,22,12))
-        # self.legRectEvenRight = pygame.draw.rect(screen, (255,0,0),
-        # pygame.Rect(self.rect.x+185,self.rect.y+170,18,10))
-        # self.legRectOddLeft = pygame.draw.rect(screen, (255,0,0), pygame.Rect(self.rect.x+50,self.rect.y+170,35,12))
-        # self.legRectOddRight = pygame.draw.rect(screen, (255,0,0), pygame.Rect(self.rect.x+226,self.rect.y+191,22,10))
-        # pygame.draw.rect(screen, (0,255,0), p.rect)
-        # self.legRectEven = pygame.draw.rect(screen, (255,0,0), (255,4))
+        # create the enemy and have it run through its animations and get the coordinates of the player for it to run towards
         if not self.spawned:
             # print('2')
             self.xCoord = random.randint(-340, 990)
@@ -1147,21 +1065,21 @@ class skeletonKing(Enemy):
                    self.yCoord > m.bottomBoundaryY or abs(self.xCoord - m.leftBoundaryX) < 75 or
                    abs(self.xCoord - m.rightBoundaryX) < 75 or abs(self.yCoord - m.topBoundaryY) < 75 or
                    abs(self.yCoord - m.bottomBoundaryY) < 75):
+                # looping until the boss spawns in a location inside the map boundaries and also not on top of the player
                 self.xCoord = random.randint(-340, 990)
                 self.yCoord = random.randint(-340, 990)
-                # print("AHHHHHH")
 
             self.rect.x = self.xCoord
             self.rect.y = self.yCoord
             self.spawned.append(1)
         else:
-            # print('3')
-            # if self.runCounter > 100:
-            # print(abs(self.rect.x - p.rect.x), abs(self.rect.y - p.rect.y))
+            # animations are ran through and targeting of player position takes place
             if p.rect.x > self.midBoxRect.x:
+                # has the enemy focus his attack on his right main leg
                 if (abs(self.mainRightLegRect.x - p.rect.x) >= 300 or abs(self.mainRightLegRect.y - p.rect.y) >= 300 or
                         (abs(self.mainRightLegRect.x - p.rect.x) + abs(self.mainRightLegRect.y - p.rect.y)) > 400):
                     if not self.targetAquired:
+                        # run if the boss does not have the players position
                         self.runTarget = (p.rect.x, p.rect.y)
                         self.targetAquired = True
                     self.runCounter += 1
@@ -1183,6 +1101,7 @@ class skeletonKing(Enemy):
                 self.speed = 1
                 self.animationInterval = 15
             if self.animation <= self.animationInterval:
+                # starts the first animation
                 screen.blit(skeletonKing1, (self.rect.x-30, self.rect.y-75))
                 self.leftLegRect = pygame.draw.rect(transparentSurface, (255, 0, 0),
                                                     pygame.Rect(self.rect.x+50, self.rect.y+170, 20, 10))
@@ -1191,6 +1110,7 @@ class skeletonKing(Enemy):
                 self.animation += 1
                 self.animationImage = 1
             elif self.animation <= self.animationInterval * 2:
+                # starts the first animation
                 screen.blit(skeletonKing2, (self.rect.x-30, self.rect.y-75))
                 self.leftLegRect = pygame.draw.rect(transparentSurface, (255, 0, 0),
                                                     pygame.Rect(self.rect.x+17, self.rect.y+188, 22, 12))
@@ -1199,6 +1119,7 @@ class skeletonKing(Enemy):
                 self.animation += 1
                 self.animationImage = 2
             elif self.animation <= self.animationInterval * 3:
+                # starts the first animation
                 screen.blit(skeletonKing3, (self.rect.x-30, self.rect.y-75))
                 self.leftLegRect = pygame.draw.rect(transparentSurface, (255, 0, 0),
                                                     pygame.Rect(self.rect.x+66, self.rect.y+170, 20, 10))
@@ -1207,6 +1128,7 @@ class skeletonKing(Enemy):
                 self.animation += 1
                 self.animationImage = 3
             elif self.animation <= self.animationInterval * 4:
+                # starts the first animation
                 screen.blit(skeletonKing4, (self.rect.x-30, self.rect.y-75))
                 self.leftLegRect = pygame.draw.rect(transparentSurface, (255, 0, 0),
                                                     pygame.Rect(self.rect.x+17, self.rect.y+188, 22, 12))
@@ -1215,6 +1137,7 @@ class skeletonKing(Enemy):
                 self.animation += 1
                 self.animationImage = 4
             elif self.animation > self.animationInterval * 4:
+                # starts the first animation
                 screen.blit(skeletonKing1, (self.rect.x-30, self.rect.y-75))
                 self.animation = 1
                 self.animationImage = 1
@@ -1227,64 +1150,64 @@ class skeletonKing(Enemy):
             self.mainRightLegRect = pygame.draw.rect(transparentSurface, (255, 0, 0),
                                                      pygame.Rect(self.rect.x+226, self.rect.y+190, 22, 10))
 
-            # pygame.draw.rect(screen, (125,125,125), self.rect)
-            # pygame.draw.rect(screen, (128,0,128), self.northRect)
-            # pygame.draw.rect(screen, (128,0,128), self.eastRect)
-            # pygame.draw.rect(screen, (128,0,128), self.southRect)
-            # pygame.draw.rect(screen, (128,0,128), self.westRect)
         self.follow_mc()
         self.runCounter += 1
 
     def follow_mc(self):
-
-        # if not self.rect.colliderect(p.rect):
+        # the boss will follow the player
         if self.mainRightLegRect.x < p.rect.x+12:
-            # if player is to the right of main right leg
+            # if player is to the right of main right leg, boss travels east
             self.rect.x += self.speed
         elif p.rect.x+12 > self.midBoxRect.x and p.rect.x+12 < self.mainRightLegRect.x:
+            # if player is to the left of main right leg, boss travels west
             self.rect.x -= self.speed
         if self.mainRightLegRect.y != p.rect.y+13:
             if self.mainRightLegRect.y < p.rect.y+13:
-                # if the player is to the south of the enemy
+                # if the player is to the south of the enemy, boss travels south
                 self.rect.y += self.speed
             if self.mainRightLegRect.y > p.rect.y+13:
-                # if the player is to the north of the enemy
+                # if the player is to the north of the enemy, boss travels north
                 self.rect.y -= self.speed
 
         if self.mainLeftLegRect.x > p.rect.x+12:
+            # if player is to the right of main right leg, boss travels west
             self.rect.x -= self.speed
         elif p.rect.x+12 <= self.midBoxRect.x and p.rect.x+12 > self.mainLeftLegRect.x:
+            # if player is to the left of main right leg, boss travels west
             self.rect.x += self.speed
         if self.mainLeftLegRect.y != p.rect.y+13:
             if self.mainLeftLegRect.y < p.rect.y+13:
-                # if the player is to the south of the enemy
+                # if the player is to the south of the enemy, boss travels south
                 self.rect.y += self.speed
             if self.mainLeftLegRect.y > p.rect.y+13:
-                # if the player is to the north of the enemy
+                # if the player is to the north of the enemy, boss travels north
                 self.rect.y -= self.speed
 
     def attack(self):
-        # pygame.draw.rect(screen, (140,38,28), enemy.midDotRect)
+        # handles boss attacks on the player and enemies
         for enemy in enemies:
+            # for every enemy that steps on the bosses leg that just touched the ground, have the enemy be destroyed
             if self.leftLegRect.colliderect(enemy.midDotRect) or self.rightLegRect.colliderect(enemy.midDotRect):
                     if enemy in enemies:
                         enemies.remove(enemy)
-                        # print("ENEMY REMOVED!!!")
-                        # print("----------------")
-            if self.leftLegRect.colliderect(p.rect) or self.rightLegRect.colliderect(p.rect):
-                if self.playerCollideCounter >= 10:
-                    checkingDodge = random.randint(0, 100)
-                    if checkingDodge <= p.dodgeChance:
-                        pass
-                    else:
-                        p.health -= 24
-                        sk.playerCollideCounter = 0
-                        print("DAMAGE TAKEN")
-                        print(p.health)
+        if self.leftLegRect.colliderect(p.rect) or self.rightLegRect.colliderect(p.rect):
+            # if the player collides with the activated legs, have the player take damage
+            if self.playerCollideCounter >= 10:
+                # measures how fast the player should take damage after entering collision with boss
+                checkingDodge = random.randint(0, 100)
+                if checkingDodge <= p.dodgeChance:
+                    # dodges damage if dodge percent is rolled
+                    sk.playerCollideCounter = 0
                 else:
-                    self.playerCollideCounter += 1
+                    # have the player take damage
+                    p.health -= 24
+                    sk.playerCollideCounter = 0
             else:
-                sk.playerCollideCounter = 0
+                # increase counter if player is still colliding with enemy
+                self.playerCollideCounter += 1
+        else:
+            # reset counter
+            sk.playerCollideCounter = 0
 
 
 class XP(pygame.sprite.Sprite):
@@ -1308,7 +1231,7 @@ gameTimerOn = False
 
 
 class XP_Bar():
-    # Displays the XP Bar
+    # Displays the XP Bar and upgrade menu
     def __init__(self):
         self.xpBarBorderRect = None
         self.xpBarRect = None
@@ -1325,8 +1248,8 @@ class XP_Bar():
         self.left = None
         self.level_background = None
         self.level_font = pygame.font.SysFont('futura', 42)
-        self.upgradeTitle_font = pygame.font.SysFont('Jenson', 24)  # 'Caslon', 'Garamond'
-        self.upgradeDesc_font = pygame.font.SysFont('Garamond', 22)  # 'Caslon', 'Garamond'
+        self.upgradeTitle_font = pygame.font.SysFont('Jenson', 24)
+        self.upgradeDesc_font = pygame.font.SysFont('Garamond', 22)
         self.offset = 35
         self.leftover = 0
         self.leftoverSize = 0
@@ -1345,6 +1268,7 @@ class XP_Bar():
         self.xpBarBorderRect = pygame.draw.line(screen, (0, 0, 0), (90-self.offset, 770),
                                                 (710-self.offset, 770), 45)
         if self.xp:
+            # runs if player has XP
             self.length = self.xp / self.level_xp_requirement
             if self.length >= 1 or self.length+self.leftover >= 1:
                 # if player XP reached level requirement, increase XP level and give the Player an upgrade choice
@@ -1354,11 +1278,11 @@ class XP_Bar():
                 while self.levelMenu:
                     # while level menu is active
                     global gameTimerStr
-                    # gameTimerOn = False
                     global gameTime
                     tempTimer = pygame.time.get_ticks() - gameTime
                     self.pauseTimer = tempTimer
                     if pygame.key.get_pressed()[pygame.K_2]:
+                        # close upgrade menu if 2 is pressed
                         self.levelMenu = False
                         gameTimerStr = tempTimer
                         # gameTimerOn = True
@@ -1370,6 +1294,7 @@ class XP_Bar():
                             global game
                             game = False
                         if event.type == pygame.MOUSEBUTTONDOWN:
+                            # checks for which option the user clicks for option 1
                             if self.buttonRect1.collidepoint(event.pos):
                                 if self.option1 == 'BA-Dam':
                                     self.basic_attack_damage_upgrade(0)
@@ -1388,6 +1313,7 @@ class XP_Bar():
                                 if self.option1 == 'Bul-Spe':
                                     self.bullet_speed_upgrade(0)
                             elif self.buttonRect2.collidepoint(event.pos):
+                                # checks for which option the user clicks for option 2
                                 if self.option2 == 'BA-Dam':
                                     self.basic_attack_damage_upgrade(0)
                                 if self.option2 == 'BA-Ran':
@@ -1404,8 +1330,6 @@ class XP_Bar():
                                     self.bullet_range_upgrade(0)
                                 if self.option2 == 'Bul-Spe':
                                     self.bullet_speed_upgrade(0)
-                    # self.greyScreen.fill((128,128,128,160))
-                    # screen.blit(self.greyScreen, (0,0))
                     screen.blit(dungeonBackground, (0, 0))
                     screen.blit(mediumScroll, (100, 225))
                     screen.blit(mediumScroll, (450, 225))
@@ -1434,51 +1358,57 @@ class XP_Bar():
                         self.selectedUpgradeChoices = True
                         self.TwoUpgradeChoices = [self.availableUpgrades[randomUpgrade1],
                                                   self.availableUpgrades[randomUpgrade2]]
-                        # print(self.option1)
-                        # print(self.option2)
 
                         self.buttonRect1 = pygame.Rect(100, 222, 285, 370)
                         self.buttonRect2 = pygame.Rect(450, 222, 285, 370)
 
                     if self.selectedUpgradeChoices:
-                        # if two random choices have been generated, call appropriate function and blit the information
+                        # if two random choices have been generated, call the appropriate function and blit the information
                         # to the screen.
                         if 'BA-Dam' in self.TwoUpgradeChoices:
+                            # basic attack damage
                             if self.option1 == 'BA-Dam':
                                 self.basic_attack_damage_upgrade(1)
                             else:
                                 self.basic_attack_damage_upgrade(2)
                         if 'BA-Ran' in self.TwoUpgradeChoices:
+                            # basic attack range
                             if self.option1 == 'BA-Ran':
                                 self.basic_attack_range_upgrade(1)
                             else:
                                 self.basic_attack_range_upgrade(2)
                         if 'BA-Spe' in self.TwoUpgradeChoices:
+                            # basic attack speed
                             if self.option1 == 'BA-Spe':
                                 self.basic_attack_speed_upgrade(1)
                             else:
                                 self.basic_attack_speed_upgrade(2)
                         if 'Mov-Spe' in self.TwoUpgradeChoices:
+                            # player movement speed
                             if self.option1 == 'Mov-Spe':
                                 self.move_speed_upgrade(1)
                             else:
                                 self.move_speed_upgrade(2)
                         if 'Dod-Cha' in self.TwoUpgradeChoices:
+                            # dodge chance
                             if self.option1 == 'Dod-Cha':
                                 self.dodge_chance_upgrade(1)
                             else:
                                 self.dodge_chance_upgrade(2)
                         if 'Bul-Dam' in self.TwoUpgradeChoices:
+                            # bullet damage
                             if self.option1 == 'Bul-Dam':
                                 self.bullet_damage_upgrade(1)
                             else:
                                 self.bullet_damage_upgrade(2)
                         if 'Bul-Ran' in self.TwoUpgradeChoices:
+                            # bullet range
                             if self.option1 == 'Bul-Ran':
                                 self.bullet_range_upgrade(1)
                             else:
                                 self.bullet_range_upgrade(2)
                         if 'Bul-Spe' in self.TwoUpgradeChoices:
+                            # bullet speed
                             if self.option1 == 'Bul-Spe':
                                 self.bullet_speed_upgrade(1)
                             else:
@@ -1499,6 +1429,7 @@ class XP_Bar():
                                                       (self.leftoverSize+100-self.offset, 770), 25)
                     self.leftover = 0
             else:
+                # if player has XP but not enough for a full XP level, display the xp bar
                 self.xpBarRect = pygame.draw.line(screen, (28, 36, 192), (100-self.offset, 770),
                                                   ((self.total_length*self.length)+self.leftoverSize
                                                    + 100-self.offset, 770), 25)
@@ -1532,18 +1463,21 @@ class XP_Bar():
     def basic_attack_damage_upgrade(self, option):
         # display information regarding the basic attack damage upgrade and if selected, implement the upgrade.
         if option == 1:
+            # displays to the left
             upgradeBaDam1Render = self.upgradeDesc_font.render('Increase Basic Attack', True, (0, 0, 0))
             screen.blit(upgradeBaDam1Render, (150, 365))
             upgradeBaDam2Render = self.upgradeDesc_font.render('Damage by 10%.', True, (0, 0, 0))
             screen.blit(upgradeBaDam2Render, (150, 390))
 
         elif option == 2:
+            # displays to the right
             upgradeBaDam1Render = self.upgradeDesc_font.render('Increase Basic Attack', True, (0, 0, 0))
             screen.blit(upgradeBaDam1Render, (500, 365))
             upgradeBaDam2Render = self.upgradeDesc_font.render('Damage by 10%.', True, (0, 0, 0))
             screen.blit(upgradeBaDam2Render, (500, 390))
 
         elif not option:
+            # upgrade this ability due to the user selecting this upgrade
             ba.damage *= 1.1
             self.selectedUpgradeChoices = False
             self.levelMenu = False
@@ -1552,18 +1486,21 @@ class XP_Bar():
     def basic_attack_range_upgrade(self, option):
         # display information regarding the basic attack range upgrade and if selected, implement the upgrade.
         if option == 1:
+            # displays to the left
             upgradeBaRa1Render = self.upgradeDesc_font.render('Increase Basic Attack', True, (0, 0, 0))
             screen.blit(upgradeBaRa1Render, (150, 365))
             upgradeBaRa2Render = self.upgradeDesc_font.render('Range by 10%.', True, (0, 0, 0))
             screen.blit(upgradeBaRa2Render, (150, 390))
 
         elif option == 2:
+            # displays to the right
             upgradeBaRa1Render = self.upgradeDesc_font.render('Increase Basic Attack', True, (0, 0, 0))
             screen.blit(upgradeBaRa1Render, (500, 365))
             upgradeBaRa2Render = self.upgradeDesc_font.render('Range by 10%.', True, (0, 0, 0))
             screen.blit(upgradeBaRa2Render, (500, 390))
 
         elif not option:
+            # upgrade this ability due to the user selecting this upgrade
             ba.rangeIncrease += 10
             ba.hitBoxRadius += 14
             self.selectedUpgradeChoices = False
@@ -1573,18 +1510,21 @@ class XP_Bar():
     def basic_attack_speed_upgrade(self, option):
         # display information regarding the basic attack speed upgrade and if selected, implement the upgrade.
         if option == 1:
+            # displays to the left
             upgradeBaSpe1Render = self.upgradeDesc_font.render('Increase Basic Attack', True, (0, 0, 0))
             screen.blit(upgradeBaSpe1Render, (150, 365))
             upgradeBaSpe2Render = self.upgradeDesc_font.render('Speed by 10%.', True, (0, 0, 0))
             screen.blit(upgradeBaSpe2Render, (150, 390))
 
         elif option == 2:
+            # displays to the right
             upgradeBaSpe1Render = self.upgradeDesc_font.render('Increase Basic Attack', True, (0, 0, 0))
             screen.blit(upgradeBaSpe1Render, (500, 365))
             upgradeBaSpe2Render = self.upgradeDesc_font.render('Speed by 10%.', True, (0, 0, 0))
             screen.blit(upgradeBaSpe2Render, (500, 390))
 
         elif not option:
+            # upgrade this ability due to the user selecting this upgrade
             ba.timerTarget *= .9
             self.selectedUpgradeChoices = False
             self.levelMenu = False
@@ -1593,18 +1533,21 @@ class XP_Bar():
     def move_speed_upgrade(self, option):
         # display information regarding the movement speed upgrade and if selected, implement the upgrade.
         if option == 1:
+            # displays to the left
             upgradeBaSpe1Render = self.upgradeDesc_font.render('Increase Player Move', True, (0, 0, 0))
             screen.blit(upgradeBaSpe1Render, (150, 365))
             upgradeBaSpe2Render = self.upgradeDesc_font.render('Speed by 10%.', True, (0, 0, 0))
             screen.blit(upgradeBaSpe2Render, (150, 390))
 
         elif option == 2:
+            # displays to the right
             upgradeBaSpe1Render = self.upgradeDesc_font.render('Increase Player Move', True, (0, 0, 0))
             screen.blit(upgradeBaSpe1Render, (500, 365))
             upgradeBaSpe2Render = self.upgradeDesc_font.render('Speed by 10%.', True, (0, 0, 0))
             screen.blit(upgradeBaSpe2Render, (500, 390))
 
         elif not option:
+            # upgrade this ability due to the user selecting this upgrade
             p.speed *= 1.1
             self.selectedUpgradeChoices = False
             self.levelMenu = False
@@ -1613,18 +1556,21 @@ class XP_Bar():
     def dodge_chance_upgrade(self, option):
         # display information regarding the dodge chance upgrade and if selected, implement the upgrade.
         if option == 1:
+            # displays to the left
             upgradeDodge1Render = self.upgradeDesc_font.render('Increase Dodge', True, (0, 0, 0))
             screen.blit(upgradeDodge1Render, (150, 365))
             upgradeDodge2Render = self.upgradeDesc_font.render('Chance by 2%.', True, (0, 0, 0))
             screen.blit(upgradeDodge2Render, (150, 390))
 
         elif option == 2:
+            # displays to the right
             upgradeDodge1Render = self.upgradeDesc_font.render('Increase Dodge', True, (0, 0, 0))
             screen.blit(upgradeDodge1Render, (500, 365))
             upgradeDodge2Render = self.upgradeDesc_font.render('Chance by 2%.', True, (0, 0, 0))
             screen.blit(upgradeDodge2Render, (500, 390))
 
         elif not option:
+            # upgrade this ability due to the user selecting this upgrade
             p.dodgeChance += 2
             self.selectedUpgradeChoices = False
             self.levelMenu = False
@@ -1633,18 +1579,21 @@ class XP_Bar():
     def bullet_damage_upgrade(self, option):
         # display information regarding the bullet damage upgrade and if selected, implement the upgrade.
         if option == 1:
+            # displays to the left
             upgradeBulDam1Render = self.upgradeDesc_font.render('Increase Bullet', True, (0, 0, 0))
             screen.blit(upgradeBulDam1Render, (150, 365))
             upgradeBulDam2Render = self.upgradeDesc_font.render('Damage by 10%.', True, (0, 0, 0))
             screen.blit(upgradeBulDam2Render, (150, 390))
 
         elif option == 2:
+            # displays to the right
             upgradeBulDam1Render = self.upgradeDesc_font.render('Increase Bullet', True, (0, 0, 0))
             screen.blit(upgradeBulDam1Render, (500, 365))
             upgradeBulDam2Render = self.upgradeDesc_font.render('Damage by 10%.', True, (0, 0, 0))
             screen.blit(upgradeBulDam2Render, (500, 390))
 
         elif not option:
+            # upgrade this ability due to the user selecting this upgrade
             b.damage *= 1.1
             self.selectedUpgradeChoices = False
             self.levelMenu = False
@@ -1653,20 +1602,22 @@ class XP_Bar():
     def bullet_range_upgrade(self, option):
         # display information regarding the bullet range upgrade and if selected, implement the upgrade.
         if option == 1:
+            # displays to the left
             upgradeBulRan1Render = self.upgradeDesc_font.render('Increase Bullet', True, (0, 0, 0))
             screen.blit(upgradeBulRan1Render, (150, 365))
             upgradeBulRan2Render = self.upgradeDesc_font.render('Range by 10%.', True, (0, 0, 0))
             screen.blit(upgradeBulRan2Render, (150, 390))
 
         elif option == 2:
+            # displays to the right
             upgradeBulDam1Render = self.upgradeDesc_font.render('Increase Bullet', True, (0, 0, 0))
             screen.blit(upgradeBulDam1Render, (500, 365))
             upgradeBulRan2Render = self.upgradeDesc_font.render('Range by 10%.', True, (0, 0, 0))
             screen.blit(upgradeBulRan2Render, (500, 390))
 
         elif not option:
+            # upgrade this ability due to the user selecting this upgrade
             b.bulletDistance *= 1.1
-            # print(b.bulletDistance)
             self.selectedUpgradeChoices = False
             self.levelMenu = False
             self.selected = True
@@ -1674,19 +1625,21 @@ class XP_Bar():
     def bullet_speed_upgrade(self, option):
         # display information regarding the bullet speed upgrade and if selected, implement the upgrade.
         if option == 1:
+            # displays to the left
             upgradeBulSpe1Render = self.upgradeDesc_font.render('Increase Bullet', True, (0, 0, 0))
             screen.blit(upgradeBulSpe1Render, (150, 365))
             upgradeBulSpe2Render = self.upgradeDesc_font.render('Speed by 5%.', True, (0, 0, 0))
             screen.blit(upgradeBulSpe2Render, (150, 390))
 
         elif option == 2:
+            # displays to the right
             upgradeBulSpe1Render = self.upgradeDesc_font.render('Increase Bullet', True, (0, 0, 0))
             screen.blit(upgradeBulSpe1Render, (500, 365))
             upgradeBulSpe2Render = self.upgradeDesc_font.render('Speed by 5%.', True, (0, 0, 0))
             screen.blit(upgradeBulSpe2Render, (500, 390))
 
         elif not option:
-            # b.bulletIncrement *= .95
+            # upgrade this ability due to the user selecting this upgrade
             b.bulletSpawnSpeed *= .95
             self.selectedUpgradeChoices = False
             self.levelMenu = False
@@ -1707,6 +1660,7 @@ bullets = []
 
 
 def resetStats():
+    # resets the stats so the player can start fresh when they die
     global gameTime
     global xpB
     global xp
@@ -1737,9 +1691,9 @@ def text_objects(text, font):
 
 # adding the ability to implement buttons
 def button(msg, x, y, w, h, ic, ac, action):
+    # if buttons are pressed, activate the appropriate functions
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
-    # print(click)
     global pause
     global game
     global activateBullet
@@ -1761,6 +1715,7 @@ def button(msg, x, y, w, h, ic, ac, action):
             elif action == "Quit":
                 game = False
                 pygame.quit()
+                sys.exit()
             elif action == "Play":
                 if p.death:
                     resetStats()
@@ -1798,6 +1753,7 @@ seconds = 0
 def start_game_time():
     global gameTime
     if xpB.pauseTimer:
+        # if a menu was paused, subtract the time paused from the global game time
         gameTime = pygame.time.get_ticks() - xpB.pauseTimer
     else:
         gameTime = pygame.time.get_ticks()
@@ -1805,10 +1761,12 @@ def start_game_time():
     global gameTimeStr
     gameTimeStr = int((gameTime-prevGameTime)/1000)
     if gameTimeStr < 60:
+        # if the game time is less than a minute, set gameTimeStr to the time
         gameTimeStr = str(int((gameTime-prevGameTime)/1000))
         global seconds
         seconds = int(gameTimeStr) % 60
     elif gameTimeStr >= 60:
+        # if the game time is more than or equal than a minute, set gameTimeStr to the game time
         global minutes
         # global seconds
         minutes = gameTimeStr / 60
@@ -1917,6 +1875,7 @@ def mainMenu():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
+                sys.exit()
         # sets the main menu background
         screen.blit(dungeonBackground, (0, 0))
         # establishing the text for the title on the menu
@@ -1941,6 +1900,7 @@ def mainMenu():
 
 
 def deathScreen():
+    # displays a death screen if the player dies
     info = pygame.display.Info()
     screen_width, screen_height = info.current_w, info.current_h
     global pause
@@ -1973,6 +1933,7 @@ def deathScreen():
 
 
 def pauseGame():
+    # displays a pause menu while the game is paused
     startTime = pygame.time.get_ticks()
     info = pygame.display.Info()
     screen_width, screen_height = info.current_w, info.current_h
@@ -2015,6 +1976,7 @@ def pauseGame():
 
 # function to run the settings menu, which is accessible through the pause menu
 def settingsMenu():
+    # displays the settings menu
     startTime = pygame.time.get_ticks()
     info = pygame.display.Info()
     screen_width, screen_height = info.current_w, info.current_h
@@ -2114,10 +2076,8 @@ while game:
 
     fps = clock.get_fps()
 
-    clock.tick(60)
     # sets the fps to 60
-    # pygame.time.delay(5)
-    # adds a very small delay to make it feel more like a game
+    clock.tick(60)
 
     # Introducing a pause function for the buttons and game pause functionality
     pause = False
@@ -2175,9 +2135,7 @@ while game:
     # makes the main character visible
     screen.blit(pygame.transform.scale(mc_img, (40, 35)), (p.rect.x, p.rect.y))
 
-    # bulletTimer2 = (pygame.time.get_ticks() / 1000)
     bulletTimer2 = gameTime / 1000
-    # if bulletTimer1
     if seconds % b.bulletIncrement == 0:
         activateBullet = True
     # if bulletTimer2 > bulletTimer1:
@@ -2195,11 +2153,12 @@ while game:
         # print(activateBullet)
     for bullet in bullets:
         if bullet.bulletValid:
-            # if bullet ability has been activated
+            # if bullet ability has been activated, then have the bullet move
             pygame.draw.circle(screen, (255, 255, 255), (bullet.rect.x+18, bullet.rect.y+17), 10)
             bullet.bullet()
 
     if len(enemies) < 15:
+        # if the number of slimes is less than 15, spawn more slime in
         xCoord = random.randint(-340, 990)
         yCoord = random.randint(-340, 990)
         enemy_length = len(enemies)
@@ -2211,6 +2170,7 @@ while game:
         enemies.append(Enemy(xCoord, yCoord))
 
     if len(bats) < 8:
+        # if the number of bats is less than 8, spawn more bats in
         xCoord = random.randint(-340, 990)
         yCoord = random.randint(-340, 990)
         bat_length = len(bats)
@@ -2224,17 +2184,13 @@ while game:
     for enemy in enemies:
         # go through each enemy and control the spawning and movements
         if not enemy.spawned:
-            # enemy.spawnTimer = pygame.time.get_ticks()
             pygame.draw.circle(screen, (128, 0, 32), (enemy.rect.x, enemy.rect.y), 16)
             enemy.spawnTimer += 1
             if enemy.spawnTimer >= 75:
                 enemy.spawned.append(1)
                 enemy.spawnIndicator = None
-                # screen.blit(pygame.transform.scale(enemy1, (35, 30)), (enemy.rect.x, enemy.rect.y))
-                # enemy.generate_enemy()
-                # enemy.follow_mc()
-                # enemy.spawnTimer = 0
         else:
+            # if enemy has spawned, go through the animations and collision detection
             if enemy.animation <= 15:
                 screen.blit(pygame.transform.scale(enemy4, (45, 40)), (enemy.rect.x-6, enemy.rect.y-6))
                 enemy.animation += 1
@@ -2262,12 +2218,6 @@ while game:
                                                   (enemy.rect.x + 16, enemy.rect.y + 16), 8)
             enemy.generate_enemy()
             enemy.follow_mc()
-            # pygame.draw.rect(screen, (255,0,0), enemy.rect)
-            # pygame.draw.rect(screen, (255,0,0), enemy.midDotRect)
-            # pygame.draw.rect(screen, (128,0,128), enemy.northRect)
-            # pygame.draw.rect(screen, (128,0,128), enemy.eastRect)
-            # pygame.draw.rect(screen, (128,0,128), enemy.southRect)
-            # pygame.draw.rect(screen, (128,0,128), enemy.westRect)
 
             for bullet in bullets:
                 # for each active bullet, if the bullet hits an enemy, deal damage if appropriate conditions met.
@@ -2295,6 +2245,7 @@ while game:
                 enemy.meleeAttackCollisions.append(1)
 
             if sk.activate and not sk.felled:
+                # if the skeleton king is active and not killed and it hit by the players basic attack, the boss  takes damage
                 if sk.rect.colliderect(ba.hitBoxRect) and ba.running and not sk.meleeAttackCollisions:
                     sk.health -= ba.damage
                     sk.meleeAttackCollisions.append(1)
@@ -2306,24 +2257,27 @@ while game:
                 enemies.remove(enemy)
             chance = random.randint(1, 10)
             if chance <= 2:
+                # chance for the player to get gold
                 p.gold += 1
-        # print(gameTime)
         if (enemy.rect.colliderect(p.rect) or enemy.northRect.colliderect(p.rect) or
                 enemy.eastRect.colliderect(p.rect) or enemy.southRect.colliderect(p.rect) or
                 enemy.westRect.colliderect(p.rect)):
-            # print("COLLIDE!!!")
+            # activates if the player collides with any of the slimes directional hitboxes
             if enemy.playerCollideCounter >= 17:
+                # measures how fast the player should take damage after entering collision with slime
                 checkingDodge = random.randint(0, 100)
                 if checkingDodge <= p.dodgeChance:
-                    pass
+                    # dodges damage if dodge percent is rolled
+                    enemy.playerCollideCounter = 0
                 else:
+                    # have the player take damage
                     p.health -= 15
                     enemy.playerCollideCounter = 0
-                    print("PLAYER DAMAGE TAKEN")
-                    print(p.health)
             else:
+                # increase counter if player is still colliding with enemy
                 enemy.playerCollideCounter += 1
         else:
+            # reset counter
             enemy.playerCollideCounter = 0
 
 
@@ -2336,6 +2290,7 @@ while game:
                 bat.spawned.append(1)
                 bat.spawnIndicator = None
         else:
+            # go through bat animations and collision detection
             if bat.animation <= 15:
                 screen.blit(pygame.transform.scale(batImg1, (45, 40)), (bat.rect.x-2, bat.rect.y+5))
                 bat.animation += 1
@@ -2387,32 +2342,43 @@ while game:
                 bats.remove(bat)
             chance = random.randint(1, 10)
             if chance <= 2:
+                # chance for the player to get gold
                 p.gold += 1
 
         if (bat.rect.colliderect(p.rect) or bat.northRect.colliderect(p.rect) or
                 bat.eastRect.colliderect(p.rect) or bat.southRect.colliderect(p.rect) or
                 bat.westRect.colliderect(p.rect)):
-            # print("COLLIDE!!!")
+            # activates if the player collides with any of the bats directional hitboxes
             if bat.playerCollideCounter >= 17:
+                # measures how fast the player should take damage after entering collision with bats
                 checkingDodge = random.randint(0, 100)
                 if checkingDodge <= p.dodgeChance:
-                    pass
+                    # dodges damage if dodge percent is rolled
+                    bat.playerCollideCounter = 0
                 else:
+                    # have the player take damage
                     p.health -= 16
                     bat.playerCollideCounter = 0
 
             else:
+                # increase counter if player is still colliding with enemy
                 bat.playerCollideCounter += 1
         else:
+            # reset counter
             bat.playerCollideCounter = 0
 
-    if int(minutes) == 5 and int(seconds) == 0:
+    if int(minutes) == 1 and int(seconds) == 30:
+        # skeleton king spawns once the game time reaches a minute and thirty seconds
         sk.activate = True
+
     if sk.activate and not sk.felled:
+        # if the skeleton king has spawned and not been killed, have them follow around the player
         sk.generate_enemy()
+        sk.follow_mc()
         sk.attack()
 
     if sk.activate and not sk.felled:
+        # check for collisions for the skeleton king
         for bullet in bullets:
             # for each active bullet, if the bullet hits the skeleton king boss,
             # deal damage if appropriate conditions met.
@@ -2421,7 +2387,6 @@ while game:
                     # if the skeleton king boss has encountered it's first bullet, add to the list and take damage
                     sk.bulletCollisions.append(bullet)
                     sk.health -= b.damage
-                    # print('1')
                 elif sk.bulletCollisions:
                     # if the list of bullets the skeleton king boss has collided with is greater than 0,
                     # make sure it is a different bullet in order to deal damage
@@ -2431,9 +2396,9 @@ while game:
                                 bullet.rect.y == sk.bulletCollisions[i].rect.y):
                             pass
                         elif bullet not in sk.bulletCollisions and bullet.bulletValid:
+                            # have the skeleton king take damage if hit with a bullet they havent been hit by
                             sk.bulletCollisions.append(bullet)
                             sk.health -= b.damage
-                            # print('2')
                         i += 1
         for bullet in bullets:
             # removes expired bullets from the skeleton king boss bullet collision list
@@ -2444,8 +2409,8 @@ while game:
             # backup to remove expired bullets from the skeleton king boss bullet collision list
             for g in sk.bulletCollisions:
                 if not g.rect.colliderect(sk.rect):
+                    # removes collided bullet from skeleton kings bullet collisions list
                     sk.bulletCollisions.remove(g)
-                    # print("BULLET REMOVED-2")
 
     for bullet in bullets:
         # check if any of the bullets are actually still colliding with enemies,
@@ -2454,17 +2419,21 @@ while game:
         enemiesHit = []
         enemiesNotHit = []
         for enemy in enemies:
+            # checking for if active and non-active bullets are colliding with enemies, and if not, remove those bullets
+            # from the enemies bullet collision list
             if bullet.rect.colliderect(enemy.rect):
                 counter += 1
                 enemiesHit.append(enemy)
             else:
                 enemiesNotHit.append(enemy)
         if not counter:
+            # if a bullet is no longer hitting the enemy it collided with before, then remove that bullet from the enemies bullet collision list
             for l in enemiesNotHit:
                 if bullet in l.bulletCollisions:
                     l.bulletCollisions.remove(bullet)
         if (bullet.rect.x <= m.leftBoundaryX or bullet.rect.x >= m.rightBoundaryX or bullet.rect.y <= m.topBoundaryY or
                 bullet.rect.y >= m.bottomBoundaryY):
+            # removes bullets if they go out of the map boundaries
             if bullet in bullets:
                 bullets.remove(bullet)
 
@@ -2475,56 +2444,36 @@ while game:
         batsHit = []
         batsNotHit = []
         for bat in bats:
+            # checking for if active and non-active bullets are colliding with bats, and if not, remove those bullets
+            # from the enemies bullet collision list
             if bullet.rect.colliderect(bat.rect):
                 counter += 1
                 batsHit.append(bat)
             else:
                 batsNotHit.append(bat)
         if not counter:
+            # if a bullet is no longer hitting the enemy it collided with before, then remove that bullet from the bats bullet collision list
             for l in batsNotHit:
                 if bullet in l.bulletCollisions:
                     l.bulletCollisions.remove(bullet)
         if (bullet.rect.x <= m.leftBoundaryX or bullet.rect.x >= m.rightBoundaryX or bullet.rect.y <= m.topBoundaryY or
                 bullet.rect.y >= m.bottomBoundaryY):
+            # removes bullets if they go out of the map boundaries
             if bullet in bullets:
                 bullets.remove(bullet)
 
-    # print(sk.bulletCollisions)
-    # print(sk.health)
-
     if sk.health <= 0:
+        # removes the skeleton king if they are at or below zero health
         sk.felled = True
         sk.activate = False
         sk.rect = None
 
-    # for bat in bats:
-    #     if bat.spawned:
-    #         rando = random.randint(1,10)
-    #         if rando < 2:
-    #             pygame.draw.rect(screen, (255,0,0), bat.rect)
-    #             pygame.draw.rect(screen, (128,0,128), bat.northRect)
-    #             pygame.draw.rect(screen, (128,0,128), bat.eastRect)
-    #             pygame.draw.rect(screen, (128,0,128), bat.southRect)
-    #             pygame.draw.rect(screen, (128,0,128), bat.westRect)
-
-    # screen.blit(pygame.transform.scale(mc_img, (40, 35)), (p.rect.x, p.rect.y))
-    # if gameTime % 2 == 0:
-    #     for bat in bats:
-    #         bat.shoot()
-
-
-
-    # for bat in bats:
-    #     pygame.draw.rect(screen, (128,0,128), bat.rect)
-    # for enemy in enemies:
-    #     pygame.draw.rect(screen, (255,0,0), enemy.rect)
-    #
-    # pygame.draw.rect(screen, (0,255,0), p.rect)
     b.bulletCounter += 1
     ba.attack()
     m.update_boundary()
     display_timer(gameTimeStr, timerFont, (0, 0, 0))
     display_fps(fps, fpsFont, (0, 255, 0))
+    p.display_health()
     xpB.show_xp_bar()
     index = 0
     numOfEnemies = len(enemies)
@@ -2532,33 +2481,4 @@ while game:
     pygame.display.update()
 
 pygame.quit()
-
-
-"""
-
-The reason why the enemy physics goes insane after 2 spawned enemies is because we are iterating
-through each enemy and adjusting movements per each enemy.
-
-Possible fix: Iterate through each enemy like we have been, however, instead of actually moving
-the enemy for each iteration, just have specific variables such as northOpen or northClosed. After
-iterating through each enemy and ascertaining the available directions, whatever direction variables
-are true, then execute the movement code.
-
-
-
-
-The reason why the enemies can stack on top of one another instead of going around the enemy to the
-player is because of the > than 50 line of code. If changed to > 25, then the direction of the
-enemy will be randomly picked, however, the direction is continually randomly picked, due to this,
-if the options were either east or west and it picked east, it would go east for that one loop,
-however, immediately after it could also pick west, so it keeps going back and forth looking like it
-is shaking. Ideally, have it pick one random direction, then have that direction saved for a couple
-seconds so that it will keep going in that direction. As a "band-aid" solution, we could just have
-enemy default to one of the two directions if both are available.
-
-Perhaps, if Player has no enemies on specific side, tell enemies to go in that direction to better
-surround the Player.
-
-
-
-"""
+sys.exit()
