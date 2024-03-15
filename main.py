@@ -41,7 +41,7 @@ mediumScroll = pygame.image.load("./images/medium2.png").convert_alpha()
 horizontalScroll = pygame.image.load("./images/horizontalScroll.png").convert_alpha()
 horizontalScroll = pygame.transform.scale_by(horizontalScroll, 0.3)
 buttonScroll = pygame.image.load("./images/buttonScroll.png").convert_alpha()
-buttonScroll = pygame.transform.scale_by(buttonScroll, 0.4)
+buttonScroll = pygame.transform.scale_by(buttonScroll, 0.6)
 
 # initializing the dungeon background
 dungeonBackground = pygame.image.load("./images/dungeonBackground2.png").convert_alpha()
@@ -1871,11 +1871,28 @@ def credits():
         screen.blit(dungeonBackground, (0, 0))
         # establishing text for menu
         largeText = pygame.font.SysFont('Garamond', 100, bold=True)
+        maintext = pygame.font.SysFont('Garamond', 20, bold=True)
         TextSurf, TextRect = text_objects("Credits", largeText)
+        textsurf3, textrect3 = text_objects("twitter @HelloRumin - map tiles", maintext)
+        textsurf4, textrect4 = text_objects("itch.io NekoIndie - slime/bat enemies", maintext)
+        textsurf5, textrect5 = text_objects("pngtree.com - scroll image behind menu screen titles", maintext)
+        textsurf6, textrect6 = text_objects("gamedeveloperstudio.itch.io/ - Upgrade scroll buttons", maintext)
+        textsurf7, textrect7 = text_objects("rawpixel.com - scroll image behind these credits!", maintext)
         TextRect.center = ((screen_width/2), (screen_height/3.3))
+        textrect3.center = ((screen_width / 2), (screen_height / 3.3) + 200)
+        textrect4.center = ((screen_width / 2), (screen_height / 3.3) + 230)
+        textrect5.center = ((screen_width / 2), (screen_height / 3.3) + 260)
+        textrect6.center = ((screen_width / 2), (screen_height / 3.3) + 290)
+        textrect7.center = ((screen_width / 2), (screen_height / 3.3) + 320)
         screen.blit(horizontalScroll, (screen_width/2 - 288, screen_height/10))
+        screen.blit(buttonScroll, ((screen_width/2) -360, (screen_height/2.2) ))
         # putting text on menu
         screen.blit(TextSurf, TextRect)
+        screen.blit(textsurf3, textrect3)
+        screen.blit(textsurf4, textrect4)
+        screen.blit(textsurf5, textrect5)
+        screen.blit(textsurf6, textrect6)
+        screen.blit(textsurf7, textrect7)
         # need to put credits in here
 
         pygame.display.update()
@@ -1901,6 +1918,7 @@ def mainMenu():
         screen.blit(dungeonBackground, (0, 0))
         # establishing the text for the title on the menu
         largeText = pygame.font.SysFont('Garamond', 80, bold=True)
+        maintext = pygame.font.SysFont('Garamond', 20, bold=True)
         TextSurf, TextRect = text_objects("Rogue", largeText)
         TextSurf2, TextRect2 = text_objects("Survival", largeText)
         TextRect.center = ((screen_width / 2), (screen_height / 3.3)-40)
