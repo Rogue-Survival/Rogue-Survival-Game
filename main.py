@@ -2046,6 +2046,9 @@ def mainMenu():
     global pause
 
     while pause:
+        global gameTime
+        tempTimer = pygame.time.get_ticks() - gameTime
+        xpB.pauseTimer = tempTimer
         for event in pygame.event.get():
             print(event)
             if event.type == pygame.QUIT:
