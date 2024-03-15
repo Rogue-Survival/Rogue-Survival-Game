@@ -1881,6 +1881,7 @@ def resetStats():
     m = Map()
     b = Bullet()
     gameTime = 0
+    p.death = False
 
 
 # adds ability for text to be on screen
