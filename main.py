@@ -1,8 +1,9 @@
-import pygame
-import random
-import math
-import numpy
 import sys
+import math
+import random
+import numpy
+import pygame
+
 
 # initializes the pygame library
 pygame.init()
@@ -120,7 +121,7 @@ class Player(pygame.sprite.Sprite):
         # inherits from the pygame.sprite.Sprite class
         pygame.sprite.Sprite.__init__(self)
         self.speed = 4
-        self.health = 500
+        self.health = 5000000
         self.image = "./images/MAIN_CHARACTER.png"
         self.death = False
         self.rect = mc_img.get_rect().scale_by(2, 2)
@@ -166,6 +167,11 @@ class Player(pygame.sprite.Sprite):
                 bat.east_rect.x = bat.rect.x + bat.east_x_val
                 bat.south_rect.x = bat.rect.x + bat.south_x_val
                 bat.west_rect.x = bat.rect.x - bat.west_x_val
+
+                bat.bulletRect.x += self.speed
+                if bat.bulletValid:
+                    bat.playerPOS[0] += self.speed
+                    bat.startingPoint[0] += self.speed
             for x in xp:
                 # moves the XP due to the effects of the player camera
                 x.x += self.speed
@@ -212,6 +218,11 @@ class Player(pygame.sprite.Sprite):
                 bat.east_rect.x = bat.rect.x + bat.east_x_val
                 bat.south_rect.x = bat.rect.x + bat.south_x_val
                 bat.west_rect.x = bat.rect.x - bat.west_x_val
+
+                bat.bulletRect.x -= self.speed
+                if bat.bulletValid:
+                    bat.playerPOS[0] -= self.speed
+                    bat.startingPoint[0] -= self.speed
             for x in xp:
                 # moves the XP due to the effects of the player camera
                 x.x -= self.speed
@@ -257,6 +268,11 @@ class Player(pygame.sprite.Sprite):
                 bat.east_rect.y = bat.rect.y + bat.east_y_val
                 bat.south_rect.y = bat.rect.y + bat.south_y_val
                 bat.west_rect.y = bat.rect.y + bat.west_y_val
+
+                bat.bulletRect.y += self.speed
+                if bat.bulletValid:
+                    bat.playerPOS[1] += self.speed
+                    bat.startingPoint[1] += self.speed
             for x in xp:
                 # moves the XP due to the effects of the player camera
                 x.y += self.speed
@@ -302,6 +318,11 @@ class Player(pygame.sprite.Sprite):
                 bat.east_rect.y = bat.rect.y + bat.east_y_val
                 bat.south_rect.y = bat.rect.y + bat.south_y_val
                 bat.west_rect.y = bat.rect.y + bat.west_y_val
+
+                bat.bulletRect.y -= self.speed
+                if bat.bulletValid:
+                    bat.playerPOS[1] -= self.speed
+                    bat.startingPoint[1] -= self.speed
             for x in xp:
                 # moves the XP due to the effects of the player camera
                 x.y -= self.speed
@@ -1076,7 +1097,7 @@ class Bat(Enemy):
         self.rect.x = x
         self.rect.y = y
         self.rect.width = 40
-        self.health = 75
+        self.health = 215
         self.speed = random.uniform(.6, .8)
         self.follow_mc()
         self.travel_north()
@@ -1084,6 +1105,155 @@ class Bat(Enemy):
         self.travel_south()
         self.travel_west()
         self.bat = True
+        self.playerPOS = ()
+        self.found = False
+        self.bulletRect = pygame.draw.circle(transparent_surface, (128,12,128), (self.rect.x, self.rect.y), 12)
+        self.bulletSpeed = 25/3
+        self.spawned2 = []
+        self.positionReached = False
+        self.goFourthA = False
+        self.goThirdA = False
+        self.goSecondA = False
+        self.goFirstA = False
+        self.angle = 0
+        self.counter = 0
+        self.targetX = 0
+        self.targetY = 0
+        self.startingPoint = []
+        self.shoot_timer = 0
+        self.bulletValid = False
+        self.hitCounter = 0
+        self.spawned = False
+
+    def decide_action(self):
+        # time to run at player (If within a certain distance from player, then just run, ignore shooting)
+        # time to stop and shoot at player (get close enough to player to shoot but keep distance, doesn't run if too close)
+
+        if (abs(self.rect.x - p.rect.x) >= 165 or abs(self.rect.y - p.rect.y) >= 165) and self.spawned:
+            self.follow_mc()
+            # print(self.spawned)
+        if self.shoot_timer >= 150:
+            self.shoot()
+
+        self.shoot_timer += 1
+
+
+    def find_angle(self):
+        if self.spawned:
+            if not self.found:
+                self.targetX = p.rect.x+18
+                self.targetY = p.rect.y+17
+                self.startingPoint = [self.rect.x, self.rect.y]
+                self.playerPOS = [self.targetX, self.targetY]
+                self.bulletRect.x = self.rect.x
+                self.bulletRect.y = self.rect.y
+
+                if self.targetX > self.startingPoint[0] and self.targetY < self.startingPoint[1]:
+                    # first quadrant
+                    newTriangle = pygame.math.Vector2(self.targetX - self.startingPoint[0], self.targetY - self.startingPoint[1])
+                    self.angle = -(numpy.rad2deg(numpy.arctan(newTriangle[1]/newTriangle[0])))
+                elif self.targetX > self.startingPoint[0] and self.targetY > self.startingPoint[1]:
+                    # fourth quadrant
+                    newTriangle = pygame.math.Vector2(self.targetX - self.startingPoint[0], self.targetY - self.startingPoint[1])
+                    self.angle = (numpy.rad2deg(numpy.arctan(newTriangle[1]/newTriangle[0])))
+                elif self.targetX < self.startingPoint[0] and self.targetY < self.startingPoint[1]:
+                    # second quadrant
+                    newTriangle = pygame.math.Vector2(self.startingPoint[0] - self.targetX, self.startingPoint[1] - self.targetY)
+                    self.angle = (numpy.rad2deg(numpy.arctan(newTriangle[1]/newTriangle[0])))
+                elif self.targetX < self.startingPoint[0] and self.targetY > self.startingPoint[1]:
+                    # third quadrant
+                    newTriangle = pygame.math.Vector2(self.startingPoint[0] - self.targetX, self.startingPoint[1] - self.targetY)
+                    self.angle = (numpy.rad2deg(numpy.arctan(newTriangle[1]/newTriangle[0])))
+
+                self.found = True
+                self.shoot()
+    def shoot(self):
+        if self.spawned:
+            if not self.found:
+                self.find_angle()
+            # print(f'b.x: {self.bulletRect.x}')
+            # print(f'b.y: {self.bulletRect.y}')
+            # print(f'p.x: {self.playerPOS[0]}')
+            # print(f'p.y: {self.playerPOS[1]}')
+            # if abs(self.bulletRect.x - self.playerPOS[0]) < 25 and abs(self.bulletRect.y - self.playerPOS[1]) < 25 or self.counter >= 300:
+            if self.counter >= 150:
+                self.bulletRect.x = self.rect.x
+                self.bulletRect.y = self.rect.y
+                self.bulletRect = pygame.draw.circle(transparent_surface, (128,12,128), (self.rect.x, self.rect.y), 12)
+                self.bulletValid = False
+                self.positionReached = False
+                self.goFourthA = False
+                self.goThirdA = False
+                self.goSecondA = False
+                self.goFirstA = False
+                self.found = False
+                self.counter = 0
+                self.shoot_timer = 0
+                self.playerPOS = ()
+                self.angle = 0
+                self.hitCounter = 0
+                # print("RESET")
+
+            else:
+                self.bulletValid = True
+
+                if self.bulletRect.x <= self.playerPOS[0] and self.bulletRect.y <= self.playerPOS[1] and not self.goFirstA and not self.goSecondA and not self.goThirdA or self.goFourthA:
+                    # fourth quadrant - travels to mouse position
+                    self.bulletRect.y += math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
+                    self.bulletRect.x += math.cos(self.angle * (2*math.pi/360)) * self.bulletSpeed
+                    self.goFourthA = True
+                    # print(self.angle)
+                    # print("YUHH")
+                    # self.bulletRect.y += self.bulletSpeed
+                    # self.bulletRect.x += self.bulletSpeed
+
+                elif self.bulletRect.x >= self.playerPOS[0] and self.bulletRect.y <= self.playerPOS[1] and not self.goFirstA and not self.goSecondA and not self.goFourthA or self.goThirdA:
+                    # third quadrant - travels to mouse position
+                    self.bulletRect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
+                    self.bulletRect.x -= math.cos(self.angle * (2*math.pi/360)) * self.bulletSpeed
+                    self.goThirdA = True
+                    # print("OOOOOOO")
+                    # self.bulletRect.y -= self.bulletSpeed
+                    # self.bulletRect.x -= self.bulletSpeed
+
+                elif self.bulletRect.x >= self.playerPOS[0] and self.bulletRect.y >= self.playerPOS[1] and not self.goFirstA and not self.goThirdA and not self.goFourthA or self.goSecondA:
+                    # second quadrant - travels to mouse position
+                    self.bulletRect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
+                    self.bulletRect.x -= math.cos(self.angle * (2*math.pi/360)) * self.bulletSpeed
+                    self.goSecondA = True
+                    # print("AHHHHHH")
+                    # self.bulletRect.y -= self.bulletSpeed
+                    # self.bulletRect.x -= self.bulletSpeed
+
+                elif self.bulletRect.x <= self.playerPOS[0] and self.bulletRect.y >= self.playerPOS[1] and not self.goSecondA and not self.goThirdA and not self.goFourthA or self.goFirstA:
+                    # first quadrant - travels to mouse position
+                    self.bulletRect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
+                    self.bulletRect.x += math.cos(self.angle * (2*math.pi/360)) * self.bulletSpeed
+                    self.goFirstA = True
+                    # print("EEEEEEE")
+                    # self.bulletRect.y -= self.bulletSpeed
+                    # self.bulletRect.x += self.bulletSpeed
+
+                # else:
+                #     print("NUUUUUU")
+                #     # if self.playerPOS[1] == self.startingPoint
+                #     if self.playerPOS[1] >= self.startingPoint[1] and (abs(self.playerPOS[0]) - self.startingPoint[0]) < 15:
+                #         self.bulletRect.y += math.sin(90 * (2*math.pi/360)) * self.bulletSpeed
+                #     elif self.playerPOS[1] <= self.startingPoint[1] and (abs(self.playerPOS[0]) - self.startingPoint[0]) < 15:
+                #         self.bulletRect.y -= math.sin(90 * (2*math.pi/360)) * self.bulletSpeed
+                #     elif abs(self.playerPOS[1] - self.startingPoint[1]) <= 5 and self.playerPOS[0] >= self.startingPoint[0]:
+                #         self.bulletRect.x += math.cos(self.angle * (2*math.pi/360)) * self.bulletSpeed
+                # self.bulletRect = pygame.draw.circle(screen, (128,12,128), (self.bulletRect.x, self.bulletRect.y), 12)
+
+                pygame.draw.circle(screen, (167,28,111), (self.bulletRect.x+12, self.bulletRect.y+12), 12)
+
+
+
+                # pygame.draw.rect(screen, (100,0,255), self.bulletRect)
+                if self.bulletRect.colliderect(p.rect) and not self.hitCounter:
+                    p.health -= 15
+                    self.hitCounter += 1
+                self.counter += 1
 
 
 # First mini Boss clas code \/
@@ -1342,7 +1512,7 @@ class SkeletonKing(Enemy):
             self.main_right_leg_rect = pygame.draw.rect(transparent_surface, (255, 0, 0),
                                                         pygame.Rect(self.rect.x + 226, self.rect.y + 190, 22, 10))
 
-        self.follow_mc()
+        # self.follow_mc()
         self.run_counter += 1
 
     def follow_mc(self):
@@ -2515,7 +2685,8 @@ while game:
             pygame.draw.circle(screen, (160, 85, 150), (bat.rect.x, bat.rect.y), 16)
             bat.spawn_timer += 1
             if bat.spawn_timer >= 75:
-                bat.spawned.append(1)
+                # bat.spawned.append(1)
+                bat.spawned = True
                 bat.spawn_indicator = None
         else:
             # go through bat animations and collision detection
@@ -2536,7 +2707,7 @@ while game:
             bat.middot_rect = pygame.draw.circle(transparent_surface, (0, 50, 0, 100),
                                                  (bat.rect.x + 16, bat.rect.y + 16), 1)
             # bat.generate_enemy()
-            bat.follow_mc()
+
 
             if b.shooting:
                 for bullet in bullets:
@@ -2804,6 +2975,21 @@ while game:
         sk.activate = False
         sk.rect = None
 
+    # for bat in bats:
+    #     if bat.bulletValid:
+    #         if bat.bulletRect.colliderect(p.rect):
+    #             print("YEPPPPPPPPPPPPPPPPPPP")
+    for bat in bats:
+        # pygame.draw.circle(screen, (167,28,111), (bat.bulletRect.x, bat.bulletRect.y), 12)
+        bat.decide_action()
+
+    # pygame.draw.rect(screen, (0,255,0), p.rect)
+    # for bat in bats:
+        # pygame.draw.rect(screen, (0,255,0), bat.bulletRect)
+        # pygame.draw.rect(screen, (0,255,0), bat.rect)
+
+        # if bat.bulletRect.colliderect(p.rect):
+        #     print("HIT!")
     b.bullet_counter += 1
     ba.attack()
     m.update_boundary()
@@ -2811,8 +2997,6 @@ while game:
     display_fps(fps, fps_font, (0, 255, 0))
     p.display_health()
     xpB.show_xp_bar()
-    index = 0
-    numOfEnemies = len(enemies)
     pygame.display.flip()
     pygame.display.update()
 
