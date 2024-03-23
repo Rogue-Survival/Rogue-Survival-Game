@@ -168,10 +168,10 @@ class Player(pygame.sprite.Sprite):
                 bat.south_rect.x = bat.rect.x + bat.south_x_val
                 bat.west_rect.x = bat.rect.x - bat.west_x_val
 
-                bat.bulletRect.x += self.speed
-                if bat.bulletValid:
-                    bat.playerPOS[0] += self.speed
-                    bat.startingPoint[0] += self.speed
+                bat.bullet_rect.x += self.speed
+                if bat.bullet_valid:
+                    bat.player_pos[0] += self.speed
+                    bat.starting_point[0] += self.speed
             for x in xp:
                 # moves the XP due to the effects of the player camera
                 x.x += self.speed
@@ -219,10 +219,10 @@ class Player(pygame.sprite.Sprite):
                 bat.south_rect.x = bat.rect.x + bat.south_x_val
                 bat.west_rect.x = bat.rect.x - bat.west_x_val
 
-                bat.bulletRect.x -= self.speed
-                if bat.bulletValid:
-                    bat.playerPOS[0] -= self.speed
-                    bat.startingPoint[0] -= self.speed
+                bat.bullet_rect.x -= self.speed
+                if bat.bullet_valid:
+                    bat.player_pos[0] -= self.speed
+                    bat.starting_point[0] -= self.speed
             for x in xp:
                 # moves the XP due to the effects of the player camera
                 x.x -= self.speed
@@ -269,10 +269,10 @@ class Player(pygame.sprite.Sprite):
                 bat.south_rect.y = bat.rect.y + bat.south_y_val
                 bat.west_rect.y = bat.rect.y + bat.west_y_val
 
-                bat.bulletRect.y += self.speed
-                if bat.bulletValid:
-                    bat.playerPOS[1] += self.speed
-                    bat.startingPoint[1] += self.speed
+                bat.bullet_rect.y += self.speed
+                if bat.bullet_valid:
+                    bat.player_pos[1] += self.speed
+                    bat.starting_point[1] += self.speed
             for x in xp:
                 # moves the XP due to the effects of the player camera
                 x.y += self.speed
@@ -319,10 +319,10 @@ class Player(pygame.sprite.Sprite):
                 bat.south_rect.y = bat.rect.y + bat.south_y_val
                 bat.west_rect.y = bat.rect.y + bat.west_y_val
 
-                bat.bulletRect.y -= self.speed
-                if bat.bulletValid:
-                    bat.playerPOS[1] -= self.speed
-                    bat.startingPoint[1] -= self.speed
+                bat.bullet_rect.y -= self.speed
+                if bat.bullet_valid:
+                    bat.player_pos[1] -= self.speed
+                    bat.starting_point[1] -= self.speed
             for x in xp:
                 # moves the XP due to the effects of the player camera
                 x.y -= self.speed
@@ -495,6 +495,30 @@ class BulletUpgrade:
         self.upgrade_out = True
         self.upgrade_active = False
         self.animation = 0
+
+    def generate_entity(self):
+        bup.upgrade_out = True
+        if p.orspeed > p.speed:
+            p.speed = p.orspeed
+        if bup.animation <= 15:
+            screen.blit(pygame.transform.scale(bullet_upgrade, (40, 45)), (bup.rect.x, bup.rect.y))
+            bup.animation += 1
+        elif bup.animation <= 30:
+            screen.blit(pygame.transform.scale(bullet_upgrade, (40, 45)), (bup.rect.x, bup.rect.y + 5))
+            bup.animation += 1
+        elif bup.animation <= 45:
+            screen.blit(pygame.transform.scale(bullet_upgrade, (40, 45)), (bup.rect.x, bup.rect.y + 10))
+            bup.animation += 1
+        elif bup.animation <= 60:
+            screen.blit(pygame.transform.scale(bullet_upgrade, (40, 45)), (bup.rect.x, bup.rect.y + 5))
+            bup.animation += 1
+        if bup.animation == 60:
+            bup.animation = 0
+
+    def check_collisions(self):
+        self.upgrade_out = False
+        self.upgrade_active = True
+        b.shooting = True
 
 
 class Bullet(pygame.sprite.Sprite):
@@ -705,11 +729,149 @@ class Enemy(pygame.sprite.Sprite):
         self.player_collide_counter = 0
 
     def generate_enemy(self):
-        pass
+        if not self.spawned:
+            pygame.draw.circle(screen, (128, 0, 32), (self.rect.x, self.rect.y), 16)
+            self.spawn_timer += 1
+            if self.spawn_timer >= 75:
+                self.spawned.append(1)
+                self.spawn_indicator = None
+        else:
+            # if enemy has spawned, go through the animations and collision detection
+            if self.animation <= 15:
+                screen.blit(pygame.transform.scale(enemy4, (45, 40)), (self.rect.x - 6, self.rect.y - 6))
+                self.animation += 1
 
+            elif self.animation <= 30:
+                screen.blit(pygame.transform.scale(enemy3, (45, 40)), (self.rect.x - 6, self.rect.y - 6))
+                self.animation += 1
+
+            elif self.animation <= 45:
+                screen.blit(pygame.transform.scale(enemy2, (45, 40)), (self.rect.x - 6, self.rect.y - 6))
+                self.animation += 1
+
+            elif self.animation <= 60:
+                screen.blit(pygame.transform.scale(enemy1, (45, 40)), (self.rect.x - 6, self.rect.y - 6))
+                self.animation += 1
+
+            elif self.animation > 60:
+                screen.blit(pygame.transform.scale(enemy4, (45, 40)), (self.rect.x - 6, self.rect.y - 6))
+                self.animation = 1
+
+            # screen.blit(pygame.transform.scale(enemyOriginal, (45, 40)), (enemy.rect.x, enemy.rect.y))
+            self.circle_rect = pygame.draw.circle(transparent_surface, (0, 50, 0, 100),
+                                                   (self.rect.x + 18, self.rect.y + 17), 10)
+            self.middot_rect = pygame.draw.circle(transparent_surface, (0, 50, 0, 100),
+                                                   (self.rect.x + 16, self.rect.y + 16), 8)
+            self.follow_mc()
+
+
+    def check_collisions(self):
+        if b.shooting:
+            for bullet in bullets:
+                # for each active bullet, if the bullet hits an enemy, deal damage if appropriate conditions met.
+                if self.rect.colliderect(bullet.rect) and bullet.bullet_valid:
+                    if not self.bullet_collisions:
+                        # if the enemy has encountered it's first bullet, add to the list and take damage
+                        self.bullet_collisions.append(bullet)
+                        self.health -= b.damage
+                    elif self.bullet_collisions:
+                        # if the list of bullets the enemy has collided with is greater than 0, make sure it is a different bullet in order to deal damage
+                        i = 0
+                        for l in self.bullet_collisions:
+                            if bullet.rect.x == self.bullet_collisions[i].rect.x and bullet.rect.y == \
+                                    self.bullet_collisions[i].rect.y:
+                                pass
+                            elif bullet not in self.bullet_collisions and bullet.bullet_valid:
+                                self.bullet_collisions.append(bullet)
+                                self.health -= b.damage
+                            i += 1
+        for bullet in bullets:
+            # for each active bullet, if the bullet hits an enemy, deal damage if appropriate conditions met.
+            if self.rect.colliderect(bullet.rect) and bullet.bullet_valid:
+                if not self.bullet_collisions:
+                    # if the enemy has encountered it's first bullet, add to the list and take damage
+                    self.bullet_collisions.append(bullet)
+                    self.health -= b.damage
+                elif self.bullet_collisions:
+                    # if the list of bullets the enemy has collided with is greater than 0,
+                    # make sure it is a different bullet in order to deal damage
+                    i = 0
+                    for l in self.bullet_collisions:
+                        if (bullet.rect.x == self.bullet_collisions[i].rect.x and
+                                bullet.rect.y == self.bullet_collisions[i].rect.y):
+                            pass
+                        elif bullet not in self.bullet_collisions and bullet.bullet_valid:
+                            self.bullet_collisions.append(bullet)
+                            self.health -= b.damage
+                        i += 1
+
+        if self.rect.colliderect(ba.hitbox_rect) and ba.running and not self.melee_attack_collisions:
+            # Reduce enemy health from the Players basic attack if not hit by that same attack swing
+            self.health -= ba.damage
+            self.melee_attack_collisions.append(1)
+
+        if (self.rect.colliderect(p.rect) or self.north_rect.colliderect(p.rect) or
+                self.east_rect.colliderect(p.rect) or self.south_rect.colliderect(p.rect) or
+                self.west_rect.colliderect(p.rect)):
+            # activates if the player collides with any of the slimes directional hitboxes
+            if self.player_collide_counter >= 17:
+                # measures how fast the player should take damage after entering collision with slime
+                checkingDodge = random.randint(0, 100)
+                if checkingDodge <= p.dodgeChance:
+                    # dodges damage if dodge percent is rolled
+                    self.player_collide_counter = 0
+                else:
+                    # have the player take damage
+                    p.health -= 15
+                    self.player_collide_counter = 0
+            else:
+                # increase counter if player is still colliding with enemy
+                self.player_collide_counter += 1
+        else:
+            # reset counter
+            self.player_collide_counter = 0
+
+    def activate_death(self):
+        if self.health <= 0:
+            # despawns the enemy if their health is 0 or below
+            xp.append(XP(self.rect.x + 18, self.rect.y + 17))
+            if self in enemies:
+                enemies.remove(self)
+            chance = random.randint(1, 10)
+            if chance <= 2:
+                # chance for the player to get gold
+                p.gold += 1
     def spawn(self):
         # allows programmer to know if this enemy has spawned
         self.spawned.append(1)
+
+    def clean_dictionaries(self):
+        if b.shooting:
+            for bullet in bullets:
+                # check if any of the bullets are actually still colliding with enemies,
+                # if not, remove the bullet from the enemies' collision list
+                counter = 0
+                enemies_hit = []
+                enemies_not_hit = []
+                for enemy in enemies:
+                    # checking for if active and non-active bullets are colliding with enemies, and if not, remove those bullets
+                    # from the enemies bullet collision list
+                    if bullet.rect.colliderect(enemy.rect):
+                        counter += 1
+                        enemies_hit.append(enemy)
+                    else:
+                        enemies_not_hit.append(enemy)
+                if not counter:
+                    # if a bullet is no longer hitting the enemy it collided with before, then remove that bullet from the enemies bullet collision list
+                    for l in enemies_not_hit:
+                        if bullet in l.bullet_collisions:
+                            l.bullet_collisions.remove(bullet)
+                if (
+                        bullet.rect.x <= m.left_boundary_x or bullet.rect.x >= m.right_boundary_x or bullet.rect.y <= m.top_boundary_y or
+                        bullet.rect.y >= m.bottom_boundary_y):
+                    # removes bullets if they go out of the map boundaries
+                    if bullet in bullets:
+                        bullets.remove(bullet)
 
     def travel_north(self):
         # enemy moves North
@@ -1097,7 +1259,7 @@ class Bat(Enemy):
         self.rect.x = x
         self.rect.y = y
         self.rect.width = 40
-        self.health = 215
+        self.health = 55
         self.speed = random.uniform(.6, .8)
         self.follow_mc()
         self.travel_north()
@@ -1105,25 +1267,158 @@ class Bat(Enemy):
         self.travel_south()
         self.travel_west()
         self.bat = True
-        self.playerPOS = ()
+        self.player_pos = ()
         self.found = False
-        self.bulletRect = pygame.draw.circle(transparent_surface, (128,12,128), (self.rect.x, self.rect.y), 12)
-        self.bulletSpeed = 25/3
+        self.bullet_rect = pygame.draw.circle(transparent_surface, (128,12,128), (self.rect.x, self.rect.y), 12)
+        self.bullet_speed = 25/3
         self.spawned2 = []
-        self.positionReached = False
-        self.goFourthA = False
-        self.goThirdA = False
-        self.goSecondA = False
-        self.goFirstA = False
+        self.position_reached = False
+        self.go_fourth_a = False
+        self.go_third_a = False
+        self.go_second_a = False
+        self.go_first_a = False
         self.angle = 0
         self.counter = 0
-        self.targetX = 0
-        self.targetY = 0
-        self.startingPoint = []
+        self.target_x = 0
+        self.target_y = 0
+        self.starting_point = []
         self.shoot_timer = 0
-        self.bulletValid = False
-        self.hitCounter = 0
+        self.bullet_valid = False
+        self.hit_counter = 0
         self.spawned = False
+
+    def generate_enemy(self):
+        if not self.spawned:
+            pygame.draw.circle(screen, (160, 85, 150), (self.rect.x, self.rect.y), 16)
+            self.spawn_timer += 1
+            if self.spawn_timer >= 75:
+                # self.spawned.append(1)
+                self.spawned = True
+                self.spawn_indicator = None
+        else:
+            # go through bat animations and collision detection
+            if self.animation <= 15:
+                screen.blit(pygame.transform.scale(batImg1, (45, 40)), (self.rect.x - 2, self.rect.y + 5))
+                self.animation += 1
+
+            elif self.animation <= 30:
+                screen.blit(pygame.transform.scale(batImg2, (45, 40)), (self.rect.x - 2, self.rect.y + 5))
+                self.animation += 1
+
+            elif self.animation > 30:
+                screen.blit(pygame.transform.scale(batImg1, (45, 40)), (self.rect.x - 2, self.rect.y + 5))
+                self.animation = 1
+
+            self.circle_rect = pygame.draw.circle(transparent_surface, (0, 50, 0, 100),
+                                                 (self.rect.x + 18, self.rect.y + 17), 10)
+            self.middot_rect = pygame.draw.circle(transparent_surface, (0, 50, 0, 100),
+                                                 (self.rect.x + 16, self.rect.y + 16), 1)
+
+    def check_collisions(self):
+        if b.shooting:
+            for bullet in bullets:
+                # for each active bullet, if the bullet hits a bat, deal damage if appropriate conditions met.
+                if self.rect.colliderect(bullet.rect) and bullet.bullet_valid:
+                    if not self.bullet_collisions:
+                        # if the bat has encountered it's first bullet, add to the list and take damage
+                        self.bullet_collisions.append(bullet)
+                        self.health -= b.damage
+                    elif self.bullet_collisions:
+                        # if the list of bullets the bat has collided with is greater than 0, make sure it is a different bullet in order to deal damage
+                        i = 0
+                        for l in self.bullet_collisions:
+                            if bullet.rect.x == self.bullet_collisions[i].rect.x and bullet.rect.y == \
+                                    self.bullet_collisions[i].rect.y:
+                                pass
+                            elif bullet not in self.bullet_collisions and bullet.bullet_valid:
+                                self.bullet_collisions.append(bullet)
+                                self.health -= b.damage
+                            i += 1
+
+        for bullet in bullets:
+            # for each active bullet, if the bullet hits a bat, deal damage if appropriate conditions met.
+            if self.rect.colliderect(bullet.rect) and bullet.bullet_valid:
+                if not self.bullet_collisions:
+                    # if the bat has encountered it's first bullet, add to the list and take damage
+                    self.bullet_collisions.append(bullet)
+                    self.health -= b.damage
+                elif self.bullet_collisions:
+                    # if the list of bullets the bat has collided with is greater than 0,
+                    # make sure it is a different bullet in order to deal damage
+                    i = 0
+                    for l in self.bullet_collisions:
+                        if (bullet.rect.x == self.bullet_collisions[i].rect.x and bullet.rect.y ==
+                                self.bullet_collisions[i].rect.y):
+                            pass
+                        elif bullet not in self.bullet_collisions and bullet.bullet_valid:
+                            self.bullet_collisions.append(bullet)
+                            self.health -= b.damage
+                        i += 1
+
+        if self.rect.colliderect(ba.hitbox_rect) and ba.running and not self.melee_attack_collisions:
+            # Reduce bat health from the Players basic attack if not hit by that same attack swing
+            self.health -= ba.damage
+            self.melee_attack_collisions.append(1)
+
+        if (self.rect.colliderect(p.rect) or self.north_rect.colliderect(p.rect) or
+                self.east_rect.colliderect(p.rect) or self.south_rect.colliderect(p.rect) or
+                self.west_rect.colliderect(p.rect)):
+            # activates if the player collides with any of the bats directional hitboxes
+            if self.player_collide_counter >= 17:
+                # measures how fast the player should take damage after entering collision with bats
+                checkingDodge = random.randint(0, 100)
+                if checkingDodge <= p.dodgeChance:
+                    # dodges damage if dodge percent is rolled
+                    self.player_collide_counter = 0
+                else:
+                    # have the player take damage
+                    p.health -= 16
+                    self.player_collide_counter = 0
+            else:
+                # increase counter if player is still colliding with enemy
+                self.player_collide_counter += 1
+        else:
+            # reset counter
+            self.player_collide_counter = 0
+
+    def clean_dictionaries(self):
+        if b.shooting:
+            for bullet in bullets:
+                # check if any of the bullets are actually still colliding with enemies,
+                # if not, remove the bullet from the enemies' collision list
+                counter = 0
+                bats_hit = []
+                bats_not_hit = []
+                for bat in bats:
+                    # checking for if active and non-active bullets are colliding with bats, and if not, remove those bullets
+                    # from the enemies bullet collision list
+                    if bullet.rect.colliderect(bat.rect):
+                        counter += 1
+                        bats_hit.append(bat)
+                    else:
+                        bats_not_hit.append(bat)
+                if not counter:
+                    # if a bullet is no longer hitting the enemy it collided with before, then remove that bullet from the bats bullet collision list
+                    for l in bats_not_hit:
+                        if bullet in l.bullet_collisions:
+                            l.bullet_collisions.remove(bullet)
+                if (
+                        bullet.rect.x <= m.left_boundary_x or bullet.rect.x >= m.right_boundary_x or bullet.rect.y <= m.top_boundary_y or
+                        bullet.rect.y >= m.bottom_boundary_y):
+                    # removes bullets if they go out of the map boundaries
+                    if bullet in bullets:
+                        bullets.remove(bullet)
+
+    def activate_death(self):
+        if self.health <= 0:
+            # despawns the bat if their health is 0 or below
+            xp.append(XP(self.rect.x + 18, self.rect.y + 17))
+            if self in bats:
+                bats.remove(self)
+            chance = random.randint(1, 10)
+            if chance <= 2:
+                # chance for the player to get gold
+                p.gold += 1
 
     def decide_action(self):
         # time to run at player (If within a certain distance from player, then just run, ignore shooting)
@@ -1137,122 +1432,117 @@ class Bat(Enemy):
 
         self.shoot_timer += 1
 
-
     def find_angle(self):
         if self.spawned:
             if not self.found:
-                self.targetX = p.rect.x+18
-                self.targetY = p.rect.y+17
-                self.startingPoint = [self.rect.x, self.rect.y]
-                self.playerPOS = [self.targetX, self.targetY]
-                self.bulletRect.x = self.rect.x
-                self.bulletRect.y = self.rect.y
+                self.target_x = p.rect.x+18
+                self.target_y = p.rect.y+17
+                self.starting_point = [self.rect.x, self.rect.y]
+                self.player_pos = [self.target_x, self.target_y]
+                self.bullet_rect.x = self.rect.x
+                self.bullet_rect.y = self.rect.y
 
-                if self.targetX > self.startingPoint[0] and self.targetY < self.startingPoint[1]:
+                if self.target_x > self.starting_point[0] and self.target_y < self.starting_point[1]:
                     # first quadrant
-                    newTriangle = pygame.math.Vector2(self.targetX - self.startingPoint[0], self.targetY - self.startingPoint[1])
+                    newTriangle = pygame.math.Vector2(self.target_x - self.starting_point[0], self.target_y - self.starting_point[1])
                     self.angle = -(numpy.rad2deg(numpy.arctan(newTriangle[1]/newTriangle[0])))
-                elif self.targetX > self.startingPoint[0] and self.targetY > self.startingPoint[1]:
+                elif self.target_x > self.starting_point[0] and self.target_y > self.starting_point[1]:
                     # fourth quadrant
-                    newTriangle = pygame.math.Vector2(self.targetX - self.startingPoint[0], self.targetY - self.startingPoint[1])
+                    newTriangle = pygame.math.Vector2(self.target_x - self.starting_point[0], self.target_y - self.starting_point[1])
                     self.angle = (numpy.rad2deg(numpy.arctan(newTriangle[1]/newTriangle[0])))
-                elif self.targetX < self.startingPoint[0] and self.targetY < self.startingPoint[1]:
+                elif self.target_x < self.starting_point[0] and self.target_y < self.starting_point[1]:
                     # second quadrant
-                    newTriangle = pygame.math.Vector2(self.startingPoint[0] - self.targetX, self.startingPoint[1] - self.targetY)
+                    newTriangle = pygame.math.Vector2(self.starting_point[0] - self.target_x, self.starting_point[1] - self.target_y)
                     self.angle = (numpy.rad2deg(numpy.arctan(newTriangle[1]/newTriangle[0])))
-                elif self.targetX < self.startingPoint[0] and self.targetY > self.startingPoint[1]:
+                elif self.target_x < self.starting_point[0] and self.target_y > self.starting_point[1]:
                     # third quadrant
-                    newTriangle = pygame.math.Vector2(self.startingPoint[0] - self.targetX, self.startingPoint[1] - self.targetY)
+                    newTriangle = pygame.math.Vector2(self.starting_point[0] - self.target_x, self.starting_point[1] - self.target_y)
                     self.angle = (numpy.rad2deg(numpy.arctan(newTriangle[1]/newTriangle[0])))
 
                 self.found = True
                 self.shoot()
+
     def shoot(self):
         if self.spawned:
             if not self.found:
                 self.find_angle()
-            # print(f'b.x: {self.bulletRect.x}')
-            # print(f'b.y: {self.bulletRect.y}')
-            # print(f'p.x: {self.playerPOS[0]}')
-            # print(f'p.y: {self.playerPOS[1]}')
-            # if abs(self.bulletRect.x - self.playerPOS[0]) < 25 and abs(self.bulletRect.y - self.playerPOS[1]) < 25 or self.counter >= 300:
             if self.counter >= 150:
-                self.bulletRect.x = self.rect.x
-                self.bulletRect.y = self.rect.y
-                self.bulletRect = pygame.draw.circle(transparent_surface, (128,12,128), (self.rect.x, self.rect.y), 12)
-                self.bulletValid = False
-                self.positionReached = False
-                self.goFourthA = False
-                self.goThirdA = False
-                self.goSecondA = False
-                self.goFirstA = False
+                self.bullet_rect.x = self.rect.x
+                self.bullet_rect.y = self.rect.y
+                self.bullet_rect = pygame.draw.circle(transparent_surface, (128,12,128), (self.rect.x, self.rect.y), 12)
+                self.bullet_valid = False
+                self.position_reached = False
+                self.go_fourth_a = False
+                self.go_third_a = False
+                self.go_second_a = False
+                self.go_first_a = False
                 self.found = False
                 self.counter = 0
                 self.shoot_timer = 0
-                self.playerPOS = ()
+                self.player_pos = ()
                 self.angle = 0
-                self.hitCounter = 0
+                self.hit_counter = 0
                 # print("RESET")
 
             else:
-                self.bulletValid = True
+                self.bullet_valid = True
 
-                if self.bulletRect.x <= self.playerPOS[0] and self.bulletRect.y <= self.playerPOS[1] and not self.goFirstA and not self.goSecondA and not self.goThirdA or self.goFourthA:
+                if self.bullet_rect.x <= self.player_pos[0] and self.bullet_rect.y <= self.player_pos[1] and not self.go_first_a and not self.go_second_a and not self.go_third_a or self.go_fourth_a:
                     # fourth quadrant - travels to mouse position
-                    self.bulletRect.y += math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
-                    self.bulletRect.x += math.cos(self.angle * (2*math.pi/360)) * self.bulletSpeed
-                    self.goFourthA = True
+                    self.bullet_rect.y += math.sin(self.angle * (2*math.pi/360)) * self.bullet_speed
+                    self.bullet_rect.x += math.cos(self.angle * (2*math.pi/360)) * self.bullet_speed
+                    self.go_fourth_a = True
                     # print(self.angle)
                     # print("YUHH")
-                    # self.bulletRect.y += self.bulletSpeed
-                    # self.bulletRect.x += self.bulletSpeed
+                    # self.bullet_rect.y += self.bullet_speed
+                    # self.bullet_rect.x += self.bullet_speed
 
-                elif self.bulletRect.x >= self.playerPOS[0] and self.bulletRect.y <= self.playerPOS[1] and not self.goFirstA and not self.goSecondA and not self.goFourthA or self.goThirdA:
+                elif self.bullet_rect.x >= self.player_pos[0] and self.bullet_rect.y <= self.player_pos[1] and not self.go_first_a and not self.go_second_a and not self.go_fourth_a or self.go_third_a:
                     # third quadrant - travels to mouse position
-                    self.bulletRect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
-                    self.bulletRect.x -= math.cos(self.angle * (2*math.pi/360)) * self.bulletSpeed
-                    self.goThirdA = True
+                    self.bullet_rect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bullet_speed
+                    self.bullet_rect.x -= math.cos(self.angle * (2*math.pi/360)) * self.bullet_speed
+                    self.go_third_a = True
                     # print("OOOOOOO")
-                    # self.bulletRect.y -= self.bulletSpeed
-                    # self.bulletRect.x -= self.bulletSpeed
+                    # self.bullet_rect.y -= self.bullet_speed
+                    # self.bullet_rect.x -= self.bullet_speed
 
-                elif self.bulletRect.x >= self.playerPOS[0] and self.bulletRect.y >= self.playerPOS[1] and not self.goFirstA and not self.goThirdA and not self.goFourthA or self.goSecondA:
+                elif self.bullet_rect.x >= self.player_pos[0] and self.bullet_rect.y >= self.player_pos[1] and not self.go_first_a and not self.go_third_a and not self.go_fourth_a or self.go_second_a:
                     # second quadrant - travels to mouse position
-                    self.bulletRect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
-                    self.bulletRect.x -= math.cos(self.angle * (2*math.pi/360)) * self.bulletSpeed
-                    self.goSecondA = True
+                    self.bullet_rect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bullet_speed
+                    self.bullet_rect.x -= math.cos(self.angle * (2*math.pi/360)) * self.bullet_speed
+                    self.go_second_a = True
                     # print("AHHHHHH")
-                    # self.bulletRect.y -= self.bulletSpeed
-                    # self.bulletRect.x -= self.bulletSpeed
+                    # self.bullet_rect.y -= self.bullet_speed
+                    # self.bullet_rect.x -= self.bullet_speed
 
-                elif self.bulletRect.x <= self.playerPOS[0] and self.bulletRect.y >= self.playerPOS[1] and not self.goSecondA and not self.goThirdA and not self.goFourthA or self.goFirstA:
+                elif self.bullet_rect.x <= self.player_pos[0] and self.bullet_rect.y >= self.player_pos[1] and not self.go_second_a and not self.go_third_a and not self.go_fourth_a or self.go_first_a:
                     # first quadrant - travels to mouse position
-                    self.bulletRect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bulletSpeed
-                    self.bulletRect.x += math.cos(self.angle * (2*math.pi/360)) * self.bulletSpeed
-                    self.goFirstA = True
+                    self.bullet_rect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bullet_speed
+                    self.bullet_rect.x += math.cos(self.angle * (2*math.pi/360)) * self.bullet_speed
+                    self.go_first_a = True
                     # print("EEEEEEE")
-                    # self.bulletRect.y -= self.bulletSpeed
-                    # self.bulletRect.x += self.bulletSpeed
+                    # self.bullet_rect.y -= self.bullet_speed
+                    # self.bullet_rect.x += self.bullet_speed
 
                 # else:
                 #     print("NUUUUUU")
-                #     # if self.playerPOS[1] == self.startingPoint
-                #     if self.playerPOS[1] >= self.startingPoint[1] and (abs(self.playerPOS[0]) - self.startingPoint[0]) < 15:
-                #         self.bulletRect.y += math.sin(90 * (2*math.pi/360)) * self.bulletSpeed
-                #     elif self.playerPOS[1] <= self.startingPoint[1] and (abs(self.playerPOS[0]) - self.startingPoint[0]) < 15:
-                #         self.bulletRect.y -= math.sin(90 * (2*math.pi/360)) * self.bulletSpeed
-                #     elif abs(self.playerPOS[1] - self.startingPoint[1]) <= 5 and self.playerPOS[0] >= self.startingPoint[0]:
-                #         self.bulletRect.x += math.cos(self.angle * (2*math.pi/360)) * self.bulletSpeed
-                # self.bulletRect = pygame.draw.circle(screen, (128,12,128), (self.bulletRect.x, self.bulletRect.y), 12)
+                #     # if self.player_pos[1] == self.starting_point
+                #     if self.player_pos[1] >= self.starting_point[1] and (abs(self.player_pos[0]) - self.starting_point[0]) < 15:
+                #         self.bullet_rect.y += math.sin(90 * (2*math.pi/360)) * self.bullet_speed
+                #     elif self.player_pos[1] <= self.starting_point[1] and (abs(self.player_pos[0]) - self.starting_point[0]) < 15:
+                #         self.bullet_rect.y -= math.sin(90 * (2*math.pi/360)) * self.bullet_speed
+                #     elif abs(self.player_pos[1] - self.starting_point[1]) <= 5 and self.player_pos[0] >= self.starting_point[0]:
+                #         self.bullet_rect.x += math.cos(self.angle * (2*math.pi/360)) * self.bullet_speed
+                # self.bullet_rect = pygame.draw.circle(screen, (128,12,128), (self.bullet_rect.x, self.bullet_rect.y), 12)
 
-                pygame.draw.circle(screen, (167,28,111), (self.bulletRect.x+12, self.bulletRect.y+12), 12)
+                pygame.draw.circle(screen, (167,28,111), (self.bullet_rect.x+12, self.bullet_rect.y+12), 12)
 
 
 
-                # pygame.draw.rect(screen, (100,0,255), self.bulletRect)
-                if self.bulletRect.colliderect(p.rect) and not self.hitCounter:
+                # pygame.draw.rect(screen, (100,0,255), self.bullet_rect)
+                if self.bullet_rect.colliderect(p.rect) and not self.hit_counter:
                     p.health -= 15
-                    self.hitCounter += 1
+                    self.hit_counter += 1
                 self.counter += 1
 
 
@@ -1289,6 +1579,41 @@ class MiniEarthElemental(Enemy):
         self.last_auto = 0
         self.attack_speed = 2
         self.speed_snap = False
+
+    def generate_enemy(self):
+        self.attack_timer = (pygame.time.get_ticks() / 1000)
+        self.aoe_hit()
+        bup.rect.x = self.rect.x
+        bup.rect.y = self.rect.y
+        if self.animation <= 15:
+            screen.blit(pygame.transform.scale(minibee1, (40, 45)), (self.rect.x, self.rect.y))
+            self.animation += 1
+        elif self.animation <= 30:
+            screen.blit(pygame.transform.scale(minibee2, (40, 45)), (self.rect.x, self.rect.y))
+            self.animation += 1
+        elif self.animation <= 45:
+            screen.blit(pygame.transform.scale(minibee3, (40, 45)), (self.rect.x, self.rect.y))
+            self.animation += 1
+        elif self.animation <= 60:
+            screen.blit(pygame.transform.scale(minibee4, (40, 45)), (self.rect.x, self.rect.y))
+            self.animation += 1
+        if self.animation == 60:
+            self.animation = 0
+        if self.not_attacking:
+            self.follow_mc()
+            self.auto_hit_player()
+
+    def check_collisions(self):
+        if self.rect.colliderect(ba.hitbox_rect) and ba.running and not self.melee_attack_collisions:
+            # Reduce health from the mini boss from Players basic attack if not hit by that same attack swing
+            self.health -= ba.damage
+            self.melee_attack_collisions.append(1)
+
+    def activate_death(self):
+        if self.health <= 0:
+            # Makes sure ee is actually dead
+            self.felled = True
+            self.activate = False
 
     def follow_mc(self):
         # Miniboss movment
@@ -1515,6 +1840,51 @@ class SkeletonKing(Enemy):
         # self.follow_mc()
         self.run_counter += 1
 
+    def check_collisions(self):
+        if b.shooting:
+            for bullet in bullets:
+                # for each active bullet, if the bullet hits the skeleton king boss,
+                # deal damage if appropriate conditions met.
+                if self.rect.colliderect(bullet.rect) and bullet.bullet_valid:
+                    if not self.bullet_collisions:
+                        # if the skeleton king boss has encountered it's first bullet, add to the list and take damage
+                        self.bullet_collisions.append(bullet)
+                        self.health -= b.damage
+                    elif self.bullet_collisions:
+                        # if the list of bullets the skeleton king boss has collided with is greater than 0,
+                        # make sure it is a different bullet in order to deal damage
+                        i = 0
+                        for l in self.bullet_collisions:
+                            if (bullet.rect.x == self.bullet_collisions[i].rect.x and
+                                    bullet.rect.y == self.bullet_collisions[i].rect.y):
+                                pass
+                            elif bullet not in self.bullet_collisions and bullet.bullet_valid:
+                                # have the skeleton king take damage if hit with a bullet they havent been hit by
+                                self.bullet_collisions.append(bullet)
+                                self.health -= b.damage
+                            i += 1
+        for bullet in bullets:
+            # removes expired bullets from the skeleton king boss bullet collision list
+            if bullet in self.bullet_collisions and not self.rect.colliderect(bullet.rect):
+                self.bullet_collisions.remove(bullet)
+                # print("BULLET REMOVED")
+        if self.bullet_collisions:
+            # backup to remove expired bullets from the skeleton king boss bullet collision list
+            for g in self.bullet_collisions:
+                if not g.rect.colliderect(self.rect):
+                    # removes collided bullet from skeleton kings bullet collisions list
+                    self.bullet_collisions.remove(g)
+        if self.rect.colliderect(ba.hitbox_rect) and ba.running and not self.melee_attack_collisions:
+            self.health -= ba.damage
+            self.melee_attack_collisions.append(1)
+
+    def activate_death(self):
+        if self.health <= 0:
+            # removes the skeleton king if they are at or below zero health
+            self.felled = True
+            self.activate = False
+            self.rect = None
+
     def follow_mc(self):
         # the boss will follow the player
         if self.main_right_leg_rect.x < p.rect.x + 12:
@@ -1559,17 +1929,17 @@ class SkeletonKing(Enemy):
                 checkingDodge = random.randint(0, 100)
                 if checkingDodge <= p.dodgeChance:
                     # dodges damage if dodge percent is rolled
-                    sk.player_collide_counter = 0
+                    self.player_collide_counter = 0
                 else:
                     # have the player take damage
                     p.health -= 24
-                    sk.player_collide_counter = 0
+                    self.player_collide_counter = 0
             else:
                 # increase counter if player is still colliding with enemy
                 self.player_collide_counter += 1
         else:
             # reset counter
-            sk.player_collide_counter = 0
+            self.player_collide_counter = 0
 
 
 class XP(pygame.sprite.Sprite):
@@ -1585,6 +1955,26 @@ class XP(pygame.sprite.Sprite):
         # Displays XP in a specific location
         self.rect = pygame.draw.circle(screen, (0, 255, 0), (self.x, self.y), 5)
         self.hitbox_rect = pygame.draw.circle(transparent_surface, (0, 255, 35), (self.x, self.y), 50)
+
+    def travel_to_player(self):
+        # for every xp the player has gone near, have the XP fly to the player
+        if abs(self.rect.x - p.rect.x) < 35 and abs(self.rect.y - p.rect.y) < 35:
+            # remove the XP from the world and increase player XP
+            if self in xp:
+                xp.remove(self)
+                xpB.xp += 1
+            if self in xp_hit:
+                xp_hit.remove(self)
+        else:
+            # have the XP fly to the Player
+            if self.rect.x + 18 < p.rect.x:
+                self.x += p.speed
+            if self.rect.x + 18 > p.rect.x:
+                self.x -= p.speed
+            if self.rect.y + 18 < p.rect.y:
+                self.y += p.speed
+            if self.rect.y + 18 > p.rect.y:
+                self.y -= p.speed
 
 
 speed_item_visible = True
@@ -2479,34 +2869,14 @@ while game:
             x.xp_stationary()
 
     for x in xp_hit:
-        # for every xp the player has gone near, have the XP fly to the player
-        if abs(x.rect.x - p.rect.x) < 35 and abs(x.rect.y - p.rect.y) < 35:
-            # remove the XP from the world and increase player XP
-            if x in xp:
-                xp.remove(x)
-                xpB.xp += 1
-            if x in xp_hit:
-                xp_hit.remove(x)
-        else:
-            # have the XP fly to the Player
-            if x.rect.x + 18 < p.rect.x:
-                x.x += p.speed
-            if x.rect.x + 18 > p.rect.x:
-                x.x -= p.speed
-            if x.rect.y + 18 < p.rect.y:
-                x.y += p.speed
-            if x.rect.y + 18 > p.rect.y:
-                x.y -= p.speed
+        x.travel_to_player()
 
     # makes the main character visible
     screen.blit(pygame.transform.scale(mc_img, (40, 35)), (p.rect.x, p.rect.y))
 
     bullet_timer2 = gameTime / 1000
-    # if seconds % b.bullet_increment == 0:
     if b.shooting:
         activate_bullet = True
-    # if bullet_timer2 > bullet_timer1:
-    # if b.bullet_counter >= b.bullet_spawn_speed:
     if b.shooting and b.bullet_counter and b.bullet_counter >= b.bullet_spawn_speed:
         # controls the speed of shooting the bullets
         bullets.append(b)
@@ -2558,317 +2928,32 @@ while game:
         bats.append(Bat(x_coord, y_coord))
 
     for enemy in enemies:
-        # go through each enemy and control the spawning and movements
-        if not enemy.spawned:
-            pygame.draw.circle(screen, (128, 0, 32), (enemy.rect.x, enemy.rect.y), 16)
-            enemy.spawn_timer += 1
-            if enemy.spawn_timer >= 75:
-                enemy.spawned.append(1)
-                enemy.spawn_indicator = None
-        else:
-            # if enemy has spawned, go through the animations and collision detection
-            if enemy.animation <= 15:
-                screen.blit(pygame.transform.scale(enemy4, (45, 40)), (enemy.rect.x - 6, enemy.rect.y - 6))
-                enemy.animation += 1
-
-            elif enemy.animation <= 30:
-                screen.blit(pygame.transform.scale(enemy3, (45, 40)), (enemy.rect.x - 6, enemy.rect.y - 6))
-                enemy.animation += 1
-
-            elif enemy.animation <= 45:
-                screen.blit(pygame.transform.scale(enemy2, (45, 40)), (enemy.rect.x - 6, enemy.rect.y - 6))
-                enemy.animation += 1
-
-            elif enemy.animation <= 60:
-                screen.blit(pygame.transform.scale(enemy1, (45, 40)), (enemy.rect.x - 6, enemy.rect.y - 6))
-                enemy.animation += 1
-
-            elif enemy.animation > 60:
-                screen.blit(pygame.transform.scale(enemy4, (45, 40)), (enemy.rect.x - 6, enemy.rect.y - 6))
-                enemy.animation = 1
-
-            # screen.blit(pygame.transform.scale(enemyOriginal, (45, 40)), (enemy.rect.x, enemy.rect.y))
-            enemy.circle_rect = pygame.draw.circle(transparent_surface, (0, 50, 0, 100),
-                                                   (enemy.rect.x + 18, enemy.rect.y + 17), 10)
-            enemy.middot_rect = pygame.draw.circle(transparent_surface, (0, 50, 0, 100),
-                                                   (enemy.rect.x + 16, enemy.rect.y + 16), 8)
-            enemy.generate_enemy()
-            enemy.follow_mc()
-
-            if b.shooting:
-                for bullet in bullets:
-                    # for each active bullet, if the bullet hits an enemy, deal damage if appropriate conditions met.
-                    if enemy.rect.colliderect(bullet.rect) and bullet.bullet_valid:
-                        if not enemy.bullet_collisions:
-                            # if the enemy has encountered it's first bullet, add to the list and take damage
-                            enemy.bullet_collisions.append(bullet)
-                            enemy.health -= b.damage
-                        elif enemy.bullet_collisions:
-                            # if the list of bullets the enemy has collided with is greater than 0, make sure it is a different bullet in order to deal damage
-                            i = 0
-                            for l in enemy.bullet_collisions:
-                                if bullet.rect.x == enemy.bullet_collisions[i].rect.x and bullet.rect.y == \
-                                        enemy.bullet_collisions[i].rect.y:
-                                    pass
-                                elif bullet not in enemy.bullet_collisions and bullet.bullet_valid:
-                                    enemy.bullet_collisions.append(bullet)
-                                    enemy.health -= b.damage
-                                i += 1
-            for bullet in bullets:
-                # for each active bullet, if the bullet hits an enemy, deal damage if appropriate conditions met.
-                if enemy.rect.colliderect(bullet.rect) and bullet.bullet_valid:
-                    if not enemy.bullet_collisions:
-                        # if the enemy has encountered it's first bullet, add to the list and take damage
-                        enemy.bullet_collisions.append(bullet)
-                        enemy.health -= b.damage
-                    elif enemy.bullet_collisions:
-                        # if the list of bullets the enemy has collided with is greater than 0,
-                        # make sure it is a different bullet in order to deal damage
-                        i = 0
-                        for l in enemy.bullet_collisions:
-                            if (bullet.rect.x == enemy.bullet_collisions[i].rect.x and
-                                    bullet.rect.y == enemy.bullet_collisions[i].rect.y):
-                                pass
-                            elif bullet not in enemy.bullet_collisions and bullet.bullet_valid:
-                                enemy.bullet_collisions.append(bullet)
-                                enemy.health -= b.damage
-                            i += 1
-
-            if enemy.rect.colliderect(ba.hitbox_rect) and ba.running and not enemy.melee_attack_collisions:
-                # Reduce enemy health from the Players basic attack if not hit by that same attack swing
-                enemy.health -= ba.damage
-                enemy.melee_attack_collisions.append(1)
-
-            if sk.activate and not sk.felled:
-                # if the skeleton king is active and not killed and it hit by the players basic attack, the boss  takes damage
-                if sk.rect.colliderect(ba.hitbox_rect) and ba.running and not sk.melee_attack_collisions:
-                    sk.health -= ba.damage
-                    sk.melee_attack_collisions.append(1)
-            if ee.activate and not ee.felled:
-                if ee.rect.colliderect(ba.hitbox_rect) and ba.running and not ee.melee_attack_collisions:
-                    # Reduce health from the mini boss from Players basic attack if not hit by that same attack swing
-                    ee.health -= ba.damage
-                    ee.melee_attack_collisions.append(1)
-
-        if enemy.health <= 0:
-            # despawns the enemy if their health is 0 or below
-            xp.append(XP(enemy.rect.x + 18, enemy.rect.y + 17))
-            if enemy in enemies:
-                enemies.remove(enemy)
-            chance = random.randint(1, 10)
-            if chance <= 2:
-                # chance for the player to get gold
-                p.gold += 1
-        if (enemy.rect.colliderect(p.rect) or enemy.north_rect.colliderect(p.rect) or
-                enemy.east_rect.colliderect(p.rect) or enemy.south_rect.colliderect(p.rect) or
-                enemy.west_rect.colliderect(p.rect)):
-            # activates if the player collides with any of the slimes directional hitboxes
-            if enemy.player_collide_counter >= 17:
-                # measures how fast the player should take damage after entering collision with slime
-                checkingDodge = random.randint(0, 100)
-                if checkingDodge <= p.dodgeChance:
-                    # dodges damage if dodge percent is rolled
-                    enemy.player_collide_counter = 0
-                else:
-                    # have the player take damage
-                    p.health -= 15
-                    enemy.player_collide_counter = 0
-            else:
-                # increase counter if player is still colliding with enemy
-                enemy.player_collide_counter += 1
-        else:
-            # reset counter
-            enemy.player_collide_counter = 0
+        # spawns the slime, checks for all collisions of the slime, and kills the slime
+        enemy.generate_enemy()
+        if enemy.spawned:
+            enemy.check_collisions()
+        enemy.activate_death()
 
     for bat in bats:
-        if not bat.spawned:
-            pygame.draw.circle(screen, (160, 85, 150), (bat.rect.x, bat.rect.y), 16)
-            bat.spawn_timer += 1
-            if bat.spawn_timer >= 75:
-                # bat.spawned.append(1)
-                bat.spawned = True
-                bat.spawn_indicator = None
-        else:
-            # go through bat animations and collision detection
-            if bat.animation <= 15:
-                screen.blit(pygame.transform.scale(batImg1, (45, 40)), (bat.rect.x - 2, bat.rect.y + 5))
-                bat.animation += 1
-
-            elif bat.animation <= 30:
-                screen.blit(pygame.transform.scale(batImg2, (45, 40)), (bat.rect.x - 2, bat.rect.y + 5))
-                bat.animation += 1
-
-            elif bat.animation > 30:
-                screen.blit(pygame.transform.scale(batImg1, (45, 40)), (bat.rect.x - 2, bat.rect.y + 5))
-                bat.animation = 1
-
-            bat.circle_rect = pygame.draw.circle(transparent_surface, (0, 50, 0, 100),
-                                                 (bat.rect.x + 18, bat.rect.y + 17), 10)
-            bat.middot_rect = pygame.draw.circle(transparent_surface, (0, 50, 0, 100),
-                                                 (bat.rect.x + 16, bat.rect.y + 16), 1)
-            # bat.generate_enemy()
-
-
-            if b.shooting:
-                for bullet in bullets:
-                    # for each active bullet, if the bullet hits a bat, deal damage if appropriate conditions met.
-                    if bat.rect.colliderect(bullet.rect) and bullet.bullet_valid:
-                        if not bat.bullet_collisions:
-                            # if the bat has encountered it's first bullet, add to the list and take damage
-                            bat.bullet_collisions.append(bullet)
-                            bat.health -= b.damage
-                        elif bat.bullet_collisions:
-                            # if the list of bullets the bat has collided with is greater than 0, make sure it is a different bullet in order to deal damage
-                            i = 0
-                            for l in bat.bullet_collisions:
-                                if bullet.rect.x == bat.bullet_collisions[i].rect.x and bullet.rect.y == \
-                                        bat.bullet_collisions[i].rect.y:
-                                    pass
-                                elif bullet not in bat.bullet_collisions and bullet.bullet_valid:
-                                    bat.bullet_collisions.append(bullet)
-                                    bat.health -= b.damage
-                                i += 1
-            for bullet in bullets:
-                # for each active bullet, if the bullet hits a bat, deal damage if appropriate conditions met.
-                if bat.rect.colliderect(bullet.rect) and bullet.bullet_valid:
-                    if not bat.bullet_collisions:
-                        # if the bat has encountered it's first bullet, add to the list and take damage
-                        bat.bullet_collisions.append(bullet)
-                        bat.health -= b.damage
-                    elif bat.bullet_collisions:
-                        # if the list of bullets the bat has collided with is greater than 0,
-                        # make sure it is a different bullet in order to deal damage
-                        i = 0
-                        for l in bat.bullet_collisions:
-                            if (bullet.rect.x == bat.bullet_collisions[i].rect.x and bullet.rect.y ==
-                                    bat.bullet_collisions[i].rect.y):
-                                pass
-                            elif bullet not in bat.bullet_collisions and bullet.bullet_valid:
-                                bat.bullet_collisions.append(bullet)
-                                bat.health -= b.damage
-                            i += 1
-
-            if bat.rect.colliderect(ba.hitbox_rect) and ba.running and not bat.melee_attack_collisions:
-                # Reduce bat health from the Players basic attack if not hit by that same attack swing
-                bat.health -= ba.damage
-                bat.melee_attack_collisions.append(1)
-
-        if bat.health <= 0:
-            # despawns the bat if their health is 0 or below
-            xp.append(XP(bat.rect.x + 18, bat.rect.y + 17))
-            if bat in bats:
-                bats.remove(bat)
-            chance = random.randint(1, 10)
-            if chance <= 2:
-                # chance for the player to get gold
-                p.gold += 1
-
-        if (bat.rect.colliderect(p.rect) or bat.north_rect.colliderect(p.rect) or
-                bat.east_rect.colliderect(p.rect) or bat.south_rect.colliderect(p.rect) or
-                bat.west_rect.colliderect(p.rect)):
-            # activates if the player collides with any of the bats directional hitboxes
-            if bat.player_collide_counter >= 17:
-                # measures how fast the player should take damage after entering collision with bats
-                checkingDodge = random.randint(0, 100)
-                if checkingDodge <= p.dodgeChance:
-                    # dodges damage if dodge percent is rolled
-                    bat.player_collide_counter = 0
-                else:
-                    # have the player take damage
-                    p.health -= 16
-                    bat.player_collide_counter = 0
-
-            else:
-                # increase counter if player is still colliding with enemy
-                bat.player_collide_counter += 1
-        else:
-            # reset counter
-            bat.player_collide_counter = 0
+        # spawns the bat, checks for all collisions of the bat, and kills the bat
+        bat.generate_enemy()
+        if bat.spawned:
+            bat.check_collisions()
+        bat.activate_death()
 
     if int(minutes) == 0 and int(seconds) == 15:
         ee.activate = True
-    if ee.activate and not ee.felled:
-        ee.attack_timer = (pygame.time.get_ticks() / 1000)
-        ee.aoe_hit()
-        bup.rect.x = ee.rect.x
-        bup.rect.y = ee.rect.y
-        if ee.animation <= 15:
-            screen.blit(pygame.transform.scale(minibee1, (40, 45)), (ee.rect.x, ee.rect.y))
-            ee.animation += 1
-        elif ee.animation <= 30:
-            screen.blit(pygame.transform.scale(minibee2, (40, 45)), (ee.rect.x, ee.rect.y))
-            ee.animation += 1
-        elif ee.animation <= 45:
-            screen.blit(pygame.transform.scale(minibee3, (40, 45)), (ee.rect.x, ee.rect.y))
-            ee.animation += 1
-        elif ee.animation <= 60:
-            screen.blit(pygame.transform.scale(minibee4, (40, 45)), (ee.rect.x, ee.rect.y))
-            ee.animation += 1
-        if ee.animation == 60:
-            ee.animation = 0
-        if ee.not_attacking:
-            ee.follow_mc()
-            ee.auto_hit_player()
-    if ee.activate and not ee.felled:
-        if b.shooting:
-            for bullet in bullets:
-                # for each active bullet, if the bullet hits ee, deal damage if appropriate.
-                if ee.rect.colliderect(bullet.rect) and bullet.bullet_valid:
 
-                    if not ee.bullet_collisions:
-                        # If ee has been hit by its first bullet add to list to take damage.
-                        ee.bullet_collisions.append(bullet)
-                        ee.health -= b.damage
-                        # print(ee.health)
-                        # print('1')
-                    elif ee.bullet_collisions:
-                        # if the list of bullets that have collided ee is greater than 0, make sure it is a different bullet in order to deal damage
-                        i = 0
-                        for l in ee.bullet_collisions:
-                            if bullet.rect.x == ee.bullet_collisions[i].rect.x and bullet.rect.y == \
-                                    ee.bullet_collisions[i].rect.y:
-                                pass
-                            elif bullet not in ee.bullet_collisions and bullet.bullet_valid:
-                                ee.bullet_collisions.append(bullet)
-                                ee.health -= b.damage
-                                # print(ee.health)
-                            i += 1
-            for bullet in bullets:
-                # removes expired bullets
-                if bullet in ee.bullet_collisions and not ee.rect.colliderect(bullet.rect):
-                    ee.bullet_collisions.remove(bullet)
-            if ee.bullet_collisions:
-                # backup to remove expired bullets from the bullet collision list
-                for g in ee.bullet_collisions:
-                    if not g.rect.colliderect(ee.rect):
-                        ee.bullet_collisions.remove(g)
-    if ee.health <= 0:
-        # Makes sure ee is actually dead
-        ee.felled = True
-        ee.activate = False
-    if ee.felled and bup.upgrade_active == False:
-        bup.upgrade_out = True
-        if p.orspeed > p.speed:
-            p.speed = p.orspeed
-        if bup.animation <= 15:
-            screen.blit(pygame.transform.scale(bullet_upgrade, (40, 45)), (bup.rect.x, bup.rect.y))
-            bup.animation += 1
-        elif bup.animation <= 30:
-            screen.blit(pygame.transform.scale(bullet_upgrade, (40, 45)), (bup.rect.x, bup.rect.y + 5))
-            bup.animation += 1
-        elif bup.animation <= 45:
-            screen.blit(pygame.transform.scale(bullet_upgrade, (40, 45)), (bup.rect.x, bup.rect.y + 10))
-            bup.animation += 1
-        elif bup.animation <= 60:
-            screen.blit(pygame.transform.scale(bullet_upgrade, (40, 45)), (bup.rect.x, bup.rect.y + 5))
-            bup.animation += 1
-        if bup.animation == 60:
-            bup.animation = 0
-    if p.rect.colliderect(bup.rect) and bup.upgrade_active == False and ee.felled:
-        bup.upgrade_out = False
-        b.shooting = True
-        # b.overflow = (pygame.time.get_ticks() / 1000)
-        bup.upgrade_active = True
+    if ee.activate and not ee.felled:
+        ee.generate_enemy()
+        ee.check_collisions()
+    ee.activate_death()
+
+    if ee.felled and not bup.upgrade_active:
+        bup.generate_entity()
+
+    if p.rect.colliderect(bup.rect) and not bup.upgrade_active and ee.felled:
+        bup.check_collisions()
 
     if int(minutes) == 1 and int(seconds) == 30:
         # skeleton king spawns once the game time reaches a minute and thirty seconds
@@ -2877,119 +2962,18 @@ while game:
     if sk.activate and not sk.felled:
         # if the skeleton king has spawned and not been killed, have them follow around the player
         sk.generate_enemy()
+        sk.check_collisions()
         sk.follow_mc()
         sk.attack()
+    sk.activate_death()
 
-    if sk.activate and not sk.felled:
-        # check for collisions for the skeleton king
-        if b.shooting:
-            for bullet in bullets:
-                # for each active bullet, if the bullet hits the skeleton king boss,
-                # deal damage if appropriate conditions met.
-                if sk.rect.colliderect(bullet.rect) and bullet.bullet_valid:
-                    if not sk.bullet_collisions:
-                        # if the skeleton king boss has encountered it's first bullet, add to the list and take damage
-                        sk.bullet_collisions.append(bullet)
-                        sk.health -= b.damage
-                    elif sk.bullet_collisions:
-                        # if the list of bullets the skeleton king boss has collided with is greater than 0,
-                        # make sure it is a different bullet in order to deal damage
-                        i = 0
-                        for l in sk.bullet_collisions:
-                            if (bullet.rect.x == sk.bullet_collisions[i].rect.x and
-                                    bullet.rect.y == sk.bullet_collisions[i].rect.y):
-                                pass
-                            elif bullet not in sk.bullet_collisions and bullet.bullet_valid:
-                                # have the skeleton king take damage if hit with a bullet they havent been hit by
-                                sk.bullet_collisions.append(bullet)
-                                sk.health -= b.damage
-                            i += 1
-        for bullet in bullets:
-            # removes expired bullets from the skeleton king boss bullet collision list
-            if bullet in sk.bullet_collisions and not sk.rect.colliderect(bullet.rect):
-                sk.bullet_collisions.remove(bullet)
-                # print("BULLET REMOVED")
-        if sk.bullet_collisions:
-            # backup to remove expired bullets from the skeleton king boss bullet collision list
-            for g in sk.bullet_collisions:
-                if not g.rect.colliderect(sk.rect):
-                    # removes collided bullet from skeleton kings bullet collisions list
-                    sk.bullet_collisions.remove(g)
+    for enemy in enemies:
+        enemy.clean_dictionaries()
 
-    if b.shooting:
-        for bullet in bullets:
-            # check if any of the bullets are actually still colliding with enemies,
-            # if not, remove the bullet from the enemies' collision list
-            counter = 0
-            enemies_hit = []
-            enemies_not_hit = []
-            for enemy in enemies:
-                # checking for if active and non-active bullets are colliding with enemies, and if not, remove those bullets
-                # from the enemies bullet collision list
-                if bullet.rect.colliderect(enemy.rect):
-                    counter += 1
-                    enemies_hit.append(enemy)
-                else:
-                    enemies_not_hit.append(enemy)
-            if not counter:
-                # if a bullet is no longer hitting the enemy it collided with before, then remove that bullet from the enemies bullet collision list
-                for l in enemies_not_hit:
-                    if bullet in l.bullet_collisions:
-                        l.bullet_collisions.remove(bullet)
-            if (
-                    bullet.rect.x <= m.left_boundary_x or bullet.rect.x >= m.right_boundary_x or bullet.rect.y <= m.top_boundary_y or
-                    bullet.rect.y >= m.bottom_boundary_y):
-                # removes bullets if they go out of the map boundaries
-                if bullet in bullets:
-                    bullets.remove(bullet)
-
-    for bullet in bullets:
-        # check if any of the bullets are actually still colliding with enemies,
-        # if not, remove the bullet from the enemies' collision list
-        counter = 0
-        bats_hit = []
-        bats_not_hit = []
-        for bat in bats:
-            # checking for if active and non-active bullets are colliding with bats, and if not, remove those bullets
-            # from the enemies bullet collision list
-            if bullet.rect.colliderect(bat.rect):
-                counter += 1
-                bats_hit.append(bat)
-            else:
-                bats_not_hit.append(bat)
-        if not counter:
-            # if a bullet is no longer hitting the enemy it collided with before, then remove that bullet from the bats bullet collision list
-            for l in bats_not_hit:
-                if bullet in l.bullet_collisions:
-                    l.bullet_collisions.remove(bullet)
-        if (
-                bullet.rect.x <= m.left_boundary_x or bullet.rect.x >= m.right_boundary_x or bullet.rect.y <= m.top_boundary_y or
-                bullet.rect.y >= m.bottom_boundary_y):
-            # removes bullets if they go out of the map boundaries
-            if bullet in bullets:
-                bullets.remove(bullet)
-
-    if sk.health <= 0:
-        # removes the skeleton king if they are at or below zero health
-        sk.felled = True
-        sk.activate = False
-        sk.rect = None
-
-    # for bat in bats:
-    #     if bat.bulletValid:
-    #         if bat.bulletRect.colliderect(p.rect):
-    #             print("YEPPPPPPPPPPPPPPPPPPP")
     for bat in bats:
-        # pygame.draw.circle(screen, (167,28,111), (bat.bulletRect.x, bat.bulletRect.y), 12)
+        bat.clean_dictionaries()
         bat.decide_action()
 
-    # pygame.draw.rect(screen, (0,255,0), p.rect)
-    # for bat in bats:
-        # pygame.draw.rect(screen, (0,255,0), bat.bulletRect)
-        # pygame.draw.rect(screen, (0,255,0), bat.rect)
-
-        # if bat.bulletRect.colliderect(p.rect):
-        #     print("HIT!")
     b.bullet_counter += 1
     ba.attack()
     m.update_boundary()
