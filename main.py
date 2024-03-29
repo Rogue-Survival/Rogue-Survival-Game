@@ -1555,7 +1555,7 @@ class MiniEarthElemental(Enemy):
         self.rect.x = x
         self.rect.y = y
         self.rect.width = 20
-        self.health = 10
+        self.health = 100000000
         self.speed = 3
         self.travel_north()
         self.travel_east()
@@ -1579,6 +1579,7 @@ class MiniEarthElemental(Enemy):
         self.last_auto = 0
         self.attack_speed = 2
         self.speed_snap = False
+        self.attackcounter = 0.0
 
     def generate_enemy(self):
         self.attack_timer = (pygame.time.get_ticks() / 1000)
@@ -1636,27 +1637,29 @@ class MiniEarthElemental(Enemy):
             self.aoe_start = int(self.attack_timer)
             p.orspeed = p.speed
             self.rumble_speed = (p.speed * .55)
-        if self.is_attacking:
+        if self.is_attacking and self.attackcounter < 3.0:
+            self.attackcounter +=.03
             self.attack_area = pygame.draw.circle(screen, (252, 161, 3), (self.rect.x + 18, self.rect.y + 20), 240, 1)
             self.rumble_area = pygame.draw.circle(screen, (209, 10, 10), (self.rect.x + 18, self.rect.y + 20),
-                                                  ((self.attack_timer - self.aoe_start) * 80), 1)
+                                                  ((self.attackcounter) * 80), 1)
             if p.rect.colliderect(self.rumble_area):
                 p.speed = self.rumble_speed
             else:
                 p.speed = p.orspeed
-            if (int(self.attack_timer) == (self.last_attack + self.attack_duration)):
+            if self.attackcounter >= 3.0:
                 self.attacrect = self.attack_area = pygame.draw.circle(screen, (209, 10, 10),
                                                                        (self.rect.x + 18, self.rect.y + 20), 240, 1)
                 if p.rect.colliderect(self.attacrect):
                     p.health -= 50
                     # print("Player hit")
                     # print(p.health)
-            if (int(self.attack_timer) == (self.last_attack + self.attack_duration)):
+            if self.attackcounter >= 3.0:
                 self.not_attacking = True
                 self.is_attacking = False
                 self.attack_area = None
                 self.attack_rect = None
                 p.speed = p.orspeed
+                self.attackcounter = 0
 
     def auto_hit_player(self):
         if self.rect.colliderect(p.rect) and (self.attack_timer - self.last_auto) >= self.attack_speed:
@@ -2941,7 +2944,7 @@ while game:
             bat.check_collisions()
         bat.activate_death()
 
-    if int(minutes) == 0 and int(seconds) == 15:
+    if int(minutes) == 0 and int(seconds) == 3:
         ee.activate = True
 
     if ee.activate and not ee.felled:
