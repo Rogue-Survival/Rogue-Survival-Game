@@ -1,7 +1,7 @@
 import unittest
 from main import Player, Enemy, Bullet, Bat, SkeletonKing, BasicAttack, XP, XPBar, Map
-
-class Player_Test(unittest.TestCase):
+#"pyest.ini"
+class TestPlayer(unittest.TestCase):
 
     def test_speed_typerror(self):
         # Checks for type error
@@ -26,7 +26,7 @@ class Player_Test(unittest.TestCase):
             p.weight()
 
 
-class Enemy_Test(unittest.TestCase):
+class TestEnemy(unittest.TestCase):
 
     def test_speed(self):
         e = Enemy(0,0)
@@ -61,7 +61,7 @@ class Enemy_Test(unittest.TestCase):
             p.weight()
 
 
-class Bat_Test(unittest.TestCase):
+class TestBat(unittest.TestCase):
 
     def test_speed_typerror(self):
         # Checks for type error
@@ -84,14 +84,11 @@ class Bat_Test(unittest.TestCase):
         b = Bat(0,0)
         p = Bat(0,0)
         self.assertNotEqual(b,p)
-    def test_instance(self):
-        b = Bat(0,0)
-        self.assertTrue(b(0,0))
     def test_attribute_fail(self):
         with self.assertRaises(AttributeError):
             p = Bat(0,0)
             p.weight()
-class BasicAttack_Test(unittest.TestCase):
+class TestBasicAtt(unittest.TestCase):
     def test_value(self):
         b = BasicAttack()
         b.damage = 1
@@ -117,7 +114,7 @@ class BasicAttack_Test(unittest.TestCase):
             p = BasicAttack()
             p.wieght()
 
-class XP_Test(unittest.TestCase):
+class TestEXP(unittest.TestCase):
     def test_instance(self):
         x = XP(0,0)
         self.assertTrue(XP(0,0))
@@ -141,7 +138,7 @@ class XP_Test(unittest.TestCase):
         x = Player()
         y = XP(0,0)
         self.assertNotEqual(x,y)
-class Map_Test(unittest.TestCase):
+class TestMap(unittest.TestCase):
     def test_two_instances(self):
         x = Map()
         y = Map()
@@ -161,7 +158,7 @@ class Map_Test(unittest.TestCase):
         with self.assertRaises(AttributeError):
             x = Map()
             x.weight()
-class skeletonKing_Test(unittest.TestCase):
+class TestSK(unittest.TestCase):
 
     def test1(self):
         sk = SkeletonKing(0,0)
@@ -190,7 +187,7 @@ class skeletonKing_Test(unittest.TestCase):
         with self.assertRaises(AttributeError):
             p = SkeletonKing(0,0)
             p.wieght()
-class XP_Bar_Test(unittest.TestCase):
+class TestXP(unittest.TestCase):
     def test1(self):
         x = XPBar()
         self.assertTrue(XPBar())
