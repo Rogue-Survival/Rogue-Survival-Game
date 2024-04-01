@@ -5,6 +5,7 @@ import numpy
 import pygame
 
 
+
 # initializes the pygame library
 pygame.init()
 
@@ -54,6 +55,18 @@ buttonScroll = pygame.transform.scale_by(buttonScroll, 0.6)
 dungeonBackground = pygame.image.load("./images/dungeonBackground2.png").convert_alpha()
 
 bullet_upgrade = pygame.image.load("./images/Noodle.png").convert_alpha()
+
+level_scroll = pygame.image.load("./images/level_scroll.png").convert_alpha()
+
+crit_img = pygame.image.load("./images/crit.png").convert_alpha()
+dodge_img = pygame.image.load("./images/dodge.png").convert_alpha()
+gold_img = pygame.image.load("./images/gold.png").convert_alpha()
+lifesteal_img = pygame.image.load("./images/lifesteal.png").convert_alpha()
+maxhealth_img = pygame.image.load("./images/maxhealth.png").convert_alpha()
+regen_img = pygame.image.load("./images/regen.png").convert_alpha()
+revive_img = pygame.image.load("./images/revive2.png").convert_alpha()
+movementspeed_img = pygame.image.load("./images/speed.png").convert_alpha()
+
 
 # instantiating pause and gameTime function for later
 gameTime = 0
@@ -764,7 +777,6 @@ class Enemy(pygame.sprite.Sprite):
                                                    (self.rect.x + 16, self.rect.y + 16), 8)
             self.follow_mc()
 
-
     def check_collisions(self):
         if b.shooting:
             for bullet in bullets:
@@ -841,6 +853,7 @@ class Enemy(pygame.sprite.Sprite):
             if chance <= 2:
                 # chance for the player to get gold
                 p.gold += 1
+
     def spawn(self):
         # allows programmer to know if this enemy has spawned
         self.spawned.append(1)
@@ -1555,7 +1568,7 @@ class MiniEarthElemental(Enemy):
         self.rect.x = x
         self.rect.y = y
         self.rect.width = 20
-        self.health = 100000000
+        self.health = 500
         self.speed = 3
         self.travel_north()
         self.travel_east()
@@ -1579,7 +1592,6 @@ class MiniEarthElemental(Enemy):
         self.last_auto = 0
         self.attack_speed = 2
         self.speed_snap = False
-        self.attackcounter = 0.0
 
     def generate_enemy(self):
         self.attack_timer = (pygame.time.get_ticks() / 1000)
@@ -1637,29 +1649,27 @@ class MiniEarthElemental(Enemy):
             self.aoe_start = int(self.attack_timer)
             p.orspeed = p.speed
             self.rumble_speed = (p.speed * .55)
-        if self.is_attacking and self.attackcounter < 3.0:
-            self.attackcounter +=.03
+        if self.is_attacking:
             self.attack_area = pygame.draw.circle(screen, (252, 161, 3), (self.rect.x + 18, self.rect.y + 20), 240, 1)
             self.rumble_area = pygame.draw.circle(screen, (209, 10, 10), (self.rect.x + 18, self.rect.y + 20),
-                                                  ((self.attackcounter) * 80), 1)
+                                                  ((self.attack_timer - self.aoe_start) * 80), 1)
             if p.rect.colliderect(self.rumble_area):
                 p.speed = self.rumble_speed
             else:
                 p.speed = p.orspeed
-            if self.attackcounter >= 3.0:
+            if (int(self.attack_timer) == (self.last_attack + self.attack_duration)):
                 self.attacrect = self.attack_area = pygame.draw.circle(screen, (209, 10, 10),
                                                                        (self.rect.x + 18, self.rect.y + 20), 240, 1)
                 if p.rect.colliderect(self.attacrect):
                     p.health -= 50
                     # print("Player hit")
                     # print(p.health)
-            if self.attackcounter >= 3.0:
+            if (int(self.attack_timer) == (self.last_attack + self.attack_duration)):
                 self.not_attacking = True
                 self.is_attacking = False
                 self.attack_area = None
                 self.attack_rect = None
                 p.speed = p.orspeed
-                self.attackcounter = 0
 
     def auto_hit_player(self):
         if self.rect.colliderect(p.rect) and (self.attack_timer - self.last_auto) >= self.attack_speed:
@@ -2450,6 +2460,175 @@ def text_objects(text, font):
     return text_surface, text_surface.get_rect()
 
 
+
+
+
+
+
+
+
+class SkillTree:
+    def __init__(self):
+        self.active = True
+        self.offset = 35
+        self.box1 = pygame.Rect(85, 225, 115, 115)
+        self.box1_border = pygame.Rect(78, 218, 129, 129)
+        self.box2 = pygame.Rect(260, 225, 115, 115)
+        self.box2_border = pygame.Rect(253, 218, 129, 129)
+        self.box3 = pygame.Rect(435, 225, 115, 115)
+        self.box3_border = pygame.Rect(428, 218, 129, 129)
+        self.box4 = pygame.Rect(610, 225, 115, 115)
+        self.box4_border = pygame.Rect(603, 218, 129, 129)
+
+        self.box5 = pygame.Rect(85, 465, 115, 115)
+        self.box5_border = pygame.Rect(78, 458, 129, 129)
+        self.box6 = pygame.Rect(260, 465, 115, 115)
+        self.box6_border = pygame.Rect(253, 458, 129, 129)
+        self.box7 = pygame.Rect(435, 465, 115, 115)
+        self.box7_border = pygame.Rect(428, 458, 129, 129)
+        self.box8 = pygame.Rect(610, 465, 115, 115)
+        self.box8_border = pygame.Rect(603, 458, 129, 129)
+
+        self.description_box = pygame.Rect(120, 670, 575, 800)
+        self.description_border = pygame.Rect(110, 660, 595, 820)
+
+        self.buy_box = pygame.Rect(580, 715, 90, 47)
+        self.buy_border = pygame.Rect(575, 710, 100, 57)
+
+        self.box1_level = pygame.Rect(158, 375, 25, 25)
+        self.box2_level = pygame.Rect(158, 375, 25, 25)
+
+        self.level_font = pygame.font.SysFont('Garamond', 22)
+        self.title_font = pygame.font.SysFont('Garamond', 82, bold=1)
+        self.back_font = pygame.font.SysFont('Garamond', 36, bold=1)
+        self.description_title_font = pygame.font.SysFont('Garamond', 32, bold=1)
+        self.description_font = pygame.font.SysFont('Garamond', 24, bold=1)
+        self.buy_font = pygame.font.SysFont('Garamond', 36, bold=2)
+
+        self.title_background_border = pygame.Rect(225, 40, 358, 115)
+        self.title_background = pygame.Rect(235, 50, 337, 95)
+
+        self.back_background_border = pygame.Rect(15, 15, 143, 68)
+        self.back_background = pygame.Rect(23, 23, 127, 52)
+
+
+    def skill_tree(self):
+        while self.active:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    global game
+                    game = False
+                    pygame.quit()
+                    sys.exit(1)
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    pass
+
+
+            screen.blit(dungeonBackground, (0, 0))
+            pygame.draw.rect(screen, (0,0,0), self.box1_border)
+            pygame.draw.rect(screen, (47,79,79), self.box1)
+            pygame.draw.rect(screen, (0,0,0), self.box2_border)
+            pygame.draw.rect(screen, (47,79,79), self.box2)
+            pygame.draw.rect(screen, (0,0,0), self.box3_border)
+            pygame.draw.rect(screen, (47,79,79), self.box3)
+            pygame.draw.rect(screen, (0,0,0), self.box4_border)
+            pygame.draw.rect(screen, (47,79,79), self.box4)
+            pygame.draw.rect(screen, (0,0,0), self.box5_border)
+            pygame.draw.rect(screen, (47,79,79), self.box5)
+            pygame.draw.rect(screen, (0,0,0), self.box6_border)
+            pygame.draw.rect(screen, (47,79,79), self.box6)
+            pygame.draw.rect(screen, (0,0,0), self.box7_border)
+            pygame.draw.rect(screen, (47,79,79), self.box7)
+            pygame.draw.rect(screen, (0,0,0), self.box8_border)
+            pygame.draw.rect(screen, (47,79,79), self.box8)
+
+
+
+            screen.blit(pygame.transform.scale(level_scroll, (115, 55)), (80, 350))
+            level_render1 = self.level_font.render('Level: 0', True, (0, 0, 0))
+            screen.blit(level_render1, (105, 366))
+
+            screen.blit(pygame.transform.scale(level_scroll, (115, 55)), (255, 350))
+            level_render2 = self.level_font.render('Level: 0', True, (0, 0, 0))
+            screen.blit(level_render2, (280, 366))
+
+            screen.blit(pygame.transform.scale(level_scroll, (115, 55)), (430, 350))
+            level_render3 = self.level_font.render('Level: 0', True, (0, 0, 0))
+            screen.blit(level_render3, (455, 366))
+
+            screen.blit(pygame.transform.scale(level_scroll, (115, 55)), (605, 350))
+            level_render4 = self.level_font.render('Level: 0', True, (0, 0, 0))
+            screen.blit(level_render4, (630, 366))
+
+
+            screen.blit(pygame.transform.scale(level_scroll, (115, 55)), (80, 590))
+            level_render5 = self.level_font.render('Level: 0', True, (0, 0, 0))
+            screen.blit(level_render5, (105, 606))
+
+            screen.blit(pygame.transform.scale(level_scroll, (115, 55)), (255, 590))
+            level_render6 = self.level_font.render('Level: 0', True, (0, 0, 0))
+            screen.blit(level_render6, (280, 606))
+
+            screen.blit(pygame.transform.scale(level_scroll, (115, 55)), (430, 590))
+            level_render7 = self.level_font.render('Level: 0', True, (0, 0, 0))
+            screen.blit(level_render7, (455, 606))
+
+            screen.blit(pygame.transform.scale(level_scroll, (115, 55)), (605, 590))
+            level_render8 = self.level_font.render('Level: 0', True, (0, 0, 0))
+            screen.blit(level_render8, (630, 606))
+
+
+
+            pygame.draw.rect(screen, (0,0,0), self.title_background_border)
+            pygame.draw.rect(screen, (47,79,79), self.title_background)
+            title_render = self.title_font.render('Skill Tree', True, (225, 255, 255))
+            screen.blit(title_render, (240, 50))
+
+
+            pygame.draw.rect(screen, (0,0,0), self.back_background_border, border_radius=15)
+            pygame.draw.rect(screen, (255,0,0), self.back_background, border_radius=15)
+            back_render = self.back_font.render('Back', True, (225, 255, 255))
+            screen.blit(back_render, (45, 26))
+
+
+
+            pygame.draw.rect(screen, (0,0,0), self.description_border)
+            pygame.draw.rect(screen, (47,79,79), self.description_box)
+            pygame.draw.rect(screen, (255,255,0), self.buy_box, border_radius=25)
+            description_title_render = self.description_title_font.render('Max Health Upgrade', True, (225, 255, 255))
+            screen.blit(description_title_render, (135, 685))
+            description_render = self.description_font.render('Increases max health by 10%', True, (225, 255, 255))
+            screen.blit(description_render, (135, 730))
+            description_cost_render = self.description_font.render('Cost: 25 gold  |  Balance: 215 gold', True, (225, 255, 255))
+            screen.blit(description_cost_render, (135, 765))
+            buy_render = self.buy_font.render('BUY', True, (0, 0, 0))
+            screen.blit(buy_render, (588, 718))
+
+
+            screen.blit(pygame.transform.scale(maxhealth_img, (100,100)), (self.box1.x+7, self.box1.y+3))
+            screen.blit(pygame.transform.scale(regen_img, (100,100)), (self.box2.x+8, self.box2.y+6))
+            screen.blit(pygame.transform.scale(revive_img, (100,100)), (self.box3.x+7, self.box3.y+8))
+            screen.blit(pygame.transform.scale(movementspeed_img, (100,100)), (self.box4.x+7, self.box4.y+6))
+            screen.blit(pygame.transform.scale(dodge_img, (100,100)), (self.box5.x+7, self.box5.y+7))
+            screen.blit(pygame.transform.scale(gold_img, (100,100)), (self.box6.x+10, self.box6.y+5))
+            screen.blit(pygame.transform.scale(crit_img, (100,100)), (self.box7.x+7, self.box7.y+8))
+            screen.blit(pygame.transform.scale(lifesteal_img, (100,100)), (self.box8.x+7, self.box8.y+3))
+
+
+            clock.tick(15)
+            pygame.display.update()
+
+
+
+
+
+
+
+
+
+st = SkillTree()
+
+
 # adding the ability to implement buttons
 def button(msg, x, y, w, h, ic, ac, action):
     # if buttons are pressed, activate the appropriate functions
@@ -2474,9 +2653,10 @@ def button(msg, x, y, w, h, ic, ac, action):
                 pause = False
                 credits()
             elif action == "Quit":
-                game = False
-                pygame.quit()
-                sys.exit()
+                st.skill_tree()
+                # game = False
+                # pygame.quit()
+                # sys.exit()
             elif action == "Play":
                 if p.death:
                     reset_stats()
@@ -2944,7 +3124,7 @@ while game:
             bat.check_collisions()
         bat.activate_death()
 
-    if int(minutes) == 0 and int(seconds) == 3:
+    if int(minutes) == 0 and int(seconds) == 15:
         ee.activate = True
 
     if ee.activate and not ee.felled:
@@ -2976,6 +3156,7 @@ while game:
     for bat in bats:
         bat.clean_dictionaries()
         bat.decide_action()
+
 
     b.bullet_counter += 1
     ba.attack()
