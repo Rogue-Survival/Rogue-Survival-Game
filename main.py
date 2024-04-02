@@ -2513,8 +2513,12 @@ class SkillTree:
 
         self.back_background_border = pygame.Rect(15, 15, 143, 68)
         self.back_background = pygame.Rect(23, 23, 127, 52)
+        self.selected = False
+        self.selected_option = []
 
 
+    def load_data(self):
+        pass
     def skill_tree(self):
         while self.active:
             for event in pygame.event.get():
@@ -2524,26 +2528,104 @@ class SkillTree:
                     pygame.quit()
                     sys.exit(1)
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    pass
+                    if self.box1.collidepoint(event.pos) or self.box1_border.collidepoint(event.pos) :
+                        self.selected = True
+                        self.selected_option = ['box1']
+                    if self.box2.collidepoint(event.pos) or self.box2_border.collidepoint(event.pos) :
+                        self.selected = True
+                        self.selected_option = ['box2']
+                    if self.box3.collidepoint(event.pos) or self.box3_border.collidepoint(event.pos) :
+                        self.selected = True
+                        self.selected_option = ['box3']
+                    if self.box4.collidepoint(event.pos) or self.box4_border.collidepoint(event.pos) :
+                        self.selected = True
+                        self.selected_option = ['box4']
+                    if self.box5.collidepoint(event.pos) or self.box5_border.collidepoint(event.pos) :
+                        self.selected = True
+                        self.selected_option = ['box5']
+                    if self.box6.collidepoint(event.pos) or self.box6_border.collidepoint(event.pos) :
+                        self.selected = True
+                        self.selected_option = ['box6']
+                    if self.box7.collidepoint(event.pos) or self.box7_border.collidepoint(event.pos) :
+                        self.selected = True
+                        self.selected_option = ['box7']
+                    if self.box8.collidepoint(event.pos) or self.box8_border.collidepoint(event.pos) :
+                        self.selected = True
+                        self.selected_option = ['box8']
+                    if self.back_background.collidepoint(event.pos) or self.back_background_border.collidepoint(event.pos) :
+                        global st
+                        st = SkillTree()
+                        self.active = False
+                        main_menu()
 
 
             screen.blit(dungeonBackground, (0, 0))
-            pygame.draw.rect(screen, (0,0,0), self.box1_border)
-            pygame.draw.rect(screen, (47,79,79), self.box1)
-            pygame.draw.rect(screen, (0,0,0), self.box2_border)
-            pygame.draw.rect(screen, (47,79,79), self.box2)
-            pygame.draw.rect(screen, (0,0,0), self.box3_border)
-            pygame.draw.rect(screen, (47,79,79), self.box3)
-            pygame.draw.rect(screen, (0,0,0), self.box4_border)
-            pygame.draw.rect(screen, (47,79,79), self.box4)
-            pygame.draw.rect(screen, (0,0,0), self.box5_border)
-            pygame.draw.rect(screen, (47,79,79), self.box5)
-            pygame.draw.rect(screen, (0,0,0), self.box6_border)
-            pygame.draw.rect(screen, (47,79,79), self.box6)
-            pygame.draw.rect(screen, (0,0,0), self.box7_border)
-            pygame.draw.rect(screen, (47,79,79), self.box7)
-            pygame.draw.rect(screen, (0,0,0), self.box8_border)
-            pygame.draw.rect(screen, (47,79,79), self.box8)
+            if not self.selected:
+                pygame.draw.rect(screen, (0,0,0), self.box1_border)
+                pygame.draw.rect(screen, (47,79,79), self.box1)
+                pygame.draw.rect(screen, (0,0,0), self.box2_border)
+                pygame.draw.rect(screen, (47,79,79), self.box2)
+                pygame.draw.rect(screen, (0,0,0), self.box3_border)
+                pygame.draw.rect(screen, (47,79,79), self.box3)
+                pygame.draw.rect(screen, (0,0,0), self.box4_border)
+                pygame.draw.rect(screen, (47,79,79), self.box4)
+                pygame.draw.rect(screen, (0,0,0), self.box5_border)
+                pygame.draw.rect(screen, (47,79,79), self.box5)
+                pygame.draw.rect(screen, (0,0,0), self.box6_border)
+                pygame.draw.rect(screen, (47,79,79), self.box6)
+                pygame.draw.rect(screen, (0,0,0), self.box7_border)
+                pygame.draw.rect(screen, (47,79,79), self.box7)
+                pygame.draw.rect(screen, (0,0,0), self.box8_border)
+                pygame.draw.rect(screen, (47,79,79), self.box8)
+            else:
+                if self.selected_option[0] == 'box1':
+                    pygame.draw.rect(screen, (255,255,255), self.box1_border)
+                    pygame.draw.rect(screen, (47,79,79), self.box1)
+                else:
+                    pygame.draw.rect(screen, (0,0,0), self.box1_border)
+                    pygame.draw.rect(screen, (47,79,79), self.box1)
+                if self.selected_option[0] == 'box2':
+                    pygame.draw.rect(screen, (255,255,255), self.box2_border)
+                    pygame.draw.rect(screen, (47,79,79), self.box2)
+                else:
+                    pygame.draw.rect(screen, (0,0,0), self.box2_border)
+                    pygame.draw.rect(screen, (47,79,79), self.box2)
+                if self.selected_option[0] == 'box3':
+                    pygame.draw.rect(screen, (255,255,255), self.box3_border)
+                    pygame.draw.rect(screen, (47,79,79), self.box3)
+                else:
+                    pygame.draw.rect(screen, (0,0,0), self.box3_border)
+                    pygame.draw.rect(screen, (47,79,79), self.box3)
+                if self.selected_option[0] == 'box4':
+                    pygame.draw.rect(screen, (255,255,255), self.box4_border)
+                    pygame.draw.rect(screen, (47,79,79), self.box4)
+                else:
+                    pygame.draw.rect(screen, (0,0,0), self.box4_border)
+                    pygame.draw.rect(screen, (47,79,79), self.box4)
+                if self.selected_option[0] == 'box5':
+                    pygame.draw.rect(screen, (255,255,255), self.box5_border)
+                    pygame.draw.rect(screen, (47,79,79), self.box5)
+                else:
+                    pygame.draw.rect(screen, (0,0,0), self.box5_border)
+                    pygame.draw.rect(screen, (47,79,79), self.box5)
+                if self.selected_option[0] == 'box6':
+                    pygame.draw.rect(screen, (255,255,255), self.box6_border)
+                    pygame.draw.rect(screen, (47,79,79), self.box6)
+                else:
+                    pygame.draw.rect(screen, (0,0,0), self.box6_border)
+                    pygame.draw.rect(screen, (47,79,79), self.box6)
+                if self.selected_option[0] == 'box7':
+                    pygame.draw.rect(screen, (255,255,255), self.box7_border)
+                    pygame.draw.rect(screen, (47,79,79), self.box7)
+                else:
+                    pygame.draw.rect(screen, (0,0,0), self.box7_border)
+                    pygame.draw.rect(screen, (47,79,79), self.box7)
+                if self.selected_option[0] == 'box8':
+                    pygame.draw.rect(screen, (255,255,255), self.box8_border)
+                    pygame.draw.rect(screen, (47,79,79), self.box8)
+                else:
+                    pygame.draw.rect(screen, (0,0,0), self.box8_border)
+                    pygame.draw.rect(screen, (47,79,79), self.box8)
 
 
 
@@ -2595,17 +2677,7 @@ class SkillTree:
 
 
 
-            pygame.draw.rect(screen, (0,0,0), self.description_border)
-            pygame.draw.rect(screen, (47,79,79), self.description_box)
-            pygame.draw.rect(screen, (255,255,0), self.buy_box, border_radius=25)
-            description_title_render = self.description_title_font.render('Max Health Upgrade', True, (225, 255, 255))
-            screen.blit(description_title_render, (135, 685))
-            description_render = self.description_font.render('Increases max health by 10%', True, (225, 255, 255))
-            screen.blit(description_render, (135, 730))
-            description_cost_render = self.description_font.render('Cost: 25 gold  |  Balance: 215 gold', True, (225, 255, 255))
-            screen.blit(description_cost_render, (135, 765))
-            buy_render = self.buy_font.render('BUY', True, (0, 0, 0))
-            screen.blit(buy_render, (588, 718))
+
 
 
             screen.blit(pygame.transform.scale(maxhealth_img, (100,100)), (self.box1.x+7, self.box1.y+3))
@@ -2617,9 +2689,91 @@ class SkillTree:
             screen.blit(pygame.transform.scale(crit_img, (100,100)), (self.box7.x+7, self.box7.y+8))
             screen.blit(pygame.transform.scale(lifesteal_img, (100,100)), (self.box8.x+7, self.box8.y+3))
 
-
+            if self.selected:
+                self.display_information(self.selected_option[0])
             clock.tick(15)
             pygame.display.update()
+
+    def display_information(self, option):
+        pygame.draw.rect(screen, (0,0,0), self.description_border)
+        pygame.draw.rect(screen, (47,79,79), self.description_box)
+        pygame.draw.rect(screen, (255,255,0), self.buy_box, border_radius=25)
+        if option == 'box1':
+            description_title_render = self.description_title_font.render('Max Health Upgrade', True, (225, 255, 255))
+            screen.blit(description_title_render, (135, 685))
+            description_render = self.description_font.render('Increases max health by 10%', True, (225, 255, 255))
+            screen.blit(description_render, (135, 730))
+            description_cost_render = self.description_font.render('Cost: 25 gold  |  Balance: 215 gold', True, (225, 255, 255))
+            screen.blit(description_cost_render, (135, 765))
+            buy_render = self.buy_font.render('BUY', True, (0, 0, 0))
+            screen.blit(buy_render, (588, 718))
+        if option == 'box2':
+            description_title_render = self.description_title_font.render('Health Regeneration Upgrade', True, (225, 255, 255))
+            screen.blit(description_title_render, (135, 685))
+            description_render = self.description_font.render('Restores 2 health every 30 seconds', True, (225, 255, 255))
+            screen.blit(description_render, (135, 730))
+            description_cost_render = self.description_font.render('Cost: 25 gold  |  Balance: 215 gold', True, (225, 255, 255))
+            screen.blit(description_cost_render, (135, 765))
+            buy_render = self.buy_font.render('BUY', True, (0, 0, 0))
+            screen.blit(buy_render, (588, 718))
+        if option == 'box3':
+            description_title_render = self.description_title_font.render('Revive Upgrade', True, (225, 255, 255))
+            screen.blit(description_title_render, (135, 685))
+            description_render = self.description_font.render('Get one extra life if you drop to 0 health', True, (225, 255, 255))
+            screen.blit(description_render, (135, 730))
+            description_cost_render = self.description_font.render('Cost: 1250 gold  |  Balance: 215 gold', True, (225, 255, 255))
+            screen.blit(description_cost_render, (135, 765))
+            buy_render = self.buy_font.render('BUY', True, (0, 0, 0))
+            screen.blit(buy_render, (588, 718))
+        if option == 'box4':
+            description_title_render = self.description_title_font.render('Movement Speed Upgrade', True, (225, 255, 255))
+            screen.blit(description_title_render, (135, 685))
+            description_render = self.description_font.render('Increases player movement speed by 5%', True, (225, 255, 255))
+            screen.blit(description_render, (135, 730))
+            description_cost_render = self.description_font.render('Cost: 375 gold  |  Balance: 215 gold', True, (225, 255, 255))
+            screen.blit(description_cost_render, (135, 765))
+            buy_render = self.buy_font.render('BUY', True, (0, 0, 0))
+            screen.blit(buy_render, (588, 718))
+        if option == 'box5':
+            description_title_render = self.description_title_font.render('Dodge Chance Upgrade', True, (225, 255, 255))
+            screen.blit(description_title_render, (135, 685))
+            description_render = self.description_font.render('Increases dodge chance by 5%', True, (225, 255, 255))
+            screen.blit(description_render, (135, 730))
+            description_cost_render = self.description_font.render('Cost: 175 gold  |  Balance: 215 gold', True, (225, 255, 255))
+            screen.blit(description_cost_render, (135, 765))
+            buy_render = self.buy_font.render('BUY', True, (0, 0, 0))
+            screen.blit(buy_render, (588, 718))
+        if option == 'box6':
+            description_title_render = self.description_title_font.render('Gold Chance Upgrade', True, (225, 255, 255))
+            screen.blit(description_title_render, (135, 685))
+            description_render = self.description_font.render('Increases chance of gold dropped by 5%', True, (225, 255, 255))
+            screen.blit(description_render, (135, 730))
+            description_cost_render = self.description_font.render('Cost: 300 gold  |  Balance: 215 gold', True, (225, 255, 255))
+            screen.blit(description_cost_render, (135, 765))
+            buy_render = self.buy_font.render('BUY', True, (0, 0, 0))
+            screen.blit(buy_render, (588, 718))
+        if option == 'box7':
+            description_title_render = self.description_title_font.render('Critical Chance Upgrade', True, (225, 255, 255))
+            screen.blit(description_title_render, (135, 685))
+            description_render = self.description_font.render('Increases critical chance by 5%', True, (225, 255, 255))
+            screen.blit(description_render, (135, 730))
+            description_cost_render = self.description_font.render('Cost: 615 gold  |  Balance: 215 gold', True, (225, 255, 255))
+            screen.blit(description_cost_render, (135, 765))
+            buy_render = self.buy_font.render('BUY', True, (0, 0, 0))
+            screen.blit(buy_render, (588, 718))
+        if option == 'box8':
+            description_title_render = self.description_title_font.render('Life Steal Upgrade', True, (225, 255, 255))
+            screen.blit(description_title_render, (135, 685))
+            description_render = self.description_font.render('Increases life steal chance by 5%', True, (225, 255, 255))
+            screen.blit(description_render, (135, 730))
+            description_cost_render = self.description_font.render('Cost: 750 gold  |  Balance: 215 gold', True, (225, 255, 255))
+            screen.blit(description_cost_render, (135, 765))
+            buy_render = self.buy_font.render('BUY', True, (0, 0, 0))
+            screen.blit(buy_render, (588, 718))
+
+
+        clock.tick(15)
+        pygame.display.update()
 
 
 
@@ -2656,6 +2810,7 @@ def button(msg, x, y, w, h, ic, ac, action):
                 pause = False
                 credits()
             elif action == "Quit":
+                st.load_data()
                 st.skill_tree()
                 # game = False
                 # pygame.quit()
@@ -3127,7 +3282,7 @@ while game:
             bat.check_collisions()
         bat.activate_death()
 
-    if int(minutes) == 0 and int(seconds) == 5:
+    if int(minutes) == 1 and int(seconds) == 30:
         ee.activate = True
 
     if ee.activate and not ee.felled:
@@ -3141,7 +3296,7 @@ while game:
     if p.rect.colliderect(bup.rect) and not bup.upgrade_active and ee.felled:
         bup.check_collisions()
 
-    if int(minutes) == 1 and int(seconds) == 30:
+    if int(minutes) == 10 and int(seconds) == 00:
         # skeleton king spawns once the game time reaches a minute and thirty seconds
         sk.activate = True
 
