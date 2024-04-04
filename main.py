@@ -2,6 +2,8 @@ import sys
 import math
 import random
 import numpy
+import os
+import csv
 import pygame
 
 
@@ -76,6 +78,153 @@ xp = []
 xp_hit = []
 
 
+input_file = './game-data/profile-data.csv'
+output_file = './game-data/new-profile-data.csv'
+
+
+class ProfileData:
+
+    def __init__(self):
+        self.empty = True
+        self.new_file_data = []
+
+    def check_empty(self):
+        csv_file = './game-data/profile-data.csv'
+        exists = os.path.isfile(csv_file)
+        print(exists)
+        if not exists:
+            open("./game-data/profile-data.csv", "x")
+        with open('./game-data/profile-data.csv', 'r') as p_data:
+            p_reader = csv.reader(p_data)
+
+            count = 0
+            for line in p_reader:
+                self.empty = False
+                count += 1
+            if count <= 1:
+                self.empty = True
+            if self.empty:
+                print("EMPTY")
+                self.create_csv()
+
+    def create_csv(self):
+        if self.empty:
+            with open('./game-data/profile-data.csv', 'w') as p_data:
+                p_writer = csv.writer(p_data, lineterminator= '\n')
+                data0 = ["profile_id", "currency", "selected_profile", "upgrade1_level", "upgrade2_level", "upgrade3_level", "upgrade4_level", "upgrade5_level", "upgrade6_level", "upgrade7_level", "upgrade8_level"]
+                data1 = [1, 0, "not-selected", 0, 0, 0, 0, 0, 0, 0, 0]
+                data2 = [2, 0, "not-selected", 0, 0, 0, 0, 0, 0, 0, 0]
+                data3 = [3, 0, "selected", 0, 0, 0, 0, 0, 0, 0, 0]
+                data4 = [4, 0, "not-selected", 0, 0, 0, 0, 0, 0, 0, 0]
+                data5 = [5, 0, "not-selected", 0, 0, 0, 0, 0, 0, 0, 0]
+                p_writer.writerow(data0)
+                p_writer.writerow(data1)
+                p_writer.writerow(data2)
+                p_writer.writerow(data3)
+                p_writer.writerow(data4)
+                p_writer.writerow(data5)
+                print("file created")
+
+    def add_gold(self):
+
+        with open(input_file, 'r') as p_data_read, open(output_file, 'w', newline='') as p_data_write:
+            p_reader = csv.reader(p_data_read, delimiter=',')
+            p_writer = csv.writer(p_data_write, delimiter=',')
+
+            for line in p_reader:
+                if line[2] == 'selected':
+                    current_gold = int(line[1])
+                    gold_earned = p.gold
+                    line[1] = f'{current_gold + gold_earned}'
+                p_writer.writerow(line)
+
+        with open(output_file, 'r') as p_data_read, open(input_file, 'w', newline='') as p_data_write:
+            p_reader = csv.reader(p_data_read, delimiter=',')
+            p_writer = csv.writer(p_data_write, delimiter=',')
+            for line in p_reader: # append everything from the updated file so we can later use it to write over the original file
+                self.new_file_data.append(line)
+
+            for g in self.new_file_data: # write data from updated file to original file
+                p_writer.writerow(g)
+            self.new_file_data.clear()
+
+
+    def load_skill_tree(self):
+        with open(input_file, 'r') as p_data_read, open(output_file, 'w', newline='') as p_data_write:
+            p_reader = csv.reader(p_data_read, delimiter=',')
+            p_writer = csv.writer(p_data_write, delimiter=',')
+
+            for line in p_reader:
+                if line[2] == 'selected':
+                    st.upgrade1_level = int(line[3])
+                    st.upgrade2_level = int(line[4])
+                    st.upgrade3_level = int(line[5])
+                    st.upgrade4_level = int(line[6])
+                    st.upgrade5_level = int(line[7])
+                    st.upgrade6_level = int(line[8])
+                    st.upgrade7_level = int(line[9])
+                    st.upgrade8_level = int(line[10])
+
+                    st.balance = int(float(line[1]))
+
+    def subtract_gold(self, purchase_price):
+        with open(input_file, 'r') as p_data_read, open(output_file, 'w', newline='') as p_data_write:
+            p_reader = csv.reader(p_data_read, delimiter=',')
+            p_writer = csv.writer(p_data_write, delimiter=',')
+
+            for line in p_reader:
+                if line[2] == 'selected':
+                    current_gold = int(float(line[1]))
+                    line[1] = f'{current_gold - purchase_price}'
+                    st.balance = int(float(line[1]))
+                p_writer.writerow(line)
+
+        with open(output_file, 'r') as p_data_read, open(input_file, 'w', newline='') as p_data_write:
+            p_reader = csv.reader(p_data_read, delimiter=',')
+            p_writer = csv.writer(p_data_write, delimiter=',')
+            for line in p_reader: # append everything from the updated file so we can later use it to write over the original file
+                self.new_file_data.append(line)
+
+            for g in self.new_file_data: # write data from updated file to original file
+                p_writer.writerow(g)
+            self.new_file_data.clear()
+
+    def increase_upgrade_level(self, column):
+        with open(input_file, 'r') as p_data_read, open(output_file, 'w', newline='') as p_data_write:
+            p_reader = csv.reader(p_data_read, delimiter=',')
+            p_writer = csv.writer(p_data_write, delimiter=',')
+
+            for line in p_reader:
+                if line[2] == 'selected':
+                    current_level = int(line[column])
+                    line[column] = f'{current_level + 1}'
+                p_writer.writerow(line)
+
+        with open(output_file, 'r') as p_data_read, open(input_file, 'w', newline='') as p_data_write:
+            p_reader = csv.reader(p_data_read, delimiter=',')
+            p_writer = csv.writer(p_data_write, delimiter=',')
+            for line in p_reader: # append everything from the updated file so we can later use it to write over the original file
+                self.new_file_data.append(line)
+
+            for g in self.new_file_data: # write data from updated file to original file
+                p_writer.writerow(g)
+            self.new_file_data.clear()
+
+
+
+
+
+
+
+pd = ProfileData()
+pd.check_empty()
+
+# pd.add_gold()
+
+
+
+
+
 class Map:
     # Controls map boundaries and map camera
     def __init__(self, map_x=-800, map_y=-800):
@@ -134,7 +283,7 @@ class Player(pygame.sprite.Sprite):
         # inherits from the pygame.sprite.Sprite class
         pygame.sprite.Sprite.__init__(self)
         self.speed = 4
-        self.health = 5000000
+        self.health = 50
         self.image = "./images/MAIN_CHARACTER.png"
         self.death = False
         self.rect = mc_img.get_rect().scale_by(2, 2)
@@ -2463,13 +2612,6 @@ def text_objects(text, font):
     return text_surface, text_surface.get_rect()
 
 
-
-
-
-
-
-
-
 class SkillTree:
     def __init__(self):
         self.active = True
@@ -2502,11 +2644,13 @@ class SkillTree:
         self.box2_level = pygame.Rect(158, 375, 25, 25)
 
         self.level_font = pygame.font.SysFont('Garamond', 22)
+        self.level2_font = pygame.font.SysFont('Garamond', 18, bold=1)
         self.title_font = pygame.font.SysFont('Garamond', 82, bold=1)
         self.back_font = pygame.font.SysFont('Garamond', 36, bold=1)
         self.description_title_font = pygame.font.SysFont('Garamond', 32, bold=1)
         self.description_font = pygame.font.SysFont('Garamond', 24, bold=1)
         self.buy_font = pygame.font.SysFont('Garamond', 36, bold=2)
+        self.feedback_message_font = pygame.font.SysFont('Garamond', 22, bold=1)
 
         self.title_background_border = pygame.Rect(225, 40, 358, 115)
         self.title_background = pygame.Rect(235, 50, 337, 95)
@@ -2515,10 +2659,86 @@ class SkillTree:
         self.back_background = pygame.Rect(23, 23, 127, 52)
         self.selected = False
         self.selected_option = []
+        self.selected_cost = 0
 
+        self.upgrade1_level = 0
+        self.upgrade2_level = 0
+        self.upgrade3_level = 0
+        self.upgrade4_level = 0
+        self.upgrade5_level = 0
+        self.upgrade6_level = 0
+        self.upgrade7_level = 0
+        self.upgrade8_level = 0
+
+        self.upgrade1_cost = 425
+        self.upgrade2_cost = 475
+        self.upgrade3_cost = 1250
+        self.upgrade4_cost = 375
+        self.upgrade5_cost = 175
+        self.upgrade6_cost = 300
+        self.upgrade7_cost = 615
+        self.upgrade8_cost = 750
+
+        self.balance = 0
+
+        self.feedback = False
+        self.feedback_option = 0
+        self.feedback_box = pygame.Rect(640, 23, 130, 50)
+        self.message_timer = False
+        self.message_timer_counter = 0
+        # self.feedback_box_border = pygame.Rect(78, 218, 129, 129)
+
+        self.column = 0
 
     def load_data(self):
-        pass
+
+        if self.upgrade1_level:
+            if self.upgrade1_level >= 5:
+                self.upgrade1_cost = 999999999
+            else:
+                self.upgrade1_cost = (425 * 1.25**self.upgrade1_level)
+
+        if self.upgrade2_level:
+            if self.upgrade2_level >= 5:
+                self.upgrade2_cost = 999999999
+            else:
+                self.upgrade2_cost = (475 * 1.25**self.upgrade2_level)
+
+        if self.upgrade3_level:
+            print('1')
+            self.upgrade3_cost = 999999999
+
+        if self.upgrade4_level:
+            if self.upgrade4_level >= 5:
+                self.upgrade4_cost = 999999999
+            else:
+                self.upgrade4_cost = (375 * 1.25**self.upgrade4_level)
+
+        if self.upgrade5_level:
+            if self.upgrade5_level >= 5:
+                self.upgrade5_cost = 999999999
+            else:
+                self.upgrade5_cost = (175 * 1.25**self.upgrade5_level)
+
+        if self.upgrade6_level:
+            if self.upgrade6_level >= 5:
+                self.upgrade6_cost = 999999999
+            else:
+                self.upgrade6_cost = (300 * 1.25**self.upgrade6_level)
+
+        if self.upgrade7_level:
+            if self.upgrade7_level >= 5:
+                self.upgrade7_cost = 999999999
+            else:
+                self.upgrade7_cost = (615 * 1.25**self.upgrade7_level)
+
+        if self.upgrade8_level:
+            if self.upgrade8_level >= 5:
+                self.upgrade8_cost = 999999999
+            else:
+                self.upgrade8_cost = (425 * 1.25**self.upgrade8_level)
+
+
     def skill_tree(self):
         while self.active:
             for event in pygame.event.get():
@@ -2528,37 +2748,61 @@ class SkillTree:
                     pygame.quit()
                     sys.exit(1)
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if self.box1.collidepoint(event.pos) or self.box1_border.collidepoint(event.pos) :
+                    if self.box1.collidepoint(event.pos) or self.box1_border.collidepoint(event.pos):
                         self.selected = True
                         self.selected_option = ['box1']
-                    if self.box2.collidepoint(event.pos) or self.box2_border.collidepoint(event.pos) :
+                        self.selected_cost = self.upgrade1_cost
+                    if self.box2.collidepoint(event.pos) or self.box2_border.collidepoint(event.pos):
                         self.selected = True
                         self.selected_option = ['box2']
-                    if self.box3.collidepoint(event.pos) or self.box3_border.collidepoint(event.pos) :
+                        self.selected_cost = self.upgrade2_cost
+                    if self.box3.collidepoint(event.pos) or self.box3_border.collidepoint(event.pos):
                         self.selected = True
                         self.selected_option = ['box3']
-                    if self.box4.collidepoint(event.pos) or self.box4_border.collidepoint(event.pos) :
+                        self.selected_cost = self.upgrade3_cost
+                    if self.box4.collidepoint(event.pos) or self.box4_border.collidepoint(event.pos):
                         self.selected = True
                         self.selected_option = ['box4']
-                    if self.box5.collidepoint(event.pos) or self.box5_border.collidepoint(event.pos) :
+                        self.selected_cost = self.upgrade4_cost
+                    if self.box5.collidepoint(event.pos) or self.box5_border.collidepoint(event.pos):
                         self.selected = True
                         self.selected_option = ['box5']
-                    if self.box6.collidepoint(event.pos) or self.box6_border.collidepoint(event.pos) :
+                        self.selected_cost = self.upgrade5_cost
+                    if self.box6.collidepoint(event.pos) or self.box6_border.collidepoint(event.pos):
                         self.selected = True
                         self.selected_option = ['box6']
-                    if self.box7.collidepoint(event.pos) or self.box7_border.collidepoint(event.pos) :
+                        self.selected_cost = self.upgrade6_cost
+                    if self.box7.collidepoint(event.pos) or self.box7_border.collidepoint(event.pos):
                         self.selected = True
                         self.selected_option = ['box7']
-                    if self.box8.collidepoint(event.pos) or self.box8_border.collidepoint(event.pos) :
+                        self.selected_cost = self.upgrade7_cost
+                    if self.box8.collidepoint(event.pos) or self.box8_border.collidepoint(event.pos):
                         self.selected = True
                         self.selected_option = ['box8']
-                    if self.back_background.collidepoint(event.pos) or self.back_background_border.collidepoint(event.pos) :
+                        self.selected_cost = self.upgrade8_cost
+                    if self.back_background.collidepoint(event.pos) or self.back_background_border.collidepoint(event.pos):
                         global st
                         st = SkillTree()
                         self.active = False
                         main_menu()
+                    if (self.buy_box.collidepoint(event.pos) or self.buy_border.collidepoint(event.pos)) and self.selected:
+                        if self.selected_cost == 999999999: # if upgrade is maxed out
+                            self.feedback_option = 3
+                            self.message_timer = 0
+                            self.message_timer = True
+                        elif self.balance < self.selected_cost: # if user cannot afford to purchase upgrade
+                            self.feedback = True
+                            self.feedback_option = 2
+                            self.message_timer = 0
+                            self.message_timer = True
+                        else: # if user is able to purchase upgrade
+                            self.purchase_upgrade()
 
+                            self.feedback = True
+                            self.feedback_option = 1
+                            self.message_timer = True
 
+            self.load_data()
             screen.blit(dungeonBackground, (0, 0))
             if not self.selected:
                 pygame.draw.rect(screen, (0,0,0), self.box1_border)
@@ -2627,58 +2871,79 @@ class SkillTree:
                     pygame.draw.rect(screen, (0,0,0), self.box8_border)
                     pygame.draw.rect(screen, (47,79,79), self.box8)
 
-
-
             screen.blit(pygame.transform.scale(level_scroll, (115, 55)), (80, 350))
-            level_render1 = self.level_font.render('Level: 0', True, (0, 0, 0))
-            screen.blit(level_render1, (105, 366))
+            if self.upgrade1_cost == 999999999:
+                level_render1 = self.level2_font.render(f'MAXED', True, (0, 0, 0))
+                screen.blit(level_render1, (105, 368))
+            else:
+                level_render1 = self.level_font.render(f'Level: {self.upgrade1_level}', True, (0, 0, 0))
+                screen.blit(level_render1, (105, 366))
 
             screen.blit(pygame.transform.scale(level_scroll, (115, 55)), (255, 350))
-            level_render2 = self.level_font.render('Level: 0', True, (0, 0, 0))
-            screen.blit(level_render2, (280, 366))
+            if self.upgrade2_cost == 999999999:
+                level_render2 = self.level2_font.render(f'MAXED', True, (0, 0, 0))
+                screen.blit(level_render2, (280, 368))
+            else:
+                level_render2 = self.level_font.render(f'Level: {self.upgrade2_level}', True, (0, 0, 0))
+                screen.blit(level_render2, (280, 366))
 
             screen.blit(pygame.transform.scale(level_scroll, (115, 55)), (430, 350))
-            level_render3 = self.level_font.render('Level: 0', True, (0, 0, 0))
-            screen.blit(level_render3, (455, 366))
+            if self.upgrade3_cost == 999999999:
+                level_render3 = self.level2_font.render(f'MAXED', True, (0, 0, 0))
+                screen.blit(level_render3, (455, 368))
+            else:
+                level_render3 = self.level_font.render(f'Level: {self.upgrade3_level}', True, (0, 0, 0))
+                screen.blit(level_render3, (455, 366))
 
             screen.blit(pygame.transform.scale(level_scroll, (115, 55)), (605, 350))
-            level_render4 = self.level_font.render('Level: 0', True, (0, 0, 0))
-            screen.blit(level_render4, (630, 366))
-
+            if self.upgrade4_cost == 999999999:
+                level_render4 = self.level2_font.render(f'MAXED', True, (0, 0, 0))
+                screen.blit(level_render4, (630, 368))
+            else:
+                level_render4 = self.level_font.render(f'Level: {self.upgrade4_level}', True, (0, 0, 0))
+                screen.blit(level_render4, (630, 366))
 
             screen.blit(pygame.transform.scale(level_scroll, (115, 55)), (80, 590))
-            level_render5 = self.level_font.render('Level: 0', True, (0, 0, 0))
-            screen.blit(level_render5, (105, 606))
+            if self.upgrade5_cost == 999999999:
+                level_render5 = self.level2_font.render(f'MAXED', True, (0, 0, 0))
+                screen.blit(level_render5, (105, 608))
+            else:
+                level_render5 = self.level_font.render(f'Level: {self.upgrade5_level}', True, (0, 0, 0))
+                screen.blit(level_render5, (105, 606))
 
             screen.blit(pygame.transform.scale(level_scroll, (115, 55)), (255, 590))
-            level_render6 = self.level_font.render('Level: 0', True, (0, 0, 0))
-            screen.blit(level_render6, (280, 606))
+            if self.upgrade6_cost == 999999999:
+                level_render6 = self.level2_font.render(f'MAXED', True, (0, 0, 0))
+                screen.blit(level_render6, (280, 608))
+            else:
+                level_render6 = self.level_font.render(f'Level: {self.upgrade6_level}', True, (0, 0, 0))
+                screen.blit(level_render6, (280, 606))
 
             screen.blit(pygame.transform.scale(level_scroll, (115, 55)), (430, 590))
-            level_render7 = self.level_font.render('Level: 0', True, (0, 0, 0))
-            screen.blit(level_render7, (455, 606))
+            if self.upgrade7_cost == 999999999:
+                level_render7 = self.level2_font.render(f'MAXED', True, (0, 0, 0))
+                screen.blit(level_render7, (455, 608))
+            else:
+                level_render7 = self.level_font.render(f'Level: {self.upgrade7_level}', True, (0, 0, 0))
+                screen.blit(level_render7, (455, 606))
 
             screen.blit(pygame.transform.scale(level_scroll, (115, 55)), (605, 590))
-            level_render8 = self.level_font.render('Level: 0', True, (0, 0, 0))
-            screen.blit(level_render8, (630, 606))
-
-
+            if self.upgrade8_cost == 999999999:
+                level_render8 = self.level2_font.render(f'MAXED', True, (0, 0, 0))
+                screen.blit(level_render8, (630, 608))
+            else:
+                level_render8 = self.level_font.render(f'Level: {self.upgrade8_level}', True, (0, 0, 0))
+                screen.blit(level_render8, (630, 606))
 
             pygame.draw.rect(screen, (0,0,0), self.title_background_border)
             pygame.draw.rect(screen, (47,79,79), self.title_background)
             title_render = self.title_font.render('Skill Tree', True, (225, 255, 255))
             screen.blit(title_render, (240, 50))
 
-
             pygame.draw.rect(screen, (0,0,0), self.back_background_border, border_radius=15)
             pygame.draw.rect(screen, (255,0,0), self.back_background, border_radius=15)
             back_render = self.back_font.render('Back', True, (225, 255, 255))
             screen.blit(back_render, (45, 26))
-
-
-
-
-
 
             screen.blit(pygame.transform.scale(maxhealth_img, (100,100)), (self.box1.x+7, self.box1.y+3))
             screen.blit(pygame.transform.scale(regen_img, (100,100)), (self.box2.x+8, self.box2.y+6))
@@ -2691,8 +2956,80 @@ class SkillTree:
 
             if self.selected:
                 self.display_information(self.selected_option[0])
+
+            if self.message_timer:
+                self.message_timer_counter += 1
+
             clock.tick(15)
             pygame.display.update()
+
+    def purchase_upgrade(self):
+
+        pd.subtract_gold(self.selected_cost)
+
+        st.load_data()
+
+        if self.selected_option[0] == "box1":
+            self.selected_cost = self.upgrade1_cost
+            self.column = 3
+        elif self.selected_option[0] == "box2":
+            self.selected_cost = self.upgrade2_cost
+            self.column = 4
+        elif self.selected_option[0] == "box3":
+            self.selected_cost = self.upgrade3_cost
+            self.column = 5
+        elif self.selected_option[0] == "box4":
+            self.selected_cost = self.upgrade4_cost
+            self.column = 6
+        elif self.selected_option[0] == "box5":
+            self.selected_cost = self.upgrade5_cost
+            self.column = 7
+        elif self.selected_option[0] == "box6":
+            self.selected_cost = self.upgrade6_cost
+            self.column = 8
+        elif self.selected_option[0] == "box7":
+            self.selected_cost = self.upgrade7_cost
+            self.column = 9
+        elif self.selected_option[0] == "box8":
+            self.selected_cost = self.upgrade8_cost
+            self.column = 10
+
+        if self.column == 3:
+            self.upgrade1_level += 1
+        elif self.column == 4:
+            self.upgrade2_level += 1
+        elif self.column == 5:
+            self.upgrade3_level += 1
+        elif self.column == 6:
+            self.upgrade4_level += 1
+        elif self.column == 7:
+            self.upgrade5_level += 1
+        elif self.column == 8:
+            self.upgrade6_level += 1
+        elif self.column == 9:
+            self.upgrade7_level += 1
+        elif self.column == 10:
+            self.upgrade8_level += 1
+
+        pd.increase_upgrade_level(self.column)
+
+    def give_feedback(self):
+        if self.feedback_option == 1:
+            pygame.draw.rect(screen, (50,205,50), self.feedback_box, border_radius=15)
+            feedback_message_render = self.feedback_message_font.render('Purchased!', True, (0,0,0))
+            screen.blit(feedback_message_render, (653, 36))
+        if self.feedback_option == 2:
+            pygame.draw.rect(screen, (255,191,0), self.feedback_box, border_radius=15)
+            feedback_message_render = self.feedback_message_font.render('Not Enough', True, (0,0,0))
+            screen.blit(feedback_message_render, (645, 26))
+            feedback_message2_render = self.feedback_message_font.render('Gold!', True, (0,0,0))
+            screen.blit(feedback_message2_render, (678, 48))
+        if self.feedback_option == 3:
+            pygame.draw.rect(screen, (255,191,0), self.feedback_box, border_radius=15)
+            feedback_message_render = self.feedback_message_font.render('Limit', True, (0,0,0))
+            screen.blit(feedback_message_render, (677, 26))
+            feedback_message2_render = self.feedback_message_font.render('Reached!', True, (0,0,0))
+            screen.blit(feedback_message2_render, (662, 48))
 
     def display_information(self, option):
         pygame.draw.rect(screen, (0,0,0), self.description_border)
@@ -2703,8 +3040,12 @@ class SkillTree:
             screen.blit(description_title_render, (135, 685))
             description_render = self.description_font.render('Increases max health by 10%', True, (225, 255, 255))
             screen.blit(description_render, (135, 730))
-            description_cost_render = self.description_font.render('Cost: 25 gold  |  Balance: 215 gold', True, (225, 255, 255))
-            screen.blit(description_cost_render, (135, 765))
+            if self.upgrade1_cost == 999999999:
+                description_cost_render = self.description_font.render(f'Cost: MAXED  |  Balance: {self.balance} gold', True, (225, 255, 255))
+                screen.blit(description_cost_render, (135, 765))
+            else:
+                description_cost_render = self.description_font.render(f'Cost: {int(self.upgrade1_cost)} gold  |  Balance: {self.balance} gold', True, (225, 255, 255))
+                screen.blit(description_cost_render, (135, 765))
             buy_render = self.buy_font.render('BUY', True, (0, 0, 0))
             screen.blit(buy_render, (588, 718))
         if option == 'box2':
@@ -2712,8 +3053,12 @@ class SkillTree:
             screen.blit(description_title_render, (135, 685))
             description_render = self.description_font.render('Restores 2 health every 30 seconds', True, (225, 255, 255))
             screen.blit(description_render, (135, 730))
-            description_cost_render = self.description_font.render('Cost: 25 gold  |  Balance: 215 gold', True, (225, 255, 255))
-            screen.blit(description_cost_render, (135, 765))
+            if self.upgrade2_cost == 999999999:
+                description_cost_render = self.description_font.render(f'Cost: MAXED  |  Balance: {self.balance} gold', True, (225, 255, 255))
+                screen.blit(description_cost_render, (135, 765))
+            else:
+                description_cost_render = self.description_font.render(f'Cost: {int(self.upgrade2_cost)} gold  |  Balance: {self.balance} gold', True, (225, 255, 255))
+                screen.blit(description_cost_render, (135, 765))
             buy_render = self.buy_font.render('BUY', True, (0, 0, 0))
             screen.blit(buy_render, (588, 718))
         if option == 'box3':
@@ -2721,8 +3066,12 @@ class SkillTree:
             screen.blit(description_title_render, (135, 685))
             description_render = self.description_font.render('Get one extra life if you drop to 0 health', True, (225, 255, 255))
             screen.blit(description_render, (135, 730))
-            description_cost_render = self.description_font.render('Cost: 1250 gold  |  Balance: 215 gold', True, (225, 255, 255))
-            screen.blit(description_cost_render, (135, 765))
+            if self.upgrade3_cost == 999999999:
+                description_cost_render = self.description_font.render(f'Cost: MAXED  |  Balance: {self.balance} gold', True, (225, 255, 255))
+                screen.blit(description_cost_render, (135, 765))
+            else:
+                description_cost_render = self.description_font.render(f'Cost: {int(self.upgrade3_cost)} gold  |  Balance: {self.balance} gold', True, (225, 255, 255))
+                screen.blit(description_cost_render, (135, 765))
             buy_render = self.buy_font.render('BUY', True, (0, 0, 0))
             screen.blit(buy_render, (588, 718))
         if option == 'box4':
@@ -2730,8 +3079,12 @@ class SkillTree:
             screen.blit(description_title_render, (135, 685))
             description_render = self.description_font.render('Increases player movement speed by 5%', True, (225, 255, 255))
             screen.blit(description_render, (135, 730))
-            description_cost_render = self.description_font.render('Cost: 375 gold  |  Balance: 215 gold', True, (225, 255, 255))
-            screen.blit(description_cost_render, (135, 765))
+            if self.upgrade4_cost == 999999999:
+                description_cost_render = self.description_font.render(f'Cost: MAXED  |  Balance: {self.balance} gold', True, (225, 255, 255))
+                screen.blit(description_cost_render, (135, 765))
+            else:
+                description_cost_render = self.description_font.render(f'Cost: {int(self.upgrade4_cost)} gold  |  Balance: {self.balance} gold', True, (225, 255, 255))
+                screen.blit(description_cost_render, (135, 765))
             buy_render = self.buy_font.render('BUY', True, (0, 0, 0))
             screen.blit(buy_render, (588, 718))
         if option == 'box5':
@@ -2739,8 +3092,12 @@ class SkillTree:
             screen.blit(description_title_render, (135, 685))
             description_render = self.description_font.render('Increases dodge chance by 5%', True, (225, 255, 255))
             screen.blit(description_render, (135, 730))
-            description_cost_render = self.description_font.render('Cost: 175 gold  |  Balance: 215 gold', True, (225, 255, 255))
-            screen.blit(description_cost_render, (135, 765))
+            if self.upgrade5_cost == 999999999:
+                description_cost_render = self.description_font.render(f'Cost: MAXED  |  Balance: {self.balance} gold', True, (225, 255, 255))
+                screen.blit(description_cost_render, (135, 765))
+            else:
+                description_cost_render = self.description_font.render(f'Cost: {int(self.upgrade5_cost)} gold  |  Balance: {self.balance} gold', True, (225, 255, 255))
+                screen.blit(description_cost_render, (135, 765))
             buy_render = self.buy_font.render('BUY', True, (0, 0, 0))
             screen.blit(buy_render, (588, 718))
         if option == 'box6':
@@ -2748,8 +3105,12 @@ class SkillTree:
             screen.blit(description_title_render, (135, 685))
             description_render = self.description_font.render('Increases chance of gold dropped by 5%', True, (225, 255, 255))
             screen.blit(description_render, (135, 730))
-            description_cost_render = self.description_font.render('Cost: 300 gold  |  Balance: 215 gold', True, (225, 255, 255))
-            screen.blit(description_cost_render, (135, 765))
+            if self.upgrade6_cost == 999999999:
+                description_cost_render = self.description_font.render(f'Cost: MAXED  |  Balance: {self.balance} gold', True, (225, 255, 255))
+                screen.blit(description_cost_render, (135, 765))
+            else:
+                description_cost_render = self.description_font.render(f'Cost: {int(self.upgrade6_cost)} gold  |  Balance: {self.balance} gold', True, (225, 255, 255))
+                screen.blit(description_cost_render, (135, 765))
             buy_render = self.buy_font.render('BUY', True, (0, 0, 0))
             screen.blit(buy_render, (588, 718))
         if option == 'box7':
@@ -2757,8 +3118,12 @@ class SkillTree:
             screen.blit(description_title_render, (135, 685))
             description_render = self.description_font.render('Increases critical chance by 5%', True, (225, 255, 255))
             screen.blit(description_render, (135, 730))
-            description_cost_render = self.description_font.render('Cost: 615 gold  |  Balance: 215 gold', True, (225, 255, 255))
-            screen.blit(description_cost_render, (135, 765))
+            if self.upgrade7_cost == 999999999:
+                description_cost_render = self.description_font.render(f'Cost: MAXED  |  Balance: {self.balance} gold', True, (225, 255, 255))
+                screen.blit(description_cost_render, (135, 765))
+            else:
+                description_cost_render = self.description_font.render(f'Cost: {int(self.upgrade7_cost)} gold  |  Balance: {self.balance} gold', True, (225, 255, 255))
+                screen.blit(description_cost_render, (135, 765))
             buy_render = self.buy_font.render('BUY', True, (0, 0, 0))
             screen.blit(buy_render, (588, 718))
         if option == 'box8':
@@ -2766,21 +3131,22 @@ class SkillTree:
             screen.blit(description_title_render, (135, 685))
             description_render = self.description_font.render('Increases life steal chance by 5%', True, (225, 255, 255))
             screen.blit(description_render, (135, 730))
-            description_cost_render = self.description_font.render('Cost: 750 gold  |  Balance: 215 gold', True, (225, 255, 255))
-            screen.blit(description_cost_render, (135, 765))
+            if self.upgrade8_cost == 999999999:
+                description_cost_render = self.description_font.render(f'Cost: MAXED  |  Balance: {self.balance} gold', True, (225, 255, 255))
+                screen.blit(description_cost_render, (135, 765))
+            else:
+                description_cost_render = self.description_font.render(f'Cost: {int(self.upgrade8_cost)} gold  |  Balance: {self.balance} gold', True, (225, 255, 255))
+                screen.blit(description_cost_render, (135, 765))
             buy_render = self.buy_font.render('BUY', True, (0, 0, 0))
             screen.blit(buy_render, (588, 718))
-
+        if self.message_timer and self.message_timer_counter <= 15:
+            self.give_feedback()
+        else:
+            self.message_timer_counter = 0
+            self.message_timer = False
 
         clock.tick(15)
         pygame.display.update()
-
-
-
-
-
-
-
 
 
 st = SkillTree()
@@ -2810,6 +3176,7 @@ def button(msg, x, y, w, h, ic, ac, action):
                 pause = False
                 credits()
             elif action == "Quit":
+                pd.load_skill_tree()
                 st.load_data()
                 st.skill_tree()
                 # game = False
@@ -3191,6 +3558,8 @@ while game:
     if p.health <= 0:
         prevGameTime = gameTime
         p.death = True
+        print(p.gold)
+        pd.add_gold()
         death_screen()
         while p.death:
             for event in pygame.event.get():
