@@ -12,11 +12,14 @@ import pygame
 pygame.init()
 
 # creates the window and dimensions for the game
+screen_size_stuff = pygame.display.Info()
+screen_size_height, screen_size_width = screen_size_stuff.current_h, screen_size_stuff.current_w
 screen = pygame.display.set_mode((800, 800))
 # screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 transparent_surface = pygame.Surface((800, 800), pygame.SRCALPHA)
 # sets the window caption at the top
 pygame.display.set_caption("Rogue Survival")
+pygame.key.set_repeat()
 
 # creates variable to control game fps
 clock = pygame.time.Clock()
@@ -71,6 +74,9 @@ movementspeed_img = pygame.image.load("./images/speed.png").convert_alpha()
 
 
 # instantiating pause and gameTime function for later
+screen_height = 800
+screen_width = 800
+isFullscreen = False
 gameTime = 0
 pause = True
 # instantiating the XP arrays
@@ -299,10 +305,12 @@ class Player(pygame.sprite.Sprite):
         # self.playerGroup.add(self.rect)
 
     def display_health(self):
+        info = pygame.display.Info()
+        tempwidth, tempheight = info.current_w, info.current_h
         # displays health to the screen
         health_string = f"HP: {str(self.health)}"
         health_display = self.health_font.render(health_string, True, (255, 0, 0))
-        screen.blit(health_display, (350, 10))
+        screen.blit(health_display, ((tempwidth/2)-50, 20))
 
     def move_west(self):
         # moves the player and camera West, while moving every other entity in the opposite direction
@@ -2184,8 +2192,10 @@ class XPBar:
 
     def show_xp_bar(self):
         # displays XP bar
-        self.xp_bar_border_rect = pygame.draw.line(screen, (0, 0, 0), (90 - self.offset, 770),
-                                                   (710 - self.offset, 770), 45)
+        info = pygame.display.Info()
+        tempwidth, tempheight = info.current_w, info.current_h
+        self.xp_bar_border_rect = pygame.draw.line(screen, (0, 0, 0), (90 - self.offset, tempheight-50),
+                                                   (710 - self.offset, tempheight-50), 45)
         if self.xp:
             # runs if player has XP
             self.length = self.xp / self.level_xp_requirement
@@ -2251,14 +2261,14 @@ class XPBar:
                                     self.bullet_speed_upgrade(0)
                     screen.blit(dungeonBackground, (0, 0))
                     screen.blit(mediumScroll, (100, 225))
-                    screen.blit(mediumScroll, (450, 225))
+                    screen.blit(mediumScroll, (tempwidth-385, 225))
                     upgrade_title1_render = self.upgrade_title_font.render('OPTION 1', True, (0, 0, 0))
                     screen.blit(upgrade_title1_render, (202, 330))
                     upgrade_title2_render = self.upgrade_title_font.render('OPTION 2', True, (0, 0, 0))
-                    screen.blit(upgrade_title2_render, (550, 330))
+                    screen.blit(upgrade_title2_render, (tempwidth-285, 330))
 
                     self.button_rect1 = pygame.Rect(100, 222, 285, 370)
-                    self.button_rect2 = pygame.Rect(450, 222, 285, 370)
+                    self.button_rect2 = pygame.Rect(tempwidth-385, 222, 285, 370)
 
                     pygame.draw.rect(transparent_surface, (0, 0, 255), self.button_rect1)
                     pygame.draw.rect(transparent_surface, (0, 0, 255), self.button_rect2)
@@ -2279,7 +2289,7 @@ class XPBar:
                                                     self.available_upgrades[random_upgrade2]]
 
                         self.button_rect1 = pygame.Rect(100, 222, 285, 370)
-                        self.button_rect2 = pygame.Rect(450, 222, 285, 370)
+                        self.button_rect2 = pygame.Rect(tempwidth-385, 222, 285, 370)
 
                     if self.selected_upgrade_choices:
                         # if two random choices have been generated, call the appropriate function and blit the information
@@ -2344,42 +2354,54 @@ class XPBar:
                 if self.leftover:
                     # if any leftover XP from previous level, add it to the new level
                     self.leftover_size = (((1 / self.level_xp_requirement) * self.total_length) * self.leftover)
-                    self.xp_bar_rect = pygame.draw.line(screen, (28, 36, 192), (100 - self.offset, 770),
-                                                        (self.leftover_size + 100 - self.offset, 770), 25)
+                    self.xp_bar_rect = pygame.draw.line(screen, (28, 36, 192), (100 - self.offset, tempheight-50),
+                                                        (self.leftover_size + 100 - self.offset, tempheight-50), 25)
                     self.leftover = 0
             else:
                 # if player has XP but not enough for a full XP level, display the xp bar
-                self.xp_bar_rect = pygame.draw.line(screen, (28, 36, 192), (100 - self.offset, 770),
+                self.xp_bar_rect = pygame.draw.line(screen, (28, 36, 192), (100 - self.offset, tempheight-50),
                                                     ((self.total_length * self.length) + self.leftover_size
-                                                     + 100 - self.offset, 770), 25)
+                                                     + 100 - self.offset, tempheight-50), 25)
                 self.xp_bar_empty_rect = pygame.draw.line(screen, (255, 255, 255),
                                                           ((self.total_length * self.length) +
-                                                           self.leftover_size + 100 - self.offset, 770),
-                                                          (700 - self.offset, 770), 25)
+                                                           self.leftover_size + 100 - self.offset, tempheight-50),
+                                                          (700 - self.offset, tempheight-50), 25)
         else:
             # Displays if player has zero XP
-            self.xp_bar_rect = pygame.draw.line(screen, (28, 36, 192), (100 - self.offset, 770),
-                                                (self.leftover_size + 100 - self.offset, 770), 25)
+            self.xp_bar_rect = pygame.draw.line(screen, (28, 36, 192), (100 - self.offset, tempheight-50),
+                                                (self.leftover_size + 100 - self.offset, tempheight-50), 25)
             self.xp_bar_empty_rect = pygame.draw.line(screen, (255, 255, 255),
-                                                      (self.leftover_size + 100 - self.offset, 770),
-                                                      (700 - self.offset, 770), 25)
-
+                                                      (self.leftover_size + 100 - self.offset, tempheight-50),
+                                                      (700 - self.offset, tempheight-50), 25)
+        if tempwidth != 800:
         # Displays level number
-        self.connector = pygame.draw.line(screen, (0, 0, 0), (710 - self.offset, 770), (740 - self.offset, 770), 5)
-        self.left = pygame.draw.line(screen, (0, 0, 0), (740 - self.offset, 790), (740 - self.offset, 750), 6)
-        self.top = pygame.draw.line(screen, (0, 0, 0), (738 - self.offset, 750), (785 - self.offset, 750), 6)
-        self.bottom = pygame.draw.line(screen, (0, 0, 0), (738 - self.offset, 790), (785 - self.offset, 790), 6)
-        self.right = pygame.draw.line(screen, (0, 0, 0), (785 - self.offset, 793), (785 - self.offset, 748), 6)
-        self.level_background = pygame.draw.line(screen, (255, 255, 255), (744 - self.offset, 770),
-                                                 (782 - self.offset, 770), 33)
+            self.connector = pygame.draw.line(screen, (0, 0, 0), (710 - self.offset, tempheight-50),
+                                              (740 - self.offset, tempheight-50), 5)
+            self.left = pygame.draw.line(screen, (0, 0, 0), (740 - self.offset, tempheight-30), (740 - self.offset, tempheight-70), 6)
+            self.top = pygame.draw.line(screen, (0, 0, 0), (738 - self.offset, tempheight-70), (785 - self.offset, tempheight-70), 6)
+            self.bottom = pygame.draw.line(screen, (0, 0, 0), (738 - self.offset, tempheight-30), (785 - self.offset, tempheight-30), 6)
+            self.right = pygame.draw.line(screen, (0, 0, 0), (785 - self.offset, tempheight-27), (785 - self.offset, tempheight-72), 6)
+            self.level_background = pygame.draw.line(screen, (255, 255, 255), (744 - self.offset, tempheight-50),
+                                                     (782 - self.offset, tempheight-50), 33)
+        else :
+            self.connector = pygame.draw.line(screen, (0, 0, 0), (710 - self.offset, tempheight - 50),
+                                              (740 - self.offset, tempheight - 50), 5)
+            self.left = pygame.draw.line(screen, (0, 0, 0), (740 - self.offset, 790), (740 - self.offset, 750), 6)
+            self.top = pygame.draw.line(screen, (0, 0, 0), (738 - self.offset, 750), (785 - self.offset, 750), 6)
+            self.bottom = pygame.draw.line(screen, (0, 0, 0), (738 - self.offset, 790), (785 - self.offset, 790), 6)
+            self.right = pygame.draw.line(screen, (0, 0, 0), (785 - self.offset, 793), (785 - self.offset, 748), 6)
+            self.level_background = pygame.draw.line(screen, (255, 255, 255), (744 - self.offset, 770),
+                                                     (782 - self.offset, 770), 33)
         level_render = self.level_font.render(str(self.level), True, (0, 0, 0))
         if self.level < 10:
-            screen.blit(level_render, (756 - self.offset, 758))
+            screen.blit(level_render, (756 - self.offset, tempheight-63))
         else:
             # moves the level number to the left to better accommodate another value fitting into the box
-            screen.blit(level_render, (747 - self.offset, 758))
+            screen.blit(level_render, (747 - self.offset, tempheight-63))
 
     def basic_attack_damage_upgrade(self, option):
+        info = pygame.display.Info()
+        tempwidth, tempheight = info.current_w, info.current_h
         # display information regarding the basic attack damage upgrade and if selected, implement the upgrade.
         if option == 1:
             # displays to the left
@@ -2391,9 +2413,9 @@ class XPBar:
         elif option == 2:
             # displays to the right
             upgrade_ba_damage1_render = self.upgrade_desc_font.render('Increase Basic Attack', True, (0, 0, 0))
-            screen.blit(upgrade_ba_damage1_render, (500, 365))
+            screen.blit(upgrade_ba_damage1_render, (tempwidth-335, 365))
             upgrade_ba_damage2_render = self.upgrade_desc_font.render('Damage by 10%.', True, (0, 0, 0))
-            screen.blit(upgrade_ba_damage2_render, (500, 390))
+            screen.blit(upgrade_ba_damage2_render, (tempwidth-335, 390))
 
         elif not option:
             # upgrade this ability due to the user selecting this upgrade
@@ -2403,6 +2425,8 @@ class XPBar:
             self.selected = True
 
     def basic_attack_range_upgrade(self, option):
+        info = pygame.display.Info()
+        tempwidth, tempheight = info.current_w, info.current_h
         # display information regarding the basic attack range upgrade and if selected, implement the upgrade.
         if option == 1:
             # displays to the left
@@ -2414,9 +2438,9 @@ class XPBar:
         elif option == 2:
             # displays to the right
             upgrade_ba_range1_render = self.upgrade_desc_font.render('Increase Basic Attack', True, (0, 0, 0))
-            screen.blit(upgrade_ba_range1_render, (500, 365))
+            screen.blit(upgrade_ba_range1_render, (tempwidth-335, 365))
             upgrade_ba_range2_render = self.upgrade_desc_font.render('Range by 10%.', True, (0, 0, 0))
-            screen.blit(upgrade_ba_range2_render, (500, 390))
+            screen.blit(upgrade_ba_range2_render, (tempwidth-335, 390))
 
         elif not option:
             # upgrade this ability due to the user selecting this upgrade
@@ -2427,6 +2451,8 @@ class XPBar:
             self.selected = True
 
     def basic_attack_speed_upgrade(self, option):
+        info = pygame.display.Info()
+        tempwidth, tempheight = info.current_w, info.current_h
         # display information regarding the basic attack speed upgrade and if selected, implement the upgrade.
         if option == 1:
             # displays to the left
@@ -2438,9 +2464,9 @@ class XPBar:
         elif option == 2:
             # displays to the right
             upgrade_ba_speed1_render = self.upgrade_desc_font.render('Increase Basic Attack', True, (0, 0, 0))
-            screen.blit(upgrade_ba_speed1_render, (500, 365))
+            screen.blit(upgrade_ba_speed1_render, (tempwidth-335, 365))
             upgrade_ba_speed2_render = self.upgrade_desc_font.render('Speed by 10%.', True, (0, 0, 0))
-            screen.blit(upgrade_ba_speed2_render, (500, 390))
+            screen.blit(upgrade_ba_speed2_render, (tempwidth-335, 390))
 
         elif not option:
             # upgrade this ability due to the user selecting this upgrade
@@ -2450,6 +2476,8 @@ class XPBar:
             self.selected = True
 
     def move_speed_upgrade(self, option):
+        info = pygame.display.Info()
+        tempwidth, tempheight = info.current_w, info.current_h
         # display information regarding the movement speed upgrade and if selected, implement the upgrade.
         if option == 1:
             # displays to the left
@@ -2461,9 +2489,9 @@ class XPBar:
         elif option == 2:
             # displays to the right
             upgrade_move_speed1_render = self.upgrade_desc_font.render('Increase Player Move', True, (0, 0, 0))
-            screen.blit(upgrade_move_speed1_render, (500, 365))
+            screen.blit(upgrade_move_speed1_render, (tempwidth-335, 365))
             upgrade_move_speed2_render = self.upgrade_desc_font.render('Speed by 10%.', True, (0, 0, 0))
-            screen.blit(upgrade_move_speed2_render, (500, 390))
+            screen.blit(upgrade_move_speed2_render, (tempwidth-335, 390))
 
         elif not option:
             # upgrade this ability due to the user selecting this upgrade
@@ -2473,6 +2501,8 @@ class XPBar:
             self.selected = True
 
     def dodge_chance_upgrade(self, option):
+        info = pygame.display.Info()
+        tempwidth, tempheight = info.current_w, info.current_h
         # display information regarding the dodge chance upgrade and if selected, implement the upgrade.
         if option == 1:
             # displays to the left
@@ -2484,9 +2514,9 @@ class XPBar:
         elif option == 2:
             # displays to the right
             upgrade_dodge1_render = self.upgrade_desc_font.render('Increase Dodge', True, (0, 0, 0))
-            screen.blit(upgrade_dodge1_render, (500, 365))
+            screen.blit(upgrade_dodge1_render, (tempwidth-335, 365))
             upgrade_dodge2_render = self.upgrade_desc_font.render('Chance by 2%.', True, (0, 0, 0))
-            screen.blit(upgrade_dodge2_render, (500, 390))
+            screen.blit(upgrade_dodge2_render, (tempwidth-335, 390))
 
         elif not option:
             # upgrade this ability due to the user selecting this upgrade
@@ -2496,6 +2526,8 @@ class XPBar:
             self.selected = True
 
     def bullet_damage_upgrade(self, option):
+        info = pygame.display.Info()
+        tempwidth, tempheight = info.current_w, info.current_h
         # display information regarding the bullet damage upgrade and if selected, implement the upgrade.
         if option == 1:
             # displays to the left
@@ -2507,9 +2539,9 @@ class XPBar:
         elif option == 2:
             # displays to the right
             upgrade_bul_damage1_render = self.upgrade_desc_font.render('Increase Bullet', True, (0, 0, 0))
-            screen.blit(upgrade_bul_damage1_render, (500, 365))
+            screen.blit(upgrade_bul_damage1_render, (tempwidth-335, 365))
             upgrade_bul_damage2_render = self.upgrade_desc_font.render('Damage by 10%.', True, (0, 0, 0))
-            screen.blit(upgrade_bul_damage2_render, (500, 390))
+            screen.blit(upgrade_bul_damage2_render, (tempwidth-335, 390))
 
         elif not option:
             # upgrade this ability due to the user selecting this upgrade
@@ -2519,6 +2551,8 @@ class XPBar:
             self.selected = True
 
     def bullet_range_upgrade(self, option):
+        info = pygame.display.Info()
+        tempwidth, tempheight = info.current_w, info.current_h
         # display information regarding the bullet range upgrade and if selected, implement the upgrade.
         if option == 1:
             # displays to the left
@@ -2530,9 +2564,9 @@ class XPBar:
         elif option == 2:
             # displays to the right
             upgrade_bul_range1_render = self.upgrade_desc_font.render('Increase Bullet', True, (0, 0, 0))
-            screen.blit(upgrade_bul_range1_render, (500, 365))
+            screen.blit(upgrade_bul_range1_render, (tempwidth-335, 365))
             upgrade_bul_range2_render = self.upgrade_desc_font.render('Range by 10%.', True, (0, 0, 0))
-            screen.blit(upgrade_bul_range2_render, (500, 390))
+            screen.blit(upgrade_bul_range2_render, (tempwidth-335, 390))
 
         elif not option:
             # upgrade this ability due to the user selecting this upgrade
@@ -2542,6 +2576,8 @@ class XPBar:
             self.selected = True
 
     def bullet_speed_upgrade(self, option):
+        info = pygame.display.Info()
+        tempwidth, tempheight = info.current_w, info.current_h
         # display information regarding the bullet speed upgrade and if selected, implement the upgrade.
         if option == 1:
             # displays to the left
@@ -2553,9 +2589,9 @@ class XPBar:
         elif option == 2:
             # displays to the right
             upgrade_bul_speed1_render = self.upgrade_desc_font.render('Increase Bullet', True, (0, 0, 0))
-            screen.blit(upgrade_bul_speed1_render, (500, 365))
+            screen.blit(upgrade_bul_speed1_render, (tempwidth-335, 365))
             upgrade_bul_speed2_render = self.upgrade_desc_font.render('Speed by 5%.', True, (0, 0, 0))
-            screen.blit(upgrade_bul_speed2_render, (500, 390))
+            screen.blit(upgrade_bul_speed2_render, (tempwidth-335, 390))
 
         elif not option:
             # upgrade this ability due to the user selecting this upgrade
@@ -3165,7 +3201,7 @@ def button(msg, x, y, w, h, ic, ac, action):
     # does a specific action based on button text and if it was clicked
     if x + w > mouse[0] > x and y + h > mouse[1] > y:
         pygame.draw.rect(screen, ac, (x, y, w, h), border_radius=20)
-        if click[0] == 1 and action != None:
+        if click[0] == 1 and action is not None:
             if action == "Settings":
                 pause = False
                 settings_menu()
@@ -3192,6 +3228,8 @@ def button(msg, x, y, w, h, ic, ac, action):
                 bullet_timer2 = 0
             elif action == "main_menu":
                 main_menu()
+            elif action == "skill_tree":
+                skill_tree_menu()
     else:
         pygame.draw.rect(screen, ic, (x, y, w, h), border_radius=20)
 
@@ -3206,8 +3244,8 @@ bg_img = pygame.image.load('images/dungeon.png').convert_alpha()
 speed_img = pygame.image.load("./images/Noodle.png").convert_alpha()
 
 # setting up the fonts for the timer and the fps tracker
-timer_font = pygame.font.SysFont('futura', 64)
-fps_font = pygame.font.SysFont('futura', 28)
+timer_font = pygame.font.SysFont('Garamond', 64, bold=True)
+fps_font = pygame.font.SysFont('Garamond', 28, bold=True)
 
 gameTimeStr = 0
 minutes = 0
@@ -3252,10 +3290,13 @@ def start_game_time():
 
 # function to display the game timer to show how long you have been in-game
 def display_timer(text, font, text_color):
-    gameTimer = font.render(str(text), True, text_color).convert_alpha()
-    screen.blit(gameTimer, (675, 15))
-    # timerRect = gameTimer.get_rect()
-    # screen.blit(gameTimer, (675, 15), timerRect)
+    info = pygame.display.Info()
+    screen_width, screen_height = info.current_w, info.current_h
+    gametimer = font.render(str(text), True, text_color).convert_alpha()
+    if isFullscreen:
+        screen.blit(gametimer, ((screen_width - 150), 20))
+    else:
+        screen.blit(gametimer, (675, 15))
 
 
 # function to show the frames per second in the corner
@@ -3264,21 +3305,32 @@ def display_fps(text, font, text_color):
     # print(text)
     fps_display = font.render(text, True, text_color).convert_alpha()
     # print(fps_display)
-    screen.blit(fps_display, (0, 0))
+    screen.blit(fps_display, (20, 20))
 
 
-# adds the ability to fullscreen the game (not toggle yet)
+
+# adds the ability to fullscreen the game
 def fullscreen_toggle():
-    window = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+    global isFullscreen, screen_width, screen_height
+    info = pygame.display.Info()
+    tempwidth, tempheight = info.current_w, info.current_h
+    if tempwidth != 800:
+        window = pygame.display.set_mode((800, 800))
+        screen_width = 800
+        screen_height = 800
+        isFullscreen = False
+    else:
+        window = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+        info = pygame.display.Info()
+        screen_width, screen_height = info.current_w, info.current_h
+        isFullscreen = True
     pygame.display.update()
 
 
 # function to show the credits menu, which will contain the credits to all resources used
 def credits():
     start_time = pygame.time.get_ticks()
-    info = pygame.display.Info()
-    screen_width, screen_height = info.current_w, info.current_h
-    global pause  # risky
+    global pause, screen_width, screen_height
     pause = True
 
     while pause:
@@ -3287,7 +3339,7 @@ def credits():
         temp_timer = pygame.time.get_ticks() - gameTime
         xpB.pauseTimer = temp_timer
         # if you press escape, you go back to the settings menu
-        if pygame.key.get_pressed()[pygame.K_ESCAPE] and (pygame.time.get_ticks() - start_time >= 500):
+        if pygame.key.get_pressed()[pygame.K_ESCAPE] and (pygame.time.get_ticks() - start_time >= 300):
             pause = False
             settings_menu()
         for event in pygame.event.get():
@@ -3327,10 +3379,7 @@ def credits():
 
 # function to show the Main Menu before the game starts
 def main_menu():
-    info = pygame.display.Info()
-    screen_width, screen_height = info.current_w, info.current_h
-    global pause
-
+    global pause, screen_width, screen_height
     while pause:
         global gameTime
         temp_timer = pygame.time.get_ticks() - gameTime
@@ -3340,7 +3389,6 @@ def main_menu():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
-                sys.exit()
         # sets the main menu background
         screen.blit(dungeonBackground, (0, 0))
         # establishing the text for the title on the menu
@@ -3364,11 +3412,13 @@ def main_menu():
         clock.tick(15)
 
 
+def skill_tree_menu():
+    pass
+
+
 def death_screen():
     # displays a death screen if the player dies
-    info = pygame.display.Info()
-    screen_width, screen_height = info.current_w, info.current_h
-    global pause
+    global pause, screen_width, screen_height, game
     pause = True
     while pause:
         global gameTimerStr
@@ -3412,7 +3462,7 @@ def pause_game():
         temp_timer = pygame.time.get_ticks() - gameTime
         xpB.pauseTimer = temp_timer
         # if you hit escape you go back to the game and the time is put back to when you paused
-        if pygame.key.get_pressed()[pygame.K_ESCAPE] and (pygame.time.get_ticks() - start_time >= 500):
+        if pygame.key.get_pressed()[pygame.K_ESCAPE] and (pygame.time.get_ticks() - start_time >= 300):
             pause = False
             gameTimerStr = temp_timer
             gameTime -= temp_timer
@@ -3455,7 +3505,7 @@ def settings_menu():
         temp_timer = pygame.time.get_ticks() - gameTime
         xpB.pauseTimer = temp_timer
         # if you press escape, go back to the pause menu
-        if pygame.key.get_pressed()[pygame.K_ESCAPE] and (pygame.time.get_ticks() - start_time >= 500):
+        if pygame.key.get_pressed()[pygame.K_ESCAPE] and (pygame.time.get_ticks() - start_time >= 300):
             pause = False
             pause_game()
         for event in pygame.event.get():
