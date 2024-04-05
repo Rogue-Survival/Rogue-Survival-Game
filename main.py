@@ -547,6 +547,7 @@ class BasicAttack:
         self.hitbox_radius = 78
 
     def attack(self):
+        print(st.upgrade7_level)
         # goes through various animations and hitbox creations for basic attacks to hit all enemies
         total_time = pygame.time.get_ticks() / 1000
         self.hitbox_rect = pygame.draw.circle(transparent_surface, (255, 255, 255),
@@ -2728,53 +2729,76 @@ class SkillTree:
         if self.upgrade1_level:
             if self.upgrade1_level >= 5:
                 self.upgrade1_cost = 999999999
-                self.selected_cost = 999999999
+                if self.selected_option:
+                    if self.selected_option[0] == 'box1':
+                        self.selected_cost = 999999999
+
             else:
                 self.upgrade1_cost = (425 * 1.25**self.upgrade1_level)
 
         if self.upgrade2_level:
             if self.upgrade2_level >= 5:
                 self.upgrade2_cost = 999999999
-                self.selected_cost = 999999999
+                if self.selected_option:
+                    if self.selected_option[0] == 'box2':
+                        self.selected_cost = 999999999
+
             else:
                 self.upgrade2_cost = (475 * 1.25**self.upgrade2_level)
 
         if self.upgrade3_level:
             self.upgrade3_cost = 999999999
-            self.selected_cost = 999999999
+            if self.selected_option:
+                    if self.selected_option[0] == 'box3':
+                        self.selected_cost = 999999999
+
 
         if self.upgrade4_level:
             if self.upgrade4_level >= 5:
                 self.upgrade4_cost = 999999999
-                self.selected_cost = 999999999
+                if self.selected_option:
+                    if self.selected_option[0] == 'box4':
+                        self.selected_cost = 999999999
+
             else:
                 self.upgrade4_cost = (375 * 1.25**self.upgrade4_level)
 
         if self.upgrade5_level:
             if self.upgrade5_level >= 5:
                 self.upgrade5_cost = 999999999
-                self.selected_cost = 999999999
+                if self.selected_option:
+                    if self.selected_option[0] == 'box5':
+                        self.selected_cost = 999999999
+
             else:
                 self.upgrade5_cost = (175 * 1.25**self.upgrade5_level)
 
         if self.upgrade6_level:
             if self.upgrade6_level >= 5:
                 self.upgrade6_cost = 999999999
-                self.selected_cost = 999999999
+                if self.selected_option:
+                    if self.selected_option[0] == 'box6':
+                        self.selected_cost = 999999999
+
             else:
                 self.upgrade6_cost = (300 * 1.25**self.upgrade6_level)
 
         if self.upgrade7_level:
             if self.upgrade7_level >= 5:
                 self.upgrade7_cost = 999999999
-                self.selected_cost = 999999999
+                if self.selected_option:
+                    if self.selected_option[0] == 'box7':
+                        self.selected_cost = 999999999
             else:
                 self.upgrade7_cost = (615 * 1.25**self.upgrade7_level)
 
         if self.upgrade8_level:
             if self.upgrade8_level >= 5:
                 self.upgrade8_cost = 999999999
-                self.selected_cost = 999999999
+                if self.selected_option:
+                    if self.selected_option[0] == 'box8':
+                        self.selected_cost = 999999999
+
             else:
                 self.upgrade8_cost = (425 * 1.25**self.upgrade8_level)
 
@@ -3005,9 +3029,26 @@ class SkillTree:
 
     def purchase_upgrade(self):
 
+        if self.selected_option[0] == 'box1':
+            self.selected_cost = self.upgrade1_cost
+        if self.selected_option[0] == 'box2':
+            self.selected_cost = self.upgrade2_cost
+        if self.selected_option[0] == 'box3':
+            self.selected_cost = self.upgrade3_cost
+        if self.selected_option[0] == 'box4':
+            self.selected_cost = self.upgrade4_cost
+        if self.selected_option[0] == 'box5':
+            self.selected_cost = self.upgrade5_cost
+        if self.selected_option[0] == 'box6':
+            self.selected_cost = self.upgrade6_cost
+        if self.selected_option[0] == 'box7':
+            self.selected_cost = self.upgrade7_cost
+        if self.selected_option[0] == 'box8':
+            self.selected_cost = self.upgrade8_cost
+
         pd.subtract_gold(self.selected_cost)
 
-        st.load_data()
+        self.load_data()
 
         if self.selected_option[0] == "box1":
             self.selected_cost = self.upgrade1_cost
@@ -3052,6 +3093,7 @@ class SkillTree:
             self.upgrade8_level += 1
 
         pd.increase_upgrade_level(self.column)
+
 
     def give_feedback(self):
         if self.feedback_option == 1:
