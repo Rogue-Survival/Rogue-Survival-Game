@@ -84,8 +84,8 @@ xp = []
 xp_hit = []
 
 
-input_file = './game-data/profile-data.csv'
-output_file = './game-data/new-profile-data.csv'
+input_csv = './game-data/profile-data.csv'
+output_csv = './game-data/new-profile-data.csv'
 
 
 class ProfileData:
@@ -96,9 +96,14 @@ class ProfileData:
 
     def check_empty(self):
         csv_file = './game-data/profile-data.csv'
-        exists = os.path.isfile(csv_file)
-        print(exists)
-        if not exists:
+        game_data_folder = './game-data'
+        exists_file = os.path.exists(csv_file)
+        exists_folder = os.path.exists(game_data_folder)
+        # print(exists_file)
+        print(exists_folder)
+        if not exists_folder:
+            os.mkdir("./game-data")
+        if not exists_file:
             open("./game-data/profile-data.csv", "x")
         with open('./game-data/profile-data.csv', 'r') as p_data:
             p_reader = csv.reader(p_data)
@@ -133,7 +138,7 @@ class ProfileData:
 
     def add_gold(self):
 
-        with open(input_file, 'r') as p_data_read, open(output_file, 'w', newline='') as p_data_write:
+        with open(input_csv, 'r') as p_data_read, open(output_csv, 'w', newline='') as p_data_write:
             p_reader = csv.reader(p_data_read, delimiter=',')
             p_writer = csv.writer(p_data_write, delimiter=',')
 
@@ -144,7 +149,7 @@ class ProfileData:
                     line[1] = f'{current_gold + gold_earned}'
                 p_writer.writerow(line)
 
-        with open(output_file, 'r') as p_data_read, open(input_file, 'w', newline='') as p_data_write:
+        with open(output_csv, 'r') as p_data_read, open(input_csv, 'w', newline='') as p_data_write:
             p_reader = csv.reader(p_data_read, delimiter=',')
             p_writer = csv.writer(p_data_write, delimiter=',')
             for line in p_reader: # append everything from the updated file so we can later use it to write over the original file
@@ -156,7 +161,7 @@ class ProfileData:
 
 
     def load_skill_tree(self):
-        with open(input_file, 'r') as p_data_read, open(output_file, 'w', newline='') as p_data_write:
+        with open(input_csv, 'r') as p_data_read, open(output_csv, 'w', newline='') as p_data_write:
             p_reader = csv.reader(p_data_read, delimiter=',')
             p_writer = csv.writer(p_data_write, delimiter=',')
 
@@ -174,7 +179,7 @@ class ProfileData:
                     st.balance = int(float(line[1]))
 
     def subtract_gold(self, purchase_price):
-        with open(input_file, 'r') as p_data_read, open(output_file, 'w', newline='') as p_data_write:
+        with open(input_csv, 'r') as p_data_read, open(output_csv, 'w', newline='') as p_data_write:
             p_reader = csv.reader(p_data_read, delimiter=',')
             p_writer = csv.writer(p_data_write, delimiter=',')
 
@@ -185,7 +190,7 @@ class ProfileData:
                     st.balance = int(float(line[1]))
                 p_writer.writerow(line)
 
-        with open(output_file, 'r') as p_data_read, open(input_file, 'w', newline='') as p_data_write:
+        with open(output_csv, 'r') as p_data_read, open(input_csv, 'w', newline='') as p_data_write:
             p_reader = csv.reader(p_data_read, delimiter=',')
             p_writer = csv.writer(p_data_write, delimiter=',')
             for line in p_reader: # append everything from the updated file so we can later use it to write over the original file
@@ -196,7 +201,7 @@ class ProfileData:
             self.new_file_data.clear()
 
     def increase_upgrade_level(self, column):
-        with open(input_file, 'r') as p_data_read, open(output_file, 'w', newline='') as p_data_write:
+        with open(input_csv, 'r') as p_data_read, open(output_csv, 'w', newline='') as p_data_write:
             p_reader = csv.reader(p_data_read, delimiter=',')
             p_writer = csv.writer(p_data_write, delimiter=',')
 
@@ -206,7 +211,7 @@ class ProfileData:
                     line[column] = f'{current_level + 1}'
                 p_writer.writerow(line)
 
-        with open(output_file, 'r') as p_data_read, open(input_file, 'w', newline='') as p_data_write:
+        with open(output_csv, 'r') as p_data_read, open(input_csv, 'w', newline='') as p_data_write:
             p_reader = csv.reader(p_data_read, delimiter=',')
             p_writer = csv.writer(p_data_write, delimiter=',')
             for line in p_reader: # append everything from the updated file so we can later use it to write over the original file
@@ -217,18 +222,10 @@ class ProfileData:
             self.new_file_data.clear()
 
 
-
-
-
-
-
 pd = ProfileData()
 pd.check_empty()
 
 # pd.add_gold()
-
-
-
 
 
 class Map:
@@ -2731,46 +2728,53 @@ class SkillTree:
         if self.upgrade1_level:
             if self.upgrade1_level >= 5:
                 self.upgrade1_cost = 999999999
+                self.selected_cost = 999999999
             else:
                 self.upgrade1_cost = (425 * 1.25**self.upgrade1_level)
 
         if self.upgrade2_level:
             if self.upgrade2_level >= 5:
                 self.upgrade2_cost = 999999999
+                self.selected_cost = 999999999
             else:
                 self.upgrade2_cost = (475 * 1.25**self.upgrade2_level)
 
         if self.upgrade3_level:
-            print('1')
             self.upgrade3_cost = 999999999
+            self.selected_cost = 999999999
 
         if self.upgrade4_level:
             if self.upgrade4_level >= 5:
                 self.upgrade4_cost = 999999999
+                self.selected_cost = 999999999
             else:
                 self.upgrade4_cost = (375 * 1.25**self.upgrade4_level)
 
         if self.upgrade5_level:
             if self.upgrade5_level >= 5:
                 self.upgrade5_cost = 999999999
+                self.selected_cost = 999999999
             else:
                 self.upgrade5_cost = (175 * 1.25**self.upgrade5_level)
 
         if self.upgrade6_level:
             if self.upgrade6_level >= 5:
                 self.upgrade6_cost = 999999999
+                self.selected_cost = 999999999
             else:
                 self.upgrade6_cost = (300 * 1.25**self.upgrade6_level)
 
         if self.upgrade7_level:
             if self.upgrade7_level >= 5:
                 self.upgrade7_cost = 999999999
+                self.selected_cost = 999999999
             else:
                 self.upgrade7_cost = (615 * 1.25**self.upgrade7_level)
 
         if self.upgrade8_level:
             if self.upgrade8_level >= 5:
                 self.upgrade8_cost = 999999999
+                self.selected_cost = 999999999
             else:
                 self.upgrade8_cost = (425 * 1.25**self.upgrade8_level)
 
