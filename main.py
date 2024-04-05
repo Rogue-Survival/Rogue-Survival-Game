@@ -94,6 +94,15 @@ class ProfileData:
         self.empty = True
         self.new_file_data = []
 
+        self.upgrade1_level = 0
+        self.upgrade2_level = 0
+        self.upgrade3_level = 0
+        self.upgrade4_level = 0
+        self.upgrade5_level = 0
+        self.upgrade6_level = 0
+        self.upgrade7_level = 0
+        self.upgrade8_level = 0
+
     def check_empty(self):
         csv_file = './game-data/profile-data.csv'
         game_data_folder = './game-data'
@@ -144,7 +153,7 @@ class ProfileData:
 
             for line in p_reader:
                 if line[2] == 'selected':
-                    current_gold = int(line[1])
+                    current_gold = int(float(line[1]))
                     gold_earned = p.gold
                     line[1] = f'{current_gold + gold_earned}'
                 p_writer.writerow(line)
@@ -220,6 +229,22 @@ class ProfileData:
             for g in self.new_file_data: # write data from updated file to original file
                 p_writer.writerow(g)
             self.new_file_data.clear()
+
+    def load_upgrades_into_game(self):
+        with open(input_csv, 'r') as p_data_read, open(output_csv, 'w', newline='') as p_data_write:
+            p_reader = csv.reader(p_data_read, delimiter=',')
+            p_writer = csv.writer(p_data_write, delimiter=',')
+
+            for line in p_reader:
+                if line[2] == 'selected':
+                    self.upgrade1_level = int(line[3])
+                    self.upgrade2_level = int(line[4])
+                    self.upgrade3_level = int(line[5])
+                    self.upgrade4_level = int(line[6])
+                    self.upgrade5_level = int(line[7])
+                    self.upgrade6_level = int(line[8])
+                    self.upgrade7_level = int(line[9])
+                    self.upgrade8_level = int(line[10])
 
 
 pd = ProfileData()
@@ -547,7 +572,7 @@ class BasicAttack:
         self.hitbox_radius = 78
 
     def attack(self):
-        print(st.upgrade7_level)
+        # print(pd.upgrade7_level)
         # goes through various animations and hitbox creations for basic attacks to hit all enemies
         total_time = pygame.time.get_ticks() / 1000
         self.hitbox_rect = pygame.draw.circle(transparent_surface, (255, 255, 255),
@@ -3492,8 +3517,8 @@ def button(msg, x, y, w, h, ic, ac, action):
                 # pygame.quit()
                 # sys.exit()
             elif action == "Play":
-                if p.death:
-                    reset_stats()
+                pd.load_upgrades_into_game()
+                reset_stats()
                 pause = False
                 game = True
                 activate_bullet = True
