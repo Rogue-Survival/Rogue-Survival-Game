@@ -894,6 +894,7 @@ class Enemy(pygame.sprite.Sprite):
         self.enemy_length = 0
         self.enemy_list = None
         self.player_collide_counter = 0
+        self.edamage = 15
 
     def generate_enemy(self):
         if not self.spawned:
@@ -988,7 +989,7 @@ class Enemy(pygame.sprite.Sprite):
                     self.player_collide_counter = 0
                 else:
                     # have the player take damage
-                    p.health -= 15
+                    p.health -= self.edamage
                     self.player_collide_counter = 0
             else:
                 # increase counter if player is still colliding with enemy
@@ -1539,7 +1540,7 @@ class Bat(Enemy):
                     self.player_collide_counter = 0
                 else:
                     # have the player take damage
-                    p.health -= 16
+                    p.health -= self.edamage + 1
                     self.player_collide_counter = 0
             else:
                 # increase counter if player is still colliding with enemy
@@ -1708,7 +1709,7 @@ class Bat(Enemy):
 
                 # pygame.draw.rect(screen, (100,0,255), self.bullet_rect)
                 if self.bullet_rect.colliderect(p.rect) and not self.hit_counter:
-                    p.health -= 15
+                    p.health -= self.edamage
                     self.hit_counter += 1
                 self.counter += 1
 
@@ -1833,6 +1834,101 @@ class MiniEarthElemental(Enemy):
             self.last_auto = self.attack_timer
             p.health -= self.hit_damage
 
+class Commander(Enemy):
+    def __init__(self, x, y):
+        super().__init__(x, y)
+        self.rect = minibee1.get_rect().scale_by(1, 1)
+        self.rect.x = x
+        self.rect.y = y
+        self.rect.width = 20
+        self.health = 100000000
+        self.speed = 2
+        self.travel_north()
+        self.travel_east()
+        self.travel_south()
+        self.travel_west()
+        self.felled = False
+        self.not_attacking = True
+        self.hit_damage = 50
+        self.last_auto = 0
+        self.attack_speed = 5
+        self.speed = 1
+        self.buffarea = None
+        self.orspeed = 0
+        self.shouttimer = 15
+        self.shoutarea = None
+        self.shout = False
+        self.activate = False
+    def activate_death(self):
+        if self.health <= 0:
+            # Makes sure Comander is actually dead
+            self.felled = True
+
+    def follow_mc(self):
+        # Miniboss movment
+        if self.rect.x < p.rect.x and not self.rect.colliderect(p.rect):
+            self.travel_east()
+        if self.rect.x > p.rect.x and not self.rect.colliderect(p.rect):
+            self.travel_west()
+        if self.rect.y < p.rect.y and not self.rect.colliderect(p.rect):
+            self.travel_south()
+        if self.rect.y > p.rect.y and not self.rect.colliderect(p.rect):
+            self.travel_north()
+
+    def generate_enemy(self):
+        self.attack_timer = (pygame.time.get_ticks() / 1000)
+        if self.animation <= 15:
+            screen.blit(pygame.transform.scale(minibee1, (40, 45)), (self.rect.x, self.rect.y))
+            self.animation += 1
+        elif self.animation <= 30:
+            screen.blit(pygame.transform.scale(minibee2, (40, 45)), (self.rect.x, self.rect.y))
+            self.animation += 1
+        elif self.animation <= 45:
+            screen.blit(pygame.transform.scale(minibee3, (40, 45)), (self.rect.x, self.rect.y))
+            self.animation += 1
+        elif self.animation <= 60:
+            screen.blit(pygame.transform.scale(minibee4, (40, 45)), (self.rect.x, self.rect.y))
+            self.animation += 1
+        if self.animation == 60:
+            self.animation = 0
+        if self.not_attacking:
+            self.follow_mc()
+            self.auto_hit_player()
+
+    def auto_hit_player(self):
+        if self.rect.colliderect(p.rect) and (self.attack_timer - self.last_auto) >= self.attack_speed:
+            self.last_auto = self.attack_timer
+            p.health -= self.hit_damage
+
+    def buff_aura(self):
+        self.buffarea = pygame.draw.circle(screen, (100,100,100),(self.rect.x, self.rect.y),90,1 )
+        for enemy in enemies:
+            self.orspeed = enemy.speed
+            if enemy.rect.colliderect(self.buffarea):
+                enemy.speed = 3
+                enemy.edamage = 20
+            if not enemy.rect.colliderect(self.buffarea):
+                enemy.speed = random.randint(1.3,2)
+                enemy.edamage = 15
+
+
+    def buff_shout(self):
+        i = 0
+        if i <= self.shouttimer:
+            i += .01
+        if i >= self.shouttimer:
+            self.shout = True
+        if i >= self.shouttimer and self.shout:
+            self.shoutarea = pygame.draw.circle(screen, (100,100,100), (self.rect.x,self.rect.y), 400,2)
+            for enemy in enemies:
+                if enemy.rect.colliderect(self.shoutarea):
+                    enemy.health += 5
+                    enemy.edamage += 5
+
+
+
+
+com = Commander(0,0)
 
 class CalcTargets:
     def calc_closest(t1, o1, n1):
@@ -1843,12 +1939,21 @@ class CalcTargets:
             xcor = t1.rect.x - p.rect.x
             ycor = t1.rect.y - p.rect.y
             distance = math.sqrt(xcor ** 2 + ycor ** 2)
-            close.append((t1, distance))
+            xcor = abs(t1.rect.x - p.rect.x)
+            ycor = abs(t1.rect.y - p.rect.y)
+            if close == []:
+                close.append((t1, xcor, ycor, distance))
+            if close[0][3] > distance:
+                close.insert(0,(t1,xcor,ycor,distance))
+            else:
+                close.append((t1, xcor, ycor, distance))
+
 
         # Sorts and condenses the list to n closest targets.
-        sorted_close = sorted(close, key=lambda x: x[1])
-        closest_targets = sorted_close[:n1]
-        return print(closest_targets)
+        closest_targets = close[:n1]
+        for i in closest_targets:
+            pygame.draw.line(screen, (0, 100, 0), (p.rect.x, p.rect.y), (closest_targets[1],closest_targets[2]),10)
+        return closest_targets
 
     def calc_farthest(t1, o1, n1):
         farthest_target = []
@@ -1857,7 +1962,7 @@ class CalcTargets:
             xcor = t1.rect.x - p.rect.x
             ycor = t1.rect.y - p.rect.y
             distance = math.sqrt(xcor ** 2 + ycor ** 2)
-            farthest_target.append((t1, distance))
+            farthest_target.append((t1, xcor, ycor))
 
         # sorts and condenses the list to targets.
         farthest_target.sort(key=lambda x: x[1], reverse=True)
@@ -2149,9 +2254,131 @@ class XP(pygame.sprite.Sprite):
 
 speed_item_visible = True
 gameTimerOn = False
+class Laser:
+    def __init__(self): #Simple laser attack.
+        self.targets = 3
+        self.closest_enemy = [1000, 1000]
+        self.damage = 5
+        self.cd = 10
+        self.shoot = 0
+        self.target = []
+        self.dmgtype = "Laser"
+        self.laser_aquired = False
+    def fire(self):
+        for enemy in enemies:
+            if enemy.spawned:
+                self.x_distance = abs(p.rect.x - enemy.rect.x)
+                self.y_distance = abs(p.rect.y - enemy.rect.y)
+                smallest_x = abs(self.closest_enemy[0] - p.rect.x)
+                smallest_y = abs(self.closest_enemy[1] - p.rect.y)
+                if self.x_distance + self.y_distance < smallest_x + smallest_y:
+                    self.closest_enemy[0] = enemy.rect.x
+                    self.closest_enemy[1] = enemy.rect.y
+        for enemy in enemies:
+            if enemy.rect.x == self.closest_enemy[0] and enemy.rect.y == self.closest_enemy[1]:
+                self.target.append(enemy)
+                pygame.draw.line(screen, (255, 0, 100),(p.rect.x + 10,p.rect.y + 10), (self.closest_enemy[0] + 15, self.closest_enemy[1] + 15), 10)
+                enemy.health -= self.damage
+        self.closest_enemy = [1000,1000]
+
+    def laser_timer(self):
+        if self.shoot <=self.cd:
+            self.shoot+=.1
+            if self.shoot >= self.cd:
+                lz.fire()
+                self.shoot = 0
+
+
+
+
+
+lz = Laser()
 
 
 # gameTime = 0
+class ChainLightning:
+
+    def __init__(self):
+        self.closest_enemy = [1000,1000]
+        self.x_distance = 1000
+        self.y_distance = 1000
+        self.next_closest_enemy = [1000, 1000]
+        self.enemies_hit = 0
+        self.targeted_enemies = []
+        self.target_cords = []
+        self.cooldown = 30
+        self.shoot = 0
+        self.damage = 100
+
+    def target_enemy(self): # targets first enemy
+        for enemy in enemies:
+            if enemy.spawned:
+                self.x_distance = abs(p.rect.x - enemy.rect.x)
+                self.y_distance = abs(p.rect.y - enemy.rect.y)
+                smallest_x = abs(self.closest_enemy[0] - p.rect.x)
+                smallest_y = abs(self.closest_enemy[1] - p.rect.y)
+                if self.x_distance + self.y_distance < smallest_x + smallest_y: # closest enemy so far
+                    self.closest_enemy[0] = enemy.rect.x
+                    self.closest_enemy[1] = enemy.rect.y
+
+        for enemy in enemies:
+            if enemy.rect.x == self.closest_enemy[0] and enemy.rect.y == self.closest_enemy[1]: # if enemy is not itself
+                self.targeted_enemies.append(enemy) # stores targeted enemy in list
+                pygame.draw.line(screen, (225,225,0), (p.rect.x,p.rect.y),(self.closest_enemy[0]+15,self.closest_enemy[1]+15), 4)
+                enemy.health -= self.damage
+                self.enemies_hit += 1
+
+        self.target_next_enemy()
+
+    def target_next_enemy(self):
+        if self.enemies_hit >= 2:
+            self.closest_enemy = self.next_closest_enemy
+            self.next_closest_enemy = [1000, 1000]
+        for enemy in enemies:
+            if enemy.spawned:
+                if not enemy.rect.x == self.closest_enemy[0] and not enemy.rect.y == self.closest_enemy[1]: # if enemy is not itself
+                    self.x_distance = abs(self.closest_enemy[0] - enemy.rect.x)
+                    self.y_distance = abs(self.closest_enemy[1] - enemy.rect.y)
+                    smallest_x = abs(self.next_closest_enemy[0] - self.closest_enemy[0])
+                    smallest_y = abs(self.next_closest_enemy[1] - self.closest_enemy[1])
+
+                    if self.x_distance + self.y_distance < smallest_x + smallest_y:  # closest enemy so far
+                        if enemy not in self.targeted_enemies:
+                            self.next_closest_enemy[0] = enemy.rect.x
+                            self.next_closest_enemy[1] = enemy.rect.y
+
+        for enemy in enemies:
+            if enemy.rect.x == self.next_closest_enemy[0] and enemy.rect.y == self.next_closest_enemy[1]:
+                if self.enemies_hit == 1:
+                    self.targeted_enemies.append(enemy)
+                    pygame.draw.line(screen, (0,225,0), (self.closest_enemy[0]+18,self.closest_enemy[1]+18),(self.next_closest_enemy[0]+15,self.next_closest_enemy[1]+15), 4)
+                    self.target_cords = [self.next_closest_enemy[0]+15,self.next_closest_enemy[1]+15]
+                    enemy.health -= self.damage
+                if self.enemies_hit == 2:
+                    self.targeted_enemies.append(enemy)
+                    pygame.draw.line(screen, (0,0,255), (self.target_cords[0],self.target_cords[1]),(self.next_closest_enemy[0]+18,self.next_closest_enemy[1]+18), 4)
+                    enemy.health -= self.damage
+                self.enemies_hit += 1
+
+        if self.enemies_hit >= 3: # reset stats when done looping
+            self.next_closest_enemy = [1000,1000]
+            self.closest_enemy = [1000,1000]
+            self.x_distance = 1000
+            self.y_distance = 1000
+            self.enemies_hit = 0
+            self.targeted_enemies.clear()
+        else:
+            self.target_next_enemy()
+    def cl_timer(self):
+        if self.shoot <=self.cooldown:
+            self.shoot+=.05
+            if self.shoot >= self.cooldown:
+                cl.target_enemy()
+                self.shoot = 0
+
+
+
+cl = ChainLightning()
 
 
 class XPBar:
@@ -3737,6 +3964,17 @@ while game:
     for bat in bats:
         bat.clean_dictionaries()
         bat.decide_action()
+    if lz.laser_aquired == True:
+        lz.laser_timer()
+    counter = 0
+    if len(enemies) > 6:
+        for enemy in enemies:
+            if enemy.spawned:
+                    counter += 1
+    if counter >= 6:
+        cl.cl_timer()
+
+
 
 
     b.bullet_counter += 1

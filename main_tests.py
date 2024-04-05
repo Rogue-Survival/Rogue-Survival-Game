@@ -1,8 +1,8 @@
 import unittest
 # import pygame
 # pygame.init()
-from main import Player, Enemy, Bullet, Bat, skeletonKing, BasicAttack, XP, XP_Bar, Map
-
+from main import Player, Enemy, Bullet, Bat, SkeletonKing, BasicAttack, XP, XPBar, Map
+#"pyest.ini"
 class Player_Test(unittest.TestCase):
 
     def test_invalid_speed(self):
@@ -94,31 +94,32 @@ class Bullet_Test(unittest.TestCase):
 class skeletonKing_Test(unittest.TestCase):
 
     def test1(self):
-        sk = skeletonKing(0,0)
+        sk = (
+            SkeletonKing(0,0))
         self.assertTrue(sk.skeletonKing)
     def test2(self):
-        sk = skeletonKing(0,0)
+        sk = SkeletonKing(0,0)
         sk.health = 1
         self.assertFalse(sk.felled, 'sk is not dead')
     def test3(self):
-        sk = skeletonKing(0,0)
+        sk = SkeletonKing(0,0)
         sk.health = "e"
         with self.assertRaises(AttributeError):
             sk.follow_mc()
     def test4(self):
-        b = skeletonKing(0,0)
+        b = SkeletonKing(0,0)
         p = Player()
         self.assertNotEqual(b,p)
     def test5(self):
-        b = skeletonKing(0,0)
-        p = skeletonKing(0,0)
+        b = SkeletonKing(0,0)
+        p = SkeletonKing(0,0)
         self.assertNotEqual(b,p)
     def test6(self):
-        sk = skeletonKing(0,0)
-        self.assertTrue(skeletonKing(0,0))
+        sk = SkeletonKing(0,0)
+        self.assertTrue(SkeletonKing(0,0))
     def test7(self):
         with self.assertRaises(AttributeError):
-            p = skeletonKing(0,0)
+            p = SkeletonKing(0,0)
             p.wieght()
 
 class Bat_Test(unittest.TestCase):
@@ -200,18 +201,18 @@ class XP_Test(unittest.TestCase):
         self.assertNotEqual(x,y)
 class XP_Bar_Test(unittest.TestCase):
     def test1(self):
-        x = XP_Bar()
-        self.assertTrue(XP_Bar())
+        x = XPBar()
+        self.assertTrue(XPBar())
     def test2(self):
-        x = XP_Bar()
-        y = XP_Bar()
+        x = XPBar()
+        y = XPBar()
         self.assertNotEqual(x,y)
     def test3(self):
-        x = XP_Bar()
+        x = XPBar()
         x.level = 1
         self.assertTrue(x.level)
     def test4(self):
-        x = XP_Bar()
+        x = XPBar()
         x.y = 1
         self.assertTrue(x.y)
     def test5(self):
@@ -220,7 +221,7 @@ class XP_Bar_Test(unittest.TestCase):
             x.weight()
     def test6(self):
         x = Player()
-        y = XP_Bar()
+        y = XPBar()
         self.assertNotEqual(x,y)
 class Map_Test(unittest.TestCase):
     def test1(self):
