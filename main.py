@@ -2052,9 +2052,37 @@ class Commander(Enemy):
             if life_steal:
                 p.add_life_steal_health()
             self.melee_attack_collisions.append(1)
+        for bullet in bullets:
+            if self.rect.colliderect(bullet.rect) and bullet.bullet_valid:
+                if not self.bullet_collisions:
+                    self.bullet_collisions.append(bullet)
+                    critical = p.check_critical_chance()
+                    if critical:
+                        self.health -= (b.damage * 1.5)
+                    else:
+                        self.health -= b.damage
+                    life_steal = p.check_life_steal_chance()
+                    if life_steal:
+                        p.add_life_steal_health()
+                elif self.bullet_collisions:
+                    i = 0
+                    for l in self.bullet_collisions:
+                        if (bullet.rect.x == self.bullet_collisions[i].rect.x and bullet.rect.y ==
+                                self.bullet_collisions[i].rect.y):
+                            pass
+                        elif bullet not in self.bullet_collisions and bullet.bullet_valid:
+                            self.bullet_collisions.append(bullet)
+                            critical = p.check_critical_chance()
+                            if critical:
+                                self.health -= (b.damage * 1.5)
+                            else:
+                                self.health -= b.damage
+                            life_steal = p.check_life_steal_chance()
+                            if life_steal:
+                                p.add_life_steal_health()
+                        i += 1
 
     def follow_mc(self):
-        # Miniboss movment
         if self.rect.x < p.rect.x and not self.rect.colliderect(p.rect):
             self.travel_east()
         if self.rect.x > p.rect.x and not self.rect.colliderect(p.rect):
@@ -2100,7 +2128,6 @@ class Commander(Enemy):
                 enemy.speed = 3
                 if enemy.health > enemy.maxhealth:
                     enemy.health += .5
-                print(enemy.health)
                 enemy.wasbuffed = True
             if not enemy.rect.colliderect(self.buffarea) and enemy.wasbuffed == True:
                 enemy.speed = random.randint(1,2)
@@ -4210,14 +4237,13 @@ while game:
             bat.check_collisions()
         bat.activate_death()
 
-    if int(minutes) == 0 and int(seconds) == 3:
+    if int(minutes) == 1 and int(seconds) == 30:
         ee.activate = True
 
     if ee.activate and not ee.felled:
         ee.generate_enemy()
         ee.check_collisions()
     ee.activate_death()
-    print(ee.health)
 
     if ee.felled and not bup.upgrade_active:
         bup.generate_entity()
@@ -4225,7 +4251,7 @@ while game:
     if p.rect.colliderect(bup.rect) and not bup.upgrade_active and ee.felled:
         bup.check_collisions()
 
-    if int(minutes) == 0 and int(seconds) == 3:
+    if int(minutes) == 5 and int(seconds) == 0:
         com.activate = True
 
     if com.activate and not com.felled:
@@ -4233,6 +4259,7 @@ while game:
         com.comactive()
         com.check_collisions()
     com.activate_death()
+    print(com.health)
 
     if int(minutes) == 10 and int(seconds) == 00:
         # skeleton king spawns once the game time reaches a minute and thirty seconds
