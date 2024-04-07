@@ -286,7 +286,7 @@ class Player(pygame.sprite.Sprite):
         # inherits from the pygame.sprite.Sprite class
         pygame.sprite.Sprite.__init__(self)
         self.speed = 4
-        self.health = 50
+        self.health = 5000000
         self.image = "./images/MAIN_CHARACTER.png"
         self.death = False
         self.rect = mc_img.get_rect().scale_by(2, 2)
@@ -358,6 +358,12 @@ class Player(pygame.sprite.Sprite):
                 ee.west_rect.x = ee.rect.x - ee.west_x_val
             if bup.upgrade_out:
                 bup.rect.x += self.speed
+            if com.activate and not com.felled:
+                com.rect.x += self.speed
+                com.north_rect.x = com.rect.x + com.north_x_val
+                com.east_rect.x = com.rect.x + com.east_x_val
+                com.south_rect.x = com.rect.x + com.south_x_val
+                com.west_rect.x = com.rect.x - com.west_x_val
 
     def move_east(self):
         # moves the player and camera East, while moving every other entity in the opposite direction
@@ -409,6 +415,12 @@ class Player(pygame.sprite.Sprite):
                 ee.west_rect.x = ee.rect.x - ee.west_x_val
             if bup.upgrade_out:
                 bup.rect.x -= self.speed
+            if com.activate and not com.felled:
+                com.rect.x -= self.speed
+                com.north_rect.x = com.rect.x + com.north_x_val
+                com.east_rect.x = com.rect.x + com.east_x_val
+                com.south_rect.x = com.rect.x + com.south_x_val
+                com.west_rect.x = com.rect.x - com.west_x_val
 
     def move_north(self):
         # moves the player and camera North, while moving every other entity in the opposite direction
@@ -459,6 +471,12 @@ class Player(pygame.sprite.Sprite):
                 ee.west_rect.y = ee.rect.y + ee.west_y_val
             if bup.upgrade_out:
                 bup.rect.y += self.speed
+            if com.activate and not com.felled:
+                com.rect.y += self.speed
+                com.north_rect.y = com.rect.y - com.north_y_val
+                com.east_rect.y = com.rect.y + com.east_y_val
+                com.south_rect.y = com.rect.y + com.south_y_val
+                com.west_rect.y = com.rect.y + com.west_y_val
 
     def move_south(self):
         # moves the player and camera South, while moving every other entity in the opposite direction
@@ -509,6 +527,12 @@ class Player(pygame.sprite.Sprite):
                 ee.west_rect.y = ee.rect.y + ee.west_y_val
             if bup.upgrade_out:
                 bup.rect.y -= self.speed
+            if com.activate and not com.felled:
+                com.rect.y -= self.speed
+                com.north_rect.y = com.rect.y - com.north_y_val
+                com.east_rect.y = com.rect.y + com.east_y_val
+                com.south_rect.y = com.rect.y + com.south_y_val
+                com.west_rect.y = com.rect.y + com.west_y_val
 
 
 class BasicAttack:
@@ -895,6 +919,7 @@ class Enemy(pygame.sprite.Sprite):
         self.enemy_list = None
         self.player_collide_counter = 0
         self.edamage = 15
+        self.wasbuffed = False
 
     def generate_enemy(self):
         if not self.spawned:
@@ -1859,6 +1884,7 @@ class Commander(Enemy):
         self.shoutarea = None
         self.shout = False
         self.activate = False
+        self.shoutcounter = 0
     def activate_death(self):
         if self.health <= 0:
             # Makes sure Comander is actually dead
@@ -1877,6 +1903,8 @@ class Commander(Enemy):
 
     def generate_enemy(self):
         self.attack_timer = (pygame.time.get_ticks() / 1000)
+        self.x = random.randint(-340, 990)
+        self.y = random.randint(-340, 990)
         if self.animation <= 15:
             screen.blit(pygame.transform.scale(minibee1, (40, 45)), (self.rect.x, self.rect.y))
             self.animation += 1
@@ -1901,34 +1929,41 @@ class Commander(Enemy):
             p.health -= self.hit_damage
 
     def buff_aura(self):
-        self.buffarea = pygame.draw.circle(screen, (100,100,100),(self.rect.x, self.rect.y),90,1 )
+        self.buffarea = pygame.draw.circle(screen, (100,100,100),(self.rect.x+15, self.rect.y+15),90,1 )
         for enemy in enemies:
             self.orspeed = enemy.speed
             if enemy.rect.colliderect(self.buffarea):
                 enemy.speed = 3
                 enemy.edamage = 20
-            if not enemy.rect.colliderect(self.buffarea):
-                enemy.speed = random.randint(1.3,2)
+                enemy.wasbuffed = True
+            if not enemy.rect.colliderect(self.buffarea) and enemy.wasbuffed == True:
+                enemy.speed = random.randint(1,2)
                 enemy.edamage = 15
+                enemy.wasbuffed = False
 
 
     def buff_shout(self):
-        i = 0
-        if i <= self.shouttimer:
-            i += .01
-        if i >= self.shouttimer:
+        if self.shoutcounter <= self.shouttimer:
+            self.shoutcounter += .1
+        if self.shoutcounter >= self.shouttimer:
             self.shout = True
-        if i >= self.shouttimer and self.shout:
-            self.shoutarea = pygame.draw.circle(screen, (100,100,100), (self.rect.x,self.rect.y), 400,2)
+        if self.shout:
+            self.shoutarea = pygame.draw.circle(screen, (100,0,255), (self.rect.x+15,self.rect.y+15), 400, 3)
             for enemy in enemies:
                 if enemy.rect.colliderect(self.shoutarea):
-                    enemy.health += 5
-                    enemy.edamage += 5
+                    enemy.health += 10
+                    enemy.edamage += 10
+                    self.shout = False
+                    self.shoutcounter = 0
+    def comactive(self):
+        if com.activate:
+            com.buff_aura()
+            com.buff_shout()
 
 
 
 
-com = Commander(0,0)
+com = Commander(random.randint(-340, 990), random.randint(-340, 990))
 
 class CalcTargets:
     def calc_closest(t1, o1, n1):
@@ -3945,6 +3980,13 @@ while game:
 
     if p.rect.colliderect(bup.rect) and not bup.upgrade_active and ee.felled:
         bup.check_collisions()
+
+    if int(minutes) == 0 and int(seconds)== 3:
+        com.activate = True
+    if com.activate and com.felled == False:
+        com.generate_enemy()
+        com.comactive()
+
 
     if int(minutes) == 10 and int(seconds) == 00:
         # skeleton king spawns once the game time reaches a minute and thirty seconds
