@@ -311,7 +311,7 @@ class Player(pygame.sprite.Sprite):
         # inherits from the pygame.sprite.Sprite class
         pygame.sprite.Sprite.__init__(self)
         self.speed = 4 + (.05 * pd.upgrade4_level)
-        self.max_health = 500000 + (10 * pd.upgrade1_level)
+        self.max_health = 50 + (10 * pd.upgrade1_level)
         self.current_health = self.max_health
         self.generated_health = False
         self.revive_available = True
@@ -2010,7 +2010,7 @@ class Commander(Enemy):
         self.rect.x = x
         self.rect.y = y
         self.rect.width = 20
-        self.health = 5
+        self.health = 1000
         self.speed = 2
         self.travel_north()
         self.travel_east()
