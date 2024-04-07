@@ -311,7 +311,7 @@ class Player(pygame.sprite.Sprite):
         # inherits from the pygame.sprite.Sprite class
         pygame.sprite.Sprite.__init__(self)
         self.speed = 4 + (.05 * pd.upgrade4_level)
-        self.max_health = 50 + (10 * pd.upgrade1_level)
+        self.max_health = 5000000 + (10 * pd.upgrade1_level)
         self.current_health = self.max_health
         self.generated_health = False
         self.revive_available = True
@@ -735,6 +735,10 @@ class BasicAttack:
             if sk.activate and not sk.felled:
                 # clear the hitbox for the skeleton king
                 sk.melee_attack_collisions.clear()
+            if ee.activate and not ee.felled:
+                ee.melee_attack_collisions.clear()
+            if com.activate and not ee.felled:
+                com.melee_attack_collisions.clear()
             self.basic_attack_timer = 0
         self.basic_attack_timer += 1
 
@@ -965,6 +969,7 @@ class Enemy(pygame.sprite.Sprite):
         self.circle_rect = pygame.draw.circle(transparent_surface, (0, 50, 0), (self.rect.x, self.rect.y), 10)
         self.middot_rect = pygame.draw.circle(transparent_surface, (0, 50, 0, 100),
                                               (self.rect.x + 16, self.rect.y + 16), 1)
+        self.maxhealth = 50
         self.health = 50
         self.bullet_collisions = []
         self.temp_time = 0
@@ -2088,21 +2093,21 @@ class Commander(Enemy):
                 self.last_auto = self.attack_timer
                 p.current_health -= self.hit_damage
 
-    def buff_aura(self):
+    def buff_aura(self): #Speed and healing aura
         self.buffarea = pygame.draw.circle(screen, (100,100,100),(self.rect.x+15, self.rect.y+15),90,1 )
         for enemy in enemies:
-            self.orspeed = enemy.speed
             if enemy.rect.colliderect(self.buffarea):
                 enemy.speed = 3
-                enemy.edamage = 20
+                if enemy.health > enemy.maxhealth:
+                    enemy.health += .5
+                print(enemy.health)
                 enemy.wasbuffed = True
             if not enemy.rect.colliderect(self.buffarea) and enemy.wasbuffed == True:
                 enemy.speed = random.randint(1,2)
-                enemy.edamage = 15
                 enemy.wasbuffed = False
 
 
-    def buff_shout(self):
+    def buff_shout(self): #damage and max health/heal buff
         if self.shoutcounter <= self.shouttimer:
             self.shoutcounter += .1
         if self.shoutcounter >= self.shouttimer:
@@ -2111,7 +2116,8 @@ class Commander(Enemy):
             self.shoutarea = pygame.draw.circle(screen, (100,0,255), (self.rect.x+15,self.rect.y+15), 400, 3)
             for enemy in enemies:
                 if enemy.rect.colliderect(self.shoutarea):
-                    enemy.health += 10
+                    enemy.maxhealth += 15
+                    enemy.health += 15
                     enemy.edamage += 10
                     self.shout = False
                     self.shoutcounter = 0
@@ -4204,13 +4210,14 @@ while game:
             bat.check_collisions()
         bat.activate_death()
 
-    if int(minutes) == 1 and int(seconds) == 30:
+    if int(minutes) == 0 and int(seconds) == 3:
         ee.activate = True
 
     if ee.activate and not ee.felled:
         ee.generate_enemy()
         ee.check_collisions()
     ee.activate_death()
+    print(ee.health)
 
     if ee.felled and not bup.upgrade_active:
         bup.generate_entity()
@@ -4218,7 +4225,7 @@ while game:
     if p.rect.colliderect(bup.rect) and not bup.upgrade_active and ee.felled:
         bup.check_collisions()
 
-    if int(minutes) == 5 and int(seconds) == 0:
+    if int(minutes) == 0 and int(seconds) == 3:
         com.activate = True
 
     if com.activate and not com.felled:
