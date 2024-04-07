@@ -3846,8 +3846,22 @@ class userProfile:
         self.balance_font = pygame.font.SysFont('Garamond', 30, bold=1)
         self.info_font = pygame.font.SysFont('Garamond', 36, bold=1)
         self.back_font = pygame.font.SysFont('Garamond', 36, bold=1)
+        self.reset_confirmation_font = pygame.font.SysFont('Garamond', 32, bold=1)
+
         self.info_font.set_underline(True)
         self.info_font.set_italic(True)
+
+        self.reset_confirm_border1_box = pygame.Rect(35, 260, 430, 230)
+        self.reset_confirm_border2_box = pygame.Rect(40, 265, 420, 220)
+        self.reset_confirm_border3_box = pygame.Rect(45, 270, 410, 210)
+        self.reset_confirm_box = pygame.Rect(50, 275, 400, 200)
+        self.awaiting_confirmation = False
+        self.reset_negative_box = pygame.Rect(115, 400, 95, 55)
+        self.reset_negative_border_box = pygame.Rect(110, 395, 105, 65)
+        self.reset_affirmative_box = pygame.Rect(310, 400, 95, 55)
+        self.reset_affirmative_border_box = pygame.Rect(305, 395, 105, 65)
+
+        self.reset = False
 
     def user_profile_menu(self):
         pd.load_upgrades_into_game()
@@ -3864,36 +3878,51 @@ class userProfile:
                             pd.change_profile(1)
                             pd.load_upgrades_into_game()
                     if self.reset_profile1.collidepoint(event.pos) or self.reset_profile1_border.collidepoint(event.pos):
-                        pd.reset_profile(1)
-                        pd.load_upgrades_into_game()
+                        self.confirm_reset()
+                        if self.reset:
+                            pd.reset_profile(1)
+                            pd.load_upgrades_into_game()
+                            self.reset = False
                     if self.profile_box2.collidepoint(event.pos) or self.profile_border_box2.collidepoint(event.pos):
                         if pd.profile_id != 2:
                             pd.change_profile(2)
                             pd.load_upgrades_into_game()
                     if self.reset_profile2.collidepoint(event.pos) or self.reset_profile2_border.collidepoint(event.pos):
-                        pd.reset_profile(2)
-                        pd.load_upgrades_into_game()
+                        self.confirm_reset()
+                        if self.reset:
+                            pd.reset_profile(2)
+                            pd.load_upgrades_into_game()
+                            self.reset = False
                     if self.profile_box3.collidepoint(event.pos) or self.profile_border_box3.collidepoint(event.pos):
                         if pd.profile_id != 3:
                             pd.change_profile(3)
                             pd.load_upgrades_into_game()
                     if self.reset_profile3.collidepoint(event.pos) or self.reset_profile3_border.collidepoint(event.pos):
-                        pd.reset_profile(3)
-                        pd.load_upgrades_into_game()
+                        self.confirm_reset()
+                        if self.reset:
+                            pd.reset_profile(3)
+                            pd.load_upgrades_into_game()
+                            self.reset = False
                     if self.profile_box4.collidepoint(event.pos) or self.profile_border_box4.collidepoint(event.pos):
                         if pd.profile_id != 4:
                             pd.change_profile(4)
                             pd.load_upgrades_into_game()
                     if self.reset_profile4.collidepoint(event.pos) or self.reset_profile4_border.collidepoint(event.pos):
-                        pd.reset_profile(4)
-                        pd.load_upgrades_into_game()
+                        self.confirm_reset()
+                        if self.reset:
+                            pd.reset_profile(4)
+                            pd.load_upgrades_into_game()
+                            self.reset = False
                     if self.profile_box5.collidepoint(event.pos) or self.profile_border_box5.collidepoint(event.pos):
                         if pd.profile_id != 5:
                             pd.change_profile(5)
                             pd.load_upgrades_into_game()
                     if self.reset_profile5.collidepoint(event.pos) or self.reset_profile5_border.collidepoint(event.pos):
-                        pd.reset_profile(5)
-                        pd.load_upgrades_into_game()
+                        self.confirm_reset()
+                        if self.reset:
+                            pd.reset_profile(5)
+                            pd.load_upgrades_into_game()
+                            self.reset = False
                     if self.back_background.collidepoint(event.pos) or self.back_background_border.collidepoint(event.pos):
                         global up
                         up = userProfile()
@@ -4100,6 +4129,43 @@ class userProfile:
                             registered_level1 = True
                             continue
 
+            clock.tick(15)
+            pygame.display.update()
+
+    def confirm_reset(self):
+        self.awaiting_confirmation = True
+        while self.awaiting_confirmation:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    global game
+                    game = False
+                    pygame.quit()
+                    sys.exit(1)
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.reset_affirmative_box.collidepoint(event.pos) or self.reset_affirmative_border_box.collidepoint(event.pos):
+                        self.reset = True
+                        self.awaiting_confirmation = False
+                    if self.reset_negative_box.collidepoint(event.pos) or self.reset_negative_border_box.collidepoint(event.pos):
+                        self.reset = False
+                        self.awaiting_confirmation = False
+
+
+            pygame.draw.rect(screen, (0,0,0), self.reset_confirm_border1_box)
+            pygame.draw.rect(screen, (255,0,0), self.reset_confirm_border2_box)
+            pygame.draw.rect(screen, (0,0,0), self.reset_confirm_border3_box)
+            pygame.draw.rect(screen, (150,150,150), self.reset_confirm_box)
+            pygame.draw.rect(screen, (0,0,0), self.reset_affirmative_border_box)
+            pygame.draw.rect(screen, (255,253,208), self.reset_affirmative_box)
+            pygame.draw.rect(screen, (0,0,0), self.reset_negative_border_box)
+            pygame.draw.rect(screen, (255,253,208), self.reset_negative_box)
+            reset_confirmation_render = self.reset_confirmation_font.render('Delete Data For:', True, (225, 255, 255))
+            screen.blit(reset_confirmation_render, (135, 290))
+            reset_confirmation2_render = self.reset_confirmation_font.render(f'Profile {pd.profile_id} ?', True, (225, 255, 255))
+            screen.blit(reset_confirmation2_render, (185, 325))
+            reset_negative_render = self.reset_confirmation_font.render(f'No', True, (0,0,0))
+            screen.blit(reset_negative_render, (140, 410))
+            reset_affirmative_render = self.reset_confirmation_font.render(f'Yes', True, (0,0,0))
+            screen.blit(reset_affirmative_render, (335, 410))
             clock.tick(15)
             pygame.display.update()
 
@@ -4653,7 +4719,7 @@ while game:
         com.comactive()
         com.check_collisions()
     com.activate_death()
-    print(com.health)
+    # print(com.health)
 
     if int(minutes) == 10 and int(seconds) == 00:
         # skeleton king spawns once the game time reaches a minute and thirty seconds
