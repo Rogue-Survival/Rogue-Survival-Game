@@ -94,13 +94,22 @@ class ProfileData:
         self.empty = True
         self.new_file_data = []
 
+        self.upgrade1_level = 0
+        self.upgrade2_level = 0
+        self.upgrade3_level = 0
+        self.upgrade4_level = 0
+        self.upgrade5_level = 0
+        self.upgrade6_level = 0
+        self.upgrade7_level = 0
+        self.upgrade8_level = 0
+
     def check_empty(self):
         csv_file = './game-data/profile-data.csv'
         game_data_folder = './game-data'
         exists_file = os.path.exists(csv_file)
         exists_folder = os.path.exists(game_data_folder)
         # print(exists_file)
-        print(exists_folder)
+        # print(exists_folder)
         if not exists_folder:
             os.mkdir("./game-data")
         if not exists_file:
@@ -115,7 +124,7 @@ class ProfileData:
             if count <= 1:
                 self.empty = True
             if self.empty:
-                print("EMPTY")
+                # print("EMPTY")
                 self.create_csv()
 
     def create_csv(self):
@@ -134,7 +143,7 @@ class ProfileData:
                 p_writer.writerow(data3)
                 p_writer.writerow(data4)
                 p_writer.writerow(data5)
-                print("file created")
+                # print("file created")
 
     def add_gold(self):
 
@@ -144,7 +153,7 @@ class ProfileData:
 
             for line in p_reader:
                 if line[2] == 'selected':
-                    current_gold = int(line[1])
+                    current_gold = int(float(line[1]))
                     gold_earned = p.gold
                     line[1] = f'{current_gold + gold_earned}'
                 p_writer.writerow(line)
@@ -221,6 +230,22 @@ class ProfileData:
                 p_writer.writerow(g)
             self.new_file_data.clear()
 
+    def load_upgrades_into_game(self):
+        with open(input_csv, 'r') as p_data_read, open(output_csv, 'w', newline='') as p_data_write:
+            p_reader = csv.reader(p_data_read, delimiter=',')
+            p_writer = csv.writer(p_data_write, delimiter=',')
+
+            for line in p_reader:
+                if line[2] == 'selected':
+                    self.upgrade1_level = int(line[3])
+                    self.upgrade2_level = int(line[4])
+                    self.upgrade3_level = int(line[5])
+                    self.upgrade4_level = int(line[6])
+                    self.upgrade5_level = int(line[7])
+                    self.upgrade6_level = int(line[8])
+                    self.upgrade7_level = int(line[9])
+                    self.upgrade8_level = int(line[10])
+
 
 pd = ProfileData()
 pd.check_empty()
@@ -285,8 +310,14 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         # inherits from the pygame.sprite.Sprite class
         pygame.sprite.Sprite.__init__(self)
-        self.speed = 4
-        self.health = 5000000
+        self.speed = 4 + (.05 * pd.upgrade4_level)
+        self.max_health = 50 + (10 * pd.upgrade1_level)
+        self.current_health = self.max_health
+        self.generated_health = False
+        self.revive_available = True
+        self.dodge_chance = 0.02 * pd.upgrade5_level
+        self.critial_chance = 0.03 * pd.upgrade6_level
+        self.life_steal_chance = 0.02 * pd.upgrade8_level
         self.image = "./images/MAIN_CHARACTER.png"
         self.death = False
         self.rect = mc_img.get_rect().scale_by(2, 2)
@@ -302,12 +333,41 @@ class Player(pygame.sprite.Sprite):
         # self.playerGroup.add(self.rect)
 
     def display_health(self):
+        # print(self.gold)
         info = pygame.display.Info()
         tempwidth, tempheight = info.current_w, info.current_h
         # displays health to the screen
-        health_string = f"HP: {str(self.health)}"
+        health_string = f"HP: {str(int(self.current_health))}"
         health_display = self.health_font.render(health_string, True, (255, 0, 0))
         screen.blit(health_display, ((tempwidth/2)-50, 20))
+
+    def check_dodge_chance(self):
+        if self.dodge_chance:
+            random_number = random.randint(0, 100)
+            if random_number <= (100 * self.dodge_chance):
+                return True
+        return False
+
+    def check_critical_chance(self):
+        if self.critial_chance:
+            random_number = random.randint(0, 100)
+            if random_number <= (100 * self.critial_chance):
+                return True
+        return False
+
+    def check_life_steal_chance(self):
+        if self.life_steal_chance:
+            random_number = random.randint(0, 100)
+            if random_number <= (100 * self.life_steal_chance):
+                return True
+        return False
+
+    def add_life_steal_health(self):
+        if self.life_steal_chance:
+            if self.current_health + (100 * self.life_steal_chance) <= self.max_health:
+                self.current_health += (100 * self.life_steal_chance)
+            else:
+                self.current_health = self.max_health
 
     def move_west(self):
         # moves the player and camera West, while moving every other entity in the opposite direction
@@ -358,12 +418,6 @@ class Player(pygame.sprite.Sprite):
                 ee.west_rect.x = ee.rect.x - ee.west_x_val
             if bup.upgrade_out:
                 bup.rect.x += self.speed
-            if com.activate and not com.felled:
-                com.rect.x += self.speed
-                com.north_rect.x = com.rect.x + com.north_x_val
-                com.east_rect.x = com.rect.x + com.east_x_val
-                com.south_rect.x = com.rect.x + com.south_x_val
-                com.west_rect.x = com.rect.x - com.west_x_val
 
     def move_east(self):
         # moves the player and camera East, while moving every other entity in the opposite direction
@@ -415,12 +469,6 @@ class Player(pygame.sprite.Sprite):
                 ee.west_rect.x = ee.rect.x - ee.west_x_val
             if bup.upgrade_out:
                 bup.rect.x -= self.speed
-            if com.activate and not com.felled:
-                com.rect.x -= self.speed
-                com.north_rect.x = com.rect.x + com.north_x_val
-                com.east_rect.x = com.rect.x + com.east_x_val
-                com.south_rect.x = com.rect.x + com.south_x_val
-                com.west_rect.x = com.rect.x - com.west_x_val
 
     def move_north(self):
         # moves the player and camera North, while moving every other entity in the opposite direction
@@ -471,12 +519,6 @@ class Player(pygame.sprite.Sprite):
                 ee.west_rect.y = ee.rect.y + ee.west_y_val
             if bup.upgrade_out:
                 bup.rect.y += self.speed
-            if com.activate and not com.felled:
-                com.rect.y += self.speed
-                com.north_rect.y = com.rect.y - com.north_y_val
-                com.east_rect.y = com.rect.y + com.east_y_val
-                com.south_rect.y = com.rect.y + com.south_y_val
-                com.west_rect.y = com.rect.y + com.west_y_val
 
     def move_south(self):
         # moves the player and camera South, while moving every other entity in the opposite direction
@@ -527,12 +569,6 @@ class Player(pygame.sprite.Sprite):
                 ee.west_rect.y = ee.rect.y + ee.west_y_val
             if bup.upgrade_out:
                 bup.rect.y -= self.speed
-            if com.activate and not com.felled:
-                com.rect.y -= self.speed
-                com.north_rect.y = com.rect.y - com.north_y_val
-                com.east_rect.y = com.rect.y + com.east_y_val
-                com.south_rect.y = com.rect.y + com.south_y_val
-                com.west_rect.y = com.rect.y + com.west_y_val
 
 
 class BasicAttack:
@@ -571,6 +607,7 @@ class BasicAttack:
         self.hitbox_radius = 78
 
     def attack(self):
+        # print(pd.upgrade7_level)
         # goes through various animations and hitbox creations for basic attacks to hit all enemies
         total_time = pygame.time.get_ticks() / 1000
         self.hitbox_rect = pygame.draw.circle(transparent_surface, (255, 255, 255),
@@ -919,7 +956,6 @@ class Enemy(pygame.sprite.Sprite):
         self.enemy_list = None
         self.player_collide_counter = 0
         self.edamage = 15
-        self.wasbuffed = False
 
     def generate_enemy(self):
         if not self.spawned:
@@ -965,7 +1001,14 @@ class Enemy(pygame.sprite.Sprite):
                     if not self.bullet_collisions:
                         # if the enemy has encountered it's first bullet, add to the list and take damage
                         self.bullet_collisions.append(bullet)
-                        self.health -= b.damage
+                        critical = p.check_critical_chance()
+                        if critical:
+                            self.health -= (b.damage * 1.5)
+                        else:
+                            self.health -= b.damage
+                        life_steal = p.check_life_steal_chance()
+                        if life_steal:
+                            p.add_life_steal_health()
                     elif self.bullet_collisions:
                         # if the list of bullets the enemy has collided with is greater than 0, make sure it is a different bullet in order to deal damage
                         i = 0
@@ -975,7 +1018,14 @@ class Enemy(pygame.sprite.Sprite):
                                 pass
                             elif bullet not in self.bullet_collisions and bullet.bullet_valid:
                                 self.bullet_collisions.append(bullet)
-                                self.health -= b.damage
+                                critical = p.check_critical_chance()
+                                if critical:
+                                    self.health -= (b.damage * 1.5)
+                                else:
+                                    self.health -= b.damage
+                                life_steal = p.check_life_steal_chance()
+                                if life_steal:
+                                    p.add_life_steal_health()
                             i += 1
         for bullet in bullets:
             # for each active bullet, if the bullet hits an enemy, deal damage if appropriate conditions met.
@@ -983,7 +1033,14 @@ class Enemy(pygame.sprite.Sprite):
                 if not self.bullet_collisions:
                     # if the enemy has encountered it's first bullet, add to the list and take damage
                     self.bullet_collisions.append(bullet)
-                    self.health -= b.damage
+                    critical = p.check_critical_chance()
+                    if critical:
+                        self.health -= (b.damage * 1.5)
+                    else:
+                        self.health -= b.damage
+                    life_steal = p.check_life_steal_chance()
+                    if life_steal:
+                        p.add_life_steal_health()
                 elif self.bullet_collisions:
                     # if the list of bullets the enemy has collided with is greater than 0,
                     # make sure it is a different bullet in order to deal damage
@@ -994,12 +1051,27 @@ class Enemy(pygame.sprite.Sprite):
                             pass
                         elif bullet not in self.bullet_collisions and bullet.bullet_valid:
                             self.bullet_collisions.append(bullet)
-                            self.health -= b.damage
+                            critical = p.check_critical_chance()
+                            if critical:
+                                self.health -= (b.damage * 1.5)
+                            else:
+                                self.health -= b.damage
+                            life_steal = p.check_life_steal_chance()
+                            if life_steal:
+                                p.add_life_steal_health()
                         i += 1
 
         if self.rect.colliderect(ba.hitbox_rect) and ba.running and not self.melee_attack_collisions:
             # Reduce enemy health from the Players basic attack if not hit by that same attack swing
-            self.health -= ba.damage
+            critical = p.check_critical_chance()
+            if critical:
+                self.health -= (ba.damage * 1.5)
+            else:
+                self.health -= ba.damage
+            life_steal = p.check_life_steal_chance()
+            if life_steal:
+                p.add_life_steal_health()
+
             self.melee_attack_collisions.append(1)
 
         if (self.rect.colliderect(p.rect) or self.north_rect.colliderect(p.rect) or
@@ -1008,13 +1080,12 @@ class Enemy(pygame.sprite.Sprite):
             # activates if the player collides with any of the slimes directional hitboxes
             if self.player_collide_counter >= 17:
                 # measures how fast the player should take damage after entering collision with slime
-                checkingDodge = random.randint(0, 100)
-                if checkingDodge <= p.dodgeChance:
-                    # dodges damage if dodge percent is rolled
+                dodge = p.check_dodge_chance()
+                if not dodge:
+                    # have the player take damage
+                    p.current_health -= self.edamage
                     self.player_collide_counter = 0
                 else:
-                    # have the player take damage
-                    p.health -= self.edamage
                     self.player_collide_counter = 0
             else:
                 # increase counter if player is still colliding with enemy
@@ -1030,9 +1101,9 @@ class Enemy(pygame.sprite.Sprite):
             if self in enemies:
                 enemies.remove(self)
             chance = random.randint(1, 10)
-            if chance <= 2:
+            if chance <= 3:
                 # chance for the player to get gold
-                p.gold += 1
+                p.gold += 1 + (1 * pd.upgrade6_level)
 
     def spawn(self):
         # allows programmer to know if this enemy has spawned
@@ -1515,7 +1586,14 @@ class Bat(Enemy):
                     if not self.bullet_collisions:
                         # if the bat has encountered it's first bullet, add to the list and take damage
                         self.bullet_collisions.append(bullet)
-                        self.health -= b.damage
+                        critical = p.check_critical_chance()
+                        if critical:
+                            self.health -= (b.damage * 1.5)
+                        else:
+                            self.health -= b.damage
+                        life_steal = p.check_life_steal_chance()
+                        if life_steal:
+                            p.add_life_steal_health()
                     elif self.bullet_collisions:
                         # if the list of bullets the bat has collided with is greater than 0, make sure it is a different bullet in order to deal damage
                         i = 0
@@ -1525,7 +1603,14 @@ class Bat(Enemy):
                                 pass
                             elif bullet not in self.bullet_collisions and bullet.bullet_valid:
                                 self.bullet_collisions.append(bullet)
-                                self.health -= b.damage
+                                critical = p.check_critical_chance()
+                                if critical:
+                                    self.health -= (b.damage * 1.5)
+                                else:
+                                    self.health -= b.damage
+                                life_steal = p.check_life_steal_chance()
+                                if life_steal:
+                                    p.add_life_steal_health()
                             i += 1
 
         for bullet in bullets:
@@ -1534,7 +1619,14 @@ class Bat(Enemy):
                 if not self.bullet_collisions:
                     # if the bat has encountered it's first bullet, add to the list and take damage
                     self.bullet_collisions.append(bullet)
-                    self.health -= b.damage
+                    critical = p.check_critical_chance()
+                    if critical:
+                        self.health -= (b.damage * 1.5)
+                    else:
+                        self.health -= b.damage
+                    life_steal = p.check_life_steal_chance()
+                    if life_steal:
+                        p.add_life_steal_health()
                 elif self.bullet_collisions:
                     # if the list of bullets the bat has collided with is greater than 0,
                     # make sure it is a different bullet in order to deal damage
@@ -1545,12 +1637,26 @@ class Bat(Enemy):
                             pass
                         elif bullet not in self.bullet_collisions and bullet.bullet_valid:
                             self.bullet_collisions.append(bullet)
-                            self.health -= b.damage
+                            critical = p.check_critical_chance()
+                            if critical:
+                                self.health -= (b.damage * 1.5)
+                            else:
+                                self.health -= b.damage
+                            life_steal = p.check_life_steal_chance()
+                            if life_steal:
+                                p.add_life_steal_health()
                         i += 1
 
         if self.rect.colliderect(ba.hitbox_rect) and ba.running and not self.melee_attack_collisions:
             # Reduce bat health from the Players basic attack if not hit by that same attack swing
-            self.health -= ba.damage
+            critical = p.check_critical_chance()
+            if critical:
+                self.health -= (ba.damage * 1.5)
+            else:
+                self.health -= ba.damage
+            life_steal = p.check_life_steal_chance()
+            if life_steal:
+                p.add_life_steal_health()
             self.melee_attack_collisions.append(1)
 
         if (self.rect.colliderect(p.rect) or self.north_rect.colliderect(p.rect) or
@@ -1559,13 +1665,12 @@ class Bat(Enemy):
             # activates if the player collides with any of the bats directional hitboxes
             if self.player_collide_counter >= 17:
                 # measures how fast the player should take damage after entering collision with bats
-                checkingDodge = random.randint(0, 100)
-                if checkingDodge <= p.dodgeChance:
-                    # dodges damage if dodge percent is rolled
+                dodge = p.check_dodge_chance()
+                if not dodge:
+                    # have the player take damage
+                    p.current_health -= self.edamage + 1
                     self.player_collide_counter = 0
                 else:
-                    # have the player take damage
-                    p.health -= self.edamage + 1
                     self.player_collide_counter = 0
             else:
                 # increase counter if player is still colliding with enemy
@@ -1609,9 +1714,9 @@ class Bat(Enemy):
             if self in bats:
                 bats.remove(self)
             chance = random.randint(1, 10)
-            if chance <= 2:
+            if chance <= 3:
                 # chance for the player to get gold
-                p.gold += 1
+                p.gold += 1 + (1 * pd.upgrade6_level)
 
     def decide_action(self):
         # time to run at player (If within a certain distance from player, then just run, ignore shooting)
@@ -1734,8 +1839,10 @@ class Bat(Enemy):
 
                 # pygame.draw.rect(screen, (100,0,255), self.bullet_rect)
                 if self.bullet_rect.colliderect(p.rect) and not self.hit_counter:
-                    p.health -= self.edamage
-                    self.hit_counter += 1
+                    dodge = p.check_dodge_chance()
+                    if not dodge:
+                        p.current_health -= self.edamage
+                        self.hit_counter += 1
                 self.counter += 1
 
 
@@ -1800,11 +1907,19 @@ class MiniEarthElemental(Enemy):
     def check_collisions(self):
         if self.rect.colliderect(ba.hitbox_rect) and ba.running and not self.melee_attack_collisions:
             # Reduce health from the mini boss from Players basic attack if not hit by that same attack swing
-            self.health -= ba.damage
+            critical = p.check_critical_chance()
+            if critical:
+                self.health -= (ba.damage * 1.5)
+            else:
+                self.health -= ba.damage
+            life_steal = p.check_life_steal_chance()
+            if life_steal:
+                p.add_life_steal_health()
             self.melee_attack_collisions.append(1)
 
     def activate_death(self):
         if self.health <= 0:
+            p.gold += 20
             # Makes sure ee is actually dead
             self.felled = True
             self.activate = False
@@ -1843,9 +1958,11 @@ class MiniEarthElemental(Enemy):
                 self.attacrect = self.attack_area = pygame.draw.circle(screen, (209, 10, 10),
                                                                        (self.rect.x + 18, self.rect.y + 20), 240, 1)
                 if p.rect.colliderect(self.attacrect):
-                    p.health -= 50
-                    # print("Player hit")
-                    # print(p.health)
+                    dodge = p.check_dodge_chance()
+                    if not dodge:
+                        p.current_health -= 50
+                        # print("Player hit")
+                        # print(p.health)
             if self.attackcounter >= 3.0:
                 self.not_attacking = True
                 self.is_attacking = False
@@ -1856,8 +1973,10 @@ class MiniEarthElemental(Enemy):
 
     def auto_hit_player(self):
         if self.rect.colliderect(p.rect) and (self.attack_timer - self.last_auto) >= self.attack_speed:
-            self.last_auto = self.attack_timer
-            p.health -= self.hit_damage
+            dodge = p.check_dodge_chance()
+            if not dodge:
+                self.last_auto = self.attack_timer
+                p.current_health -= self.hit_damage
 
 class Commander(Enemy):
     def __init__(self, x, y):
@@ -1884,9 +2003,9 @@ class Commander(Enemy):
         self.shoutarea = None
         self.shout = False
         self.activate = False
-        self.shoutcounter = 0
     def activate_death(self):
         if self.health <= 0:
+            p.gold += 25
             # Makes sure Comander is actually dead
             self.felled = True
 
@@ -1903,8 +2022,6 @@ class Commander(Enemy):
 
     def generate_enemy(self):
         self.attack_timer = (pygame.time.get_ticks() / 1000)
-        self.x = random.randint(-340, 990)
-        self.y = random.randint(-340, 990)
         if self.animation <= 15:
             screen.blit(pygame.transform.scale(minibee1, (40, 45)), (self.rect.x, self.rect.y))
             self.animation += 1
@@ -1925,45 +2042,40 @@ class Commander(Enemy):
 
     def auto_hit_player(self):
         if self.rect.colliderect(p.rect) and (self.attack_timer - self.last_auto) >= self.attack_speed:
-            self.last_auto = self.attack_timer
-            p.health -= self.hit_damage
+            dodge = p.check_dodge_chance()
+            if not dodge:
+                self.last_auto = self.attack_timer
+                p.current_health -= self.hit_damage
 
     def buff_aura(self):
-        self.buffarea = pygame.draw.circle(screen, (100,100,100),(self.rect.x+15, self.rect.y+15),90,1 )
+        self.buffarea = pygame.draw.circle(screen, (100,100,100),(self.rect.x, self.rect.y),90,1 )
         for enemy in enemies:
             self.orspeed = enemy.speed
             if enemy.rect.colliderect(self.buffarea):
                 enemy.speed = 3
                 enemy.edamage = 20
-                enemy.wasbuffed = True
-            if not enemy.rect.colliderect(self.buffarea) and enemy.wasbuffed == True:
-                enemy.speed = random.randint(1,2)
+            if not enemy.rect.colliderect(self.buffarea):
+                enemy.speed = random.randint(1.3,2)
                 enemy.edamage = 15
-                enemy.wasbuffed = False
 
 
     def buff_shout(self):
-        if self.shoutcounter <= self.shouttimer:
-            self.shoutcounter += .1
-        if self.shoutcounter >= self.shouttimer:
+        i = 0
+        if i <= self.shouttimer:
+            i += .01
+        if i >= self.shouttimer:
             self.shout = True
-        if self.shout:
-            self.shoutarea = pygame.draw.circle(screen, (100,0,255), (self.rect.x+15,self.rect.y+15), 400, 3)
+        if i >= self.shouttimer and self.shout:
+            self.shoutarea = pygame.draw.circle(screen, (100,100,100), (self.rect.x,self.rect.y), 400,2)
             for enemy in enemies:
                 if enemy.rect.colliderect(self.shoutarea):
-                    enemy.health += 10
-                    enemy.edamage += 10
-                    self.shout = False
-                    self.shoutcounter = 0
-    def comactive(self):
-        if com.activate:
-            com.buff_aura()
-            com.buff_shout()
+                    enemy.health += 5
+                    enemy.edamage += 5
 
 
 
 
-com = Commander(random.randint(-340, 990), random.randint(-340, 990))
+com = Commander(0,0)
 
 class CalcTargets:
     def calc_closest(t1, o1, n1):
@@ -2159,7 +2271,14 @@ class SkeletonKing(Enemy):
                     if not self.bullet_collisions:
                         # if the skeleton king boss has encountered it's first bullet, add to the list and take damage
                         self.bullet_collisions.append(bullet)
-                        self.health -= b.damage
+                        critical = p.check_critical_chance()
+                        if critical:
+                            self.health -= (b.damage * 1.5)
+                        else:
+                            self.health -= b.damage
+                        life_steal = p.check_life_steal_chance()
+                        if life_steal:
+                            p.add_life_steal_health()
                     elif self.bullet_collisions:
                         # if the list of bullets the skeleton king boss has collided with is greater than 0,
                         # make sure it is a different bullet in order to deal damage
@@ -2171,7 +2290,14 @@ class SkeletonKing(Enemy):
                             elif bullet not in self.bullet_collisions and bullet.bullet_valid:
                                 # have the skeleton king take damage if hit with a bullet they havent been hit by
                                 self.bullet_collisions.append(bullet)
-                                self.health -= b.damage
+                                critical = p.check_critical_chance()
+                                if critical:
+                                    self.health -= (b.damage * 1.5)
+                                else:
+                                    self.health -= b.damage
+                                life_steal = p.check_life_steal_chance()
+                                if life_steal:
+                                    p.add_life_steal_health()
                             i += 1
         for bullet in bullets:
             # removes expired bullets from the skeleton king boss bullet collision list
@@ -2185,11 +2311,19 @@ class SkeletonKing(Enemy):
                     # removes collided bullet from skeleton kings bullet collisions list
                     self.bullet_collisions.remove(g)
         if self.rect.colliderect(ba.hitbox_rect) and ba.running and not self.melee_attack_collisions:
-            self.health -= ba.damage
+            critical = p.check_critical_chance()
+            if critical:
+                self.health -= (ba.damage * 1.5)
+            else:
+                self.health -= ba.damage
+            life_steal = p.check_life_steal_chance()
+            if life_steal:
+                p.add_life_steal_health()
             self.melee_attack_collisions.append(1)
 
     def activate_death(self):
         if self.health <= 0:
+            p.gold += 250
             # removes the skeleton king if they are at or below zero health
             self.felled = True
             self.activate = False
@@ -2236,13 +2370,12 @@ class SkeletonKing(Enemy):
             # if the player collides with the activated legs, have the player take damage
             if self.player_collide_counter >= 10:
                 # measures how fast the player should take damage after entering collision with boss
-                checkingDodge = random.randint(0, 100)
-                if checkingDodge <= p.dodgeChance:
-                    # dodges damage if dodge percent is rolled
+                dodge = p.check_dodge_chance()
+                if not dodge:
+                    # have the player take damage
+                    p.current_health -= 24
                     self.player_collide_counter = 0
                 else:
-                    # have the player take damage
-                    p.health -= 24
                     self.player_collide_counter = 0
             else:
                 # increase counter if player is still colliding with enemy
@@ -2360,7 +2493,11 @@ class ChainLightning:
             if enemy.rect.x == self.closest_enemy[0] and enemy.rect.y == self.closest_enemy[1]: # if enemy is not itself
                 self.targeted_enemies.append(enemy) # stores targeted enemy in list
                 pygame.draw.line(screen, (225,225,0), (p.rect.x,p.rect.y),(self.closest_enemy[0]+15,self.closest_enemy[1]+15), 4)
-                enemy.health -= self.damage
+                critical = p.check_critical_chance()
+                if critical:
+                    enemy.health -= (self.damage * 1.5)
+                else:
+                    enemy.health -= self.damage
                 self.enemies_hit += 1
 
         self.target_next_enemy()
@@ -2388,11 +2525,19 @@ class ChainLightning:
                     self.targeted_enemies.append(enemy)
                     pygame.draw.line(screen, (0,225,0), (self.closest_enemy[0]+18,self.closest_enemy[1]+18),(self.next_closest_enemy[0]+15,self.next_closest_enemy[1]+15), 4)
                     self.target_cords = [self.next_closest_enemy[0]+15,self.next_closest_enemy[1]+15]
-                    enemy.health -= self.damage
+                    critical = p.check_critical_chance()
+                    if critical:
+                        enemy.health -= (self.damage * 1.5)
+                    else:
+                        enemy.health -= self.damage
                 if self.enemies_hit == 2:
                     self.targeted_enemies.append(enemy)
                     pygame.draw.line(screen, (0,0,255), (self.target_cords[0],self.target_cords[1]),(self.next_closest_enemy[0]+18,self.next_closest_enemy[1]+18), 4)
-                    enemy.health -= self.damage
+                    critical = p.check_critical_chance()
+                    if critical:
+                        enemy.health -= (self.damage * 1.5)
+                    else:
+                        enemy.health -= self.damage
                 self.enemies_hit += 1
 
         if self.enemies_hit >= 3: # reset stats when done looping
@@ -2990,53 +3135,75 @@ class SkillTree:
         if self.upgrade1_level:
             if self.upgrade1_level >= 5:
                 self.upgrade1_cost = 999999999
-                self.selected_cost = 999999999
+                if self.selected_option:
+                    if self.selected_option[0] == 'box1':
+                        self.selected_cost = 999999999
+
             else:
                 self.upgrade1_cost = (425 * 1.25**self.upgrade1_level)
 
         if self.upgrade2_level:
             if self.upgrade2_level >= 5:
                 self.upgrade2_cost = 999999999
-                self.selected_cost = 999999999
+                if self.selected_option:
+                    if self.selected_option[0] == 'box2':
+                        self.selected_cost = 999999999
+
             else:
                 self.upgrade2_cost = (475 * 1.25**self.upgrade2_level)
 
         if self.upgrade3_level:
             self.upgrade3_cost = 999999999
-            self.selected_cost = 999999999
+            if self.selected_option:
+                    if self.selected_option[0] == 'box3':
+                        self.selected_cost = 999999999
 
         if self.upgrade4_level:
             if self.upgrade4_level >= 5:
                 self.upgrade4_cost = 999999999
-                self.selected_cost = 999999999
+                if self.selected_option:
+                    if self.selected_option[0] == 'box4':
+                        self.selected_cost = 999999999
+
             else:
                 self.upgrade4_cost = (375 * 1.25**self.upgrade4_level)
 
         if self.upgrade5_level:
             if self.upgrade5_level >= 5:
                 self.upgrade5_cost = 999999999
-                self.selected_cost = 999999999
+                if self.selected_option:
+                    if self.selected_option[0] == 'box5':
+                        self.selected_cost = 999999999
+
             else:
                 self.upgrade5_cost = (175 * 1.25**self.upgrade5_level)
 
         if self.upgrade6_level:
             if self.upgrade6_level >= 5:
                 self.upgrade6_cost = 999999999
-                self.selected_cost = 999999999
+                if self.selected_option:
+                    if self.selected_option[0] == 'box6':
+                        self.selected_cost = 999999999
+
             else:
                 self.upgrade6_cost = (300 * 1.25**self.upgrade6_level)
 
         if self.upgrade7_level:
             if self.upgrade7_level >= 5:
                 self.upgrade7_cost = 999999999
-                self.selected_cost = 999999999
+                if self.selected_option:
+                    if self.selected_option[0] == 'box7':
+                        self.selected_cost = 999999999
             else:
                 self.upgrade7_cost = (615 * 1.25**self.upgrade7_level)
 
         if self.upgrade8_level:
             if self.upgrade8_level >= 5:
                 self.upgrade8_cost = 999999999
-                self.selected_cost = 999999999
+                if self.selected_option:
+                    if self.selected_option[0] == 'box8':
+                        self.selected_cost = 999999999
+
             else:
                 self.upgrade8_cost = (425 * 1.25**self.upgrade8_level)
 
@@ -3267,9 +3434,26 @@ class SkillTree:
 
     def purchase_upgrade(self):
 
+        if self.selected_option[0] == 'box1':
+            self.selected_cost = self.upgrade1_cost
+        if self.selected_option[0] == 'box2':
+            self.selected_cost = self.upgrade2_cost
+        if self.selected_option[0] == 'box3':
+            self.selected_cost = self.upgrade3_cost
+        if self.selected_option[0] == 'box4':
+            self.selected_cost = self.upgrade4_cost
+        if self.selected_option[0] == 'box5':
+            self.selected_cost = self.upgrade5_cost
+        if self.selected_option[0] == 'box6':
+            self.selected_cost = self.upgrade6_cost
+        if self.selected_option[0] == 'box7':
+            self.selected_cost = self.upgrade7_cost
+        if self.selected_option[0] == 'box8':
+            self.selected_cost = self.upgrade8_cost
+
         pd.subtract_gold(self.selected_cost)
 
-        st.load_data()
+        self.load_data()
 
         if self.selected_option[0] == "box1":
             self.selected_cost = self.upgrade1_cost
@@ -3315,6 +3499,7 @@ class SkillTree:
 
         pd.increase_upgrade_level(self.column)
 
+
     def give_feedback(self):
         if self.feedback_option == 1:
             pygame.draw.rect(screen, (50,205,50), self.feedback_box, border_radius=15)
@@ -3340,7 +3525,7 @@ class SkillTree:
         if option == 'box1':
             description_title_render = self.description_title_font.render('Max Health Upgrade', True, (225, 255, 255))
             screen.blit(description_title_render, (135, 685))
-            description_render = self.description_font.render('Increases max health by 10%', True, (225, 255, 255))
+            description_render = self.description_font.render('Increases max health by 10', True, (225, 255, 255))
             screen.blit(description_render, (135, 730))
             if self.upgrade1_cost == 999999999:
                 description_cost_render = self.description_font.render(f'Cost: MAXED  |  Balance: {self.balance} gold', True, (225, 255, 255))
@@ -3379,7 +3564,7 @@ class SkillTree:
         if option == 'box4':
             description_title_render = self.description_title_font.render('Movement Speed Upgrade', True, (225, 255, 255))
             screen.blit(description_title_render, (135, 685))
-            description_render = self.description_font.render('Increases player movement speed by 5%', True, (225, 255, 255))
+            description_render = self.description_font.render('Increases player movement speed by 2%', True, (225, 255, 255))
             screen.blit(description_render, (135, 730))
             if self.upgrade4_cost == 999999999:
                 description_cost_render = self.description_font.render(f'Cost: MAXED  |  Balance: {self.balance} gold', True, (225, 255, 255))
@@ -3392,7 +3577,7 @@ class SkillTree:
         if option == 'box5':
             description_title_render = self.description_title_font.render('Dodge Chance Upgrade', True, (225, 255, 255))
             screen.blit(description_title_render, (135, 685))
-            description_render = self.description_font.render('Increases dodge chance by 5%', True, (225, 255, 255))
+            description_render = self.description_font.render('Increases dodge chance by 2%', True, (225, 255, 255))
             screen.blit(description_render, (135, 730))
             if self.upgrade5_cost == 999999999:
                 description_cost_render = self.description_font.render(f'Cost: MAXED  |  Balance: {self.balance} gold', True, (225, 255, 255))
@@ -3485,8 +3670,8 @@ def button(msg, x, y, w, h, ic, ac, action):
                 # pygame.quit()
                 # sys.exit()
             elif action == "Play":
-                if p.death:
-                    reset_stats()
+                pd.load_upgrades_into_game()
+                reset_stats()
                 pause = False
                 game = True
                 activate_bullet = True
@@ -3871,17 +4056,21 @@ while game:
     key_pressed()
 
     # if the player reaches no health, show the death screen
-    if p.health <= 0:
-        prevGameTime = gameTime
-        p.death = True
-        print(p.gold)
-        pd.add_gold()
-        death_screen()
-        while p.death:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    p.death = False
-                    game = False
+    if p.current_health <= 0:
+        if pd.upgrade3_level and p.revive_available:
+            p.current_health = int(p.max_health * 0.75)
+            p.revive_available = False
+        else:
+            prevGameTime = gameTime
+            p.death = True
+            # print(p.gold)
+            pd.add_gold()
+            death_screen()
+            while p.death:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        p.death = False
+                        game = False
     # makes the map visible
     # screen.blit(pygame.transform.scale(bg_img, (2250, 2250)), (-800 - m.cameraX, -800 - m.cameraY))
     screen.blit(bg_img, (-800 - m.cameraX, -800 - m.cameraY))
@@ -3981,13 +4170,6 @@ while game:
     if p.rect.colliderect(bup.rect) and not bup.upgrade_active and ee.felled:
         bup.check_collisions()
 
-    if int(minutes) == 0 and int(seconds)== 3:
-        com.activate = True
-    if com.activate and com.felled == False:
-        com.generate_enemy()
-        com.comactive()
-
-
     if int(minutes) == 10 and int(seconds) == 00:
         # skeleton king spawns once the game time reaches a minute and thirty seconds
         sk.activate = True
@@ -4016,7 +4198,18 @@ while game:
     if counter >= 6:
         cl.cl_timer()
 
+    # print(pd.upgrade2_level)
 
+    if (seconds == 30 or seconds == 00) and not p.generated_health:
+        if p.current_health + (2 * pd.upgrade2_level) <= p.max_health:
+            if pd.upgrade2_level:
+                p.current_health += (2 * pd.upgrade2_level)
+                p.generated_health = True
+        elif p.current_health != p.max_health:
+            p.current_health = p.max_health
+            p.generated_health = True
+    if seconds == 31 or seconds == 1:
+        p.generated_health = False
 
 
     b.bullet_counter += 1
