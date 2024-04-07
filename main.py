@@ -103,6 +103,9 @@ class ProfileData:
         self.upgrade7_level = 0
         self.upgrade8_level = 0
 
+        self.balance = 0
+        self.profile_id = 0
+
     def check_empty(self):
         csv_file = './game-data/profile-data.csv'
         game_data_folder = './game-data'
@@ -245,6 +248,79 @@ class ProfileData:
                     self.upgrade6_level = int(line[8])
                     self.upgrade7_level = int(line[9])
                     self.upgrade8_level = int(line[10])
+                    self.balance = int(float(line[1]))
+                    self.profile_id = int(line[0])
+
+    def change_profile(self, profile):
+        with open(input_csv, 'r') as p_data_read, open(output_csv, 'w', newline='') as p_data_write:
+            p_reader = csv.reader(p_data_read, delimiter=',')
+            p_writer = csv.writer(p_data_write, delimiter=',')
+
+            for line in p_reader:
+                if line[2] == 'selected':
+                    line[2] = "not-selected"
+                p_writer.writerow(line)
+
+        with open(output_csv, 'r') as p_data_read, open(input_csv, 'w', newline='') as p_data_write:
+            p_reader = csv.reader(p_data_read, delimiter=',')
+            p_writer = csv.writer(p_data_write, delimiter=',')
+            for line in p_reader: # append everything from the updated file so we can later use it to write over the original file
+                self.new_file_data.append(line)
+
+            for g in self.new_file_data: # write data from updated file to original file
+                p_writer.writerow(g)
+            self.new_file_data.clear()
+
+
+
+
+        with open(input_csv, 'r') as p_data_read, open(output_csv, 'w', newline='') as p_data_write:
+            p_reader = csv.reader(p_data_read, delimiter=',')
+            p_writer = csv.writer(p_data_write, delimiter=',')
+
+            for line in p_reader:
+                if line[0] == str(profile):
+                    line[2] = "selected"
+                p_writer.writerow(line)
+
+        with open(output_csv, 'r') as p_data_read, open(input_csv, 'w', newline='') as p_data_write:
+            p_reader = csv.reader(p_data_read, delimiter=',')
+            p_writer = csv.writer(p_data_write, delimiter=',')
+            for line in p_reader: # append everything from the updated file so we can later use it to write over the original file
+                self.new_file_data.append(line)
+
+            for g in self.new_file_data: # write data from updated file to original file
+                p_writer.writerow(g)
+            self.new_file_data.clear()
+
+    def reset_profile(self, profile):
+        with open(input_csv, 'r') as p_data_read, open(output_csv, 'w', newline='') as p_data_write:
+            p_reader = csv.reader(p_data_read, delimiter=',')
+            p_writer = csv.writer(p_data_write, delimiter=',')
+
+            for line in p_reader:
+                if line[0] == str(profile) and line[2] == 'selected':
+                    line[1] = '0'
+                    line[3] = '0'
+                    line[4] = '0'
+                    line[5] = '0'
+                    line[6] = '0'
+                    line[7] = '0'
+                    line[8] = '0'
+                    line[9] = '0'
+                    line[10] = '0'
+                p_writer.writerow(line)
+
+        with open(output_csv, 'r') as p_data_read, open(input_csv, 'w', newline='') as p_data_write:
+            p_reader = csv.reader(p_data_read, delimiter=',')
+            p_writer = csv.writer(p_data_write, delimiter=',')
+            for line in p_reader: # append everything from the updated file so we can later use it to write over the original file
+                self.new_file_data.append(line)
+
+            for g in self.new_file_data: # write data from updated file to original file
+                p_writer.writerow(g)
+            self.new_file_data.clear()
+
 
 
 pd = ProfileData()
@@ -3639,6 +3715,317 @@ class SkillTree:
 st = SkillTree()
 
 
+
+
+
+
+
+
+
+
+class userProfile:
+    def __init__(self):
+        self.active = True
+        self.offset1 = 50
+        self.offset2 = 50
+
+        self.profile_box1 = pygame.Rect(85, 225-self.offset1, 130, 45)
+        self.profile_border_box1 = pygame.Rect(78, 218-self.offset1, 144, 59)
+        self.reset_profile1 = pygame.Rect(300, 220-self.offset1, 115, 55)
+        self.reset_profile1_border = pygame.Rect(293, 213-self.offset1, 129, 69)
+
+        self.profile_box2 = pygame.Rect(85, 322-self.offset1+25, 130, 45)
+        self.profile_border_box2 = pygame.Rect(78, 315-self.offset1+25, 144, 59)
+        self.reset_profile2 = pygame.Rect(300, 317-self.offset1+25, 115, 55)
+        self.reset_profile2_border = pygame.Rect(293, 310-self.offset1+25, 129, 69)
+
+        self.profile_box3 = pygame.Rect(85, 419, 130, 45)
+        self.profile_border_box3 = pygame.Rect(78, 412, 144, 59)
+        self.reset_profile3 = pygame.Rect(300, 414, 115, 55)
+        self.reset_profile3_border = pygame.Rect(293, 407, 129, 69)
+
+        self.profile_box4 = pygame.Rect(85, 516+self.offset1-25, 130, 45)
+        self.profile_border_box4 = pygame.Rect(78, 509+self.offset1-25, 144, 59)
+        self.reset_profile4 = pygame.Rect(300, 511+self.offset1-25, 115, 55)
+        self.reset_profile4_border = pygame.Rect(293, 504+self.offset1-25, 129, 69)
+
+        self.profile_box5 = pygame.Rect(85, 613+self.offset1, 130, 45)
+        self.profile_border_box5 = pygame.Rect(78, 606+self.offset1, 144, 59)
+        self.reset_profile5 = pygame.Rect(300, 608+self.offset1, 115, 55)
+        self.reset_profile5_border = pygame.Rect(293, 601+self.offset1, 129, 69)
+        self.info_background = pygame.Rect(500, 75, 275, 715)
+
+        self.back_background_border = pygame.Rect(15, 15, 143, 68)
+        self.back_background = pygame.Rect(23, 23, 127, 52)
+
+        self.down_offset = 75
+
+        self.profile_font = pygame.font.SysFont('Garamond', 32, bold=1)
+        self.reset_font = pygame.font.SysFont('Garamond', 26, bold=1)
+        self.balance_font = pygame.font.SysFont('Garamond', 30, bold=1)
+        self.info_font = pygame.font.SysFont('Garamond', 36, bold=1)
+        self.back_font = pygame.font.SysFont('Garamond', 36, bold=1)
+        self.info_font.set_underline(True)
+        self.info_font.set_italic(True)
+
+    def user_profile_menu(self):
+        pd.load_upgrades_into_game()
+        while self.active:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    global game
+                    game = False
+                    pygame.quit()
+                    sys.exit(1)
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.profile_box1.collidepoint(event.pos) or self.profile_border_box1.collidepoint(event.pos):
+                        if pd.profile_id != 1:
+                            pd.change_profile(1)
+                            pd.load_upgrades_into_game()
+                    if self.reset_profile1.collidepoint(event.pos) or self.reset_profile1_border.collidepoint(event.pos):
+                        pd.reset_profile(1)
+                        pd.load_upgrades_into_game()
+                    if self.profile_box2.collidepoint(event.pos) or self.profile_border_box2.collidepoint(event.pos):
+                        if pd.profile_id != 2:
+                            pd.change_profile(2)
+                            pd.load_upgrades_into_game()
+                    if self.reset_profile2.collidepoint(event.pos) or self.reset_profile2_border.collidepoint(event.pos):
+                        pd.reset_profile(2)
+                        pd.load_upgrades_into_game()
+                    if self.profile_box3.collidepoint(event.pos) or self.profile_border_box3.collidepoint(event.pos):
+                        if pd.profile_id != 3:
+                            pd.change_profile(3)
+                            pd.load_upgrades_into_game()
+                    if self.reset_profile3.collidepoint(event.pos) or self.reset_profile3_border.collidepoint(event.pos):
+                        pd.reset_profile(3)
+                        pd.load_upgrades_into_game()
+                    if self.profile_box4.collidepoint(event.pos) or self.profile_border_box4.collidepoint(event.pos):
+                        if pd.profile_id != 4:
+                            pd.change_profile(4)
+                            pd.load_upgrades_into_game()
+                    if self.reset_profile4.collidepoint(event.pos) or self.reset_profile4_border.collidepoint(event.pos):
+                        pd.reset_profile(4)
+                        pd.load_upgrades_into_game()
+                    if self.profile_box5.collidepoint(event.pos) or self.profile_border_box5.collidepoint(event.pos):
+                        if pd.profile_id != 5:
+                            pd.change_profile(5)
+                            pd.load_upgrades_into_game()
+                    if self.reset_profile5.collidepoint(event.pos) or self.reset_profile5_border.collidepoint(event.pos):
+                        pd.reset_profile(5)
+                        pd.load_upgrades_into_game()
+                    if self.back_background.collidepoint(event.pos) or self.back_background_border.collidepoint(event.pos):
+                        global up
+                        up = userProfile()
+                        self.active = False
+                        main_menu()
+
+            screen.blit(dungeonBackground, (0, 0))
+
+            pygame.draw.rect(screen, (0,0,0), self.back_background_border, border_radius=15)
+            pygame.draw.rect(screen, (255,0,0), self.back_background, border_radius=15)
+            back_render = self.back_font.render('Back', True, (225, 255, 255))
+            screen.blit(back_render, (45, 26))
+
+            if pd.profile_id == 1:
+                pygame.draw.rect(screen, (80,83,241), self.profile_border_box1)
+            else:
+                pygame.draw.rect(screen, (137,137,137), self.profile_border_box1)
+
+            pygame.draw.rect(screen, (134,214,216), self.profile_box1)
+            pygame.draw.ellipse(screen, (137,137,137), self.reset_profile1_border)
+            pygame.draw.ellipse(screen, (134,214,216), self.reset_profile1)
+            profile1_render = self.profile_font.render(f'Profile 1', True, (0, 0, 0))
+            screen.blit(profile1_render, (92, 230-self.offset1))
+            reset1_render = self.reset_font.render(f'RESET', True, (0, 0, 0))
+            screen.blit(reset1_render, (315, 233-self.offset1))
+
+            if pd.profile_id == 2:
+                pygame.draw.rect(screen, (80,83,241), self.profile_border_box2)
+            else:
+                pygame.draw.rect(screen, (137,137,137), self.profile_border_box2)
+
+            pygame.draw.rect(screen, (134,214,216), self.profile_box2)
+            pygame.draw.ellipse(screen, (137,137,137), self.reset_profile2_border)
+            pygame.draw.ellipse(screen, (134,214,216), self.reset_profile2)
+            profile2_render = self.profile_font.render(f'Profile 2', True, (0, 0, 0))
+            screen.blit(profile2_render, (92, 327-self.offset1+25))
+            reset2_render = self.reset_font.render(f'RESET', True, (0, 0, 0))
+            screen.blit(reset2_render, (315, 330-self.offset1+25))
+
+            if pd.profile_id == 3:
+                pygame.draw.rect(screen, (80,83,241), self.profile_border_box3)
+            else:
+                pygame.draw.rect(screen, (137,137,137), self.profile_border_box3)
+
+            pygame.draw.rect(screen, (134,214,216), self.profile_box3)
+            pygame.draw.ellipse(screen, (137,137,137), self.reset_profile3_border)
+            pygame.draw.ellipse(screen, (134,214,216), self.reset_profile3)
+            profile3_render = self.profile_font.render(f'Profile 3', True, (0, 0, 0))
+            screen.blit(profile3_render, (92, 424))
+            reset3_render = self.reset_font.render(f'RESET', True, (0, 0, 0))
+            screen.blit(reset3_render, (315, 427))
+
+            if pd.profile_id == 4:
+                pygame.draw.rect(screen, (80,83,241), self.profile_border_box4)
+            else:
+                pygame.draw.rect(screen, (137,137,137), self.profile_border_box4)
+
+            pygame.draw.rect(screen, (134,214,216), self.profile_box4)
+            pygame.draw.ellipse(screen, (137,137,137), self.reset_profile4_border)
+            pygame.draw.ellipse(screen, (134,214,216), self.reset_profile4)
+            profile4_render = self.profile_font.render(f'Profile 4', True, (0, 0, 0))
+            screen.blit(profile4_render, (92, 521+self.offset1-25))
+            reset4_render = self.reset_font.render(f'RESET', True, (0, 0, 0))
+            screen.blit(reset4_render, (315, 524+self.offset1-25))
+
+            if pd.profile_id == 5:
+                pygame.draw.rect(screen, (80,83,241), self.profile_border_box5)
+            else:
+                pygame.draw.rect(screen, (137,137,137), self.profile_border_box5)
+
+            pygame.draw.rect(screen, (134,214,216), self.profile_box5)
+            pygame.draw.ellipse(screen, (137,137,137), self.reset_profile5_border)
+            pygame.draw.ellipse(screen, (134,214,216), self.reset_profile5)
+            profile5_render = self.profile_font.render(f'Profile 5', True, (0, 0, 0))
+            screen.blit(profile5_render, (92, 618+self.offset1))
+            reset5_render = self.reset_font.render(f'RESET', True, (0, 0, 0))
+            screen.blit(reset5_render, (315, 621+self.offset1))
+
+            pygame.draw.rect(screen, (186,166,142), self.info_background)
+
+            balance_render = self.balance_font.render(f'Balance: {pd.balance} gold', True, (0, 0, 0))
+            screen.blit(balance_render, (515, 150))
+
+            info_render = self.info_font.render(f'User Info:', True, (0, 0, 0))
+            screen.blit(info_render, (552, 100))
+
+            levels = [1, 2, 3, 4, 5, 6, 7, 8]
+
+            for c in levels:
+                level_list = []
+                selected_level = 0
+                full = 0
+                empty = 0
+                if c == 1:
+                    selected_level = 1
+                    full = int(pd.upgrade1_level)
+                    empty = int(5 - pd.upgrade1_level)
+                if c == 2:
+                    selected_level = 2
+                    full = int(pd.upgrade2_level)
+                    empty = int(5 - pd.upgrade2_level)
+                if c == 3:
+                    selected_level = 3
+                    full = int(pd.upgrade3_level)
+                    empty = int(5 - pd.upgrade3_level)
+                if c == 4:
+                    selected_level = 4
+                    full = int(pd.upgrade4_level)
+                    empty = int(5 - pd.upgrade4_level)
+                if c == 5:
+                    selected_level = 5
+                    full = int(pd.upgrade5_level)
+                    empty = int(5 - pd.upgrade5_level)
+                if c == 6:
+                    selected_level = 6
+                    full = int(pd.upgrade6_level)
+                    empty = int(5 - pd.upgrade6_level)
+                if c == 7:
+                    selected_level = 7
+                    full = int(pd.upgrade7_level)
+                    empty = int(5 - pd.upgrade7_level)
+                if c == 8:
+                    selected_level = 8
+                    full = int(pd.upgrade8_level)
+                    empty = int(5 - pd.upgrade8_level)
+
+                if full:
+                    i = 0
+                    while i <= full - 1:
+                        level_list.append('full')
+                        i += 1
+                if empty:
+                    i = 0
+                    while i <= empty - 1:
+                        level_list.append('empty')
+                        i += 1
+                registered_level1 = False
+                registered_level2 = False
+                registered_level3 = False
+                registered_level4 = False
+                registered_level5 = False
+
+
+                pygame.draw.line(screen, (0,0,0), (514, 170+(self.down_offset * selected_level)), (567,170+(self.down_offset * selected_level)), width=6) # base
+                pygame.draw.line(screen, (0,0,0), (515, 170+(self.down_offset * selected_level)), (540,126+(self.down_offset * selected_level)), width=6) # left
+                pygame.draw.line(screen, (0,0,0), (566, 172+(self.down_offset * selected_level)), (540,126+(self.down_offset * selected_level)), width=6) # right
+
+                for g in level_list:
+                    if not selected_level == 3:
+                        if not registered_level1:
+                            if g == 'full':
+                                pygame.draw.circle(screen, (0,0,0), (595,148+(self.down_offset * selected_level)), 16)
+                                registered_level1 = True
+                                continue
+                            else:
+                                pygame.draw.circle(screen, (0,0,0), (595,148+(self.down_offset * selected_level)), 16, width=5)
+                                registered_level1 = True
+                                continue
+                        if not registered_level2:
+                            if g == 'full':
+                                pygame.draw.circle(screen, (0,0,0), (632,148+(self.down_offset * selected_level)), 16)
+                                registered_level2 = True
+                                continue
+                            else:
+                                pygame.draw.circle(screen, (0,0,0), (632,148+(self.down_offset * selected_level)), 16, width=5)
+                                registered_level2 = True
+                                continue
+                        if not registered_level3:
+                            if g == 'full':
+                                pygame.draw.circle(screen, (0,0,0), (669,148+(self.down_offset * selected_level)), 16)
+                                registered_level3 = True
+                                continue
+                            else:
+                                pygame.draw.circle(screen, (0,0,0), (669,148+(self.down_offset * selected_level)), 16, width=5)
+                                registered_level3 = True
+                                continue
+                        if not registered_level4:
+                            if g == 'full':
+                                pygame.draw.circle(screen, (0,0,0), (706,148+(self.down_offset * selected_level)), 16)
+                                registered_level4 = True
+                                continue
+                            else:
+                                pygame.draw.circle(screen, (0,0,0), (706,148+(self.down_offset * selected_level)), 16, width=5)
+                                registered_level4 = True
+                                continue
+                        if not registered_level5:
+                            if g == 'full':
+                                pygame.draw.circle(screen, (0,0,0), (743,148+(self.down_offset * selected_level)), 16)
+                                registered_level5 = True
+                                level_list.clear()
+                                continue
+                            else:
+                                pygame.draw.circle(screen, (0,0,0), (743,148+(self.down_offset * selected_level)), 16, width=5)
+                                registered_level5 = True
+                                level_list.clear()
+                                continue
+                    else:
+                        if g == 'full':
+                            pygame.draw.circle(screen, (0,0,0), (595,148+(self.down_offset * selected_level)), 16)
+                            registered_level1 = True
+                            continue
+                        else:
+                            pygame.draw.circle(screen, (0,0,0), (595,148+(self.down_offset * selected_level)), 16, width=5)
+                            registered_level1 = True
+                            continue
+
+            clock.tick(15)
+            pygame.display.update()
+
+
+up = userProfile()
+
+
 # adding the ability to implement buttons
 def button(msg, x, y, w, h, ic, ac, action):
     # if buttons are pressed, activate the appropriate functions
@@ -3663,12 +4050,18 @@ def button(msg, x, y, w, h, ic, ac, action):
                 pause = False
                 credits()
             elif action == "Quit":
+                up.user_profile_menu()
+
+                """ To get to skill tree
                 pd.load_skill_tree()
                 st.load_data()
                 st.skill_tree()
-                # game = False
-                # pygame.quit()
-                # sys.exit()
+                """
+                """ To quit:
+                game = False
+                pygame.quit()
+                sys.exit()
+                """
             elif action == "Play":
                 pd.load_upgrades_into_game()
                 reset_stats()
@@ -3842,6 +4235,7 @@ def main_menu():
                 quit()
         # sets the main menu background
         screen.blit(dungeonBackground, (0, 0))
+
         # establishing the text for the title on the menu
         large_text = pygame.font.SysFont('Garamond', 80, bold=True)
         main_text = pygame.font.SysFont('Garamond', 20, bold=True)
