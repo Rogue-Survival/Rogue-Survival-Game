@@ -4197,18 +4197,9 @@ def button(msg, x, y, w, h, ic, ac, action):
                 pause = False
                 credits()
             elif action == "Quit":
-                up.user_profile_menu()
-
-                """ To get to skill tree
-                pd.load_skill_tree()
-                st.load_data()
-                st.skill_tree()
-                """
-                """ To quit:
                 game = False
                 pygame.quit()
                 sys.exit()
-                """
             elif action == "Play":
                 pd.load_upgrades_into_game()
                 reset_stats()
@@ -4219,8 +4210,12 @@ def button(msg, x, y, w, h, ic, ac, action):
                 bullet_timer2 = 0
             elif action == "main_menu":
                 main_menu()
-            elif action == "skill_tree":
-                skill_tree_menu()
+            elif action == "skilltree":
+                pd.load_skill_tree()
+                st.load_data()
+                st.skill_tree()
+            elif action == "profile":
+                up.user_profile_menu()
     else:
         pygame.draw.rect(screen, ic, (x, y, w, h), border_radius=20)
 
@@ -4392,20 +4387,21 @@ def main_menu():
         text_rect2.center = ((screen_width / 2), (screen_height / 3.3) + 40)
         screen.blit(horizontalScroll, (screen_width / 2 - 288, screen_height / 10))
         # displays the buttons available on the Main Menu
-        button("Play!", (screen_width / 4) - 100, (screen_height / 1.6), 200, 100, (247, 167, 82), (184, 120, 51),
+        button("Play!", (screen_width / 4) - 100, (screen_height / 1.5), 200, 100, (247, 167, 82), (184, 120, 51),
                "Play")
-        button("Close :(", (screen_width / 1.3) - 100, (screen_height / 1.6), 200,
+        button("Close :(", (screen_width / 1.3) - 100, (screen_height / 1.5), 200,
                100, (247, 167, 82),
                (184, 120, 51), "Quit")
+        button("Profiles", (screen_width / 4) - 100, (screen_height / 2), 200, 100, (247, 167, 82), (184, 120, 51),
+               "profile")
+        button("Skilltree", (screen_width / 1.3) - 100, (screen_height / 2), 200,
+               100, (247, 167, 82),
+               (184, 120, 51), "skilltree")
         # puts all of the text on the screen
         screen.blit(text_surf, text_rect)
         screen.blit(text_surf2, text_rect2)
         pygame.display.update()
         clock.tick(15)
-
-
-def skill_tree_menu():
-    pass
 
 
 def death_screen():
