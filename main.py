@@ -2,6 +2,8 @@ import sys
 import math
 import random
 import numpy
+import os
+import csv
 import pygame
 
 
@@ -82,6 +84,251 @@ xp = []
 xp_hit = []
 
 
+input_csv = './game-data/profile-data.csv'
+output_csv = './game-data/new-profile-data.csv'
+
+
+class ProfileData:
+
+    def __init__(self):
+        self.empty = True
+        self.new_file_data = []
+
+        self.upgrade1_level = 0
+        self.upgrade2_level = 0
+        self.upgrade3_level = 0
+        self.upgrade4_level = 0
+        self.upgrade5_level = 0
+        self.upgrade6_level = 0
+        self.upgrade7_level = 0
+        self.upgrade8_level = 0
+
+        self.balance = 0
+        self.profile_id = 0
+
+    def check_empty(self):
+        csv_file = './game-data/profile-data.csv'
+        game_data_folder = './game-data'
+        exists_file = os.path.exists(csv_file)
+        exists_folder = os.path.exists(game_data_folder)
+        # print(exists_file)
+        # print(exists_folder)
+        if not exists_folder:
+            os.mkdir("./game-data")
+        if not exists_file:
+            open("./game-data/profile-data.csv", "x")
+        with open('./game-data/profile-data.csv', 'r') as p_data:
+            p_reader = csv.reader(p_data)
+
+            count = 0
+            for line in p_reader:
+                self.empty = False
+                count += 1
+            if count <= 1:
+                self.empty = True
+            if self.empty:
+                # print("EMPTY")
+                self.create_csv()
+
+    def create_csv(self):
+        if self.empty:
+            with open('./game-data/profile-data.csv', 'w') as p_data:
+                p_writer = csv.writer(p_data, lineterminator= '\n')
+                data0 = ["profile_id", "currency", "selected_profile", "upgrade1_level", "upgrade2_level", "upgrade3_level", "upgrade4_level", "upgrade5_level", "upgrade6_level", "upgrade7_level", "upgrade8_level"]
+                data1 = [1, 0, "not-selected", 0, 0, 0, 0, 0, 0, 0, 0]
+                data2 = [2, 0, "not-selected", 0, 0, 0, 0, 0, 0, 0, 0]
+                data3 = [3, 0, "selected", 0, 0, 0, 0, 0, 0, 0, 0]
+                data4 = [4, 0, "not-selected", 0, 0, 0, 0, 0, 0, 0, 0]
+                data5 = [5, 0, "not-selected", 0, 0, 0, 0, 0, 0, 0, 0]
+                p_writer.writerow(data0)
+                p_writer.writerow(data1)
+                p_writer.writerow(data2)
+                p_writer.writerow(data3)
+                p_writer.writerow(data4)
+                p_writer.writerow(data5)
+                # print("file created")
+
+    def add_gold(self):
+
+        with open(input_csv, 'r') as p_data_read, open(output_csv, 'w', newline='') as p_data_write:
+            p_reader = csv.reader(p_data_read, delimiter=',')
+            p_writer = csv.writer(p_data_write, delimiter=',')
+
+            for line in p_reader:
+                if line[2] == 'selected':
+                    current_gold = int(float(line[1]))
+                    gold_earned = p.gold
+                    line[1] = f'{current_gold + gold_earned}'
+                p_writer.writerow(line)
+
+        with open(output_csv, 'r') as p_data_read, open(input_csv, 'w', newline='') as p_data_write:
+            p_reader = csv.reader(p_data_read, delimiter=',')
+            p_writer = csv.writer(p_data_write, delimiter=',')
+            for line in p_reader: # append everything from the updated file so we can later use it to write over the original file
+                self.new_file_data.append(line)
+
+            for g in self.new_file_data: # write data from updated file to original file
+                p_writer.writerow(g)
+            self.new_file_data.clear()
+
+
+    def load_skill_tree(self):
+        with open(input_csv, 'r') as p_data_read, open(output_csv, 'w', newline='') as p_data_write:
+            p_reader = csv.reader(p_data_read, delimiter=',')
+            p_writer = csv.writer(p_data_write, delimiter=',')
+
+            for line in p_reader:
+                if line[2] == 'selected':
+                    st.upgrade1_level = int(line[3])
+                    st.upgrade2_level = int(line[4])
+                    st.upgrade3_level = int(line[5])
+                    st.upgrade4_level = int(line[6])
+                    st.upgrade5_level = int(line[7])
+                    st.upgrade6_level = int(line[8])
+                    st.upgrade7_level = int(line[9])
+                    st.upgrade8_level = int(line[10])
+
+                    st.balance = int(float(line[1]))
+
+    def subtract_gold(self, purchase_price):
+        with open(input_csv, 'r') as p_data_read, open(output_csv, 'w', newline='') as p_data_write:
+            p_reader = csv.reader(p_data_read, delimiter=',')
+            p_writer = csv.writer(p_data_write, delimiter=',')
+
+            for line in p_reader:
+                if line[2] == 'selected':
+                    current_gold = int(float(line[1]))
+                    line[1] = f'{current_gold - purchase_price}'
+                    st.balance = int(float(line[1]))
+                p_writer.writerow(line)
+
+        with open(output_csv, 'r') as p_data_read, open(input_csv, 'w', newline='') as p_data_write:
+            p_reader = csv.reader(p_data_read, delimiter=',')
+            p_writer = csv.writer(p_data_write, delimiter=',')
+            for line in p_reader: # append everything from the updated file so we can later use it to write over the original file
+                self.new_file_data.append(line)
+
+            for g in self.new_file_data: # write data from updated file to original file
+                p_writer.writerow(g)
+            self.new_file_data.clear()
+
+    def increase_upgrade_level(self, column):
+        with open(input_csv, 'r') as p_data_read, open(output_csv, 'w', newline='') as p_data_write:
+            p_reader = csv.reader(p_data_read, delimiter=',')
+            p_writer = csv.writer(p_data_write, delimiter=',')
+
+            for line in p_reader:
+                if line[2] == 'selected':
+                    current_level = int(line[column])
+                    line[column] = f'{current_level + 1}'
+                p_writer.writerow(line)
+
+        with open(output_csv, 'r') as p_data_read, open(input_csv, 'w', newline='') as p_data_write:
+            p_reader = csv.reader(p_data_read, delimiter=',')
+            p_writer = csv.writer(p_data_write, delimiter=',')
+            for line in p_reader: # append everything from the updated file so we can later use it to write over the original file
+                self.new_file_data.append(line)
+
+            for g in self.new_file_data: # write data from updated file to original file
+                p_writer.writerow(g)
+            self.new_file_data.clear()
+
+    def load_upgrades_into_game(self):
+        with open(input_csv, 'r') as p_data_read, open(output_csv, 'w', newline='') as p_data_write:
+            p_reader = csv.reader(p_data_read, delimiter=',')
+            p_writer = csv.writer(p_data_write, delimiter=',')
+
+            for line in p_reader:
+                if line[2] == 'selected':
+                    self.upgrade1_level = int(line[3])
+                    self.upgrade2_level = int(line[4])
+                    self.upgrade3_level = int(line[5])
+                    self.upgrade4_level = int(line[6])
+                    self.upgrade5_level = int(line[7])
+                    self.upgrade6_level = int(line[8])
+                    self.upgrade7_level = int(line[9])
+                    self.upgrade8_level = int(line[10])
+                    self.balance = int(float(line[1]))
+                    self.profile_id = int(line[0])
+
+    def change_profile(self, profile):
+        with open(input_csv, 'r') as p_data_read, open(output_csv, 'w', newline='') as p_data_write:
+            p_reader = csv.reader(p_data_read, delimiter=',')
+            p_writer = csv.writer(p_data_write, delimiter=',')
+
+            for line in p_reader:
+                if line[2] == 'selected':
+                    line[2] = "not-selected"
+                p_writer.writerow(line)
+
+        with open(output_csv, 'r') as p_data_read, open(input_csv, 'w', newline='') as p_data_write:
+            p_reader = csv.reader(p_data_read, delimiter=',')
+            p_writer = csv.writer(p_data_write, delimiter=',')
+            for line in p_reader: # append everything from the updated file so we can later use it to write over the original file
+                self.new_file_data.append(line)
+
+            for g in self.new_file_data: # write data from updated file to original file
+                p_writer.writerow(g)
+            self.new_file_data.clear()
+
+
+
+
+        with open(input_csv, 'r') as p_data_read, open(output_csv, 'w', newline='') as p_data_write:
+            p_reader = csv.reader(p_data_read, delimiter=',')
+            p_writer = csv.writer(p_data_write, delimiter=',')
+
+            for line in p_reader:
+                if line[0] == str(profile):
+                    line[2] = "selected"
+                p_writer.writerow(line)
+
+        with open(output_csv, 'r') as p_data_read, open(input_csv, 'w', newline='') as p_data_write:
+            p_reader = csv.reader(p_data_read, delimiter=',')
+            p_writer = csv.writer(p_data_write, delimiter=',')
+            for line in p_reader: # append everything from the updated file so we can later use it to write over the original file
+                self.new_file_data.append(line)
+
+            for g in self.new_file_data: # write data from updated file to original file
+                p_writer.writerow(g)
+            self.new_file_data.clear()
+
+    def reset_profile(self, profile):
+        with open(input_csv, 'r') as p_data_read, open(output_csv, 'w', newline='') as p_data_write:
+            p_reader = csv.reader(p_data_read, delimiter=',')
+            p_writer = csv.writer(p_data_write, delimiter=',')
+
+            for line in p_reader:
+                if line[0] == str(profile) and line[2] == 'selected':
+                    line[1] = '0'
+                    line[3] = '0'
+                    line[4] = '0'
+                    line[5] = '0'
+                    line[6] = '0'
+                    line[7] = '0'
+                    line[8] = '0'
+                    line[9] = '0'
+                    line[10] = '0'
+                p_writer.writerow(line)
+
+        with open(output_csv, 'r') as p_data_read, open(input_csv, 'w', newline='') as p_data_write:
+            p_reader = csv.reader(p_data_read, delimiter=',')
+            p_writer = csv.writer(p_data_write, delimiter=',')
+            for line in p_reader: # append everything from the updated file so we can later use it to write over the original file
+                self.new_file_data.append(line)
+
+            for g in self.new_file_data: # write data from updated file to original file
+                p_writer.writerow(g)
+            self.new_file_data.clear()
+
+
+
+pd = ProfileData()
+pd.check_empty()
+
+# pd.add_gold()
+
+
 class Map:
     # Controls map boundaries and map camera
     def __init__(self, map_x=-800, map_y=-800):
@@ -139,8 +386,14 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         # inherits from the pygame.sprite.Sprite class
         pygame.sprite.Sprite.__init__(self)
-        self.speed = 4
-        self.health = 5000000
+        self.speed = 4 + (.05 * pd.upgrade4_level)
+        self.max_health = 5000000 + (10 * pd.upgrade1_level)
+        self.current_health = self.max_health
+        self.generated_health = False
+        self.revive_available = True
+        self.dodge_chance = 0.02 * pd.upgrade5_level
+        self.critial_chance = 0.03 * pd.upgrade6_level
+        self.life_steal_chance = 0.02 * pd.upgrade8_level
         self.image = "./images/MAIN_CHARACTER.png"
         self.death = False
         self.rect = mc_img.get_rect().scale_by(2, 2)
@@ -156,12 +409,41 @@ class Player(pygame.sprite.Sprite):
         # self.playerGroup.add(self.rect)
 
     def display_health(self):
+        # print(self.gold)
         info = pygame.display.Info()
         tempwidth, tempheight = info.current_w, info.current_h
         # displays health to the screen
-        health_string = f"HP: {str(self.health)}"
+        health_string = f"HP: {str(int(self.current_health))}"
         health_display = self.health_font.render(health_string, True, (255, 0, 0))
         screen.blit(health_display, ((tempwidth/2)-50, 20))
+
+    def check_dodge_chance(self):
+        if self.dodge_chance:
+            random_number = random.randint(0, 100)
+            if random_number <= (100 * self.dodge_chance):
+                return True
+        return False
+
+    def check_critical_chance(self):
+        if self.critial_chance:
+            random_number = random.randint(0, 100)
+            if random_number <= (100 * self.critial_chance):
+                return True
+        return False
+
+    def check_life_steal_chance(self):
+        if self.life_steal_chance:
+            random_number = random.randint(0, 100)
+            if random_number <= (100 * self.life_steal_chance):
+                return True
+        return False
+
+    def add_life_steal_health(self):
+        if self.life_steal_chance:
+            if self.current_health + (100 * self.life_steal_chance) <= self.max_health:
+                self.current_health += (100 * self.life_steal_chance)
+            else:
+                self.current_health = self.max_health
 
     def move_west(self):
         # moves the player and camera West, while moving every other entity in the opposite direction
@@ -212,6 +494,12 @@ class Player(pygame.sprite.Sprite):
                 ee.west_rect.x = ee.rect.x - ee.west_x_val
             if bup.upgrade_out:
                 bup.rect.x += self.speed
+            if com.activate and not com.felled:
+                com.rect.x += self.speed
+                com.north_rect.x = com.rect.x + com.north_x_val
+                com.east_rect.x = com.rect.x + com.east_x_val
+                com.south_rect.x = com.rect.x + com.south_x_val
+                com.west_rect.x = com.rect.x - com.west_x_val
 
     def move_east(self):
         # moves the player and camera East, while moving every other entity in the opposite direction
@@ -263,6 +551,12 @@ class Player(pygame.sprite.Sprite):
                 ee.west_rect.x = ee.rect.x - ee.west_x_val
             if bup.upgrade_out:
                 bup.rect.x -= self.speed
+            if com.activate and not com.felled:
+                com.rect.x -= self.speed
+                com.north_rect.x = com.rect.x + com.north_x_val
+                com.east_rect.x = com.rect.x + com.east_x_val
+                com.south_rect.x = com.rect.x + com.south_x_val
+                com.west_rect.x = com.rect.x - com.west_x_val
 
     def move_north(self):
         # moves the player and camera North, while moving every other entity in the opposite direction
@@ -313,6 +607,12 @@ class Player(pygame.sprite.Sprite):
                 ee.west_rect.y = ee.rect.y + ee.west_y_val
             if bup.upgrade_out:
                 bup.rect.y += self.speed
+            if com.activate and not com.felled:
+                com.rect.y += self.speed
+                com.north_rect.y = com.rect.y - com.north_y_val
+                com.east_rect.y = com.rect.y + com.east_y_val
+                com.south_rect.y = com.rect.y + com.south_y_val
+                com.west_rect.y = com.rect.y + com.west_y_val
 
     def move_south(self):
         # moves the player and camera South, while moving every other entity in the opposite direction
@@ -363,6 +663,12 @@ class Player(pygame.sprite.Sprite):
                 ee.west_rect.y = ee.rect.y + ee.west_y_val
             if bup.upgrade_out:
                 bup.rect.y -= self.speed
+            if com.activate and not com.felled:
+                com.rect.y -= self.speed
+                com.north_rect.y = com.rect.y - com.north_y_val
+                com.east_rect.y = com.rect.y + com.east_y_val
+                com.south_rect.y = com.rect.y + com.south_y_val
+                com.west_rect.y = com.rect.y + com.west_y_val
 
 
 class BasicAttack:
@@ -401,6 +707,7 @@ class BasicAttack:
         self.hitbox_radius = 78
 
     def attack(self):
+        # print(pd.upgrade7_level)
         # goes through various animations and hitbox creations for basic attacks to hit all enemies
         total_time = pygame.time.get_ticks() / 1000
         self.hitbox_rect = pygame.draw.circle(transparent_surface, (255, 255, 255),
@@ -504,6 +811,10 @@ class BasicAttack:
             if sk.activate and not sk.felled:
                 # clear the hitbox for the skeleton king
                 sk.melee_attack_collisions.clear()
+            if ee.activate and not ee.felled:
+                ee.melee_attack_collisions.clear()
+            if com.activate and not ee.felled:
+                com.melee_attack_collisions.clear()
             self.basic_attack_timer = 0
         self.basic_attack_timer += 1
 
@@ -734,6 +1045,7 @@ class Enemy(pygame.sprite.Sprite):
         self.circle_rect = pygame.draw.circle(transparent_surface, (0, 50, 0), (self.rect.x, self.rect.y), 10)
         self.middot_rect = pygame.draw.circle(transparent_surface, (0, 50, 0, 100),
                                               (self.rect.x + 16, self.rect.y + 16), 1)
+        self.maxhealth = 50
         self.health = 50
         self.bullet_collisions = []
         self.temp_time = 0
@@ -748,6 +1060,8 @@ class Enemy(pygame.sprite.Sprite):
         self.enemy_length = 0
         self.enemy_list = None
         self.player_collide_counter = 0
+        self.edamage = 15
+        self.wasbuffed = False
 
     def generate_enemy(self):
         if not self.spawned:
@@ -793,7 +1107,14 @@ class Enemy(pygame.sprite.Sprite):
                     if not self.bullet_collisions:
                         # if the enemy has encountered it's first bullet, add to the list and take damage
                         self.bullet_collisions.append(bullet)
-                        self.health -= b.damage
+                        critical = p.check_critical_chance()
+                        if critical:
+                            self.health -= (b.damage * 1.5)
+                        else:
+                            self.health -= b.damage
+                        life_steal = p.check_life_steal_chance()
+                        if life_steal:
+                            p.add_life_steal_health()
                     elif self.bullet_collisions:
                         # if the list of bullets the enemy has collided with is greater than 0, make sure it is a different bullet in order to deal damage
                         i = 0
@@ -803,7 +1124,14 @@ class Enemy(pygame.sprite.Sprite):
                                 pass
                             elif bullet not in self.bullet_collisions and bullet.bullet_valid:
                                 self.bullet_collisions.append(bullet)
-                                self.health -= b.damage
+                                critical = p.check_critical_chance()
+                                if critical:
+                                    self.health -= (b.damage * 1.5)
+                                else:
+                                    self.health -= b.damage
+                                life_steal = p.check_life_steal_chance()
+                                if life_steal:
+                                    p.add_life_steal_health()
                             i += 1
         for bullet in bullets:
             # for each active bullet, if the bullet hits an enemy, deal damage if appropriate conditions met.
@@ -811,7 +1139,14 @@ class Enemy(pygame.sprite.Sprite):
                 if not self.bullet_collisions:
                     # if the enemy has encountered it's first bullet, add to the list and take damage
                     self.bullet_collisions.append(bullet)
-                    self.health -= b.damage
+                    critical = p.check_critical_chance()
+                    if critical:
+                        self.health -= (b.damage * 1.5)
+                    else:
+                        self.health -= b.damage
+                    life_steal = p.check_life_steal_chance()
+                    if life_steal:
+                        p.add_life_steal_health()
                 elif self.bullet_collisions:
                     # if the list of bullets the enemy has collided with is greater than 0,
                     # make sure it is a different bullet in order to deal damage
@@ -822,12 +1157,27 @@ class Enemy(pygame.sprite.Sprite):
                             pass
                         elif bullet not in self.bullet_collisions and bullet.bullet_valid:
                             self.bullet_collisions.append(bullet)
-                            self.health -= b.damage
+                            critical = p.check_critical_chance()
+                            if critical:
+                                self.health -= (b.damage * 1.5)
+                            else:
+                                self.health -= b.damage
+                            life_steal = p.check_life_steal_chance()
+                            if life_steal:
+                                p.add_life_steal_health()
                         i += 1
 
         if self.rect.colliderect(ba.hitbox_rect) and ba.running and not self.melee_attack_collisions:
             # Reduce enemy health from the Players basic attack if not hit by that same attack swing
-            self.health -= ba.damage
+            critical = p.check_critical_chance()
+            if critical:
+                self.health -= (ba.damage * 1.5)
+            else:
+                self.health -= ba.damage
+            life_steal = p.check_life_steal_chance()
+            if life_steal:
+                p.add_life_steal_health()
+
             self.melee_attack_collisions.append(1)
 
         if (self.rect.colliderect(p.rect) or self.north_rect.colliderect(p.rect) or
@@ -836,13 +1186,12 @@ class Enemy(pygame.sprite.Sprite):
             # activates if the player collides with any of the slimes directional hitboxes
             if self.player_collide_counter >= 17:
                 # measures how fast the player should take damage after entering collision with slime
-                checkingDodge = random.randint(0, 100)
-                if checkingDodge <= p.dodgeChance:
-                    # dodges damage if dodge percent is rolled
+                dodge = p.check_dodge_chance()
+                if not dodge:
+                    # have the player take damage
+                    p.current_health -= self.edamage
                     self.player_collide_counter = 0
                 else:
-                    # have the player take damage
-                    p.health -= 15
                     self.player_collide_counter = 0
             else:
                 # increase counter if player is still colliding with enemy
@@ -858,9 +1207,9 @@ class Enemy(pygame.sprite.Sprite):
             if self in enemies:
                 enemies.remove(self)
             chance = random.randint(1, 10)
-            if chance <= 2:
+            if chance <= 3:
                 # chance for the player to get gold
-                p.gold += 1
+                p.gold += 1 + (1 * pd.upgrade6_level)
 
     def spawn(self):
         # allows programmer to know if this enemy has spawned
@@ -1343,7 +1692,14 @@ class Bat(Enemy):
                     if not self.bullet_collisions:
                         # if the bat has encountered it's first bullet, add to the list and take damage
                         self.bullet_collisions.append(bullet)
-                        self.health -= b.damage
+                        critical = p.check_critical_chance()
+                        if critical:
+                            self.health -= (b.damage * 1.5)
+                        else:
+                            self.health -= b.damage
+                        life_steal = p.check_life_steal_chance()
+                        if life_steal:
+                            p.add_life_steal_health()
                     elif self.bullet_collisions:
                         # if the list of bullets the bat has collided with is greater than 0, make sure it is a different bullet in order to deal damage
                         i = 0
@@ -1353,7 +1709,14 @@ class Bat(Enemy):
                                 pass
                             elif bullet not in self.bullet_collisions and bullet.bullet_valid:
                                 self.bullet_collisions.append(bullet)
-                                self.health -= b.damage
+                                critical = p.check_critical_chance()
+                                if critical:
+                                    self.health -= (b.damage * 1.5)
+                                else:
+                                    self.health -= b.damage
+                                life_steal = p.check_life_steal_chance()
+                                if life_steal:
+                                    p.add_life_steal_health()
                             i += 1
 
         for bullet in bullets:
@@ -1362,7 +1725,14 @@ class Bat(Enemy):
                 if not self.bullet_collisions:
                     # if the bat has encountered it's first bullet, add to the list and take damage
                     self.bullet_collisions.append(bullet)
-                    self.health -= b.damage
+                    critical = p.check_critical_chance()
+                    if critical:
+                        self.health -= (b.damage * 1.5)
+                    else:
+                        self.health -= b.damage
+                    life_steal = p.check_life_steal_chance()
+                    if life_steal:
+                        p.add_life_steal_health()
                 elif self.bullet_collisions:
                     # if the list of bullets the bat has collided with is greater than 0,
                     # make sure it is a different bullet in order to deal damage
@@ -1373,12 +1743,26 @@ class Bat(Enemy):
                             pass
                         elif bullet not in self.bullet_collisions and bullet.bullet_valid:
                             self.bullet_collisions.append(bullet)
-                            self.health -= b.damage
+                            critical = p.check_critical_chance()
+                            if critical:
+                                self.health -= (b.damage * 1.5)
+                            else:
+                                self.health -= b.damage
+                            life_steal = p.check_life_steal_chance()
+                            if life_steal:
+                                p.add_life_steal_health()
                         i += 1
 
         if self.rect.colliderect(ba.hitbox_rect) and ba.running and not self.melee_attack_collisions:
             # Reduce bat health from the Players basic attack if not hit by that same attack swing
-            self.health -= ba.damage
+            critical = p.check_critical_chance()
+            if critical:
+                self.health -= (ba.damage * 1.5)
+            else:
+                self.health -= ba.damage
+            life_steal = p.check_life_steal_chance()
+            if life_steal:
+                p.add_life_steal_health()
             self.melee_attack_collisions.append(1)
 
         if (self.rect.colliderect(p.rect) or self.north_rect.colliderect(p.rect) or
@@ -1387,13 +1771,12 @@ class Bat(Enemy):
             # activates if the player collides with any of the bats directional hitboxes
             if self.player_collide_counter >= 17:
                 # measures how fast the player should take damage after entering collision with bats
-                checkingDodge = random.randint(0, 100)
-                if checkingDodge <= p.dodgeChance:
-                    # dodges damage if dodge percent is rolled
+                dodge = p.check_dodge_chance()
+                if not dodge:
+                    # have the player take damage
+                    p.current_health -= self.edamage + 1
                     self.player_collide_counter = 0
                 else:
-                    # have the player take damage
-                    p.health -= 16
                     self.player_collide_counter = 0
             else:
                 # increase counter if player is still colliding with enemy
@@ -1437,9 +1820,9 @@ class Bat(Enemy):
             if self in bats:
                 bats.remove(self)
             chance = random.randint(1, 10)
-            if chance <= 2:
+            if chance <= 3:
                 # chance for the player to get gold
-                p.gold += 1
+                p.gold += 1 + (1 * pd.upgrade6_level)
 
     def decide_action(self):
         # time to run at player (If within a certain distance from player, then just run, ignore shooting)
@@ -1562,8 +1945,10 @@ class Bat(Enemy):
 
                 # pygame.draw.rect(screen, (100,0,255), self.bullet_rect)
                 if self.bullet_rect.colliderect(p.rect) and not self.hit_counter:
-                    p.health -= 15
-                    self.hit_counter += 1
+                    dodge = p.check_dodge_chance()
+                    if not dodge:
+                        p.current_health -= self.edamage
+                        self.hit_counter += 1
                 self.counter += 1
 
 
@@ -1628,11 +2013,19 @@ class MiniEarthElemental(Enemy):
     def check_collisions(self):
         if self.rect.colliderect(ba.hitbox_rect) and ba.running and not self.melee_attack_collisions:
             # Reduce health from the mini boss from Players basic attack if not hit by that same attack swing
-            self.health -= ba.damage
+            critical = p.check_critical_chance()
+            if critical:
+                self.health -= (ba.damage * 1.5)
+            else:
+                self.health -= ba.damage
+            life_steal = p.check_life_steal_chance()
+            if life_steal:
+                p.add_life_steal_health()
             self.melee_attack_collisions.append(1)
 
     def activate_death(self):
         if self.health <= 0:
+            p.gold += 20
             # Makes sure ee is actually dead
             self.felled = True
             self.activate = False
@@ -1671,9 +2064,11 @@ class MiniEarthElemental(Enemy):
                 self.attacrect = self.attack_area = pygame.draw.circle(screen, (209, 10, 10),
                                                                        (self.rect.x + 18, self.rect.y + 20), 240, 1)
                 if p.rect.colliderect(self.attacrect):
-                    p.health -= 50
-                    # print("Player hit")
-                    # print(p.health)
+                    dodge = p.check_dodge_chance()
+                    if not dodge:
+                        p.current_health -= 50
+                        # print("Player hit")
+                        # print(p.health)
             if self.attackcounter >= 3.0:
                 self.not_attacking = True
                 self.is_attacking = False
@@ -1684,9 +2079,160 @@ class MiniEarthElemental(Enemy):
 
     def auto_hit_player(self):
         if self.rect.colliderect(p.rect) and (self.attack_timer - self.last_auto) >= self.attack_speed:
-            self.last_auto = self.attack_timer
-            p.health -= self.hit_damage
+            dodge = p.check_dodge_chance()
+            if not dodge:
+                self.last_auto = self.attack_timer
+                p.current_health -= self.hit_damage
 
+class Commander(Enemy):
+    def __init__(self, x, y):
+        super().__init__(x, y)
+        self.rect = minibee1.get_rect().scale_by(1, 1)
+        self.rect.x = x
+        self.rect.y = y
+        self.rect.width = 20
+        self.health = 1000
+        self.speed = 2
+        self.travel_north()
+        self.travel_east()
+        self.travel_south()
+        self.travel_west()
+        self.felled = False
+        self.not_attacking = True
+        self.hit_damage = 50
+        self.last_auto = 0
+        self.attack_speed = 5
+        self.speed = 1
+        self.buffarea = None
+        self.orspeed = 0
+        self.shouttimer = 15
+        self.shoutarea = None
+        self.shout = False
+        self.activate = False
+        self.shoutcounter = 0
+    def activate_death(self):
+        if self.health <= 0:
+            p.gold += 25
+            # Makes sure Comander is actually dead
+            self.felled = True
+
+    def check_collisions(self):
+        if self.rect.colliderect(ba.hitbox_rect) and ba.running and not self.melee_attack_collisions:
+            # Reduce health from the mini boss from Players basic attack if not hit by that same attack swing
+            critical = p.check_critical_chance()
+            if critical:
+                self.health -= (ba.damage * 1.5)
+            else:
+                self.health -= ba.damage
+            life_steal = p.check_life_steal_chance()
+            if life_steal:
+                p.add_life_steal_health()
+            self.melee_attack_collisions.append(1)
+        for bullet in bullets:
+            if self.rect.colliderect(bullet.rect) and bullet.bullet_valid:
+                if not self.bullet_collisions:
+                    self.bullet_collisions.append(bullet)
+                    critical = p.check_critical_chance()
+                    if critical:
+                        self.health -= (b.damage * 1.5)
+                    else:
+                        self.health -= b.damage
+                    life_steal = p.check_life_steal_chance()
+                    if life_steal:
+                        p.add_life_steal_health()
+                elif self.bullet_collisions:
+                    i = 0
+                    for l in self.bullet_collisions:
+                        if (bullet.rect.x == self.bullet_collisions[i].rect.x and bullet.rect.y ==
+                                self.bullet_collisions[i].rect.y):
+                            pass
+                        elif bullet not in self.bullet_collisions and bullet.bullet_valid:
+                            self.bullet_collisions.append(bullet)
+                            critical = p.check_critical_chance()
+                            if critical:
+                                self.health -= (b.damage * 1.5)
+                            else:
+                                self.health -= b.damage
+                            life_steal = p.check_life_steal_chance()
+                            if life_steal:
+                                p.add_life_steal_health()
+                        i += 1
+
+    def follow_mc(self):
+        if self.rect.x < p.rect.x and not self.rect.colliderect(p.rect):
+            self.travel_east()
+        if self.rect.x > p.rect.x and not self.rect.colliderect(p.rect):
+            self.travel_west()
+        if self.rect.y < p.rect.y and not self.rect.colliderect(p.rect):
+            self.travel_south()
+        if self.rect.y > p.rect.y and not self.rect.colliderect(p.rect):
+            self.travel_north()
+
+    def generate_enemy(self):
+        self.attack_timer = (pygame.time.get_ticks() / 1000)
+        self.x = random.randint(-340, 990)
+        self.y = random.randint(-340, 990)
+        if self.animation <= 15:
+            screen.blit(pygame.transform.scale(minibee1, (40, 45)), (self.rect.x, self.rect.y))
+            self.animation += 1
+        elif self.animation <= 30:
+            screen.blit(pygame.transform.scale(minibee2, (40, 45)), (self.rect.x, self.rect.y))
+            self.animation += 1
+        elif self.animation <= 45:
+            screen.blit(pygame.transform.scale(minibee3, (40, 45)), (self.rect.x, self.rect.y))
+            self.animation += 1
+        elif self.animation <= 60:
+            screen.blit(pygame.transform.scale(minibee4, (40, 45)), (self.rect.x, self.rect.y))
+            self.animation += 1
+        if self.animation == 60:
+            self.animation = 0
+        if self.not_attacking:
+            self.follow_mc()
+            self.auto_hit_player()
+
+    def auto_hit_player(self):
+        if self.rect.colliderect(p.rect) and (self.attack_timer - self.last_auto) >= self.attack_speed:
+            dodge = p.check_dodge_chance()
+            if not dodge:
+                self.last_auto = self.attack_timer
+                p.current_health -= self.hit_damage
+
+    def buff_aura(self): #Speed and healing aura
+        self.buffarea = pygame.draw.circle(screen, (100,100,100),(self.rect.x+15, self.rect.y+15),90,1 )
+        for enemy in enemies:
+            if enemy.rect.colliderect(self.buffarea):
+                enemy.speed = 3
+                if enemy.health > enemy.maxhealth:
+                    enemy.health += .5
+                enemy.wasbuffed = True
+            if not enemy.rect.colliderect(self.buffarea) and enemy.wasbuffed == True:
+                enemy.speed = random.randint(1,2)
+                enemy.wasbuffed = False
+
+
+    def buff_shout(self): #damage and max health/heal buff
+        if self.shoutcounter <= self.shouttimer:
+            self.shoutcounter += .1
+        if self.shoutcounter >= self.shouttimer:
+            self.shout = True
+        if self.shout:
+            self.shoutarea = pygame.draw.circle(screen, (100,0,255), (self.rect.x+15,self.rect.y+15), 400, 3)
+            for enemy in enemies:
+                if enemy.rect.colliderect(self.shoutarea):
+                    enemy.maxhealth += 15
+                    enemy.health += 15
+                    enemy.edamage += 10
+                    self.shout = False
+                    self.shoutcounter = 0
+    def comactive(self):
+        if com.activate:
+            com.buff_aura()
+            com.buff_shout()
+
+
+
+
+com = Commander(random.randint(-340, 990), random.randint(-340, 990))
 
 class CalcTargets:
     def calc_closest(t1, o1, n1):
@@ -1697,12 +2243,21 @@ class CalcTargets:
             xcor = t1.rect.x - p.rect.x
             ycor = t1.rect.y - p.rect.y
             distance = math.sqrt(xcor ** 2 + ycor ** 2)
-            close.append((t1, distance))
+            xcor = abs(t1.rect.x - p.rect.x)
+            ycor = abs(t1.rect.y - p.rect.y)
+            if close == []:
+                close.append((t1, xcor, ycor, distance))
+            if close[0][3] > distance:
+                close.insert(0,(t1,xcor,ycor,distance))
+            else:
+                close.append((t1, xcor, ycor, distance))
+
 
         # Sorts and condenses the list to n closest targets.
-        sorted_close = sorted(close, key=lambda x: x[1])
-        closest_targets = sorted_close[:n1]
-        return print(closest_targets)
+        closest_targets = close[:n1]
+        for i in closest_targets:
+            pygame.draw.line(screen, (0, 100, 0), (p.rect.x, p.rect.y), (closest_targets[1],closest_targets[2]),10)
+        return closest_targets
 
     def calc_farthest(t1, o1, n1):
         farthest_target = []
@@ -1711,7 +2266,7 @@ class CalcTargets:
             xcor = t1.rect.x - p.rect.x
             ycor = t1.rect.y - p.rect.y
             distance = math.sqrt(xcor ** 2 + ycor ** 2)
-            farthest_target.append((t1, distance))
+            farthest_target.append((t1, xcor, ycor))
 
         # sorts and condenses the list to targets.
         farthest_target.sort(key=lambda x: x[1], reverse=True)
@@ -1873,7 +2428,14 @@ class SkeletonKing(Enemy):
                     if not self.bullet_collisions:
                         # if the skeleton king boss has encountered it's first bullet, add to the list and take damage
                         self.bullet_collisions.append(bullet)
-                        self.health -= b.damage
+                        critical = p.check_critical_chance()
+                        if critical:
+                            self.health -= (b.damage * 1.5)
+                        else:
+                            self.health -= b.damage
+                        life_steal = p.check_life_steal_chance()
+                        if life_steal:
+                            p.add_life_steal_health()
                     elif self.bullet_collisions:
                         # if the list of bullets the skeleton king boss has collided with is greater than 0,
                         # make sure it is a different bullet in order to deal damage
@@ -1885,7 +2447,14 @@ class SkeletonKing(Enemy):
                             elif bullet not in self.bullet_collisions and bullet.bullet_valid:
                                 # have the skeleton king take damage if hit with a bullet they havent been hit by
                                 self.bullet_collisions.append(bullet)
-                                self.health -= b.damage
+                                critical = p.check_critical_chance()
+                                if critical:
+                                    self.health -= (b.damage * 1.5)
+                                else:
+                                    self.health -= b.damage
+                                life_steal = p.check_life_steal_chance()
+                                if life_steal:
+                                    p.add_life_steal_health()
                             i += 1
         for bullet in bullets:
             # removes expired bullets from the skeleton king boss bullet collision list
@@ -1899,11 +2468,19 @@ class SkeletonKing(Enemy):
                     # removes collided bullet from skeleton kings bullet collisions list
                     self.bullet_collisions.remove(g)
         if self.rect.colliderect(ba.hitbox_rect) and ba.running and not self.melee_attack_collisions:
-            self.health -= ba.damage
+            critical = p.check_critical_chance()
+            if critical:
+                self.health -= (ba.damage * 1.5)
+            else:
+                self.health -= ba.damage
+            life_steal = p.check_life_steal_chance()
+            if life_steal:
+                p.add_life_steal_health()
             self.melee_attack_collisions.append(1)
 
     def activate_death(self):
         if self.health <= 0:
+            p.gold += 250
             # removes the skeleton king if they are at or below zero health
             self.felled = True
             self.activate = False
@@ -1950,13 +2527,12 @@ class SkeletonKing(Enemy):
             # if the player collides with the activated legs, have the player take damage
             if self.player_collide_counter >= 10:
                 # measures how fast the player should take damage after entering collision with boss
-                checkingDodge = random.randint(0, 100)
-                if checkingDodge <= p.dodgeChance:
-                    # dodges damage if dodge percent is rolled
+                dodge = p.check_dodge_chance()
+                if not dodge:
+                    # have the player take damage
+                    p.current_health -= 24
                     self.player_collide_counter = 0
                 else:
-                    # have the player take damage
-                    p.health -= 24
                     self.player_collide_counter = 0
             else:
                 # increase counter if player is still colliding with enemy
@@ -2003,9 +2579,143 @@ class XP(pygame.sprite.Sprite):
 
 speed_item_visible = True
 gameTimerOn = False
+class Laser:
+    def __init__(self): #Simple laser attack.
+        self.targets = 3
+        self.closest_enemy = [1000, 1000]
+        self.damage = 5
+        self.cd = 10
+        self.shoot = 0
+        self.target = []
+        self.dmgtype = "Laser"
+        self.laser_aquired = False
+    def fire(self):
+        for enemy in enemies:
+            if enemy.spawned:
+                self.x_distance = abs(p.rect.x - enemy.rect.x)
+                self.y_distance = abs(p.rect.y - enemy.rect.y)
+                smallest_x = abs(self.closest_enemy[0] - p.rect.x)
+                smallest_y = abs(self.closest_enemy[1] - p.rect.y)
+                if self.x_distance + self.y_distance < smallest_x + smallest_y:
+                    self.closest_enemy[0] = enemy.rect.x
+                    self.closest_enemy[1] = enemy.rect.y
+        for enemy in enemies:
+            if enemy.rect.x == self.closest_enemy[0] and enemy.rect.y == self.closest_enemy[1]:
+                self.target.append(enemy)
+                pygame.draw.line(screen, (255, 0, 100),(p.rect.x + 10,p.rect.y + 10), (self.closest_enemy[0] + 15, self.closest_enemy[1] + 15), 10)
+                enemy.health -= self.damage
+        self.closest_enemy = [1000,1000]
+
+    def laser_timer(self):
+        if self.shoot <=self.cd:
+            self.shoot+=.1
+            if self.shoot >= self.cd:
+                lz.fire()
+                self.shoot = 0
+
+
+
+
+
+lz = Laser()
 
 
 # gameTime = 0
+class ChainLightning:
+
+    def __init__(self):
+        self.closest_enemy = [1000,1000]
+        self.x_distance = 1000
+        self.y_distance = 1000
+        self.next_closest_enemy = [1000, 1000]
+        self.enemies_hit = 0
+        self.targeted_enemies = []
+        self.target_cords = []
+        self.cooldown = 30
+        self.shoot = 0
+        self.damage = 100
+
+    def target_enemy(self): # targets first enemy
+        for enemy in enemies:
+            if enemy.spawned:
+                self.x_distance = abs(p.rect.x - enemy.rect.x)
+                self.y_distance = abs(p.rect.y - enemy.rect.y)
+                smallest_x = abs(self.closest_enemy[0] - p.rect.x)
+                smallest_y = abs(self.closest_enemy[1] - p.rect.y)
+                if self.x_distance + self.y_distance < smallest_x + smallest_y: # closest enemy so far
+                    self.closest_enemy[0] = enemy.rect.x
+                    self.closest_enemy[1] = enemy.rect.y
+
+        for enemy in enemies:
+            if enemy.rect.x == self.closest_enemy[0] and enemy.rect.y == self.closest_enemy[1]: # if enemy is not itself
+                self.targeted_enemies.append(enemy) # stores targeted enemy in list
+                pygame.draw.line(screen, (252, 202, 63), (p.rect.x,p.rect.y),(self.closest_enemy[0]+15,self.closest_enemy[1]+15), 4)
+                critical = p.check_critical_chance()
+                if critical:
+                    enemy.health -= (self.damage * 1.5)
+                else:
+                    enemy.health -= self.damage
+                self.enemies_hit += 1
+
+        self.target_next_enemy()
+
+    def target_next_enemy(self):
+        if self.enemies_hit >= 2:
+            self.closest_enemy = self.next_closest_enemy
+            self.next_closest_enemy = [1000, 1000]
+        for enemy in enemies:
+            if enemy.spawned:
+                if not enemy.rect.x == self.closest_enemy[0] and not enemy.rect.y == self.closest_enemy[1]: # if enemy is not itself
+                    self.x_distance = abs(self.closest_enemy[0] - enemy.rect.x)
+                    self.y_distance = abs(self.closest_enemy[1] - enemy.rect.y)
+                    smallest_x = abs(self.next_closest_enemy[0] - self.closest_enemy[0])
+                    smallest_y = abs(self.next_closest_enemy[1] - self.closest_enemy[1])
+
+                    if self.x_distance + self.y_distance < smallest_x + smallest_y:  # closest enemy so far
+                        if enemy not in self.targeted_enemies:
+                            self.next_closest_enemy[0] = enemy.rect.x
+                            self.next_closest_enemy[1] = enemy.rect.y
+
+        for enemy in enemies:
+            if enemy.rect.x == self.next_closest_enemy[0] and enemy.rect.y == self.next_closest_enemy[1]:
+                if self.enemies_hit == 1:
+                    self.targeted_enemies.append(enemy)
+                    pygame.draw.line(screen, (252, 202, 63), (self.closest_enemy[0]+18,self.closest_enemy[1]+18),(self.next_closest_enemy[0]+15,self.next_closest_enemy[1]+15), 4)
+                    self.target_cords = [self.next_closest_enemy[0]+15,self.next_closest_enemy[1]+15]
+                    critical = p.check_critical_chance()
+                    if critical:
+                        enemy.health -= (self.damage * 1.5)
+                    else:
+                        enemy.health -= self.damage
+                if self.enemies_hit == 2:
+                    self.targeted_enemies.append(enemy)
+                    pygame.draw.line(screen, (252, 202, 63), (self.target_cords[0],self.target_cords[1]),(self.next_closest_enemy[0]+18,self.next_closest_enemy[1]+18), 4)
+                    critical = p.check_critical_chance()
+                    if critical:
+                        enemy.health -= (self.damage * 1.5)
+                    else:
+                        enemy.health -= self.damage
+                self.enemies_hit += 1
+
+        if self.enemies_hit >= 3: # reset stats when done looping
+            self.next_closest_enemy = [1000,1000]
+            self.closest_enemy = [1000,1000]
+            self.x_distance = 1000
+            self.y_distance = 1000
+            self.enemies_hit = 0
+            self.targeted_enemies.clear()
+        else:
+            self.target_next_enemy()
+    def cl_timer(self):
+        if self.shoot <=self.cooldown:
+            self.shoot+=.05
+            if self.shoot >= self.cooldown:
+                cl.target_enemy()
+                self.shoot = 0
+
+
+
+cl = ChainLightning()
 
 
 class XPBar:
@@ -2499,13 +3209,6 @@ def text_objects(text, font):
     return text_surface, text_surface.get_rect()
 
 
-
-
-
-
-
-
-
 class SkillTree:
     def __init__(self):
         self.active = True
@@ -2538,11 +3241,13 @@ class SkillTree:
         self.box2_level = pygame.Rect(158, 375, 25, 25)
 
         self.level_font = pygame.font.SysFont('Garamond', 22)
+        self.level2_font = pygame.font.SysFont('Garamond', 18, bold=1)
         self.title_font = pygame.font.SysFont('Garamond', 82, bold=1)
         self.back_font = pygame.font.SysFont('Garamond', 36, bold=1)
         self.description_title_font = pygame.font.SysFont('Garamond', 32, bold=1)
         self.description_font = pygame.font.SysFont('Garamond', 24, bold=1)
         self.buy_font = pygame.font.SysFont('Garamond', 36, bold=2)
+        self.feedback_message_font = pygame.font.SysFont('Garamond', 22, bold=1)
 
         self.title_background_border = pygame.Rect(225, 40, 358, 115)
         self.title_background = pygame.Rect(235, 50, 337, 95)
@@ -2551,10 +3256,115 @@ class SkillTree:
         self.back_background = pygame.Rect(23, 23, 127, 52)
         self.selected = False
         self.selected_option = []
+        self.selected_cost = 0
 
+        self.upgrade1_level = 0
+        self.upgrade2_level = 0
+        self.upgrade3_level = 0
+        self.upgrade4_level = 0
+        self.upgrade5_level = 0
+        self.upgrade6_level = 0
+        self.upgrade7_level = 0
+        self.upgrade8_level = 0
+
+        self.upgrade1_cost = 425
+        self.upgrade2_cost = 475
+        self.upgrade3_cost = 1250
+        self.upgrade4_cost = 375
+        self.upgrade5_cost = 175
+        self.upgrade6_cost = 300
+        self.upgrade7_cost = 615
+        self.upgrade8_cost = 750
+
+        self.balance = 0
+
+        self.feedback = False
+        self.feedback_option = 0
+        self.feedback_box = pygame.Rect(640, 23, 130, 50)
+        self.message_timer = False
+        self.message_timer_counter = 0
+        # self.feedback_box_border = pygame.Rect(78, 218, 129, 129)
+
+        self.column = 0
 
     def load_data(self):
-        pass
+
+        if self.upgrade1_level:
+            if self.upgrade1_level >= 5:
+                self.upgrade1_cost = 999999999
+                if self.selected_option:
+                    if self.selected_option[0] == 'box1':
+                        self.selected_cost = 999999999
+
+            else:
+                self.upgrade1_cost = (425 * 1.25**self.upgrade1_level)
+
+        if self.upgrade2_level:
+            if self.upgrade2_level >= 5:
+                self.upgrade2_cost = 999999999
+                if self.selected_option:
+                    if self.selected_option[0] == 'box2':
+                        self.selected_cost = 999999999
+
+            else:
+                self.upgrade2_cost = (475 * 1.25**self.upgrade2_level)
+
+        if self.upgrade3_level:
+            self.upgrade3_cost = 999999999
+            if self.selected_option:
+                    if self.selected_option[0] == 'box3':
+                        self.selected_cost = 999999999
+
+        if self.upgrade4_level:
+            if self.upgrade4_level >= 5:
+                self.upgrade4_cost = 999999999
+                if self.selected_option:
+                    if self.selected_option[0] == 'box4':
+                        self.selected_cost = 999999999
+
+            else:
+                self.upgrade4_cost = (375 * 1.25**self.upgrade4_level)
+
+        if self.upgrade5_level:
+            if self.upgrade5_level >= 5:
+                self.upgrade5_cost = 999999999
+                if self.selected_option:
+                    if self.selected_option[0] == 'box5':
+                        self.selected_cost = 999999999
+
+            else:
+                self.upgrade5_cost = (175 * 1.25**self.upgrade5_level)
+
+        if self.upgrade6_level:
+            if self.upgrade6_level >= 5:
+                self.upgrade6_cost = 999999999
+                if self.selected_option:
+                    if self.selected_option[0] == 'box6':
+                        self.selected_cost = 999999999
+
+            else:
+                self.upgrade6_cost = (300 * 1.25**self.upgrade6_level)
+
+        if self.upgrade7_level:
+            if self.upgrade7_level >= 5:
+                self.upgrade7_cost = 999999999
+                if self.selected_option:
+                    if self.selected_option[0] == 'box7':
+                        self.selected_cost = 999999999
+            else:
+                self.upgrade7_cost = (615 * 1.25**self.upgrade7_level)
+
+        if self.upgrade8_level:
+            if self.upgrade8_level >= 5:
+                self.upgrade8_cost = 999999999
+                if self.selected_option:
+                    if self.selected_option[0] == 'box8':
+                        self.selected_cost = 999999999
+
+            else:
+                self.upgrade8_cost = (425 * 1.25**self.upgrade8_level)
+
+
     def skill_tree(self):
         while self.active:
             for event in pygame.event.get():
@@ -2564,37 +3374,61 @@ class SkillTree:
                     pygame.quit()
                     sys.exit(1)
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if self.box1.collidepoint(event.pos) or self.box1_border.collidepoint(event.pos) :
+                    if self.box1.collidepoint(event.pos) or self.box1_border.collidepoint(event.pos):
                         self.selected = True
                         self.selected_option = ['box1']
-                    if self.box2.collidepoint(event.pos) or self.box2_border.collidepoint(event.pos) :
+                        self.selected_cost = self.upgrade1_cost
+                    if self.box2.collidepoint(event.pos) or self.box2_border.collidepoint(event.pos):
                         self.selected = True
                         self.selected_option = ['box2']
-                    if self.box3.collidepoint(event.pos) or self.box3_border.collidepoint(event.pos) :
+                        self.selected_cost = self.upgrade2_cost
+                    if self.box3.collidepoint(event.pos) or self.box3_border.collidepoint(event.pos):
                         self.selected = True
                         self.selected_option = ['box3']
-                    if self.box4.collidepoint(event.pos) or self.box4_border.collidepoint(event.pos) :
+                        self.selected_cost = self.upgrade3_cost
+                    if self.box4.collidepoint(event.pos) or self.box4_border.collidepoint(event.pos):
                         self.selected = True
                         self.selected_option = ['box4']
-                    if self.box5.collidepoint(event.pos) or self.box5_border.collidepoint(event.pos) :
+                        self.selected_cost = self.upgrade4_cost
+                    if self.box5.collidepoint(event.pos) or self.box5_border.collidepoint(event.pos):
                         self.selected = True
                         self.selected_option = ['box5']
-                    if self.box6.collidepoint(event.pos) or self.box6_border.collidepoint(event.pos) :
+                        self.selected_cost = self.upgrade5_cost
+                    if self.box6.collidepoint(event.pos) or self.box6_border.collidepoint(event.pos):
                         self.selected = True
                         self.selected_option = ['box6']
-                    if self.box7.collidepoint(event.pos) or self.box7_border.collidepoint(event.pos) :
+                        self.selected_cost = self.upgrade6_cost
+                    if self.box7.collidepoint(event.pos) or self.box7_border.collidepoint(event.pos):
                         self.selected = True
                         self.selected_option = ['box7']
-                    if self.box8.collidepoint(event.pos) or self.box8_border.collidepoint(event.pos) :
+                        self.selected_cost = self.upgrade7_cost
+                    if self.box8.collidepoint(event.pos) or self.box8_border.collidepoint(event.pos):
                         self.selected = True
                         self.selected_option = ['box8']
-                    if self.back_background.collidepoint(event.pos) or self.back_background_border.collidepoint(event.pos) :
+                        self.selected_cost = self.upgrade8_cost
+                    if self.back_background.collidepoint(event.pos) or self.back_background_border.collidepoint(event.pos):
                         global st
                         st = SkillTree()
                         self.active = False
                         main_menu()
+                    if (self.buy_box.collidepoint(event.pos) or self.buy_border.collidepoint(event.pos)) and self.selected:
+                        if self.selected_cost == 999999999: # if upgrade is maxed out
+                            self.feedback_option = 3
+                            self.message_timer = 0
+                            self.message_timer = True
+                        elif self.balance < self.selected_cost: # if user cannot afford to purchase upgrade
+                            self.feedback = True
+                            self.feedback_option = 2
+                            self.message_timer = 0
+                            self.message_timer = True
+                        else: # if user is able to purchase upgrade
+                            self.purchase_upgrade()
 
+                            self.feedback = True
+                            self.feedback_option = 1
+                            self.message_timer = True
 
+            self.load_data()
             screen.blit(dungeonBackground, (0, 0))
             if not self.selected:
                 pygame.draw.rect(screen, (0,0,0), self.box1_border)
@@ -2663,58 +3497,79 @@ class SkillTree:
                     pygame.draw.rect(screen, (0,0,0), self.box8_border)
                     pygame.draw.rect(screen, (47,79,79), self.box8)
 
-
-
             screen.blit(pygame.transform.scale(level_scroll, (115, 55)), (80, 350))
-            level_render1 = self.level_font.render('Level: 0', True, (0, 0, 0))
-            screen.blit(level_render1, (105, 366))
+            if self.upgrade1_cost == 999999999:
+                level_render1 = self.level2_font.render(f'MAXED', True, (0, 0, 0))
+                screen.blit(level_render1, (105, 368))
+            else:
+                level_render1 = self.level_font.render(f'Level: {self.upgrade1_level}', True, (0, 0, 0))
+                screen.blit(level_render1, (105, 366))
 
             screen.blit(pygame.transform.scale(level_scroll, (115, 55)), (255, 350))
-            level_render2 = self.level_font.render('Level: 0', True, (0, 0, 0))
-            screen.blit(level_render2, (280, 366))
+            if self.upgrade2_cost == 999999999:
+                level_render2 = self.level2_font.render(f'MAXED', True, (0, 0, 0))
+                screen.blit(level_render2, (280, 368))
+            else:
+                level_render2 = self.level_font.render(f'Level: {self.upgrade2_level}', True, (0, 0, 0))
+                screen.blit(level_render2, (280, 366))
 
             screen.blit(pygame.transform.scale(level_scroll, (115, 55)), (430, 350))
-            level_render3 = self.level_font.render('Level: 0', True, (0, 0, 0))
-            screen.blit(level_render3, (455, 366))
+            if self.upgrade3_cost == 999999999:
+                level_render3 = self.level2_font.render(f'MAXED', True, (0, 0, 0))
+                screen.blit(level_render3, (455, 368))
+            else:
+                level_render3 = self.level_font.render(f'Level: {self.upgrade3_level}', True, (0, 0, 0))
+                screen.blit(level_render3, (455, 366))
 
             screen.blit(pygame.transform.scale(level_scroll, (115, 55)), (605, 350))
-            level_render4 = self.level_font.render('Level: 0', True, (0, 0, 0))
-            screen.blit(level_render4, (630, 366))
-
+            if self.upgrade4_cost == 999999999:
+                level_render4 = self.level2_font.render(f'MAXED', True, (0, 0, 0))
+                screen.blit(level_render4, (630, 368))
+            else:
+                level_render4 = self.level_font.render(f'Level: {self.upgrade4_level}', True, (0, 0, 0))
+                screen.blit(level_render4, (630, 366))
 
             screen.blit(pygame.transform.scale(level_scroll, (115, 55)), (80, 590))
-            level_render5 = self.level_font.render('Level: 0', True, (0, 0, 0))
-            screen.blit(level_render5, (105, 606))
+            if self.upgrade5_cost == 999999999:
+                level_render5 = self.level2_font.render(f'MAXED', True, (0, 0, 0))
+                screen.blit(level_render5, (105, 608))
+            else:
+                level_render5 = self.level_font.render(f'Level: {self.upgrade5_level}', True, (0, 0, 0))
+                screen.blit(level_render5, (105, 606))
 
             screen.blit(pygame.transform.scale(level_scroll, (115, 55)), (255, 590))
-            level_render6 = self.level_font.render('Level: 0', True, (0, 0, 0))
-            screen.blit(level_render6, (280, 606))
+            if self.upgrade6_cost == 999999999:
+                level_render6 = self.level2_font.render(f'MAXED', True, (0, 0, 0))
+                screen.blit(level_render6, (280, 608))
+            else:
+                level_render6 = self.level_font.render(f'Level: {self.upgrade6_level}', True, (0, 0, 0))
+                screen.blit(level_render6, (280, 606))
 
             screen.blit(pygame.transform.scale(level_scroll, (115, 55)), (430, 590))
-            level_render7 = self.level_font.render('Level: 0', True, (0, 0, 0))
-            screen.blit(level_render7, (455, 606))
+            if self.upgrade7_cost == 999999999:
+                level_render7 = self.level2_font.render(f'MAXED', True, (0, 0, 0))
+                screen.blit(level_render7, (455, 608))
+            else:
+                level_render7 = self.level_font.render(f'Level: {self.upgrade7_level}', True, (0, 0, 0))
+                screen.blit(level_render7, (455, 606))
 
             screen.blit(pygame.transform.scale(level_scroll, (115, 55)), (605, 590))
-            level_render8 = self.level_font.render('Level: 0', True, (0, 0, 0))
-            screen.blit(level_render8, (630, 606))
-
-
+            if self.upgrade8_cost == 999999999:
+                level_render8 = self.level2_font.render(f'MAXED', True, (0, 0, 0))
+                screen.blit(level_render8, (630, 608))
+            else:
+                level_render8 = self.level_font.render(f'Level: {self.upgrade8_level}', True, (0, 0, 0))
+                screen.blit(level_render8, (630, 606))
 
             pygame.draw.rect(screen, (0,0,0), self.title_background_border)
             pygame.draw.rect(screen, (47,79,79), self.title_background)
             title_render = self.title_font.render('Skill Tree', True, (225, 255, 255))
             screen.blit(title_render, (240, 50))
 
-
             pygame.draw.rect(screen, (0,0,0), self.back_background_border, border_radius=15)
             pygame.draw.rect(screen, (255,0,0), self.back_background, border_radius=15)
             back_render = self.back_font.render('Back', True, (225, 255, 255))
             screen.blit(back_render, (45, 26))
-
-
-
-
-
 
             screen.blit(pygame.transform.scale(maxhealth_img, (100,100)), (self.box1.x+7, self.box1.y+3))
             screen.blit(pygame.transform.scale(regen_img, (100,100)), (self.box2.x+8, self.box2.y+6))
@@ -2727,8 +3582,98 @@ class SkillTree:
 
             if self.selected:
                 self.display_information(self.selected_option[0])
+
+            if self.message_timer:
+                self.message_timer_counter += 1
+
             clock.tick(15)
             pygame.display.update()
+
+    def purchase_upgrade(self):
+
+        if self.selected_option[0] == 'box1':
+            self.selected_cost = self.upgrade1_cost
+        if self.selected_option[0] == 'box2':
+            self.selected_cost = self.upgrade2_cost
+        if self.selected_option[0] == 'box3':
+            self.selected_cost = self.upgrade3_cost
+        if self.selected_option[0] == 'box4':
+            self.selected_cost = self.upgrade4_cost
+        if self.selected_option[0] == 'box5':
+            self.selected_cost = self.upgrade5_cost
+        if self.selected_option[0] == 'box6':
+            self.selected_cost = self.upgrade6_cost
+        if self.selected_option[0] == 'box7':
+            self.selected_cost = self.upgrade7_cost
+        if self.selected_option[0] == 'box8':
+            self.selected_cost = self.upgrade8_cost
+
+        pd.subtract_gold(self.selected_cost)
+
+        self.load_data()
+
+        if self.selected_option[0] == "box1":
+            self.selected_cost = self.upgrade1_cost
+            self.column = 3
+        elif self.selected_option[0] == "box2":
+            self.selected_cost = self.upgrade2_cost
+            self.column = 4
+        elif self.selected_option[0] == "box3":
+            self.selected_cost = self.upgrade3_cost
+            self.column = 5
+        elif self.selected_option[0] == "box4":
+            self.selected_cost = self.upgrade4_cost
+            self.column = 6
+        elif self.selected_option[0] == "box5":
+            self.selected_cost = self.upgrade5_cost
+            self.column = 7
+        elif self.selected_option[0] == "box6":
+            self.selected_cost = self.upgrade6_cost
+            self.column = 8
+        elif self.selected_option[0] == "box7":
+            self.selected_cost = self.upgrade7_cost
+            self.column = 9
+        elif self.selected_option[0] == "box8":
+            self.selected_cost = self.upgrade8_cost
+            self.column = 10
+
+        if self.column == 3:
+            self.upgrade1_level += 1
+        elif self.column == 4:
+            self.upgrade2_level += 1
+        elif self.column == 5:
+            self.upgrade3_level += 1
+        elif self.column == 6:
+            self.upgrade4_level += 1
+        elif self.column == 7:
+            self.upgrade5_level += 1
+        elif self.column == 8:
+            self.upgrade6_level += 1
+        elif self.column == 9:
+            self.upgrade7_level += 1
+        elif self.column == 10:
+            self.upgrade8_level += 1
+
+        pd.increase_upgrade_level(self.column)
+
+
+    def give_feedback(self):
+        if self.feedback_option == 1:
+            pygame.draw.rect(screen, (50,205,50), self.feedback_box, border_radius=15)
+            feedback_message_render = self.feedback_message_font.render('Purchased!', True, (0,0,0))
+            screen.blit(feedback_message_render, (653, 36))
+        if self.feedback_option == 2:
+            pygame.draw.rect(screen, (255,191,0), self.feedback_box, border_radius=15)
+            feedback_message_render = self.feedback_message_font.render('Not Enough', True, (0,0,0))
+            screen.blit(feedback_message_render, (645, 26))
+            feedback_message2_render = self.feedback_message_font.render('Gold!', True, (0,0,0))
+            screen.blit(feedback_message2_render, (678, 48))
+        if self.feedback_option == 3:
+            pygame.draw.rect(screen, (255,191,0), self.feedback_box, border_radius=15)
+            feedback_message_render = self.feedback_message_font.render('Limit', True, (0,0,0))
+            screen.blit(feedback_message_render, (677, 26))
+            feedback_message2_render = self.feedback_message_font.render('Reached!', True, (0,0,0))
+            screen.blit(feedback_message2_render, (662, 48))
 
     def display_information(self, option):
         pygame.draw.rect(screen, (0,0,0), self.description_border)
@@ -2737,10 +3682,14 @@ class SkillTree:
         if option == 'box1':
             description_title_render = self.description_title_font.render('Max Health Upgrade', True, (225, 255, 255))
             screen.blit(description_title_render, (135, 685))
-            description_render = self.description_font.render('Increases max health by 10%', True, (225, 255, 255))
+            description_render = self.description_font.render('Increases max health by 10', True, (225, 255, 255))
             screen.blit(description_render, (135, 730))
-            description_cost_render = self.description_font.render('Cost: 25 gold  |  Balance: 215 gold', True, (225, 255, 255))
-            screen.blit(description_cost_render, (135, 765))
+            if self.upgrade1_cost == 999999999:
+                description_cost_render = self.description_font.render(f'Cost: MAXED  |  Balance: {self.balance} gold', True, (225, 255, 255))
+                screen.blit(description_cost_render, (135, 765))
+            else:
+                description_cost_render = self.description_font.render(f'Cost: {int(self.upgrade1_cost)} gold  |  Balance: {self.balance} gold', True, (225, 255, 255))
+                screen.blit(description_cost_render, (135, 765))
             buy_render = self.buy_font.render('BUY', True, (0, 0, 0))
             screen.blit(buy_render, (588, 718))
         if option == 'box2':
@@ -2748,8 +3697,12 @@ class SkillTree:
             screen.blit(description_title_render, (135, 685))
             description_render = self.description_font.render('Restores 2 health every 30 seconds', True, (225, 255, 255))
             screen.blit(description_render, (135, 730))
-            description_cost_render = self.description_font.render('Cost: 25 gold  |  Balance: 215 gold', True, (225, 255, 255))
-            screen.blit(description_cost_render, (135, 765))
+            if self.upgrade2_cost == 999999999:
+                description_cost_render = self.description_font.render(f'Cost: MAXED  |  Balance: {self.balance} gold', True, (225, 255, 255))
+                screen.blit(description_cost_render, (135, 765))
+            else:
+                description_cost_render = self.description_font.render(f'Cost: {int(self.upgrade2_cost)} gold  |  Balance: {self.balance} gold', True, (225, 255, 255))
+                screen.blit(description_cost_render, (135, 765))
             buy_render = self.buy_font.render('BUY', True, (0, 0, 0))
             screen.blit(buy_render, (588, 718))
         if option == 'box3':
@@ -2757,26 +3710,38 @@ class SkillTree:
             screen.blit(description_title_render, (135, 685))
             description_render = self.description_font.render('Get one extra life if you drop to 0 health', True, (225, 255, 255))
             screen.blit(description_render, (135, 730))
-            description_cost_render = self.description_font.render('Cost: 1250 gold  |  Balance: 215 gold', True, (225, 255, 255))
-            screen.blit(description_cost_render, (135, 765))
+            if self.upgrade3_cost == 999999999:
+                description_cost_render = self.description_font.render(f'Cost: MAXED  |  Balance: {self.balance} gold', True, (225, 255, 255))
+                screen.blit(description_cost_render, (135, 765))
+            else:
+                description_cost_render = self.description_font.render(f'Cost: {int(self.upgrade3_cost)} gold  |  Balance: {self.balance} gold', True, (225, 255, 255))
+                screen.blit(description_cost_render, (135, 765))
             buy_render = self.buy_font.render('BUY', True, (0, 0, 0))
             screen.blit(buy_render, (588, 718))
         if option == 'box4':
             description_title_render = self.description_title_font.render('Movement Speed Upgrade', True, (225, 255, 255))
             screen.blit(description_title_render, (135, 685))
-            description_render = self.description_font.render('Increases player movement speed by 5%', True, (225, 255, 255))
+            description_render = self.description_font.render('Increases player movement speed by 2%', True, (225, 255, 255))
             screen.blit(description_render, (135, 730))
-            description_cost_render = self.description_font.render('Cost: 375 gold  |  Balance: 215 gold', True, (225, 255, 255))
-            screen.blit(description_cost_render, (135, 765))
+            if self.upgrade4_cost == 999999999:
+                description_cost_render = self.description_font.render(f'Cost: MAXED  |  Balance: {self.balance} gold', True, (225, 255, 255))
+                screen.blit(description_cost_render, (135, 765))
+            else:
+                description_cost_render = self.description_font.render(f'Cost: {int(self.upgrade4_cost)} gold  |  Balance: {self.balance} gold', True, (225, 255, 255))
+                screen.blit(description_cost_render, (135, 765))
             buy_render = self.buy_font.render('BUY', True, (0, 0, 0))
             screen.blit(buy_render, (588, 718))
         if option == 'box5':
             description_title_render = self.description_title_font.render('Dodge Chance Upgrade', True, (225, 255, 255))
             screen.blit(description_title_render, (135, 685))
-            description_render = self.description_font.render('Increases dodge chance by 5%', True, (225, 255, 255))
+            description_render = self.description_font.render('Increases dodge chance by 2%', True, (225, 255, 255))
             screen.blit(description_render, (135, 730))
-            description_cost_render = self.description_font.render('Cost: 175 gold  |  Balance: 215 gold', True, (225, 255, 255))
-            screen.blit(description_cost_render, (135, 765))
+            if self.upgrade5_cost == 999999999:
+                description_cost_render = self.description_font.render(f'Cost: MAXED  |  Balance: {self.balance} gold', True, (225, 255, 255))
+                screen.blit(description_cost_render, (135, 765))
+            else:
+                description_cost_render = self.description_font.render(f'Cost: {int(self.upgrade5_cost)} gold  |  Balance: {self.balance} gold', True, (225, 255, 255))
+                screen.blit(description_cost_render, (135, 765))
             buy_render = self.buy_font.render('BUY', True, (0, 0, 0))
             screen.blit(buy_render, (588, 718))
         if option == 'box6':
@@ -2784,8 +3749,12 @@ class SkillTree:
             screen.blit(description_title_render, (135, 685))
             description_render = self.description_font.render('Increases chance of gold dropped by 5%', True, (225, 255, 255))
             screen.blit(description_render, (135, 730))
-            description_cost_render = self.description_font.render('Cost: 300 gold  |  Balance: 215 gold', True, (225, 255, 255))
-            screen.blit(description_cost_render, (135, 765))
+            if self.upgrade6_cost == 999999999:
+                description_cost_render = self.description_font.render(f'Cost: MAXED  |  Balance: {self.balance} gold', True, (225, 255, 255))
+                screen.blit(description_cost_render, (135, 765))
+            else:
+                description_cost_render = self.description_font.render(f'Cost: {int(self.upgrade6_cost)} gold  |  Balance: {self.balance} gold', True, (225, 255, 255))
+                screen.blit(description_cost_render, (135, 765))
             buy_render = self.buy_font.render('BUY', True, (0, 0, 0))
             screen.blit(buy_render, (588, 718))
         if option == 'box7':
@@ -2793,8 +3762,12 @@ class SkillTree:
             screen.blit(description_title_render, (135, 685))
             description_render = self.description_font.render('Increases critical chance by 5%', True, (225, 255, 255))
             screen.blit(description_render, (135, 730))
-            description_cost_render = self.description_font.render('Cost: 615 gold  |  Balance: 215 gold', True, (225, 255, 255))
-            screen.blit(description_cost_render, (135, 765))
+            if self.upgrade7_cost == 999999999:
+                description_cost_render = self.description_font.render(f'Cost: MAXED  |  Balance: {self.balance} gold', True, (225, 255, 255))
+                screen.blit(description_cost_render, (135, 765))
+            else:
+                description_cost_render = self.description_font.render(f'Cost: {int(self.upgrade7_cost)} gold  |  Balance: {self.balance} gold', True, (225, 255, 255))
+                screen.blit(description_cost_render, (135, 765))
             buy_render = self.buy_font.render('BUY', True, (0, 0, 0))
             screen.blit(buy_render, (588, 718))
         if option == 'box8':
@@ -2802,24 +3775,402 @@ class SkillTree:
             screen.blit(description_title_render, (135, 685))
             description_render = self.description_font.render('Increases life steal chance by 5%', True, (225, 255, 255))
             screen.blit(description_render, (135, 730))
-            description_cost_render = self.description_font.render('Cost: 750 gold  |  Balance: 215 gold', True, (225, 255, 255))
-            screen.blit(description_cost_render, (135, 765))
+            if self.upgrade8_cost == 999999999:
+                description_cost_render = self.description_font.render(f'Cost: MAXED  |  Balance: {self.balance} gold', True, (225, 255, 255))
+                screen.blit(description_cost_render, (135, 765))
+            else:
+                description_cost_render = self.description_font.render(f'Cost: {int(self.upgrade8_cost)} gold  |  Balance: {self.balance} gold', True, (225, 255, 255))
+                screen.blit(description_cost_render, (135, 765))
             buy_render = self.buy_font.render('BUY', True, (0, 0, 0))
             screen.blit(buy_render, (588, 718))
-
+        if self.message_timer and self.message_timer_counter <= 15:
+            self.give_feedback()
+        else:
+            self.message_timer_counter = 0
+            self.message_timer = False
 
         clock.tick(15)
         pygame.display.update()
 
 
-
-
-
-
-
-
-
 st = SkillTree()
+
+
+
+
+
+
+
+
+
+
+class userProfile:
+    def __init__(self):
+        self.active = True
+        self.offset1 = 50
+        self.offset2 = 50
+
+        self.profile_box1 = pygame.Rect(85, 225-self.offset1, 130, 45)
+        self.profile_border_box1 = pygame.Rect(78, 218-self.offset1, 144, 59)
+        self.reset_profile1 = pygame.Rect(300, 220-self.offset1, 115, 55)
+        self.reset_profile1_border = pygame.Rect(293, 213-self.offset1, 129, 69)
+
+        self.profile_box2 = pygame.Rect(85, 322-self.offset1+25, 130, 45)
+        self.profile_border_box2 = pygame.Rect(78, 315-self.offset1+25, 144, 59)
+        self.reset_profile2 = pygame.Rect(300, 317-self.offset1+25, 115, 55)
+        self.reset_profile2_border = pygame.Rect(293, 310-self.offset1+25, 129, 69)
+
+        self.profile_box3 = pygame.Rect(85, 419, 130, 45)
+        self.profile_border_box3 = pygame.Rect(78, 412, 144, 59)
+        self.reset_profile3 = pygame.Rect(300, 414, 115, 55)
+        self.reset_profile3_border = pygame.Rect(293, 407, 129, 69)
+
+        self.profile_box4 = pygame.Rect(85, 516+self.offset1-25, 130, 45)
+        self.profile_border_box4 = pygame.Rect(78, 509+self.offset1-25, 144, 59)
+        self.reset_profile4 = pygame.Rect(300, 511+self.offset1-25, 115, 55)
+        self.reset_profile4_border = pygame.Rect(293, 504+self.offset1-25, 129, 69)
+
+        self.profile_box5 = pygame.Rect(85, 613+self.offset1, 130, 45)
+        self.profile_border_box5 = pygame.Rect(78, 606+self.offset1, 144, 59)
+        self.reset_profile5 = pygame.Rect(300, 608+self.offset1, 115, 55)
+        self.reset_profile5_border = pygame.Rect(293, 601+self.offset1, 129, 69)
+        self.info_background = pygame.Rect(500, 75, 275, 715)
+
+        self.back_background_border = pygame.Rect(15, 15, 143, 68)
+        self.back_background = pygame.Rect(23, 23, 127, 52)
+
+        self.down_offset = 75
+
+        self.profile_font = pygame.font.SysFont('Garamond', 32, bold=1)
+        self.reset_font = pygame.font.SysFont('Garamond', 26, bold=1)
+        self.balance_font = pygame.font.SysFont('Garamond', 30, bold=1)
+        self.info_font = pygame.font.SysFont('Garamond', 36, bold=1)
+        self.back_font = pygame.font.SysFont('Garamond', 36, bold=1)
+        self.reset_confirmation_font = pygame.font.SysFont('Garamond', 32, bold=1)
+
+        self.info_font.set_underline(True)
+        self.info_font.set_italic(True)
+
+        self.reset_confirm_border1_box = pygame.Rect(35, 260, 430, 230)
+        self.reset_confirm_border2_box = pygame.Rect(40, 265, 420, 220)
+        self.reset_confirm_border3_box = pygame.Rect(45, 270, 410, 210)
+        self.reset_confirm_box = pygame.Rect(50, 275, 400, 200)
+        self.awaiting_confirmation = False
+        self.reset_negative_box = pygame.Rect(115, 400, 95, 55)
+        self.reset_negative_border_box = pygame.Rect(110, 395, 105, 65)
+        self.reset_affirmative_box = pygame.Rect(310, 400, 95, 55)
+        self.reset_affirmative_border_box = pygame.Rect(305, 395, 105, 65)
+
+        self.reset = False
+
+    def user_profile_menu(self):
+        pd.load_upgrades_into_game()
+        while self.active:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    global game
+                    game = False
+                    pygame.quit()
+                    sys.exit(1)
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.profile_box1.collidepoint(event.pos) or self.profile_border_box1.collidepoint(event.pos):
+                        if pd.profile_id != 1:
+                            pd.change_profile(1)
+                            pd.load_upgrades_into_game()
+                    if self.reset_profile1.collidepoint(event.pos) or self.reset_profile1_border.collidepoint(event.pos):
+                        self.confirm_reset()
+                        if self.reset:
+                            pd.reset_profile(1)
+                            pd.load_upgrades_into_game()
+                            self.reset = False
+                    if self.profile_box2.collidepoint(event.pos) or self.profile_border_box2.collidepoint(event.pos):
+                        if pd.profile_id != 2:
+                            pd.change_profile(2)
+                            pd.load_upgrades_into_game()
+                    if self.reset_profile2.collidepoint(event.pos) or self.reset_profile2_border.collidepoint(event.pos):
+                        self.confirm_reset()
+                        if self.reset:
+                            pd.reset_profile(2)
+                            pd.load_upgrades_into_game()
+                            self.reset = False
+                    if self.profile_box3.collidepoint(event.pos) or self.profile_border_box3.collidepoint(event.pos):
+                        if pd.profile_id != 3:
+                            pd.change_profile(3)
+                            pd.load_upgrades_into_game()
+                    if self.reset_profile3.collidepoint(event.pos) or self.reset_profile3_border.collidepoint(event.pos):
+                        self.confirm_reset()
+                        if self.reset:
+                            pd.reset_profile(3)
+                            pd.load_upgrades_into_game()
+                            self.reset = False
+                    if self.profile_box4.collidepoint(event.pos) or self.profile_border_box4.collidepoint(event.pos):
+                        if pd.profile_id != 4:
+                            pd.change_profile(4)
+                            pd.load_upgrades_into_game()
+                    if self.reset_profile4.collidepoint(event.pos) or self.reset_profile4_border.collidepoint(event.pos):
+                        self.confirm_reset()
+                        if self.reset:
+                            pd.reset_profile(4)
+                            pd.load_upgrades_into_game()
+                            self.reset = False
+                    if self.profile_box5.collidepoint(event.pos) or self.profile_border_box5.collidepoint(event.pos):
+                        if pd.profile_id != 5:
+                            pd.change_profile(5)
+                            pd.load_upgrades_into_game()
+                    if self.reset_profile5.collidepoint(event.pos) or self.reset_profile5_border.collidepoint(event.pos):
+                        self.confirm_reset()
+                        if self.reset:
+                            pd.reset_profile(5)
+                            pd.load_upgrades_into_game()
+                            self.reset = False
+                    if self.back_background.collidepoint(event.pos) or self.back_background_border.collidepoint(event.pos):
+                        global up
+                        up = userProfile()
+                        self.active = False
+                        main_menu()
+
+            screen.blit(dungeonBackground, (0, 0))
+
+            pygame.draw.rect(screen, (0,0,0), self.back_background_border, border_radius=15)
+            pygame.draw.rect(screen, (255,0,0), self.back_background, border_radius=15)
+            back_render = self.back_font.render('Back', True, (225, 255, 255))
+            screen.blit(back_render, (45, 26))
+
+            if pd.profile_id == 1:
+                pygame.draw.rect(screen, (80,83,241), self.profile_border_box1)
+            else:
+                pygame.draw.rect(screen, (137,137,137), self.profile_border_box1)
+
+            pygame.draw.rect(screen, (134,214,216), self.profile_box1)
+            pygame.draw.ellipse(screen, (137,137,137), self.reset_profile1_border)
+            pygame.draw.ellipse(screen, (134,214,216), self.reset_profile1)
+            profile1_render = self.profile_font.render(f'Profile 1', True, (0, 0, 0))
+            screen.blit(profile1_render, (92, 230-self.offset1))
+            reset1_render = self.reset_font.render(f'RESET', True, (0, 0, 0))
+            screen.blit(reset1_render, (315, 233-self.offset1))
+
+            if pd.profile_id == 2:
+                pygame.draw.rect(screen, (80,83,241), self.profile_border_box2)
+            else:
+                pygame.draw.rect(screen, (137,137,137), self.profile_border_box2)
+
+            pygame.draw.rect(screen, (134,214,216), self.profile_box2)
+            pygame.draw.ellipse(screen, (137,137,137), self.reset_profile2_border)
+            pygame.draw.ellipse(screen, (134,214,216), self.reset_profile2)
+            profile2_render = self.profile_font.render(f'Profile 2', True, (0, 0, 0))
+            screen.blit(profile2_render, (92, 327-self.offset1+25))
+            reset2_render = self.reset_font.render(f'RESET', True, (0, 0, 0))
+            screen.blit(reset2_render, (315, 330-self.offset1+25))
+
+            if pd.profile_id == 3:
+                pygame.draw.rect(screen, (80,83,241), self.profile_border_box3)
+            else:
+                pygame.draw.rect(screen, (137,137,137), self.profile_border_box3)
+
+            pygame.draw.rect(screen, (134,214,216), self.profile_box3)
+            pygame.draw.ellipse(screen, (137,137,137), self.reset_profile3_border)
+            pygame.draw.ellipse(screen, (134,214,216), self.reset_profile3)
+            profile3_render = self.profile_font.render(f'Profile 3', True, (0, 0, 0))
+            screen.blit(profile3_render, (92, 424))
+            reset3_render = self.reset_font.render(f'RESET', True, (0, 0, 0))
+            screen.blit(reset3_render, (315, 427))
+
+            if pd.profile_id == 4:
+                pygame.draw.rect(screen, (80,83,241), self.profile_border_box4)
+            else:
+                pygame.draw.rect(screen, (137,137,137), self.profile_border_box4)
+
+            pygame.draw.rect(screen, (134,214,216), self.profile_box4)
+            pygame.draw.ellipse(screen, (137,137,137), self.reset_profile4_border)
+            pygame.draw.ellipse(screen, (134,214,216), self.reset_profile4)
+            profile4_render = self.profile_font.render(f'Profile 4', True, (0, 0, 0))
+            screen.blit(profile4_render, (92, 521+self.offset1-25))
+            reset4_render = self.reset_font.render(f'RESET', True, (0, 0, 0))
+            screen.blit(reset4_render, (315, 524+self.offset1-25))
+
+            if pd.profile_id == 5:
+                pygame.draw.rect(screen, (80,83,241), self.profile_border_box5)
+            else:
+                pygame.draw.rect(screen, (137,137,137), self.profile_border_box5)
+
+            pygame.draw.rect(screen, (134,214,216), self.profile_box5)
+            pygame.draw.ellipse(screen, (137,137,137), self.reset_profile5_border)
+            pygame.draw.ellipse(screen, (134,214,216), self.reset_profile5)
+            profile5_render = self.profile_font.render(f'Profile 5', True, (0, 0, 0))
+            screen.blit(profile5_render, (92, 618+self.offset1))
+            reset5_render = self.reset_font.render(f'RESET', True, (0, 0, 0))
+            screen.blit(reset5_render, (315, 621+self.offset1))
+
+            pygame.draw.rect(screen, (186,166,142), self.info_background)
+
+            balance_render = self.balance_font.render(f'Balance: {pd.balance} gold', True, (0, 0, 0))
+            screen.blit(balance_render, (515, 150))
+
+            info_render = self.info_font.render(f'User Info:', True, (0, 0, 0))
+            screen.blit(info_render, (552, 100))
+
+            levels = [1, 2, 3, 4, 5, 6, 7, 8]
+
+            for c in levels:
+                level_list = []
+                selected_level = 0
+                full = 0
+                empty = 0
+                if c == 1:
+                    selected_level = 1
+                    full = int(pd.upgrade1_level)
+                    empty = int(5 - pd.upgrade1_level)
+                if c == 2:
+                    selected_level = 2
+                    full = int(pd.upgrade2_level)
+                    empty = int(5 - pd.upgrade2_level)
+                if c == 3:
+                    selected_level = 3
+                    full = int(pd.upgrade3_level)
+                    empty = int(5 - pd.upgrade3_level)
+                if c == 4:
+                    selected_level = 4
+                    full = int(pd.upgrade4_level)
+                    empty = int(5 - pd.upgrade4_level)
+                if c == 5:
+                    selected_level = 5
+                    full = int(pd.upgrade5_level)
+                    empty = int(5 - pd.upgrade5_level)
+                if c == 6:
+                    selected_level = 6
+                    full = int(pd.upgrade6_level)
+                    empty = int(5 - pd.upgrade6_level)
+                if c == 7:
+                    selected_level = 7
+                    full = int(pd.upgrade7_level)
+                    empty = int(5 - pd.upgrade7_level)
+                if c == 8:
+                    selected_level = 8
+                    full = int(pd.upgrade8_level)
+                    empty = int(5 - pd.upgrade8_level)
+
+                if full:
+                    i = 0
+                    while i <= full - 1:
+                        level_list.append('full')
+                        i += 1
+                if empty:
+                    i = 0
+                    while i <= empty - 1:
+                        level_list.append('empty')
+                        i += 1
+                registered_level1 = False
+                registered_level2 = False
+                registered_level3 = False
+                registered_level4 = False
+                registered_level5 = False
+
+
+                pygame.draw.line(screen, (0,0,0), (514, 170+(self.down_offset * selected_level)), (567,170+(self.down_offset * selected_level)), width=6) # base
+                pygame.draw.line(screen, (0,0,0), (515, 170+(self.down_offset * selected_level)), (540,126+(self.down_offset * selected_level)), width=6) # left
+                pygame.draw.line(screen, (0,0,0), (566, 172+(self.down_offset * selected_level)), (540,126+(self.down_offset * selected_level)), width=6) # right
+
+                for g in level_list:
+                    if not selected_level == 3:
+                        if not registered_level1:
+                            if g == 'full':
+                                pygame.draw.circle(screen, (0,0,0), (595,148+(self.down_offset * selected_level)), 16)
+                                registered_level1 = True
+                                continue
+                            else:
+                                pygame.draw.circle(screen, (0,0,0), (595,148+(self.down_offset * selected_level)), 16, width=5)
+                                registered_level1 = True
+                                continue
+                        if not registered_level2:
+                            if g == 'full':
+                                pygame.draw.circle(screen, (0,0,0), (632,148+(self.down_offset * selected_level)), 16)
+                                registered_level2 = True
+                                continue
+                            else:
+                                pygame.draw.circle(screen, (0,0,0), (632,148+(self.down_offset * selected_level)), 16, width=5)
+                                registered_level2 = True
+                                continue
+                        if not registered_level3:
+                            if g == 'full':
+                                pygame.draw.circle(screen, (0,0,0), (669,148+(self.down_offset * selected_level)), 16)
+                                registered_level3 = True
+                                continue
+                            else:
+                                pygame.draw.circle(screen, (0,0,0), (669,148+(self.down_offset * selected_level)), 16, width=5)
+                                registered_level3 = True
+                                continue
+                        if not registered_level4:
+                            if g == 'full':
+                                pygame.draw.circle(screen, (0,0,0), (706,148+(self.down_offset * selected_level)), 16)
+                                registered_level4 = True
+                                continue
+                            else:
+                                pygame.draw.circle(screen, (0,0,0), (706,148+(self.down_offset * selected_level)), 16, width=5)
+                                registered_level4 = True
+                                continue
+                        if not registered_level5:
+                            if g == 'full':
+                                pygame.draw.circle(screen, (0,0,0), (743,148+(self.down_offset * selected_level)), 16)
+                                registered_level5 = True
+                                level_list.clear()
+                                continue
+                            else:
+                                pygame.draw.circle(screen, (0,0,0), (743,148+(self.down_offset * selected_level)), 16, width=5)
+                                registered_level5 = True
+                                level_list.clear()
+                                continue
+                    else:
+                        if g == 'full':
+                            pygame.draw.circle(screen, (0,0,0), (595,148+(self.down_offset * selected_level)), 16)
+                            registered_level1 = True
+                            continue
+                        else:
+                            pygame.draw.circle(screen, (0,0,0), (595,148+(self.down_offset * selected_level)), 16, width=5)
+                            registered_level1 = True
+                            continue
+
+            clock.tick(15)
+            pygame.display.update()
+
+    def confirm_reset(self):
+        self.awaiting_confirmation = True
+        while self.awaiting_confirmation:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    global game
+                    game = False
+                    pygame.quit()
+                    sys.exit(1)
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    if self.reset_affirmative_box.collidepoint(event.pos) or self.reset_affirmative_border_box.collidepoint(event.pos):
+                        self.reset = True
+                        self.awaiting_confirmation = False
+                    if self.reset_negative_box.collidepoint(event.pos) or self.reset_negative_border_box.collidepoint(event.pos):
+                        self.reset = False
+                        self.awaiting_confirmation = False
+
+
+            pygame.draw.rect(screen, (0,0,0), self.reset_confirm_border1_box)
+            pygame.draw.rect(screen, (255,0,0), self.reset_confirm_border2_box)
+            pygame.draw.rect(screen, (0,0,0), self.reset_confirm_border3_box)
+            pygame.draw.rect(screen, (150,150,150), self.reset_confirm_box)
+            pygame.draw.rect(screen, (0,0,0), self.reset_affirmative_border_box)
+            pygame.draw.rect(screen, (255,253,208), self.reset_affirmative_box)
+            pygame.draw.rect(screen, (0,0,0), self.reset_negative_border_box)
+            pygame.draw.rect(screen, (255,253,208), self.reset_negative_box)
+            reset_confirmation_render = self.reset_confirmation_font.render('Delete Data For:', True, (225, 255, 255))
+            screen.blit(reset_confirmation_render, (135, 290))
+            reset_confirmation2_render = self.reset_confirmation_font.render(f'Profile {pd.profile_id} ?', True, (225, 255, 255))
+            screen.blit(reset_confirmation2_render, (185, 325))
+            reset_negative_render = self.reset_confirmation_font.render(f'No', True, (0,0,0))
+            screen.blit(reset_negative_render, (140, 410))
+            reset_affirmative_render = self.reset_confirmation_font.render(f'Yes', True, (0,0,0))
+            screen.blit(reset_affirmative_render, (335, 410))
+            clock.tick(15)
+            pygame.display.update()
+
+
+up = userProfile()
 
 
 # adding the ability to implement buttons
@@ -2846,14 +4197,21 @@ def button(msg, x, y, w, h, ic, ac, action):
                 pause = False
                 credits()
             elif action == "Quit":
+                up.user_profile_menu()
+
+                """ To get to skill tree
+                pd.load_skill_tree()
                 st.load_data()
                 st.skill_tree()
-                # game = False
-                # pygame.quit()
-                # sys.exit()
+                """
+                """ To quit:
+                game = False
+                pygame.quit()
+                sys.exit()
+                """
             elif action == "Play":
-                if p.death:
-                    reset_stats()
+                pd.load_upgrades_into_game()
+                reset_stats()
                 pause = False
                 game = True
                 activate_bullet = True
@@ -3024,6 +4382,7 @@ def main_menu():
                 quit()
         # sets the main menu background
         screen.blit(dungeonBackground, (0, 0))
+
         # establishing the text for the title on the menu
         large_text = pygame.font.SysFont('Garamond', 80, bold=True)
         main_text = pygame.font.SysFont('Garamond', 20, bold=True)
@@ -3238,15 +4597,21 @@ while game:
     key_pressed()
 
     # if the player reaches no health, show the death screen
-    if p.health <= 0:
-        prevGameTime = gameTime
-        p.death = True
-        death_screen()
-        while p.death:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    p.death = False
-                    game = False
+    if p.current_health <= 0:
+        if pd.upgrade3_level and p.revive_available:
+            p.current_health = int(p.max_health * 0.75)
+            p.revive_available = False
+        else:
+            prevGameTime = gameTime
+            p.death = True
+            # print(p.gold)
+            pd.add_gold()
+            death_screen()
+            while p.death:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        p.death = False
+                        game = False
     # makes the map visible
     # screen.blit(pygame.transform.scale(bg_img, (2250, 2250)), (-800 - m.cameraX, -800 - m.cameraY))
     screen.blit(bg_img, (-800 - m.cameraX, -800 - m.cameraY))
@@ -3346,6 +4711,16 @@ while game:
     if p.rect.colliderect(bup.rect) and not bup.upgrade_active and ee.felled:
         bup.check_collisions()
 
+    if int(minutes) == 5 and int(seconds) == 0:
+        com.activate = True
+
+    if com.activate and not com.felled:
+        com.generate_enemy()
+        com.comactive()
+        com.check_collisions()
+    com.activate_death()
+    # print(com.health)
+
     if int(minutes) == 10 and int(seconds) == 00:
         # skeleton king spawns once the game time reaches a minute and thirty seconds
         sk.activate = True
@@ -3364,6 +4739,28 @@ while game:
     for bat in bats:
         bat.clean_dictionaries()
         bat.decide_action()
+    if lz.laser_aquired == True:
+        lz.laser_timer()
+    counter = 0
+    if len(enemies) > 6:
+        for enemy in enemies:
+            if enemy.spawned:
+                    counter += 1
+    if counter >= 6:
+        cl.cl_timer()
+
+    # print(pd.upgrade2_level)
+
+    if (seconds == 30 or seconds == 00) and not p.generated_health:
+        if p.current_health + (2 * pd.upgrade2_level) <= p.max_health:
+            if pd.upgrade2_level:
+                p.current_health += (2 * pd.upgrade2_level)
+                p.generated_health = True
+        elif p.current_health != p.max_health:
+            p.current_health = p.max_health
+            p.generated_health = True
+    if seconds == 31 or seconds == 1:
+        p.generated_health = False
 
 
     b.bullet_counter += 1
