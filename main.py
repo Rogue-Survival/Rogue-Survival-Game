@@ -4326,8 +4326,7 @@ def credits():
         xpB.pauseTimer = temp_timer
         # if you press escape, you go back to the settings menu
         if pygame.key.get_pressed()[pygame.K_ESCAPE] and (pygame.time.get_ticks() - start_time >= 300):
-            pause = False
-            settings_menu()
+            main_menu()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 game = False
@@ -4387,7 +4386,7 @@ def main_menu():
         text_rect2.center = ((screen_width / 2), (screen_height / 3.3) + 40)
         screen.blit(horizontalScroll, (screen_width / 2 - 288, screen_height / 10))
         # displays the buttons available on the Main Menu
-        button("Play!", (screen_width / 4) - 100, (screen_height / 1.5), 200, 100, (247, 167, 82), (184, 120, 51),
+        button("Play!", (screen_width / 4) - 100, (screen_height / 1.5), 200, 100, (219, 68, 68), (181, 47, 47),
                "Play")
         button("Close :(", (screen_width / 1.3) - 100, (screen_height / 1.5), 200,
                100, (247, 167, 82),
@@ -4397,6 +4396,11 @@ def main_menu():
         button("Skilltree", (screen_width / 1.3) - 100, (screen_height / 2), 200,
                100, (247, 167, 82),
                (184, 120, 51), "skilltree")
+        button("Credits", (screen_width / 2) - 92.5, (screen_height / 1.5), 200, 100, (247, 167, 82), (184, 120, 51),
+               "Credits")
+        button("Settings", (screen_width / 2) - 92.5, (screen_height / 2), 200,
+               100, (247, 167, 82),
+               (184, 120, 51), "Settings")
         # puts all of the text on the screen
         screen.blit(text_surf, text_rect)
         screen.blit(text_surf2, text_rect2)
@@ -4494,8 +4498,7 @@ def settings_menu():
         xpB.pauseTimer = temp_timer
         # if you press escape, go back to the pause menu
         if pygame.key.get_pressed()[pygame.K_ESCAPE] and (pygame.time.get_ticks() - start_time >= 300):
-            pause = False
-            pause_game()
+            main_menu()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 game = False
