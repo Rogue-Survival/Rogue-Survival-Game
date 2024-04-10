@@ -1,12 +1,4 @@
-import sys
-import math
-import random
-import numpy
-import os
-import csv
-import pygame
-
-
+import sys, pygame, csv, os, numpy, random, math, player
 
 # initializes the pygame library
 pygame.init()
@@ -1062,6 +1054,7 @@ class Enemy(pygame.sprite.Sprite):
         self.player_collide_counter = 0
         self.edamage = 15
         self.wasbuffed = False
+        self.death = False
 
     def generate_enemy(self):
         if not self.spawned:
@@ -1202,6 +1195,7 @@ class Enemy(pygame.sprite.Sprite):
 
     def activate_death(self):
         if self.health <= 0:
+            self.death = True
             # despawns the enemy if their health is 0 or below
             xp.append(XP(self.rect.x + 18, self.rect.y + 17))
             if self in enemies:
@@ -1961,7 +1955,7 @@ class MiniEarthElemental(Enemy):
         self.rect.x = x
         self.rect.y = y
         self.rect.width = 20
-        self.health = 725
+        self.health = 5
         self.speed = 3
         self.travel_north()
         self.travel_east()
@@ -2120,6 +2114,7 @@ class Commander(Enemy):
         if self.rect.colliderect(ba.hitbox_rect) and ba.running and not self.melee_attack_collisions:
             # Reduce health from the mini boss from Players basic attack if not hit by that same attack swing
             critical = p.check_critical_chance()
+            print("Hit")
             if critical:
                 self.health -= (ba.damage * 1.5)
             else:
@@ -2157,6 +2152,27 @@ class Commander(Enemy):
                             if life_steal:
                                 p.add_life_steal_health()
                         i += 1
+            for bullet in bullets:
+                # removes expired bullets
+                if bullet in self.bullet_collisions and not self.rect.colliderect(bullet.rect):
+                    self.bullet_collisions.remove(bullet)
+                    # print("BULLET REMOVED")
+            if self.bullet_collisions:
+                # backup to remove expired bullets
+                for g in self.bullet_collisions:
+                    if not g.rect.colliderect(self.rect):
+                        # removes collided bullet
+                        self.bullet_collisions.remove(g)
+            if self.rect.colliderect(ba.hitbox_rect) and ba.running and not self.melee_attack_collisions:
+                critical = p.check_critical_chance()
+                if critical:
+                    self.health -= (ba.damage * 1.5)
+                else:
+                    self.health -= ba.damage
+                life_steal = p.check_life_steal_chance()
+                if life_steal:
+                    p.add_life_steal_health()
+                self.melee_attack_collisions.append(1)
 
     def follow_mc(self):
         if self.rect.x < p.rect.x and not self.rect.colliderect(p.rect):
@@ -4696,7 +4712,7 @@ while game:
             bat.check_collisions()
         bat.activate_death()
 
-    if int(minutes) == 1 and int(seconds) == 30:
+    if int(minutes) == 0 and int(seconds) == 3:
         ee.activate = True
 
     if ee.activate and not ee.felled:
@@ -4710,7 +4726,7 @@ while game:
     if p.rect.colliderect(bup.rect) and not bup.upgrade_active and ee.felled:
         bup.check_collisions()
 
-    if int(minutes) == 5 and int(seconds) == 0:
+    if int(minutes) == 0 and int(seconds) == 10:
         com.activate = True
 
     if com.activate and not com.felled:
@@ -4718,7 +4734,7 @@ while game:
         com.comactive()
         com.check_collisions()
     com.activate_death()
-    # print(com.health)
+    print(com.health)
 
     if int(minutes) == 10 and int(seconds) == 00:
         # skeleton king spawns once the game time reaches a minute and thirty seconds
