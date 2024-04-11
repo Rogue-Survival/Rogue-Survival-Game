@@ -6,7 +6,7 @@ pygame.init()
 # creates the window and dimensions for the game
 screen_size_stuff = pygame.display.Info()
 screen_size_height, screen_size_width = screen_size_stuff.current_h, screen_size_stuff.current_w
-screen = pygame.display.set_mode((800, 800))
+screen = pygame.display.set_mode((screen_size_width / 2, screen_size_height/ 1.25))
 # screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 transparent_surface = pygame.Surface((800, 800), pygame.SRCALPHA)
 # sets the window caption at the top
@@ -492,6 +492,14 @@ class Player(pygame.sprite.Sprite):
                 com.east_rect.x = com.rect.x + com.east_x_val
                 com.south_rect.x = com.rect.x + com.south_x_val
                 com.west_rect.x = com.rect.x - com.west_x_val
+            if ma.activate and not ma.felled:
+                ma.rect.x += self.speed
+                ma.px += self.speed
+                ma.seekerx += self.speed
+                ma.north_rect.x = ma.rect.x + ma.north_x_val
+                ma.east_rect.x = ma.rect.x + ma.east_x_val
+                ma.south_rect.x = ma.rect.x + ma.south_x_val
+                ma.west_rect.x = ma.rect.x - ma.west_x_val
 
     def move_east(self):
         # moves the player and camera East, while moving every other entity in the opposite direction
@@ -549,6 +557,14 @@ class Player(pygame.sprite.Sprite):
                 com.east_rect.x = com.rect.x + com.east_x_val
                 com.south_rect.x = com.rect.x + com.south_x_val
                 com.west_rect.x = com.rect.x - com.west_x_val
+            if ma.activate and not ma.felled:
+                ma.rect.x -= self.speed
+                ma.px -= self.speed
+                ma.seekerx -= self.speed
+                ma.north_rect.x = ma.rect.x + ma.north_x_val
+                ma.east_rect.x = ma.rect.x + ma.east_x_val
+                ma.south_rect.x = ma.rect.x + ma.south_x_val
+                ma.west_rect.x = ma.rect.x - ma.west_x_val
 
     def move_north(self):
         # moves the player and camera North, while moving every other entity in the opposite direction
@@ -605,6 +621,14 @@ class Player(pygame.sprite.Sprite):
                 com.east_rect.y = com.rect.y + com.east_y_val
                 com.south_rect.y = com.rect.y + com.south_y_val
                 com.west_rect.y = com.rect.y + com.west_y_val
+            if ma.activate and not ma.felled:
+                ma.rect.y += self.speed
+                ma.py += self.speed
+                ma.seekery += self.speed
+                ma.north_rect.y = ma.rect.y - ma.north_y_val
+                ma.east_rect.y = ma.rect.y + ma.east_y_val
+                ma.south_rect.y = ma.rect.y + ma.south_y_val
+                ma.west_rect.y = ma.rect.y + ma.west_y_val
 
     def move_south(self):
         # moves the player and camera South, while moving every other entity in the opposite direction
@@ -661,6 +685,10 @@ class Player(pygame.sprite.Sprite):
                 com.east_rect.y = com.rect.y + com.east_y_val
                 com.south_rect.y = com.rect.y + com.south_y_val
                 com.west_rect.y = com.rect.y + com.west_y_val
+            if ma.activate and not ma.felled:
+                ma.rect.y -= self.speed
+                ma.py -= self.speed
+                ma.seekery -= self.speed
 
 
 class BasicAttack:
@@ -805,8 +833,10 @@ class BasicAttack:
                 sk.melee_attack_collisions.clear()
             if ee.activate and not ee.felled:
                 ee.melee_attack_collisions.clear()
-            if com.activate and not ee.felled:
+            if com.activate and not com.felled:
                 com.melee_attack_collisions.clear()
+            if ma.activate and not ma.felled:
+                ma.melee_attack_collisions.clear()
             self.basic_attack_timer = 0
         self.basic_attack_timer += 1
 
@@ -2111,18 +2141,6 @@ class Commander(Enemy):
             self.felled = True
 
     def check_collisions(self):
-        if self.rect.colliderect(ba.hitbox_rect) and ba.running and not self.melee_attack_collisions:
-            # Reduce health from the mini boss from Players basic attack if not hit by that same attack swing
-            critical = p.check_critical_chance()
-            print("Hit")
-            if critical:
-                self.health -= (ba.damage * 1.5)
-            else:
-                self.health -= ba.damage
-            life_steal = p.check_life_steal_chance()
-            if life_steal:
-                p.add_life_steal_health()
-            self.melee_attack_collisions.append(1)
         for bullet in bullets:
             if self.rect.colliderect(bullet.rect) and bullet.bullet_valid:
                 if not self.bullet_collisions:
@@ -2173,6 +2191,18 @@ class Commander(Enemy):
                 if life_steal:
                     p.add_life_steal_health()
                 self.melee_attack_collisions.append(1)
+        if self.rect.colliderect(ba.hitbox_rect) and ba.running and not self.melee_attack_collisions:
+            # Reduce health from the mini boss from Players basic attack if not hit by that same attack swing
+            critical = p.check_critical_chance()
+            print("Hit")
+            if critical:
+                self.health -= (ba.damage * 1.5)
+            else:
+                self.health -= ba.damage
+            life_steal = p.check_life_steal_chance()
+            if life_steal:
+                p.add_life_steal_health()
+            self.melee_attack_collisions.append(1)
 
     def follow_mc(self):
         if self.rect.x < p.rect.x and not self.rect.colliderect(p.rect):
@@ -2241,14 +2271,236 @@ class Commander(Enemy):
                     self.shout = False
                     self.shoutcounter = 0
     def comactive(self):
-        if com.activate:
-            com.buff_aura()
-            com.buff_shout()
+        if self.activate:
+            self.buff_aura()
+            self.buff_shout()
+
+
 
 
 
 
 com = Commander(random.randint(-340, 990), random.randint(-340, 990))
+
+
+class Mage(Enemy):
+    def __init__(self, x, y):
+        super().__init__(x, y)
+        self.rect = minibee1.get_rect().scale_by(1, 1)
+        self.rect.x = x
+        self.rect.y = y
+        self.rect.width = 20
+        self.maxhealth = 1000
+        self.health = 1000
+        self.speed = 2.5
+        self.travel_north()
+        self.travel_east()
+        self.travel_south()
+        self.travel_west()
+        self.felled = False
+        self.not_attacking = True
+        self.hit_damage = 45
+        self.last_auto = 0
+        self.attack_speed = 5
+        self.speed = 1
+        self.meteorimpact = None
+        self.orspeed = 0
+        self.meteorcd = 15
+        self.shoutarea = None
+        self.calling = False
+        self.activate = False
+        self.meteorcounter = 0
+        self.seekercd = 20
+        self.seekercounter = 0
+        self.meteor = None
+        self.px = 0
+        self.py = 0
+        self.summon = False
+        self.o = 1000
+        self.seeker = None
+        self.seekerx = self.rect.x + 15
+        self.seekery = self.rect.y + 15
+        self.seekspeed = 3
+        self.seekeractive = False
+        self.seekdur = 8
+        self.seekacdur = 0
+
+    def auto_hit_player(self):
+        if self.rect.colliderect(p.rect) and (self.attack_timer - self.last_auto) >= self.attack_speed:
+            dodge = p.check_dodge_chance()
+            if not dodge:
+                self.last_auto = self.attack_timer
+                p.current_health -= self.hit_damage
+
+    def generate_enemy(self):
+        self.attack_timer = (pygame.time.get_ticks() / 1000)
+        self.x = random.randint(-340, 990)
+        self.y = random.randint(-340, 990)
+        if self.animation <= 15:
+            screen.blit(pygame.transform.scale(minibee1, (40, 45)), (self.rect.x, self.rect.y))
+            self.animation += 1
+        elif self.animation <= 30:
+            screen.blit(pygame.transform.scale(minibee2, (40, 45)), (self.rect.x, self.rect.y))
+            self.animation += 1
+        elif self.animation <= 45:
+            screen.blit(pygame.transform.scale(minibee3, (40, 45)), (self.rect.x, self.rect.y))
+            self.animation += 1
+        elif self.animation <= 60:
+            screen.blit(pygame.transform.scale(minibee4, (40, 45)), (self.rect.x, self.rect.y))
+            self.animation += 1
+        if self.animation == 60:
+            self.animation = 0
+        if self.not_attacking:
+            self.follow_mc()
+            self.auto_hit_player()
+
+    def follow_mc(self):
+        if self.rect.x < p.rect.x and not self.rect.colliderect(p.rect):
+            self.travel_east()
+        if self.rect.x > p.rect.x and not self.rect.colliderect(p.rect):
+            self.travel_west()
+        if self.rect.y < p.rect.y and not self.rect.colliderect(p.rect):
+            self.travel_south()
+        if self.rect.y > p.rect.y and not self.rect.colliderect(p.rect):
+            self.travel_north()
+
+    def activate_death(self):
+        if self.health <= 0:
+            p.gold += 25
+            # Makes sure Comander is actually dead
+            self.felled = True
+
+    def check_collisions(self):
+        for bullet in bullets:
+            if self.rect.colliderect(bullet.rect) and bullet.bullet_valid:
+                if not self.bullet_collisions:
+                    self.bullet_collisions.append(bullet)
+                    critical = p.check_critical_chance()
+                    if critical:
+                        self.health -= (b.damage * 1.5)
+                    else:
+                        self.health -= b.damage
+                    life_steal = p.check_life_steal_chance()
+                    if life_steal:
+                        p.add_life_steal_health()
+                elif self.bullet_collisions:
+                    i = 0
+                    for l in self.bullet_collisions:
+                        if (bullet.rect.x == self.bullet_collisions[i].rect.x and bullet.rect.y ==
+                                self.bullet_collisions[i].rect.y):
+                            pass
+                        elif bullet not in self.bullet_collisions and bullet.bullet_valid:
+                            self.bullet_collisions.append(bullet)
+                            critical = p.check_critical_chance()
+                            if critical:
+                                self.health -= (b.damage * 1.5)
+                            else:
+                                self.health -= b.damage
+                            life_steal = p.check_life_steal_chance()
+                            if life_steal:
+                                p.add_life_steal_health()
+                        i += 1
+            for bullet in bullets:
+                # removes expired bullets
+                if bullet in self.bullet_collisions and not self.rect.colliderect(bullet.rect):
+                    self.bullet_collisions.remove(bullet)
+                    # print("BULLET REMOVED")
+            if self.bullet_collisions:
+                # backup to remove expired bullets
+                for g in self.bullet_collisions:
+                    if not g.rect.colliderect(self.rect):
+                        # removes collided bullet
+                        self.bullet_collisions.remove(g)
+            if self.rect.colliderect(ba.hitbox_rect) and ba.running and not self.melee_attack_collisions:
+                critical = p.check_critical_chance()
+                if critical:
+                    self.health -= (ba.damage * 1.5)
+                else:
+                    self.health -= ba.damage
+                life_steal = p.check_life_steal_chance()
+                if life_steal:
+                    p.add_life_steal_health()
+                self.melee_attack_collisions.append(1)
+        if self.rect.colliderect(ba.hitbox_rect) and ba.running and not self.melee_attack_collisions:
+            # Reduce health from the mini boss from Players basic attack if not hit by that same attack swing
+            critical = p.check_critical_chance()
+            if critical:
+                self.health -= (ba.damage * 1.5)
+            else:
+                self.health -= ba.damage
+            life_steal = p.check_life_steal_chance()
+            if life_steal:
+                p.add_life_steal_health()
+            self.melee_attack_collisions.append(1)
+
+    def summon_meteor(self):
+        #Summons meteor to fall where the player was standing at the time of the summon
+        if self.meteorcounter >= self.meteorcd:
+            if not self.summon:
+                self.px = p.rect.x +15
+                self.py = p.rect.y + 15
+                self.summon = True
+            if self.summon:
+                pygame.draw.circle(screen, (255, 0, 0), (self.px, self.py), 350, 3)
+                if self.o > 0:
+                    self.meteor = pygame.draw.circle(screen, (255,0,0),(self.px,self.py - self.o),40)
+                    self.o -= 10
+                if self.o <= 0:
+                    self.meteorcounter = 0
+                    self.meteor = pygame.draw.circle(screen, (255, 0, 0), (self.px, self.py), 350, 1)
+                    self.summon = False
+                    self.o = 1000
+                    if self.meteor.colliderect(p.rect):
+                        p.current_health -= 200
+
+
+
+    def fire_seeker(self):
+        if self.seekercounter >= self.seekercd:
+            if not self.seekeractive:
+                self.seekerx = ma.rect.x
+                self.seekery = ma.rect.y
+                self.seekeractive = True
+            if self.seekeractive:
+                self.seeker = pygame.draw.circle(screen, (1,1,1), (self.seekerx,self.seekery), 10, 4)
+                if self.seekacdur >= self.seekdur:
+                    self.seeker = None
+                    self.seekacdur = 0
+                    self.seekercounter = 0
+                    self.seekeractive = False
+                    self.seekerx = ma.rect.x
+                    self.seekery = ma.rect.y
+                if self.seekeractive and self.seeker.colliderect(p.rect):
+                    p.current_health -= 30
+                    self.seeker = None
+                    self.seekercounter = 0
+                    self.seekerx = ma.rect.x
+                    self.seekery = ma.rect.y
+                    self.seekeractive = False
+    def seeker_seeks(self):
+        if self.seekeractive:
+            if self.seekery >= p.rect.y:
+                self.seekery -= self.seekspeed
+            if self.seekery <= p.rect.y:
+                self.seekery += self.seekspeed
+            if self.seekerx >= p.rect.x:
+                self.seekerx -= self.seekspeed
+            if self.seekerx <= p.rect.x:
+                self.seekerx += self.seekspeed
+
+
+    def active(self):
+        if self.activate:
+            self.fire_seeker()
+            self.summon_meteor()
+            self.seeker_seeks()
+            self.meteorcounter += .03
+            if not self.seekeractive:
+                self.seekercounter += .03
+            if self.seekeractive:
+                self.seekacdur += .03
+
+ma = Mage(random.randint(-340, 990), random.randint(-340, 990))
 
 class CalcTargets:
     def calc_closest(t1, o1, n1):
@@ -2294,7 +2546,6 @@ class CalcTargets:
         ycor = self.rect.y - p.rect.y
         distance = math.sqrt(xcor ** 2 + ycor ** 2)
         return distance
-
 
 class SkeletonKing(Enemy):
     # this class is the games first boss
@@ -4712,7 +4963,7 @@ while game:
             bat.check_collisions()
         bat.activate_death()
 
-    if int(minutes) == 0 and int(seconds) == 3:
+    if int(minutes) == 1 and int(seconds) == 30:
         ee.activate = True
 
     if ee.activate and not ee.felled:
@@ -4726,7 +4977,7 @@ while game:
     if p.rect.colliderect(bup.rect) and not bup.upgrade_active and ee.felled:
         bup.check_collisions()
 
-    if int(minutes) == 0 and int(seconds) == 10:
+    if int(minutes) == 5 and int(seconds) == 00:
         com.activate = True
 
     if com.activate and not com.felled:
@@ -4734,7 +4985,16 @@ while game:
         com.comactive()
         com.check_collisions()
     com.activate_death()
-    print(com.health)
+
+    if int(minutes) == 0 and int(seconds) == 3:
+        ma.activate = True
+
+    if ma.activate and not ma.felled:
+        ma.generate_enemy()
+        ma.active()
+        ma.check_collisions()
+    ma.activate_death()
+    #print(ma.health)
 
     if int(minutes) == 10 and int(seconds) == 00:
         # skeleton king spawns once the game time reaches a minute and thirty seconds
