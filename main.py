@@ -381,7 +381,7 @@ class Player(pygame.sprite.Sprite):
         # inherits from the pygame.sprite.Sprite class
         pygame.sprite.Sprite.__init__(self)
         self.speed = 4 + (.05 * pd.upgrade4_level)
-        self.max_health = 50 + (10 * pd.upgrade1_level)
+        self.max_health = 50000 + (10 * pd.upgrade1_level)
         self.current_health = self.max_health
         self.generated_health = False
         self.revive_available = True
@@ -403,6 +403,10 @@ class Player(pygame.sprite.Sprite):
         self.time_survived = ()
         # self.playerGroup = pygame.sprite.Group()
         # self.playerGroup.add(self.rect)
+
+    def update_upgrades(self):
+        self.speed = 4 + (.05 * pd.upgrade4_level)
+        self.dodge_chance = 0.02 * pd.upgrade5_level
 
     def display_health(self):
         # print(self.gold)
@@ -3332,7 +3336,10 @@ class XPBar:
 
         elif not option:
             # upgrade this ability due to the user selecting this upgrade
-            p.speed *= 1.1
+            # p.speed *= 1.1
+            pd.upgrade4_level += 1
+            p.update_upgrades()
+            # p.speed = 4 + (.05 * pd.upgrade4_level)
             self.selected_upgrade_choices = False
             self.level_menu = False
             self.selected = True
@@ -3357,7 +3364,8 @@ class XPBar:
 
         elif not option:
             # upgrade this ability due to the user selecting this upgrade
-            p.dodgeChance += 2
+            # p.dodgeChance += 2
+            pd.upgrade5_level += 1
             self.selected_upgrade_choices = False
             self.level_menu = False
             self.selected = True
@@ -4725,10 +4733,6 @@ def death_screen():
 
         info3_render = info_text.render(f'You now have {pd.balance} gold!', True, (225, 255, 255))
         screen.blit(info3_render, (screen_width / 4, screen_height / 1.51))
-        # info4_render = info_text.render(f'', True, (225, 255, 255))
-        # screen.blit(info4_render, (screen_width / 2.45, screen_height / 1.42))
-
-
 
         pygame.display.update()
         clock.tick(15)
@@ -5069,7 +5073,6 @@ while game:
             p.generated_health = True
     if seconds == 31 or seconds == 1:
         p.generated_health = False
-
 
     b.bullet_counter += 1
     ba.attack()
