@@ -1,4 +1,4 @@
-import sys, pygame, csv, os, numpy, random, math, player
+import sys, pygame, csv, os, numpy, random, math
 
 # initializes the pygame library
 pygame.init()
@@ -6,6 +6,8 @@ pygame.init()
 # creates the window and dimensions for the game
 screen_size_stuff = pygame.display.Info()
 screen_size_height, screen_size_width = screen_size_stuff.current_h, screen_size_stuff.current_w
+# screen = pygame.display.set_mode((screen_size_width / 3, screen_size_height / 1.78))
+
 screen = pygame.display.set_mode((800, 800))
 # screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
 transparent_surface = pygame.Surface((800, 800), pygame.SRCALPHA)
@@ -379,7 +381,7 @@ class Player(pygame.sprite.Sprite):
         # inherits from the pygame.sprite.Sprite class
         pygame.sprite.Sprite.__init__(self)
         self.speed = 4 + (.05 * pd.upgrade4_level)
-        self.max_health = 5000000 + (10 * pd.upgrade1_level)
+        self.max_health = 50 + (10 * pd.upgrade1_level)
         self.current_health = self.max_health
         self.generated_health = False
         self.revive_available = True
@@ -397,6 +399,8 @@ class Player(pygame.sprite.Sprite):
         self.death = True
         self.health_font = pygame.font.SysFont('futura', 46)
         self.orspeed = 0
+        self.enemies_destroyed = 0
+        self.time_survived = 0
         # self.playerGroup = pygame.sprite.Group()
         # self.playerGroup.add(self.rect)
 
@@ -805,7 +809,7 @@ class BasicAttack:
                 sk.melee_attack_collisions.clear()
             if ee.activate and not ee.felled:
                 ee.melee_attack_collisions.clear()
-            if com.activate and not ee.felled:
+            if com.activate and not com.felled:
                 com.melee_attack_collisions.clear()
             self.basic_attack_timer = 0
         self.basic_attack_timer += 1
@@ -1200,6 +1204,7 @@ class Enemy(pygame.sprite.Sprite):
             xp.append(XP(self.rect.x + 18, self.rect.y + 17))
             if self in enemies:
                 enemies.remove(self)
+                p.enemies_destroyed += 1
             chance = random.randint(1, 10)
             if chance <= 3:
                 # chance for the player to get gold
@@ -1813,6 +1818,7 @@ class Bat(Enemy):
             xp.append(XP(self.rect.x + 18, self.rect.y + 17))
             if self in bats:
                 bats.remove(self)
+                p.enemies_destroyed += 1
             chance = random.randint(1, 10)
             if chance <= 3:
                 # chance for the player to get gold
@@ -2019,6 +2025,7 @@ class MiniEarthElemental(Enemy):
 
     def activate_death(self):
         if self.health <= 0:
+            p.enemies_destroyed += 1
             p.gold += 20
             # Makes sure ee is actually dead
             self.felled = True
@@ -2106,6 +2113,7 @@ class Commander(Enemy):
         self.shoutcounter = 0
     def activate_death(self):
         if self.health <= 0:
+            p.enemies_destroyed += 1
             p.gold += 25
             # Makes sure Comander is actually dead
             self.felled = True
@@ -2114,7 +2122,6 @@ class Commander(Enemy):
         if self.rect.colliderect(ba.hitbox_rect) and ba.running and not self.melee_attack_collisions:
             # Reduce health from the mini boss from Players basic attack if not hit by that same attack swing
             critical = p.check_critical_chance()
-            print("Hit")
             if critical:
                 self.health -= (ba.damage * 1.5)
             else:
@@ -2496,6 +2503,7 @@ class SkeletonKing(Enemy):
 
     def activate_death(self):
         if self.health <= 0:
+            p.enemies_destroyed += 1
             p.gold += 250
             # removes the skeleton king if they are at or below zero health
             self.felled = True
@@ -4436,20 +4444,36 @@ def death_screen():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 game = False
+                pygame.quit()
+                sys.exit()
         screen.blit(dungeonBackground, (0, 0))
 
         large_text = pygame.font.SysFont('Garamond', 70, bold=True)
+        info_text = pygame.font.SysFont('Garamond', 36, bold=1)
         text_surf, text_rect = text_objects("YOU DIED", large_text)
         text_rect.center = ((screen_width / 2), (screen_height / 3.3))
         screen.blit(horizontalScroll, (screen_width / 2 - 288, screen_height / 10))
         # shows the buttons needed on the pause menu
-        button("Main Menu", ((screen_width / 4) - 100), (screen_height / 2), 200, 100, (247, 167, 82),
+        button("Main Menu", ((screen_width / 4) - 100), (screen_height / 1.25), 200, 100, (247, 167, 82),
                (184, 120, 51), "main_menu")
-        button("Quit", (screen_width / 1.3) - 100, (screen_height / 2), 200,
+        button("Quit", (screen_width / 1.3) - 100, (screen_height / 1.25), 200,
                100, (247, 167, 82),
                (184, 120, 51), "Quit")
         # puts the menu text on the screen
         screen.blit(text_surf, text_rect)
+
+        info_render = info_text.render(f'You eliminated {p.enemies_destroyed} enemies!', True, (225, 255, 255))
+        screen.blit(info_render, (screen_width / 4, screen_height / 2))
+
+        info2_render = info_text.render(f'You earned {p.gold} gold!', True, (225, 255, 255))
+        screen.blit(info2_render, (screen_width / 4, screen_height / 1.75))
+
+        info3_render = info_text.render(f'You now have {pd.balance} gold!', True, (225, 255, 255))
+        screen.blit(info3_render, (screen_width / 4, screen_height / 1.56))
+        # info4_render = info_text.render(f'', True, (225, 255, 255))
+        # screen.blit(info4_render, (screen_width / 2.45, screen_height / 1.42))
+
+
 
         pygame.display.update()
         clock.tick(15)
@@ -4617,10 +4641,12 @@ while game:
             p.current_health = int(p.max_health * 0.75)
             p.revive_available = False
         else:
+            p.time_survived = (minutes, seconds)
             prevGameTime = gameTime
             p.death = True
             # print(p.gold)
             pd.add_gold()
+            pd.load_upgrades_into_game()
             death_screen()
             while p.death:
                 for event in pygame.event.get():
@@ -4718,7 +4744,8 @@ while game:
     if ee.activate and not ee.felled:
         ee.generate_enemy()
         ee.check_collisions()
-    ee.activate_death()
+    if not ee.felled:
+        ee.activate_death()
 
     if ee.felled and not bup.upgrade_active:
         bup.generate_entity()
@@ -4733,8 +4760,9 @@ while game:
         com.generate_enemy()
         com.comactive()
         com.check_collisions()
-    com.activate_death()
-    print(com.health)
+    if not com.felled:
+        com.activate_death()
+    # print(com.health)
 
     if int(minutes) == 10 and int(seconds) == 00:
         # skeleton king spawns once the game time reaches a minute and thirty seconds
@@ -4746,7 +4774,8 @@ while game:
         sk.check_collisions()
         sk.follow_mc()
         sk.attack()
-    sk.activate_death()
+    if not sk.felled:
+        sk.activate_death()
 
     for enemy in enemies:
         enemy.clean_dictionaries()
@@ -4776,7 +4805,7 @@ while game:
             p.generated_health = True
     if seconds == 31 or seconds == 1:
         p.generated_health = False
-
+    # print(pd.balance)
 
     b.bullet_counter += 1
     ba.attack()
