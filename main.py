@@ -400,7 +400,7 @@ class Player(pygame.sprite.Sprite):
         self.health_font = pygame.font.SysFont('futura', 46)
         self.orspeed = 0
         self.enemies_destroyed = 0
-        self.time_survived = 0
+        self.time_survived = ()
         # self.playerGroup = pygame.sprite.Group()
         # self.playerGroup.add(self.rect)
 
@@ -4701,7 +4701,7 @@ def death_screen():
         screen.blit(dungeonBackground, (0, 0))
 
         large_text = pygame.font.SysFont('Garamond', 70, bold=True)
-        info_text = pygame.font.SysFont('Garamond', 36, bold=1)
+        info_text = pygame.font.SysFont('Garamond', 32, bold=1)
         text_surf, text_rect = text_objects("YOU DIED", large_text)
         text_rect.center = ((screen_width / 2), (screen_height / 3.3))
         screen.blit(horizontalScroll, (screen_width / 2 - 288, screen_height / 10))
@@ -4714,14 +4714,17 @@ def death_screen():
         # puts the menu text on the screen
         screen.blit(text_surf, text_rect)
 
-        info_render = info_text.render(f'You eliminated {p.enemies_destroyed} enemies!', True, (225, 255, 255))
-        screen.blit(info_render, (screen_width / 4, screen_height / 2))
+        info0_render = info_text.render(f'You survived for {p.time_survived[0]} minutes and {p.time_survived[1]} seconds!', True, (225, 255, 255))
+        screen.blit(info0_render, (screen_width / 4, screen_height / 2.12))
+
+        info1_render = info_text.render(f'You eliminated {p.enemies_destroyed} enemies!', True, (225, 255, 255))
+        screen.blit(info1_render, (screen_width / 4, screen_height / 1.85))
 
         info2_render = info_text.render(f'You earned {p.gold} gold!', True, (225, 255, 255))
-        screen.blit(info2_render, (screen_width / 4, screen_height / 1.75))
+        screen.blit(info2_render, (screen_width / 4, screen_height / 1.67))
 
         info3_render = info_text.render(f'You now have {pd.balance} gold!', True, (225, 255, 255))
-        screen.blit(info3_render, (screen_width / 4, screen_height / 1.56))
+        screen.blit(info3_render, (screen_width / 4, screen_height / 1.51))
         # info4_render = info_text.render(f'', True, (225, 255, 255))
         # screen.blit(info4_render, (screen_width / 2.45, screen_height / 1.42))
 
