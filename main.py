@@ -1,4 +1,4 @@
-import sys, pygame, csv, os, numpy, random, math
+import sys, pygame, csv, os, numpy, random, math, pydoc
 
 # initializes the pygame library
 pygame.init()
@@ -7,6 +7,7 @@ pygame.init()
 screen_size_stuff = pygame.display.Info()
 screen_size_height, screen_size_width = screen_size_stuff.current_h, screen_size_stuff.current_w
 # screen = pygame.display.set_mode((screen_size_width / 3, screen_size_height / 1.78))
+# print(screen_size_height)
 
 screen = pygame.display.set_mode((800, 800))
 # screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
@@ -83,8 +84,27 @@ output_csv = './game-data/new-profile-data.csv'
 
 
 class ProfileData:
+    """
+    Reads and writes game data to game file.
+
+    Attributes:
+        empty (bool): Declares if game data file is empty.
+        new_file_data (list): List of data to be written to temporary file.
+        upgrade1_level (int): Level number for the max health upgrade.
+        upgrade2_level (int): Level number for the health regen upgrade.
+        upgrade3_level (int): Level number for the revive upgrade.
+        upgrade4_level (int): Level number for the movement speed upgrade.
+        upgrade5_level (int): Level number for the dodge chance upgrade.
+        upgrade6_level (int): Level number for the increased gold upgrade.
+        upgrade7_level (int): Level number for the crit chance upgrade.
+        upgrade8_level (int): Level number for the life-steal upgrade.
+        balance (int): The total gold the user has.
+        profile_id (int): The currently selected user profile.
+
+    """
 
     def __init__(self):
+        """Initializes the ProfileData class."""
         self.empty = True
         self.new_file_data = []
 
@@ -101,6 +121,7 @@ class ProfileData:
         self.profile_id = 0
 
     def check_empty(self):
+        """Checks if profile folder/file exists and if it does, if it is empty."""
         csv_file = './game-data/profile-data.csv'
         game_data_folder = './game-data'
         exists_file = os.path.exists(csv_file)
@@ -125,6 +146,7 @@ class ProfileData:
                 self.create_csv()
 
     def create_csv(self):
+        """Creates the profile-data.csv if it does not exist."""
         if self.empty:
             with open('./game-data/profile-data.csv', 'w') as p_data:
                 p_writer = csv.writer(p_data, lineterminator= '\n')
@@ -143,7 +165,7 @@ class ProfileData:
                 # print("file created")
 
     def add_gold(self):
-
+        """Adds gold acquired from game to the profile-data.csv when the player either dies or wins."""
         with open(input_csv, 'r') as p_data_read, open(output_csv, 'w', newline='') as p_data_write:
             p_reader = csv.reader(p_data_read, delimiter=',')
             p_writer = csv.writer(p_data_write, delimiter=',')
@@ -167,6 +189,7 @@ class ProfileData:
 
 
     def load_skill_tree(self):
+        """Updates each upgrade level in the skill tree with the most recent upgrade levels."""
         with open(input_csv, 'r') as p_data_read, open(output_csv, 'w', newline='') as p_data_write:
             p_reader = csv.reader(p_data_read, delimiter=',')
             p_writer = csv.writer(p_data_write, delimiter=',')
@@ -185,6 +208,7 @@ class ProfileData:
                     st.balance = int(float(line[1]))
 
     def subtract_gold(self, purchase_price):
+        """Subtracts gold from upgrades purchased to the profile-data.csv when the player buys upgrades in the skill tree."""
         with open(input_csv, 'r') as p_data_read, open(output_csv, 'w', newline='') as p_data_write:
             p_reader = csv.reader(p_data_read, delimiter=',')
             p_writer = csv.writer(p_data_write, delimiter=',')
@@ -207,6 +231,7 @@ class ProfileData:
             self.new_file_data.clear()
 
     def increase_upgrade_level(self, column):
+        """When the player purchases an upgrade, increase the upgrade level in the profile-data.csv."""
         with open(input_csv, 'r') as p_data_read, open(output_csv, 'w', newline='') as p_data_write:
             p_reader = csv.reader(p_data_read, delimiter=',')
             p_writer = csv.writer(p_data_write, delimiter=',')
@@ -228,6 +253,7 @@ class ProfileData:
             self.new_file_data.clear()
 
     def load_upgrades_into_game(self):
+        """Updates the upgrade level into the game loop; used for player stat upgrades."""
         with open(input_csv, 'r') as p_data_read, open(output_csv, 'w', newline='') as p_data_write:
             p_reader = csv.reader(p_data_read, delimiter=',')
             p_writer = csv.writer(p_data_write, delimiter=',')
@@ -246,6 +272,7 @@ class ProfileData:
                     self.profile_id = int(line[0])
 
     def change_profile(self, profile):
+        """Changes the selected profile in the profile-data.csv file."""
         with open(input_csv, 'r') as p_data_read, open(output_csv, 'w', newline='') as p_data_write:
             p_reader = csv.reader(p_data_read, delimiter=',')
             p_writer = csv.writer(p_data_write, delimiter=',')
@@ -288,6 +315,7 @@ class ProfileData:
             self.new_file_data.clear()
 
     def reset_profile(self, profile):
+        """Resets the selected profile's data in the profile-data.csv file."""
         with open(input_csv, 'r') as p_data_read, open(output_csv, 'w', newline='') as p_data_write:
             p_reader = csv.reader(p_data_read, delimiter=',')
             p_writer = csv.writer(p_data_write, delimiter=',')
@@ -324,10 +352,36 @@ pd.check_empty()
 
 
 class Map:
-    # Controls map boundaries and map camera
-    def __init__(self, map_x=-800, map_y=-800):
-        self.map_x = map_x
-        self.map_y = map_y
+    """
+    Controls the map, map boundaries, and houses the camera controls.
+
+    Attributes:
+        map_x (float): The x-position of the map's starting position.
+        map_y (float): The y-position of the map's starting position.
+        cameraX (float): The x-position of the camera's starting position.
+        cameraY (float): The y-position of the camera's starting position.
+        left_boundary (pygame.rect.Rect): Creates a left boundary wall so the player cannot pass.
+        left_boundary_x (float): The x-position of the left boundary wall.
+        left_boundary_y1 (float): The first y-position of the left boundary wall.
+        left_boundary_y2 (float): The second y-position of the left boundary wall.
+        right_boundary (pygame.rect.Rect): Creates a right boundary wall so the player cannot pass.
+        right_boundary_x (float): The y-position of the left boundary wall.
+        right_boundary_y1 (float): The first y-position of the right boundary wall.
+        right_boundary_y2 (float): The first y-position of the left boundary wall.
+        top_boundary (pygame.rect.Rect): Creates a top boundary wall so the player cannot pass.
+        top_boundary_x1 (float): The first x-position of the top boundary wall.
+        top_boundary_x2 (float): The second x-position of the top boundary wall.
+        top_boundary_y (float): The y-position of the top boundary wall.
+        bottom_boundary (pygame.rect.Rect): Creates a bottom boundary wall so the player cannot pass.
+        bottom_boundary_x1 (float): The first x-position of the bottom boundary wall.
+        bottom_boundary_x2 (float): The second x-position of the bottom boundary wall.
+        bottom_boundary_y (float): The y-position of the bottom boundary wall.
+    """
+
+    def __init__(self):
+        """Initalizes the Map class."""
+        self.map_x = -800
+        self.map_y = -800
         self.cameraX = -140
         self.cameraY = -140
         self.left_boundary_x = -245
@@ -360,6 +414,7 @@ class Map:
                                                 (self.bottom_boundary_x2, self.bottom_boundary_y), 12)
 
     def update_boundary(self):
+        """Updates the map boundary constantly as the camera moves positionings."""
         # keep the map boundaries updated
         self.left_boundary = pygame.draw.line(transparent_surface, (255, 0, 0),
                                               (self.left_boundary_x, self.left_boundary_y1),
@@ -375,11 +430,31 @@ class Map:
                                                 (self.bottom_boundary_x2, self.bottom_boundary_y), 12)
 
 
-class Player(pygame.sprite.Sprite):
-    # Player class controls basic functions relating to the player
+class Player:
+    """
+    Controls the movement of the player, along with the stats and interactions with the camera.
+
+    Attributes:
+        speed (float): The movement speed of the player.
+        max_health (int): The maximum health the player can have, also the starting amount.
+        current_health (int): The current health of the player through the game.
+        generated_health (bool): Declares if health was restored from the health regen upgrade.
+        revive_available (bool): Declares if the revive upgrade has been used.
+        dodge_chance (float): The percent chance for the player to avoid taking damage.
+        critical_chance (float): The percent chance for the player to deal additional damage.
+        life_steal_chance (float): The percent chance for the player to steal health from enemies.
+        image (str): The path to the player's image file.
+        death (bool): Declares if the player is dead.
+        rect (pygame.rect.Rect): The hitbox of the player.
+        gold (int): The gold the player has received in just their current game, not total.
+        health_font (pygame.font.Font): The font style used for displaying health information.
+        orspeed (float): The speed the player may move at if hit by the Earth Elemental's attacks.
+        enemies_destroyed (int): The number of enemies the player destroyed in just their current game.
+        time_survived (tuple): The time that the player survived.
+    """
+
     def __init__(self):
-        # inherits from the pygame.sprite.Sprite class
-        pygame.sprite.Sprite.__init__(self)
+        """Initalizes the Player class."""
         self.speed = 4 + (.05 * pd.upgrade4_level)
         self.max_health = 50000 + (10 * pd.upgrade1_level)
         self.current_health = self.max_health
@@ -395,29 +470,33 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = 400
         self.rect.width = 40
         self.gold = 0
-        self.dodgeChance = 0
-        self.death = True
+        # self.death = True
         self.health_font = pygame.font.SysFont('futura', 46)
         self.orspeed = 0
         self.enemies_destroyed = 0
         self.time_survived = ()
-        # self.playerGroup = pygame.sprite.Group()
-        # self.playerGroup.add(self.rect)
 
     def update_upgrades(self):
+        """Updates the upgrades when the user selects specific in-game upgrades."""
         self.speed = 4 + (.05 * pd.upgrade4_level)
         self.dodge_chance = 0.02 * pd.upgrade5_level
 
     def display_health(self):
-        # print(self.gold)
+        """Displays player health to the top of the screen."""
         info = pygame.display.Info()
         tempwidth, tempheight = info.current_w, info.current_h
-        # displays health to the screen
         health_string = f"HP: {str(int(self.current_health))}"
         health_display = self.health_font.render(health_string, True, (255, 0, 0))
         screen.blit(health_display, ((tempwidth/2)-50, 20))
 
     def check_dodge_chance(self):
+        """
+        Checks to see if the player will dodge the enemy attack.
+
+        Returns:
+            bool: True if player avoids attack, False if they don't.
+
+        """
         if self.dodge_chance:
             random_number = random.randint(0, 100)
             if random_number <= (100 * self.dodge_chance):
@@ -425,6 +504,13 @@ class Player(pygame.sprite.Sprite):
         return False
 
     def check_critical_chance(self):
+        """
+        Checks to see if the player will deal a critical strike to an enemy.
+
+        Returns:
+            bool: True if player deals critical damage, False if they don't.
+
+        """
         if self.critial_chance:
             random_number = random.randint(0, 100)
             if random_number <= (100 * self.critial_chance):
@@ -432,6 +518,13 @@ class Player(pygame.sprite.Sprite):
         return False
 
     def check_life_steal_chance(self):
+        """
+        Checks to see if the player will heal off damaging an enemy.
+
+        Returns:
+            bool: True if player heals off the enemy, False if they don't.
+
+        """
         if self.life_steal_chance:
             random_number = random.randint(0, 100)
             if random_number <= (100 * self.life_steal_chance):
@@ -439,6 +532,7 @@ class Player(pygame.sprite.Sprite):
         return False
 
     def add_life_steal_health(self):
+        """Adds a specific number of health if player lifesteals, if the player is not already full health."""
         if self.life_steal_chance:
             if self.current_health + (100 * self.life_steal_chance) <= self.max_health:
                 self.current_health += (100 * self.life_steal_chance)
@@ -446,7 +540,7 @@ class Player(pygame.sprite.Sprite):
                 self.current_health = self.max_health
 
     def move_west(self):
-        # moves the player and camera West, while moving every other entity in the opposite direction
+        """Moves the player/camera west, and moves all other entities in the opposite direction."""
         if self.rect.x > m.left_boundary_x + 25:
             # checks if player is within map boundaries
             m.cameraX -= self.speed
@@ -510,7 +604,7 @@ class Player(pygame.sprite.Sprite):
                 ma.west_rect.x = ma.rect.x - ma.west_x_val
 
     def move_east(self):
-        # moves the player and camera East, while moving every other entity in the opposite direction
+        """Moves the player/camera east, and moves all other entities in the opposite direction."""
         if self.rect.x < m.right_boundary_x - 50:
             # checks if player is within map boundaries
             m.cameraX += self.speed
@@ -575,7 +669,7 @@ class Player(pygame.sprite.Sprite):
                 ma.west_rect.x = ma.rect.x - ma.west_x_val
 
     def move_north(self):
-        # moves the player and camera North, while moving every other entity in the opposite direction
+        """Moves the player/camera north, and moves all other entities in the opposite direction."""
         if self.rect.y > m.top_boundary_y + 25:
             # checks if player is within map boundaries
             m.cameraY -= self.speed
@@ -639,7 +733,7 @@ class Player(pygame.sprite.Sprite):
                 ma.west_rect.y = ma.rect.y + ma.west_y_val
 
     def move_south(self):
-        # moves the player and camera South, while moving every other entity in the opposite direction
+        """Moves the player/camera south, and moves all other entities in the opposite direction."""
         if self.rect.y < m.bottom_boundary_y - 50:
             # checks if player is within map boundaries
             m.cameraY += self.speed
@@ -700,8 +794,40 @@ class Player(pygame.sprite.Sprite):
 
 
 class BasicAttack:
-    # Creates Basic Attacks for the Player
+    """
+    Allows the player to automatically attack in an area around the player after a certain amount of time passes.
+
+    Attributes:
+        rect (pygame.rect.Rect): Draws the basic attack to the screen.
+        hitbox_rect (pygame.rect.Rect): Detects if enemies are within the range of the basic attack.
+        east (bool): Declares if the basic attack has activated in the east direction.
+        north_east (bool): Declares if the basic attack has activated in the northeast direction.
+        north (bool): Declares if the basic attack has activated in the north direction.
+        north_west (bool): Declares if the basic attack has activated in the north_west direction.
+        west (bool): Declares if the basic attack has activated in the west direction.
+        south_west (bool): Declares if the basic attack has activated in the south_west direction.
+        south (bool): Declares if the basic attack has activated in the south direction.
+        south_east (bool): Declares if the basic attack has activated in the south_east direction.
+        east_end (bool): Declares if the basic attack has finished it's cycle.
+        east_counter (int): The amount of times the attack has been on screen to the east.
+        north_east_counter (int): The amount of times the attack has been on screen to the northeast.
+        north_counter (int): The amount of times the attack has been on screen to the north.
+        north_west_counter (int): The amount of times the attack has been on screen to the north_west.
+        west_counter (int): The amount of times the attack has been on screen to the west.
+        south_west_counter (int): The amount of times the attack has been on screen to the southwest.
+        south_counter (int): The amount of times the attack has been on screen to the south.
+        south_east_counter (int): The amount of times the attack has been on screen to the south_east.
+        east_endCounter (int): The amount of times the attack has been on screen to the east (the last position).
+        running (bool): Declares if the basic attack is current active/swinging.
+        finished (bool): Declares if the basic attacked finished it's swing.
+        damage (int): The base damage for the basic attack.
+        basic_attack_timer (int): A timer that counts up in the game loop until it reaches it's target.
+        timer_target (int): A timer that controls the interval between basic attacks.
+        range_increase (int): Increases the range of the basic attack.
+        hitbox_radius (int): Increases the hitbox radius of the basic attack.
+    """
     def __init__(self):
+        """Initializes the BasicAttack class."""
         self.rect = None
         self.hitbox_rect = pygame.draw.circle(transparent_surface, (255, 255, 255), (p.rect.x + 19, p.rect.y + 19), 78)
 
@@ -735,6 +861,7 @@ class BasicAttack:
         self.hitbox_radius = 78
 
     def attack(self):
+        """Allows the player to swing their sword and deal damage to enemies within range."""
         # print(pd.upgrade7_level)
         # goes through various animations and hitbox creations for basic attacks to hit all enemies
         total_time = pygame.time.get_ticks() / 1000
@@ -850,7 +977,17 @@ class BasicAttack:
 
 
 class BulletUpgrade:
+    """
+    Controls the animation and hitbox of bullet ability when dropped by the Earth Elemental.
+
+    Attributes:
+        rect (pygame.rect.Rect): The hitbox of the bullet ability when it is dropped.
+        upgrade_out (bool): Declares if the player has equipped the bullet ability.
+        upgrade_active (bool): Declares if the upgrade has been dropped/can be equipped by the player.
+        animation (int): A timer that controls the intervals between different animations of the dropped ability.
+    """
     def __init__(self):
+        """Initializes the BulletUpgrade class."""
         self.rect = bullet_upgrade.get_rect().scale_by(1, 1)
         self.rect.x = 0
         self.rect.y = 0
@@ -859,6 +996,7 @@ class BulletUpgrade:
         self.animation = 0
 
     def generate_entity(self):
+        """Handles the animiations of the dropped bullet ability."""
         bup.upgrade_out = True
         if p.orspeed > p.speed:
             p.speed = p.orspeed
@@ -878,15 +1016,41 @@ class BulletUpgrade:
             bup.animation = 0
 
     def check_collisions(self):
+        """Changes stats once the player comes in contact with the dropped bullet ability."""
         self.upgrade_out = False
         self.upgrade_active = True
         b.shooting = True
 
 
-class Bullet(pygame.sprite.Sprite):
+class Bullet:
+    """
+    The bullet ability, which allows the player to shoot at enemies.
+
+    Attributes:
+        rect (pygame.rect.Rect): The hitbox of the bullet.
+        image (str): The path to the bullet image file.
+        starting_point (tuple): The starting point of the bullets x,y position.
+        mouse_pos (tuple): The x,y position of where the mouse cursor is currently pointed.
+        bullet_valid (bool): Declares if the bullet is shooting.
+        bullet_speed (float): Controls the speed the bullet moves.
+        bullet_increment (float): Works with the bullet_spawn_speed to have consistent spawn timings.
+        counterX (int): A timer to restrict the distance the bullet travels in the x-direction.
+        counterY (int): A timer to restrict the distance the bullet travels in the y-direction.
+        bullet_disstance (int): The maximum distance a bullet can travel.
+        angle (float): Calculated angle from the bullet position to the mouse position.
+        position_reached (bool): Declares if the bullet has reached the mouse position.
+        damage (int): The base damage of the bullet.
+        go_fourth_a (bool): Declares if the bullet originally went in the fourth quadrant.
+        go_third_a (bool): Declares if the bullet originally went in the third quadrant.
+        go_second_a (bool): Declares if the bullet originally went in the second quadrant.
+        go_first_a (bool): Declares if the bullet originally went in the first quadrant.
+        bullet_counter (int): A timer that counts up in the game loop until it reaches it's target.
+        bullet_spawn_speed (int): A timer that determines the interval between each bullet.
+        shooting (bool): Declares if the bullet ability is active.
+    """
     # Bullet class allows the player to shoot bullets at enemies
     def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
+        """Initializes the Bullet class."""
         self.rect = pygame.draw.circle(transparent_surface, (255, 255, 255), (p.rect.x + 18, p.rect.y + 17), 10)
         self.image = False
         self.starting_point = pygame.math.Vector2(0, 0)
@@ -909,6 +1073,7 @@ class Bullet(pygame.sprite.Sprite):
         self.shooting = False
 
     def bullet(self):
+        """Shoots a bullet from the player to where the mouse cursor is at."""
         if self.mouse_pos[0] > self.starting_point[0] and self.mouse_pos[1] < self.starting_point[1]:
             # first quadrant
             new_triangle = pygame.math.Vector2(self.mouse_pos[0] - self.starting_point[0], self.mouse_pos[1] -
@@ -1043,19 +1208,64 @@ class Bullet(pygame.sprite.Sprite):
             if self.rect.x > m.right_boundary_x or self.rect.x < m.left_boundary_x or self.rect.y > m.bottom_boundary_y or self.rect.y < m.top_boundary_y:
                 # destroy the bullet if it goes out of the map boundaries
                 self.rect = pygame.draw.circle(transparent_surface, (255, 255, 255), (p.rect.x + 18, p.rect.y + 17), 10)
-                self.kill()
+                # self.kill()
 
 
-class Enemy(pygame.sprite.Sprite):
-    # Enemy class controls basic functions relating to the enemy
+class Enemy:
+    """
+    Controls the movement of the most basic enemy type, the slime.
+
+    Attributes:
+        speed (float): Sets a random movement speed of the enemy.
+        image (str): A string path to the image file.
+        rect (pygame.rect.Rect): The hitbox of the enemy.
+        north_rect (pygame.rect.Rect): Sets a hitbox to the north side of the enemy.
+        east_rect (pygame.rect.Rect): Sets a hitbox to the east side of the enemy.
+        south_rect (pygame.rect.Rect): Sets a hitbox to the south side of the enemy.
+        west_rect (pygame.rect.Rect): Sets a hitbox to the west side of the enemy.
+        north_x_val (int): Used to set the north hitbox x-value.
+        north_y_val (int): Used to set the north hitbox y-value.
+        east_x_val (int): Used to set the east hitbox x-value.
+        east_y_val (int): Used to set the east hitbox y-value.
+        south_x_val (int): Used to set the south hitbox x-value.
+        south_y_val (int): Used to set the south hitbox y-value.
+        west_x_val (int): Used to set the west hitbox x-value.
+        west_y_val (int): Used to set the west hitbox y-value.
+        circle_rect (pygame.rect.Rect): Creates a medium-sized circular hitbox to detect ally movements.
+        middot_rect (pygame.rect.Rect): Creates a small-sized circular hitbox to detect ally movements.
+        maxhealth (int): Sets the maximum health an enemy can have.
+        health (float): Sets the current health of the enemy.
+        bullet_collisions (list): A list containing the instances of each bullet that hit the enemy.
+        temp_time (int): Sets the amount of seconds at a given point, used to see if enemies stop moving.
+        previous_pos (tuple): Sets the enemie's x,y position to determine movement behaviors.
+        melee_attack_collisions (list): A list containing the different times it has been hit by the basic attack.
+        spawned (list): List containing spawn information of the enemy.
+        spawn_timer (int): A timer that determines when the enemy will spawn after displaying it's indicator.
+        spawn_indicator (None): An indicator that shows up to reveal where the enemy will soon be spawned.
+        animation (int): A counter that changes which animation to play.
+        bat (bool): Declares if this enemy is a bat.
+        skeleton_king (bool): Declares if this enemy is a skeleton King.
+        enemy_length (bool): The number of enemies spawned.
+        enemy_list (None): The list of enemies spawned.
+        player_collide_counter (int): A timer that counts how long a player has collided with the enemy.
+        edamage (int): Base damage of the earth elemental.
+        wasbuffed (bool): Declares if the enemy has been buffed by the commander.
+        death (bool): Declares if the enemy has died.
+    """
+
     def __init__(self, x, y):
-        pygame.sprite.Sprite.__init__(self)
+        """
+        Initializes the Enemy class.
+
+        Args:
+            x (float): Sets the x-position of the enemy.
+            y (float): Sets the y-position of the enemy.
+        """
         self.speed = random.uniform(1.3, 2)
         self.image = "./images/slimeRect.png"
         self.rect = enemy1.get_rect().scale_by(1, 1)
         self.rect.x = x
         self.rect.y = y
-        self.in_range = False
         self.north_rect = pygame.rect.Rect((self.rect.x, self.rect.y), (10, 10))
         self.north_rect.midtop = self.rect.midtop
         self.east_rect = pygame.rect.Rect((self.rect.x, self.rect.y), (10, 10))
@@ -1095,6 +1305,7 @@ class Enemy(pygame.sprite.Sprite):
         self.death = False
 
     def generate_enemy(self):
+        """Creates the enemy and handles it's animations."""
         if not self.spawned:
             pygame.draw.circle(screen, (128, 0, 32), (self.rect.x, self.rect.y), 16)
             self.spawn_timer += 1
@@ -1131,6 +1342,7 @@ class Enemy(pygame.sprite.Sprite):
             self.follow_mc()
 
     def check_collisions(self):
+        """Checks the collisions between the enemy and the player's attacks."""
         if b.shooting:
             for bullet in bullets:
                 # for each active bullet, if the bullet hits an enemy, deal damage if appropriate conditions met.
@@ -1232,6 +1444,7 @@ class Enemy(pygame.sprite.Sprite):
             self.player_collide_counter = 0
 
     def activate_death(self):
+        """Destroys the enemy when they run out of health."""
         if self.health <= 0:
             self.death = True
             # despawns the enemy if their health is 0 or below
@@ -1245,10 +1458,12 @@ class Enemy(pygame.sprite.Sprite):
                 p.gold += 1 + (1 * pd.upgrade6_level)
 
     def spawn(self):
+        """Sets the enemy to have spawned after their spawn indicator is no longer active."""
         # allows programmer to know if this enemy has spawned
         self.spawned.append(1)
 
     def clean_dictionaries(self):
+        """As bullets and other attacks hit the enemy, clear those registered hits once they are no longer active."""
         if b.shooting:
             for bullet in bullets:
                 # check if any of the bullets are actually still colliding with enemies,
@@ -1277,6 +1492,7 @@ class Enemy(pygame.sprite.Sprite):
                         bullets.remove(bullet)
 
     def travel_north(self):
+        """Allows the enemy to move north"""
         # enemy moves North
         self.rect.y -= self.speed
         self.north_rect.y = self.rect.y - self.north_y_val
@@ -1285,6 +1501,7 @@ class Enemy(pygame.sprite.Sprite):
         self.west_rect.y = self.rect.y + self.west_y_val
 
     def travel_east(self):
+        """Allows the enemy to move east."""
         # enemy moves East
         self.rect.x += self.speed
         self.north_rect.x = self.rect.x + self.north_x_val
@@ -1293,6 +1510,7 @@ class Enemy(pygame.sprite.Sprite):
         self.west_rect.x = self.rect.x - self.west_x_val
 
     def travel_south(self):
+        """Allows the enemy to move south."""
         # enemy moves South
         self.rect.y += self.speed
         self.north_rect.y = self.rect.y - self.north_y_val
@@ -1301,6 +1519,7 @@ class Enemy(pygame.sprite.Sprite):
         self.west_rect.y = self.rect.y + self.west_y_val
 
     def travel_west(self):
+        """Allows the enemy to move west."""
         # enemy moves West
         self.rect.x -= self.speed
         self.north_rect.x = self.rect.x + self.north_x_val
@@ -1309,6 +1528,7 @@ class Enemy(pygame.sprite.Sprite):
         self.west_rect.x = self.rect.x - self.west_x_val
 
     def follow_mc(self):
+        """Handles the logic behind enemy movement."""
         # follows the main character around the map
         before_movement = (self.rect.x, self.rect.y)
         stuck_counter = False
@@ -1656,7 +1876,42 @@ class Enemy(pygame.sprite.Sprite):
 
 
 class Bat(Enemy):
+    """
+    Controls the movement and attacks of the bat enemy type. Inherrits from the Enemy class.
+
+    Attributes:
+        rect (pygame.rect.Rect): The hitbox for the bat.
+        health (float): The health of the bat.
+        speed (float): The movementspeed of the bat.
+        bat (bool): Declares if it is of type bat.
+        player_pos (tuple): The x,y position of the player, used for targeting.
+        found (bool): Determines if the Bat found the angle between itself and the player.
+        bullet_rect (pygame.rect.Rect): The hitbox of the bullet.
+        bullet_speed (float): The speed that the bullet travels.
+        spawned2 (list): Contains spawn information of the bat.
+        position_reached (bool): Determines if the bullet the bat shoots found it's target.
+        go_fourth_a (bool): Determines of the player is in the fourth quadrant from the bat.
+        go_third_a (bool): Determines of the player is in the third quadrant from the bat.
+        go_second_a (bool): Determines of the player is in the second quadrant from the bat.
+        go_first_a (bool): Determines of the player is in the first quadrant from the bat.
+        angle (float): Calculated angle between the bat and the player.
+        counter (int): Sets the interval between each bullet the bat shoots.
+        target_x (float): The player's x-position.
+        target_y (float): The player's y-position.
+        starting_point (list): The starting point of when the bullet is initially launched.
+        shoot_timer (int):
+        bullet_valid (bool): Determines if the bullet is currently active.
+        hit_counter (int): A counter which counts how many times the player has been hit.
+        spawned (bool): Determines if the bat has been spawned.
+    """
     def __init__(self, x, y):
+        """
+        Initializes the Bat class.
+
+        Args:
+            x (float): Sets the starting x-position of the bat.
+            y (float): Sets the starting y-position of the bat.
+        """
         super().__init__(x, y)
         self.rect = batImg1.get_rect().scale_by(1, 1)
         self.rect.x = x
@@ -1691,6 +1946,7 @@ class Bat(Enemy):
         self.spawned = False
 
     def generate_enemy(self):
+        """Creates the bat and handles it's animations."""
         if not self.spawned:
             pygame.draw.circle(screen, (160, 85, 150), (self.rect.x, self.rect.y), 16)
             self.spawn_timer += 1
@@ -1718,6 +1974,7 @@ class Bat(Enemy):
                                                  (self.rect.x + 16, self.rect.y + 16), 1)
 
     def check_collisions(self):
+        """Checks the collisions between the bat and the player's attacks."""
         if b.shooting:
             for bullet in bullets:
                 # for each active bullet, if the bullet hits a bat, deal damage if appropriate conditions met.
@@ -1819,6 +2076,7 @@ class Bat(Enemy):
             self.player_collide_counter = 0
 
     def clean_dictionaries(self):
+        """As bullets and other attacks hit the enemy, clear those registered hits once they are no longer active."""
         if b.shooting:
             for bullet in bullets:
                 # check if any of the bullets are actually still colliding with enemies,
@@ -1847,6 +2105,7 @@ class Bat(Enemy):
                         bullets.remove(bullet)
 
     def activate_death(self):
+        """Destroys the enemy when they run out of health."""
         if self.health <= 0:
             # despawns the bat if their health is 0 or below
             xp.append(XP(self.rect.x + 18, self.rect.y + 17))
@@ -1859,6 +2118,7 @@ class Bat(Enemy):
                 p.gold += 1 + (1 * pd.upgrade6_level)
 
     def decide_action(self):
+        """Changes the behavior of the bat, switching between shooting the player and running at them."""
         # time to run at player (If within a certain distance from player, then just run, ignore shooting)
         # time to stop and shoot at player (get close enough to player to shoot but keep distance, doesn't run if too close)
 
@@ -1871,6 +2131,7 @@ class Bat(Enemy):
         self.shoot_timer += 1
 
     def find_angle(self):
+        """Calculates the angle between the bat and the player in order to fire a bullet."""
         if self.spawned:
             if not self.found:
                 self.target_x = p.rect.x+18
@@ -1901,6 +2162,7 @@ class Bat(Enemy):
                 self.shoot()
 
     def shoot(self):
+        """Shoots a bullet from the bat to the player's position."""
         if self.spawned:
             if not self.found:
                 self.find_angle()
@@ -1930,54 +2192,27 @@ class Bat(Enemy):
                     self.bullet_rect.y += math.sin(self.angle * (2*math.pi/360)) * self.bullet_speed
                     self.bullet_rect.x += math.cos(self.angle * (2*math.pi/360)) * self.bullet_speed
                     self.go_fourth_a = True
-                    # print(self.angle)
-                    # print("YUHH")
-                    # self.bullet_rect.y += self.bullet_speed
-                    # self.bullet_rect.x += self.bullet_speed
 
                 elif self.bullet_rect.x >= self.player_pos[0] and self.bullet_rect.y <= self.player_pos[1] and not self.go_first_a and not self.go_second_a and not self.go_fourth_a or self.go_third_a:
                     # third quadrant - travels to mouse position
                     self.bullet_rect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bullet_speed
                     self.bullet_rect.x -= math.cos(self.angle * (2*math.pi/360)) * self.bullet_speed
                     self.go_third_a = True
-                    # print("OOOOOOO")
-                    # self.bullet_rect.y -= self.bullet_speed
-                    # self.bullet_rect.x -= self.bullet_speed
 
                 elif self.bullet_rect.x >= self.player_pos[0] and self.bullet_rect.y >= self.player_pos[1] and not self.go_first_a and not self.go_third_a and not self.go_fourth_a or self.go_second_a:
                     # second quadrant - travels to mouse position
                     self.bullet_rect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bullet_speed
                     self.bullet_rect.x -= math.cos(self.angle * (2*math.pi/360)) * self.bullet_speed
                     self.go_second_a = True
-                    # print("AHHHHHH")
-                    # self.bullet_rect.y -= self.bullet_speed
-                    # self.bullet_rect.x -= self.bullet_speed
 
                 elif self.bullet_rect.x <= self.player_pos[0] and self.bullet_rect.y >= self.player_pos[1] and not self.go_second_a and not self.go_third_a and not self.go_fourth_a or self.go_first_a:
                     # first quadrant - travels to mouse position
                     self.bullet_rect.y -= math.sin(self.angle * (2*math.pi/360)) * self.bullet_speed
                     self.bullet_rect.x += math.cos(self.angle * (2*math.pi/360)) * self.bullet_speed
                     self.go_first_a = True
-                    # print("EEEEEEE")
-                    # self.bullet_rect.y -= self.bullet_speed
-                    # self.bullet_rect.x += self.bullet_speed
-
-                # else:
-                #     print("NUUUUUU")
-                #     # if self.player_pos[1] == self.starting_point
-                #     if self.player_pos[1] >= self.starting_point[1] and (abs(self.player_pos[0]) - self.starting_point[0]) < 15:
-                #         self.bullet_rect.y += math.sin(90 * (2*math.pi/360)) * self.bullet_speed
-                #     elif self.player_pos[1] <= self.starting_point[1] and (abs(self.player_pos[0]) - self.starting_point[0]) < 15:
-                #         self.bullet_rect.y -= math.sin(90 * (2*math.pi/360)) * self.bullet_speed
-                #     elif abs(self.player_pos[1] - self.starting_point[1]) <= 5 and self.player_pos[0] >= self.starting_point[0]:
-                #         self.bullet_rect.x += math.cos(self.angle * (2*math.pi/360)) * self.bullet_speed
-                # self.bullet_rect = pygame.draw.circle(screen, (128,12,128), (self.bullet_rect.x, self.bullet_rect.y), 12)
 
                 pygame.draw.circle(screen, (167,28,111), (self.bullet_rect.x+12, self.bullet_rect.y+12), 12)
 
-
-
-                # pygame.draw.rect(screen, (100,0,255), self.bullet_rect)
                 if self.bullet_rect.colliderect(p.rect) and not self.hit_counter:
                     dodge = p.check_dodge_chance()
                     if not dodge:
@@ -1988,8 +2223,40 @@ class Bat(Enemy):
 
 # First mini Boss clas code \/
 class MiniEarthElemental(Enemy):
+    """
+    Controls the movement and attacks of the Earth Elemental.
+
+    rect (pygame.rect.Rect): The hitbox of the Earth Elemental.
+    health (float): The health of the Earth Elemental.
+    speed (int): The speed of the Earth Elemental.
+    mini (bool): Determines if it is of type mini-boss.
+    felled (bool): Determines if the Earth Elemental has been destroyed.
+    activate (bool): Determines if the Earth Elemental is spawned.
+    not_attacking (bool): Determines if the Earth Elemental is not attacking.
+    is_attacking (bool): Determines if the Earth Elemental is attacking.
+    attack_timer (int): A timer that determines the interval between attacks.
+    last_attack (int): A timer that determines the last rumble attack.
+    attack_area (None): Sets the area of attack.
+    attack_rect (None): Sets a hitbox for the attack.
+    rumble_area (None): Sets the area for the rumble display.
+    aoe_start (int): A timer that keeps track of when the rumble attack is first initiated.
+    rumble_speed (int): Sets the speed that the player will go if hit by the rumble attack.
+    hit_damage (int): Sets the base damage of the attack.
+    animation (int): A timer that changes the different animations.
+    last_auto (int): A counter that determines the last auto-attack.
+    attack_speed (int): Sets the speed of the attack duration.
+    attackcounter (float): A timer for the rumble attack.
+
+    """
     # Earth Elemental Miniboss
     def __init__(self, x, y):
+        """
+        Initializes the MiniEarthElemental class.
+
+        Args:
+            x (float): Sets the starting x-position for the Earth Elemental.
+            y (float): Sets the starting y-position for the Earth Elemental.
+        """
         super().__init__(x, y)
         self.rect = minibee1.get_rect().scale_by(1, 1)
         self.rect.x = x
@@ -2008,7 +2275,7 @@ class MiniEarthElemental(Enemy):
         self.is_attacking = False
         self.attack_timer = 0
         self.last_attack = 0
-        self.attack_duration = 3
+        # self.attack_duration = 3
         self.attack_area = None
         self.attack_rect = None
         self.rumble_area = None
@@ -2018,10 +2285,11 @@ class MiniEarthElemental(Enemy):
         self.animation = 0
         self.last_auto = 0
         self.attack_speed = 2
-        self.speed_snap = False
+        # self.speed_snap = False
         self.attackcounter = 0.0
 
     def generate_enemy(self):
+        """Creates the enemy and handles it's animations."""
         self.attack_timer = (pygame.time.get_ticks() / 1000)
         self.aoe_hit()
         bup.rect.x = self.rect.x
@@ -2045,6 +2313,7 @@ class MiniEarthElemental(Enemy):
             self.auto_hit_player()
 
     def check_collisions(self):
+        """Checks the collisions between the Earth Elemental and the player's attacks."""
         if self.rect.colliderect(ba.hitbox_rect) and ba.running and not self.melee_attack_collisions:
             # Reduce health from the mini boss from Players basic attack if not hit by that same attack swing
             critical = p.check_critical_chance()
@@ -2058,6 +2327,7 @@ class MiniEarthElemental(Enemy):
             self.melee_attack_collisions.append(1)
 
     def activate_death(self):
+        """Destroys the enemy when they run out of health."""
         if self.health <= 0:
             p.enemies_destroyed += 1
             p.gold += 20
@@ -2066,6 +2336,7 @@ class MiniEarthElemental(Enemy):
             self.activate = False
 
     def follow_mc(self):
+        """Handles the movement of getting the Earth Elemental to the Player."""
         # Miniboss movment
         if self.rect.x < p.rect.x and not self.rect.colliderect(p.rect):
             self.travel_east()
@@ -2077,6 +2348,7 @@ class MiniEarthElemental(Enemy):
             self.travel_north()
 
     def aoe_hit(self):
+        """Creates a rumble area-of-effect attack against the player."""
         CalcTargets.calc_distance(self)
         if CalcTargets.calc_distance(self) <= 80 and self.not_attacking and (
                 int(self.attack_timer) - self.last_attack >= 12):
@@ -2113,6 +2385,7 @@ class MiniEarthElemental(Enemy):
                 self.attackcounter = 0
 
     def auto_hit_player(self):
+        """When the Earth Elemental is very close to the player, auto-attack them."""
         if self.rect.colliderect(p.rect) and (self.attack_timer - self.last_auto) >= self.attack_speed:
             dodge = p.check_dodge_chance()
             if not dodge:
@@ -2120,7 +2393,33 @@ class MiniEarthElemental(Enemy):
                 p.current_health -= self.hit_damage
 
 class Commander(Enemy):
+    """
+    Controls the movement and attacks of the Commander enemy.
+
+    Attributes:
+        rect (pygame.rect.Rect): The hitbox for the commander.
+        health (float): The health of the commander.
+        speed (int): The speed of the commander
+        felled (bool): Declares if the commander has been destroyed.
+        not_attacking (bool): Declares if the commander is not attacking
+        hit_damage (int): The base damage for the commander's attack
+        last_auto (int): A timer for the last auto-attack.
+        attack_speed (int): The interval of time between attacks.
+        buffarea (None): The size of area that allies are buffed.
+        shouttimer (int): A timer for the last shout ability used.
+        shoutarea (None): The size of area that allies are affected by shout.
+        shout (bool): Declares if the shout ability has been used.
+        activate (bool): Declares if the commander has been spawned.
+        shoutcounter (int): Determines the interval between shout abilities.
+    """
     def __init__(self, x, y):
+        """
+        initializes the Commander class.
+
+        Args:
+            x (float): Sets the starting x-position of the commander.
+            y (float): Sets the starting y-position of the commander.
+        """
         super().__init__(x, y)
         self.rect = minibee1.get_rect().scale_by(1, 1)
         self.rect.x = x
@@ -2139,13 +2438,14 @@ class Commander(Enemy):
         self.attack_speed = 5
         self.speed = 1
         self.buffarea = None
-        self.orspeed = 0
+        # self.orspeed = 0
         self.shouttimer = 15
         self.shoutarea = None
         self.shout = False
         self.activate = False
         self.shoutcounter = 0
     def activate_death(self):
+        """Destroys the commander when they run out of health."""
         if self.health <= 0:
             p.enemies_destroyed += 1
             p.gold += 25
@@ -2153,6 +2453,7 @@ class Commander(Enemy):
             self.felled = True
 
     def check_collisions(self):
+        """Checks the collisions between the commander and the player's attacks."""
         for bullet in bullets:
             if self.rect.colliderect(bullet.rect) and bullet.bullet_valid:
                 if not self.bullet_collisions:
@@ -2217,6 +2518,7 @@ class Commander(Enemy):
             self.melee_attack_collisions.append(1)
 
     def follow_mc(self):
+        """Handles the movement of getting the Earth Elemental to the Player."""
         if self.rect.x < p.rect.x and not self.rect.colliderect(p.rect):
             self.travel_east()
         if self.rect.x > p.rect.x and not self.rect.colliderect(p.rect):
@@ -2227,6 +2529,7 @@ class Commander(Enemy):
             self.travel_north()
 
     def generate_enemy(self):
+        """Creates the commander and handles it's animations."""
         self.attack_timer = (pygame.time.get_ticks() / 1000)
         self.x = random.randint(-340, 990)
         self.y = random.randint(-340, 990)
@@ -2249,6 +2552,7 @@ class Commander(Enemy):
             self.auto_hit_player()
 
     def auto_hit_player(self):
+        """When the commander is very close to the player, auto-attack them."""
         if self.rect.colliderect(p.rect) and (self.attack_timer - self.last_auto) >= self.attack_speed:
             dodge = p.check_dodge_chance()
             if not dodge:
@@ -2256,6 +2560,7 @@ class Commander(Enemy):
                 p.current_health -= self.hit_damage
 
     def buff_aura(self): #Speed and healing aura
+        """Ability of the commander that buffs the speed and healing of it's surrounding allies."""
         self.buffarea = pygame.draw.circle(screen, (100,100,100),(self.rect.x+15, self.rect.y+15),90,1 )
         for enemy in enemies:
             if enemy.rect.colliderect(self.buffarea):
@@ -2269,6 +2574,7 @@ class Commander(Enemy):
 
 
     def buff_shout(self): #damage and max health/heal buff
+        """Ability of the commander that buffs the damage and max health of it's surrounding allies."""
         if self.shoutcounter <= self.shouttimer:
             self.shoutcounter += .1
         if self.shoutcounter >= self.shouttimer:
@@ -2283,6 +2589,7 @@ class Commander(Enemy):
                     self.shout = False
                     self.shoutcounter = 0
     def comactive(self):
+        """Once the commander has been spawned, have them use their abilities at certain times."""
         if self.activate:
             self.buff_aura()
             self.buff_shout()
@@ -2296,7 +2603,47 @@ com = Commander(random.randint(-340, 990), random.randint(-340, 990))
 
 
 class Mage(Enemy):
+    """
+    Controls the movement and attacks of the mage enemy.
+
+    Attributes:
+        rect (pygame.rect.Rect): The hitbox of the mage.
+        maxhealth (int): The max health of the mage.
+        health (float): The current health of the mage.
+        speed (int): The movement speed of the mage.
+        felled (bool): Declares if the mage has been destroyed.
+        not_attacking (bool): Declares if the mage is not attacking.
+        hit_damage (int): Sets the base damage for the mage's hit attack
+        last_auto (int):
+        attack_speed (int):
+        meteorimpact (None):
+        meteorcd (int):
+        calling (bool):
+        activate (bool):
+        meteorcounter (int):
+        seekercd (int):
+        seekercounter (int):
+        meteor (None):
+        px (int):
+        py (int):
+        summon (bool):
+        o (int):
+        seeker (None):
+        seekerx (float):
+        seekery (float):
+        seekspeed (int):
+        seekeractive (bool):
+        seekdur (int):
+        seekacdur (int):
+    """
     def __init__(self, x, y):
+        """
+        Initializes the Mage class.
+
+        Args:
+            x (float): Sets the x-position of the enemy.
+            y (float): Sets the y-position of the enemy.
+        """
         super().__init__(x, y)
         self.rect = minibee1.get_rect().scale_by(1, 1)
         self.rect.x = x
@@ -2316,9 +2663,9 @@ class Mage(Enemy):
         self.attack_speed = 5
         self.speed = 1
         self.meteorimpact = None
-        self.orspeed = 0
+        # self.orspeed = 0
         self.meteorcd = 15
-        self.shoutarea = None
+        # self.shoutarea = None
         self.calling = False
         self.activate = False
         self.meteorcounter = 0
@@ -2338,6 +2685,7 @@ class Mage(Enemy):
         self.seekacdur = 0
 
     def auto_hit_player(self):
+        """When the mage is very close to the player, auto-attack them."""
         if self.rect.colliderect(p.rect) and (self.attack_timer - self.last_auto) >= self.attack_speed:
             dodge = p.check_dodge_chance()
             if not dodge:
@@ -2345,6 +2693,7 @@ class Mage(Enemy):
                 p.current_health -= self.hit_damage
 
     def generate_enemy(self):
+        """Creates the mage and handles it's animations."""
         self.attack_timer = (pygame.time.get_ticks() / 1000)
         self.x = random.randint(-340, 990)
         self.y = random.randint(-340, 990)
@@ -2367,6 +2716,7 @@ class Mage(Enemy):
             self.auto_hit_player()
 
     def follow_mc(self):
+        """Handles the movement of getting the mage to the Player."""
         if self.rect.x < p.rect.x and not self.rect.colliderect(p.rect):
             self.travel_east()
         if self.rect.x > p.rect.x and not self.rect.colliderect(p.rect):
@@ -2377,12 +2727,14 @@ class Mage(Enemy):
             self.travel_north()
 
     def activate_death(self):
+        """Destroys the mage when they run out of health."""
         if self.health <= 0:
             p.gold += 25
             # Makes sure Comander is actually dead
             self.felled = True
 
     def check_collisions(self):
+        """Checks the collisions between the mage and the player's attacks."""
         for bullet in bullets:
             if self.rect.colliderect(bullet.rect) and bullet.bullet_valid:
                 if not self.bullet_collisions:
@@ -2446,7 +2798,7 @@ class Mage(Enemy):
             self.melee_attack_collisions.append(1)
 
     def summon_meteor(self):
-        #Summons meteor to fall where the player was standing at the time of the summon
+        """Summons meteor to fall where the player was standing at the time of the summon."""
         if self.meteorcounter >= self.meteorcd:
             if not self.summon:
                 self.px = p.rect.x +15
@@ -2468,6 +2820,7 @@ class Mage(Enemy):
 
 
     def fire_seeker(self):
+        """"""
         if self.seekercounter >= self.seekercd:
             if not self.seekeractive:
                 self.seekerx = ma.rect.x
@@ -2490,6 +2843,7 @@ class Mage(Enemy):
                     self.seekery = ma.rect.y
                     self.seekeractive = False
     def seeker_seeks(self):
+        """"""
         if self.seekeractive:
             if self.seekery >= p.rect.y:
                 self.seekery -= self.seekspeed
@@ -2502,6 +2856,7 @@ class Mage(Enemy):
 
 
     def active(self):
+        """Once the mage has been spawned, have them use their abilities at certain times."""
         if self.activate:
             self.fire_seeker()
             self.summon_meteor()
@@ -2515,7 +2870,15 @@ class Mage(Enemy):
 ma = Mage(random.randint(-340, 990), random.randint(-340, 990))
 
 class CalcTargets:
+    """Calculates targets to be attacked."""
     def calc_closest(t1, o1, n1):
+        """
+        Calculates the closest targets
+
+        Args:
+            o1 (PUT TYPE HERE): DESCRIPTION
+            n1 (PUT TYPE HERE): DESCRIPTION
+        """
         closest_targets = []
         close = []
         # Iterate through the enemies and checks their distances then adds them to the list
@@ -2540,6 +2903,13 @@ class CalcTargets:
         return closest_targets
 
     def calc_farthest(t1, o1, n1):
+        """
+        Calculates the farthest targets
+
+        Args:
+            o1 (PUT TYPE HERE): DESCRIPTION
+            n1 (PUT TYPE HERE): DESCRIPTION
+        """
         farthest_target = []
         for t1 in o1:
             # itterates through the enemies and checks thier distances then adds them to the list
@@ -2554,14 +2924,48 @@ class CalcTargets:
         return farthest_one
 
     def calc_distance(self):
+        """Calculates the distance between the enemy and the player."""
         xcor = self.rect.x - p.rect.x
         ycor = self.rect.y - p.rect.y
         distance = math.sqrt(xcor ** 2 + ycor ** 2)
         return distance
 
 class SkeletonKing(Enemy):
+    """
+    Controls the movement and attacks of the skeleton King enemy type.
+
+    Attributes:
+        rect (pygame.rect.Rect): The hitbox for the skeleton king.
+        mid_box_rect (pygame.rect.Rect): A smaller hitbox in the center of the skeleton king.
+        health (float): The health of the skeleton king.
+        speed (int): The speed of the skeleton king.
+        skeleton_king (bool): Declares if it is of type skeleton king.
+        x_coord (float): A random x-position as a starting point.
+        y_coord (float): A random y-position as a starting point.
+        left_leg_rect (pygame.rect.Rect): A hitbox on the smaller left leg.
+        right_leg_rect (pygame.rect.Rect): A hitbox on the smaller right leg.
+        animation_image (int): The current animation image that is being displayed.
+        main_left_leg_rect (pygame.rect.Rect): A hitbox on the bigger left leg.
+        main_right_leg_rect (pygame.rect.Rect): A hitbox on the bigger right leg.
+        run_activation (bool): Declares if the skeleton king is running straight for the player's position rapidly.
+        run_counter (int): A counter that when reached, halts the skeleton king's run attack.
+        animation_interval (int): A timer which changes the animation image at certain times.
+        run_target (tuple): Sets he x,y position of the player's position so the skeleton king can run to and attack.
+        target_aquired (bool): Declares if it has targeted and locked onto the player.
+        felled (bool): Declares if the skeleton king has been destroyed.
+        activate (bool): Declares if the skeleton king has spawned.
+        player_collide_counter (int): A timer that counts how long a player has collided with the skeleton king.
+
+    """
     # this class is the games first boss
     def __init__(self, x, y):
+        """
+        Initializes the Enemy class.
+
+        Args:
+            x (float): Sets the x-position of the enemy.
+            y (float): Sets the y-position of the enemy.
+        """
         super().__init__(x, y)
         self.rect = batImg1.get_rect().scale_by(1, 1)
         self.rect.x = x
@@ -2596,7 +3000,7 @@ class SkeletonKing(Enemy):
         self.player_collide_counter = 0
 
     def generate_enemy(self):
-        # create the enemy and have it run through its animations and get the coordinates of the player for it to run towards
+        """Creates the skeleton king nd handles it's animations, along with getting the player's position."""
         if not self.spawned:
             # print('2')
             self.x_coord = random.randint(-340, 990)
@@ -2699,6 +3103,7 @@ class SkeletonKing(Enemy):
         self.run_counter += 1
 
     def check_collisions(self):
+        """Checks the collisions between the skeleton king and the player's attacks."""
         if b.shooting:
             for bullet in bullets:
                 # for each active bullet, if the bullet hits the skeleton king boss,
@@ -2758,6 +3163,7 @@ class SkeletonKing(Enemy):
             self.melee_attack_collisions.append(1)
 
     def activate_death(self):
+        """Destroys the skeelton king when they run out of health."""
         if self.health <= 0:
             p.enemies_destroyed += 1
             p.gold += 250
@@ -2767,6 +3173,7 @@ class SkeletonKing(Enemy):
             self.rect = None
 
     def follow_mc(self):
+        """Handles the movement of getting the skeleton king to the Player."""
         # the boss will follow the player
         if self.main_right_leg_rect.x < p.rect.x + 12:
             # if player is to the right of main right leg, boss travels east
@@ -2797,6 +3204,7 @@ class SkeletonKing(Enemy):
                 self.rect.y -= self.speed
 
     def attack(self):
+        """Attacks the player and it's allies if under it's legs."""
         # handles boss attacks on the player and enemies
         for enemy in enemies:
             # for every enemy that steps on the bosses leg that just touched the ground, have the enemy be destroyed
@@ -2822,21 +3230,38 @@ class SkeletonKing(Enemy):
             self.player_collide_counter = 0
 
 
-class XP(pygame.sprite.Sprite):
-    # Controls the location of the XP and the XP hitbox
+class XP:
+    """
+    Controls XP movement and displays individual XP orbs on the ground.
+
+    Attributes:
+        x (float): The x-position of where the XP orb will be spawned.
+        y (float): The y-position of where the XP orb will be spawned.
+        rect (pygame.rect.Rect): A very small hitbox for the individual XP orb.
+        hitbox_rect (pygame.rect.Rect): A big hitbox for the XP, utilized for range pickup of player.
+    """
+
     def __init__(self, x, y):
-        pygame.sprite.Sprite.__init__(self)
+        """
+        Initializes the XP class.
+
+        Args:
+            x (float): Sets the x-position of the XP orb.
+            y (float): Sets the y-position of the XP orb.
+        """
         self.x = x
         self.y = y
         self.rect = pygame.draw.circle(transparent_surface, (0, 255, 0), (x, y), 5)
         self.hitbox_rect = pygame.draw.circle(transparent_surface, (0, 255, 35), (x, y), 50)
 
     def xp_stationary(self):
+        """Constantly updates and displays the XP at it's specific location."""
         # Displays XP in a specific location
         self.rect = pygame.draw.circle(screen, (0, 255, 0), (self.x, self.y), 5)
         self.hitbox_rect = pygame.draw.circle(transparent_surface, (0, 255, 35), (self.x, self.y), 50)
 
     def travel_to_player(self):
+        """When player is in range of XP, have the XP fly to the player for them to collect it."""
         # for every xp the player has gone near, have the XP fly to the player
         if abs(self.rect.x - p.rect.x) < 35 and abs(self.rect.y - p.rect.y) < 35:
             # remove the XP from the world and increase player XP
@@ -2857,10 +3282,25 @@ class XP(pygame.sprite.Sprite):
                 self.y -= p.speed
 
 
+
 speed_item_visible = True
 gameTimerOn = False
 class Laser:
+    """
+    A laser ability that the player can unlock.
+
+    Attributes:
+        targets (int): The maximum number of targets the laser will hit.
+        closest_enemy (list): An x,y position of the closest enemy to the player.
+        damage (int): The base damage of the laser.
+        cd (int): The cooldown time of the laser ability.
+        shoot (int):
+        target (list):
+        dmgtype (str):
+        laser_aquired (bool):
+    """
     def __init__(self): #Simple laser attack.
+        """Initializes the Lazer class."""
         self.targets = 3
         self.closest_enemy = [1000, 1000]
         self.damage = 5
@@ -2870,6 +3310,7 @@ class Laser:
         self.dmgtype = "Laser"
         self.laser_aquired = False
     def fire(self):
+        """Fires the laser at nearby enemies."""
         for enemy in enemies:
             if enemy.spawned:
                 self.x_distance = abs(p.rect.x - enemy.rect.x)
@@ -2887,6 +3328,7 @@ class Laser:
         self.closest_enemy = [1000,1000]
 
     def laser_timer(self):
+        """Handles the intervals between shooting the laser."""
         if self.shoot <=self.cd:
             self.shoot+=.1
             if self.shoot >= self.cd:
@@ -2902,8 +3344,24 @@ lz = Laser()
 
 # gameTime = 0
 class ChainLightning:
+    """
+    A chain lightning ability that the player can unlock.
+
+    Attributes:
+        closest_enemy (list):
+        x_distance (int):
+        y_distance (int):
+        next_closest_enemy (list): The x,y position of the next closest enemy.
+        enemies_hit (int):
+        targeted_enemies (list):
+        target_coords (list):
+        cooldown (int): The cooldown of the chain lightning ability.
+        shoot (int):
+        damage (int): The base damage of the chain lightning ability.
+    """
 
     def __init__(self):
+        """Initiates the chain lightning class."""
         self.closest_enemy = [1000,1000]
         self.x_distance = 1000
         self.y_distance = 1000
@@ -2916,6 +3374,7 @@ class ChainLightning:
         self.damage = 100
 
     def target_enemy(self): # targets first enemy
+        """Targets the first closest enemy to the player."""
         for enemy in enemies:
             if enemy.spawned:
                 self.x_distance = abs(p.rect.x - enemy.rect.x)
@@ -2940,6 +3399,7 @@ class ChainLightning:
         self.target_next_enemy()
 
     def target_next_enemy(self):
+        """Targets the closest enemy to the last enemy that was targeted."""
         if self.enemies_hit >= 2:
             self.closest_enemy = self.next_closest_enemy
             self.next_closest_enemy = [1000, 1000]
@@ -2987,6 +3447,7 @@ class ChainLightning:
         else:
             self.target_next_enemy()
     def cl_timer(self):
+        """Handles the intervals between using the chain lightning ability."""
         if self.shoot <=self.cooldown:
             self.shoot+=.05
             if self.shoot >= self.cooldown:
@@ -2999,8 +3460,44 @@ cl = ChainLightning()
 
 
 class XPBar:
-    # Displays the XP Bar and upgrade menu
+    """
+    Displays the XP bar to the screen and also displays the upgrade menu.
+
+    Attributes:
+        xp_bar_border_rect (pygame.rect.Rect): Adds a border around the XP bar.
+        xp_bar_rect (pygame.rect.Rect): Adds a bar indicating the amount of XP the player has.
+        xp_bar_empty_rect (pygame.rect.Rect): Adds an empty XP bar to indicate how full/empty the XP bar is.
+        xp (int): The amount of XP the player has per level.
+        level (int): The current XP level the player has.
+        total_length (int): The total length of the XP bar.
+        level_xp_requirement (float): The XP requirement in order to unlock an upgrade and increase XP level.
+        length (float): The length of the current fluid XP bar.
+        connector (None): Displays a line that connects to the XP bar to the box which displays the XP level.
+        top (None): Displays a line above the XP level to form a box around it.
+        right (None): Displays a line to the right of the XP level to form a box around it.
+        bottom (None): Displays a line below the XP level to form a box around it.
+        left (None): Displays a line to the left of the XP level to form a box around it.
+        level_background (None):
+        level_font (pygame.font.Font): The font used for displaying the level number.
+        upgrade_title_font (pygame.font.Font): The font used for displaying the upgrade menu title.
+        upgrade_desc_font (pygame.font.Font):  The font used for displaying the upgrade descriptions.
+        offset (int): A fixed value which was used to help allign the XP bar with all the different connecting pieces.
+        leftover (float): The amount of XP left over after completing the XP level requirement.
+        leftover_size (float): The size the leftover XP will take up during the new XP level.
+        level_menu (bool): Declares if the player is in the upgrade menu.
+        pauseTimer (float): A timer which has the amount of time the game was paused.
+        available_upgrades (list): A list of all available upgrades for the player.
+        selected_upgrade_choices (bool): Declares if two choices have been randomly selected to be displayed.
+        option1 (None): Displays the first random upgrade option.
+        option2 (None): Displays the second random upgrade option.
+        button_rect1 (None): The hitbox for selecting the first option.
+        button_rect2 (None): The hitbox for selecting the second option.
+        selected (bool): Declares if an option has been selected.
+
+    """
+
     def __init__(self):
+        """Initializes the XPBar class."""
         self.xp_bar_border_rect = None
         self.xp_bar_rect = None
         self.xp_bar_empty_rect = None
@@ -3032,6 +3529,7 @@ class XPBar:
         self.selected = False
 
     def show_xp_bar(self):
+        """Displays the XP Bar and upgrade menu."""
         # displays XP bar
         info = pygame.display.Info()
         tempwidth, tempheight = info.current_w, info.current_h
@@ -3241,6 +3739,12 @@ class XPBar:
             screen.blit(level_render, (747 - self.offset, tempheight-63))
 
     def basic_attack_damage_upgrade(self, option):
+        """
+        Displays information for the basic attack upgrades, and, if selected, upgrades this ability.
+
+        Args:
+            option (int): Numbers 0-2 indicate a specific action. 0: Upgrade, 1: display info left, 2: display info right
+        """
         info = pygame.display.Info()
         tempwidth, tempheight = info.current_w, info.current_h
         # display information regarding the basic attack damage upgrade and if selected, implement the upgrade.
@@ -3266,6 +3770,12 @@ class XPBar:
             self.selected = True
 
     def basic_attack_range_upgrade(self, option):
+        """
+        Displays information for the basic attack range upgrades, and, if selected, upgrades this ability.
+
+        Args:
+            option (int): Numbers 0-2 indicate a specific action. 0: Upgrade, 1: display info left, 2: display info right
+        """
         info = pygame.display.Info()
         tempwidth, tempheight = info.current_w, info.current_h
         # display information regarding the basic attack range upgrade and if selected, implement the upgrade.
@@ -3292,6 +3802,12 @@ class XPBar:
             self.selected = True
 
     def basic_attack_speed_upgrade(self, option):
+        """
+        Displays information for the basic attack speed upgrades, and, if selected, upgrades this ability.
+
+        Args:
+            option (int): Numbers 0-2 indicate a specific action. 0: Upgrade, 1: display info left, 2: display info right
+        """
         info = pygame.display.Info()
         tempwidth, tempheight = info.current_w, info.current_h
         # display information regarding the basic attack speed upgrade and if selected, implement the upgrade.
@@ -3317,6 +3833,12 @@ class XPBar:
             self.selected = True
 
     def move_speed_upgrade(self, option):
+        """
+        Displays information for the movement speed upgrades, and, if selected, upgrades this ability.
+
+        Args:
+            option (int): Numbers 0-2 indicate a specific action. 0: Upgrade, 1: display info left, 2: display info right
+        """
         info = pygame.display.Info()
         tempwidth, tempheight = info.current_w, info.current_h
         # display information regarding the movement speed upgrade and if selected, implement the upgrade.
@@ -3345,6 +3867,12 @@ class XPBar:
             self.selected = True
 
     def dodge_chance_upgrade(self, option):
+        """
+        Displays information for the dodge chance upgrades, and, if selected, upgrades this ability.
+
+        Args:
+            option (int): Numbers 0-2 indicate a specific action. 0: Upgrade, 1: display info left, 2: display info right
+        """
         info = pygame.display.Info()
         tempwidth, tempheight = info.current_w, info.current_h
         # display information regarding the dodge chance upgrade and if selected, implement the upgrade.
@@ -3371,6 +3899,12 @@ class XPBar:
             self.selected = True
 
     def bullet_damage_upgrade(self, option):
+        """
+        Displays information for the bullet damage upgrades, and, if selected, upgrades this ability.
+
+        Args:
+            option (int): Numbers 0-2 indicate a specific action. 0: Upgrade, 1: display info left, 2: display info right
+        """
         info = pygame.display.Info()
         tempwidth, tempheight = info.current_w, info.current_h
         # display information regarding the bullet damage upgrade and if selected, implement the upgrade.
@@ -3396,6 +3930,12 @@ class XPBar:
             self.selected = True
 
     def bullet_range_upgrade(self, option):
+        """
+        Displays information for the bullet range upgrades, and, if selected, upgrades this ability.
+
+        Args:
+            option (int): Numbers 0-2 indicate a specific action. 0: Upgrade, 1: display info left, 2: display info right
+        """
         info = pygame.display.Info()
         tempwidth, tempheight = info.current_w, info.current_h
         # display information regarding the bullet range upgrade and if selected, implement the upgrade.
@@ -3421,6 +3961,12 @@ class XPBar:
             self.selected = True
 
     def bullet_speed_upgrade(self, option):
+        """
+        Displays information for the bullet speed upgrades, and, if selected, upgrades this ability.
+
+        Args:
+            option (int): Numbers 0-2 indicate a specific action. 0: Upgrade, 1: display info left, 2: display info right
+        """
         info = pygame.display.Info()
         tempwidth, tempheight = info.current_w, info.current_h
         # display information regarding the bullet speed upgrade and if selected, implement the upgrade.
@@ -3464,7 +4010,7 @@ bup = BulletUpgrade()
 
 
 def reset_stats():
-    # resets the stats so the player can start fresh when they die
+    """Resets the stats so the player can start fresh when they die"""
     global gameTime
     global xpB
     global xp
@@ -3487,14 +4033,81 @@ def reset_stats():
     p.death = False
 
 
-# adds ability for text to be on screen
+
 def text_objects(text, font):
+    """Adds ability for text to be on screen"""
     text_surface = font.render(text, True, (0, 0, 0))
     return text_surface, text_surface.get_rect()
 
 
 class SkillTree:
+    """
+    A menu which allows the user to purchase permanent upgrades.
+
+    Attributes:
+        self.active (bool): Declares if the skill tree menu is currently active.
+        self.offset (int): A set number to help change the y-position of all elements of the skill tree section.
+        self.box1 (pygame.rect.Rect): The hitbox/display box for the first upgrade.
+        self.box1_border (pygame.rect.Rect): The border for the first upgrade.
+        self.box2 (pygame.rect.Rect): The hitbox/display box for the second upgrade.
+        self.box2_border (pygame.rect.Rect): The border for the second upgrade.
+        self.box3 (pygame.rect.Rect): The hitbox/display box for the third upgrade.
+        self.box3_border (pygame.rect.Rect): The border for the third upgrade.
+        self.box4 (pygame.rect.Rect): The hitbox/display box for the fourth upgrade.
+        self.box4_border (pygame.rect.Rect): The border for the fourth upgrade.
+        self.box5 (pygame.rect.Rect): The hitbox/display box for the fifth upgrade.
+        self.box5_border (pygame.rect.Rect): The border for the fifth upgrade.
+        self.box6 (pygame.rect.Rect): The hitbox/display box for the sixth upgrade.
+        self.box6_border (pygame.rect.Rect): The border for the sixth upgrade.
+        self.box7 (pygame.rect.Rect): The hitbox/display box for the seventh upgrade.
+        self.box7_border (pygame.rect.Rect): The border for the seventh upgrade.
+        self.box8 (pygame.rect.Rect): The hitbox/display box for the eighth upgrade.
+        self.box8_border (pygame.rect.Rect): The border for the eighth upgrade.
+        self.description_box (pygame.rect.Rect): The display box for the selected upgrade information.
+        self.description_border (pygame.rect.Rect): The border of the selected description box.
+        self.buy_box (pygame.rect.Rect): The display box/hitbox for the buy button.
+        self.buy_border (pygame.rect.Rect): The border for the buy button.
+        self.level_font (pygame.font.Font): The font style used for displaying the level of each upgrade.
+        self.level2_font (pygame.font.Font): The font style used for displaying if the level has been maxed out.
+        self.title_font (pygame.font.Font): The font style used for displaying the title of the menu.
+        self.back_font (pygame.font.Font): The font style used for displaying the back button text.
+        self.description_title_font (pygame.font.Font): The font style used for displaying the upgrade description title.
+        self.description_font (pygame.font.Font): The font style used for displaying the upgrade description text.
+        self.buy_font (pygame.font.Font): The font style used for displaying the buy button text.
+        self.feedback_message_font (pygame.font.Font): The font style used for displaying the feedback text.
+        self.title_background_border (pygame.rect.Rect): Adds a border around the title display box.
+        self.title_background (pygame.rect.Rect): Adds a display box behind the title text.
+        self.back_background_border (pygame.rect.Rect): Adds a border around the back button.
+        self.back_background (pygame.rect.Rect): Adds a display box for the back button.
+        self.selected (bool): Declares if an upgrade has been selected.
+        self.selected_option (list): Contains the upgrade that has been most recently selected.
+        self.selected_cost (float): The cost of the selected upgrade.
+        self.upgrade1_level (int): The level the player has for the first upgrade.
+        self.upgrade2_level (int): The level the player has for the second upgrade.
+        self.upgrade3_level (int): The level the player has for the third upgrade.
+        self.upgrade4_level (int): The level the player has for the fourth upgrade.
+        self.upgrade5_level (int): The level the player has for the fifth upgrade.
+        self.upgrade6_level (int): The level the player has for the sixth upgrade.
+        self.upgrade7_level (int): The level the player has for the seventh upgrade.
+        self.upgrade8_level (int): The level the player has for the eighth upgrade.
+        self.upgrade1_cost (float): The cost to increase the level for the first upgrade.
+        self.upgrade2_cost (float): The cost to increase the level for the second upgrade.
+        self.upgrade3_cost (float): The cost to increase the level for the third upgrade.
+        self.upgrade4_cost (float): The cost to increase the level for the fourth upgrade.
+        self.upgrade5_cost (float): The cost to increase the level for the fifth upgrade.
+        self.upgrade6_cost (float): The cost to increase the level for the sixth upgrade.
+        self.upgrade7_cost (float): The cost to increase the level for the seventh upgrade.
+        self.upgrade8_cost (float): The cost to increase the level for the eighth upgrade.
+        self.balance (int): The total amount of gold the player has.
+        self.feedback (bool): Declares if the feedback box is currently active.
+        self.feedback_option (int): Numbers 1-3 indicate a different feedback message to send to the user.
+        self.feedback_box (pygame.rect.Rect): The display box for the feedback message.
+        self.message_timer (bool): Declares if the feedback box message initially appeared.
+        self.message_timer_counter (int): A timer to count how long the feedback message has been active.
+        self.column (int): Numbers 3-10, each indicating a column in the profile-data.csv, relating to upgrade levels.
+    """
     def __init__(self):
+        """Initializes the SkillTree class."""
         self.active = True
         self.offset = 35
         self.box1 = pygame.Rect(85, 225, 115, 115)
@@ -3521,8 +4134,8 @@ class SkillTree:
         self.buy_box = pygame.Rect(580, 715, 90, 47)
         self.buy_border = pygame.Rect(575, 710, 100, 57)
 
-        self.box1_level = pygame.Rect(158, 375, 25, 25)
-        self.box2_level = pygame.Rect(158, 375, 25, 25)
+        # self.box1_level = pygame.Rect(158, 375, 25, 25)
+        # self.box2_level = pygame.Rect(158, 375, 25, 25)
 
         self.level_font = pygame.font.SysFont('Garamond', 22)
         self.level2_font = pygame.font.SysFont('Garamond', 18, bold=1)
@@ -3567,11 +4180,11 @@ class SkillTree:
         self.feedback_box = pygame.Rect(640, 23, 130, 50)
         self.message_timer = False
         self.message_timer_counter = 0
-        # self.feedback_box_border = pygame.Rect(78, 218, 129, 129)
 
         self.column = 0
 
     def load_data(self):
+        """Updates the upgrade costs."""
 
         if self.upgrade1_level:
             if self.upgrade1_level >= 5:
@@ -3650,6 +4263,7 @@ class SkillTree:
 
 
     def skill_tree(self):
+        """Handles the main logic behind the operations of the skill tree; presents the upgrade information."""
         while self.active:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -3874,6 +4488,7 @@ class SkillTree:
             pygame.display.update()
 
     def purchase_upgrade(self):
+        """Allows the user to purchase a selected upgrade."""
 
         if self.selected_option[0] == 'box1':
             self.selected_cost = self.upgrade1_cost
@@ -3942,6 +4557,7 @@ class SkillTree:
 
 
     def give_feedback(self):
+        """After the user clicks the buy button, a message will appear to the user."""
         if self.feedback_option == 1:
             pygame.draw.rect(screen, (50,205,50), self.feedback_box, border_radius=15)
             feedback_message_render = self.feedback_message_font.render('Purchased!', True, (0,0,0))
@@ -3960,6 +4576,12 @@ class SkillTree:
             screen.blit(feedback_message2_render, (662, 48))
 
     def display_information(self, option):
+        """
+        Displays the selected upgrade's information to the bottom of the screen.
+
+        Args:
+            option (str): The selected upgrade option.
+        """
         pygame.draw.rect(screen, (0,0,0), self.description_border)
         pygame.draw.rect(screen, (47,79,79), self.description_box)
         pygame.draw.rect(screen, (255,255,0), self.buy_box, border_radius=25)
@@ -4081,18 +4703,58 @@ st = SkillTree()
 
 
 
+class UserProfile:
+    """
+    A menu which allows the user to change profile's and reset it's data.
 
-
-
-
-
-
-
-class userProfile:
+    Attributes:
+        active (bool): Declares if the user profile menu is currently active.
+        offset1 (int): A set number to help change the y-position of all elements of the user profile section.
+        profile_box1 (pygame.rect.Rect): The display box/hitbox of the first profile button.
+        profile_border_box1 (pygame.rect.Rect): Adds a border to the first profile button.
+        reset_profile1 (pygame.rect.Rect): The display box/hitbox of the first profile reset button.
+        reset_profile1_border (pygame.rect.Rect): Adds a border to the first profile reset button.
+        profile_box2 (pygame.rect.Rect): The display box/hitbox of the second profile button.
+        profile_border_box2 (pygame.rect.Rect): Adds a border to the second profile button.
+        reset_profile2 (pygame.rect.Rect): The display box/hitbox of the second profile reset button.
+        reset_profile2_border (pygame.rect.Rect): Adds a border to the second profile reset button.
+        profile_box3 (pygame.rect.Rect): The display box/hitbox of the third profile button.
+        profile_border_box3 (pygame.rect.Rect): Adds a border to the third profile button.
+        reset_profile3 (pygame.rect.Rect): The display box/hitbox of the third profile reset button.
+        reset_profile3_border (pygame.rect.Rect): Adds a border to the third profile reset button.
+        profile_box4 (pygame.rect.Rect): The display box/hitbox of the fourth profile button.
+        profile_border_box4 (pygame.rect.Rect): Adds a border to the fourth profile button.
+        reset_profile4 (pygame.rect.Rect): The display box/hitbox of the fourth profile reset button.
+        reset_profile4_border (pygame.rect.Rect): Adds a border to the fourth profile reset button.
+        profile_box5 (pygame.rect.Rect): The display box/hitbox of the fifth profile button.
+        profile_border_box5 (pygame.rect.Rect): Adds a border to the fifth profile button.
+        reset_profile5 (pygame.rect.Rect): The display box/hitbox of the fifth profile reset button.
+        reset_profile5_border (pygame.rect.Rect): Adds a border to the fifth profile reset button.
+        info_background (pygame.rect.Rect): The background for the user info section.
+        back_background_border (pygame.rect.Rect): The border box for the back button.
+        back_background (pygame.rect.Rect): The hitbox/box for the back button.
+        down_offset (int): A set number to help change the y-position of all elements of the user info section.
+        profile_font (pygame.font.Font): The font style used for displaying the different profiles.
+        reset_font (pygame.font.Font): The font style used for displaying the reset profiles.
+        balance_font (pygame.font.Font): The font style used for displaying player balance.
+        info_font (pygame.font.Font): The font style used for displaying the info section.
+        back_font (pygame.font.Font): The font style used for displaying the back button text.
+        reset_confirmation_font (pygame.font.Font): The font style used for displaying the reset confirmation screen.
+        reset_confirm_border1_box (pygame.rect.Rect): The outermost border of the reset confirmation box.
+        reset_confirm_border2_box (pygame.rect.Rect): The middlemost border of the reset confirmation box.
+        reset_confirm_border3_box (pygame.rect.Rect): The innermost border of the reset confirmation box.
+        reset_confirm_box (pygame.rect.Rect): The main display box which allows the player to confirm profile reset.
+        awaiting_confirmation (bool): Declares if the reset profile menu has been activated.
+        reset_negative_box (pygame.rect.Rect): The hitbox/box for the 'no' option of profile reset.
+        reset_negative_border_box (pygame.rect.Rect): The border of the 'no' option of profile reset.
+        reset_affirmative_box (pygame.rect.Rect): The hitbox/box for the 'yes' option of profile reset.
+        reset_affirmative_border_box (pygame.rect.Rect): The border of the 'yes' option of profile reset.
+        reset (bool): Declares if a profile was selected to be reset.
+    """
     def __init__(self):
+        """Initializes the UserProfile class."""
         self.active = True
         self.offset1 = 50
-        self.offset2 = 50
 
         self.profile_box1 = pygame.Rect(85, 225-self.offset1, 130, 45)
         self.profile_border_box1 = pygame.Rect(78, 218-self.offset1, 144, 59)
@@ -4148,6 +4810,7 @@ class userProfile:
         self.reset = False
 
     def user_profile_menu(self):
+        """Handles the operations of the user profile menu; displays user profile data."""
         pd.load_upgrades_into_game()
         while self.active:
             for event in pygame.event.get():
@@ -4209,7 +4872,7 @@ class userProfile:
                             self.reset = False
                     if self.back_background.collidepoint(event.pos) or self.back_background_border.collidepoint(event.pos):
                         global up
-                        up = userProfile()
+                        up = UserProfile()
                         self.active = False
                         main_menu()
 
@@ -4417,6 +5080,7 @@ class userProfile:
             pygame.display.update()
 
     def confirm_reset(self):
+        """Prompts the user to confirm if they want to reset their profile data."""
         self.awaiting_confirmation = True
         while self.awaiting_confirmation:
             for event in pygame.event.get():
@@ -4454,12 +5118,12 @@ class userProfile:
             pygame.display.update()
 
 
-up = userProfile()
+up = UserProfile()
 
 
 # adding the ability to implement buttons
 def button(msg, x, y, w, h, ic, ac, action):
-    # if buttons are pressed, activate the appropriate functions
+    """If buttons are pressed, activate the appropriate functions."""
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
     global pause
@@ -4522,8 +5186,8 @@ minutes = 0
 seconds = 0
 
 
-# starts keeping track of the time within the game
 def start_game_time():
+    """Starts keeping track of the time within the game."""
     global gameTime
     if xpB.pauseTimer:
         # if a menu was paused, subtract the time paused from the global game time
@@ -4558,8 +5222,8 @@ def start_game_time():
         gameTimeStr = f'00:{int(seconds)}'
 
 
-# function to display the game timer to show how long you have been in-game
 def display_timer(text, font, text_color):
+    """Function to display the game timer to show how long you have been in-game."""
     info = pygame.display.Info()
     screen_width, screen_height = info.current_w, info.current_h
     gametimer = font.render(str(text), True, text_color).convert_alpha()
@@ -4569,8 +5233,8 @@ def display_timer(text, font, text_color):
         screen.blit(gametimer, (675, 15))
 
 
-# function to show the frames per second in the corner
 def display_fps(text, font, text_color):
+    """Function to show the frames per second in the corner."""
     text = str(int(text))
     # print(text)
     fps_display = font.render(text, True, text_color).convert_alpha()
@@ -4579,8 +5243,8 @@ def display_fps(text, font, text_color):
 
 
 
-# adds the ability to fullscreen the game
 def fullscreen_toggle():
+    """Adds the ability to fullscreen the game."""
     global isFullscreen, screen_width, screen_height
     info = pygame.display.Info()
     tempwidth, tempheight = info.current_w, info.current_h
@@ -4597,8 +5261,8 @@ def fullscreen_toggle():
     pygame.display.update()
 
 
-# function to show the credits menu, which will contain the credits to all resources used
 def credits():
+    """Function to show the credits menu, which will contain the credits to all resources used."""
     start_time = pygame.time.get_ticks()
     global pause, screen_width, screen_height
     pause = True
@@ -4646,8 +5310,8 @@ def credits():
         clock.tick(15)
 
 
-# function to show the Main Menu before the game starts
 def main_menu():
+    """Function to show the Main Menu before the game starts."""
     global pause, screen_width, screen_height
     while pause:
         global gameTime
@@ -4693,7 +5357,7 @@ def main_menu():
 
 
 def death_screen():
-    # displays a death screen if the player dies
+    """Displays a death screen if the player dies."""
     global pause, screen_width, screen_height, game
     pause = True
     while pause:
@@ -4739,7 +5403,7 @@ def death_screen():
 
 
 def pause_game():
-    # displays a pause menu while the game is paused
+    """Displays a pause menu while the game is paused."""
     start_time = pygame.time.get_ticks()
     info = pygame.display.Info()
     screen_width, screen_height = info.current_w, info.current_h
@@ -4780,8 +5444,8 @@ def pause_game():
         clock.tick(15)
 
 
-# function to run the settings menu, which is accessible through the pause menu
 def settings_menu():
+    """Function to run the settings menu, which is accessible through the pause menu."""
     # displays the settings menu
     start_time = pygame.time.get_ticks()
     info = pygame.display.Info()
@@ -4817,13 +5481,14 @@ def settings_menu():
         pygame.display.update()
         clock.tick(15)
 
-# unpausing func for the buttons
 def unpause():
+    """Unpauses the game loop."""
     pause = False
 
 
-# def to store all the keypress functions
+
 def key_pressed():
+    """Handles all keypress functions."""
     key_presses = pygame.key.get_pressed()
     # stores the keys that are pressed
 
@@ -4873,7 +5538,7 @@ activate_bullet = True
 bullet_timer1 = 2
 bullet_timer2 = 0
 
-# game is now running
+
 while game:
     # the core game loop
     start_game_time()
@@ -5014,7 +5679,7 @@ while game:
 
     if int(minutes) == 5 and int(seconds) == 00:
         com.activate = True
-
+    # pydoc.writedoc('main')
     if com.activate and not com.felled:
         com.generate_enemy()
         com.comactive()
