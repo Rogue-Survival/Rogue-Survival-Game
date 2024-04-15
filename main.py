@@ -3474,7 +3474,7 @@ class ChainLightning:
                 cl.target_enemy()
                 self.shoot = 0
 cl = ChainLightning()
-class Laserpickup:
+class Laserpickup: #laser pickup
     def __init__(self):
         self.rect = bullet_upgrade.get_rect().scale_by(1, 1)
         self.rect.x = 0
@@ -3508,7 +3508,7 @@ class Laserpickup:
 
 
 lzp = Laserpickup()
-class Chainlpickup:
+class Chainlpickup: #Chain Lightning pickup
     def __init__(self):
         self.rect = bullet_upgrade.get_rect().scale_by(1, 1)
         self.rect.x = 0
