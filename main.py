@@ -484,8 +484,6 @@ class Player(pygame.sprite.Sprite):
                 ee.east_rect.x = ee.rect.x + ee.east_x_val
                 ee.south_rect.x = ee.rect.x + ee.south_x_val
                 ee.west_rect.x = ee.rect.x - ee.west_x_val
-            if bup.upgrade_out:
-                bup.rect.x += self.speed
             if com.activate and not com.felled:
                 com.rect.x += self.speed
                 com.north_rect.x = com.rect.x + com.north_x_val
@@ -500,6 +498,12 @@ class Player(pygame.sprite.Sprite):
                 ma.east_rect.x = ma.rect.x + ma.east_x_val
                 ma.south_rect.x = ma.rect.x + ma.south_x_val
                 ma.west_rect.x = ma.rect.x - ma.west_x_val
+            if clp.upgrade_out:
+                clp.rect.x += self.speed
+            if lzp.upgrade_out:
+                lzp.rect.x += self.speed
+            if bup.upgrade_out:
+                bup.rect.x += self.speed
 
     def move_east(self):
         # moves the player and camera East, while moving every other entity in the opposite direction
@@ -549,8 +553,6 @@ class Player(pygame.sprite.Sprite):
                 ee.east_rect.x = ee.rect.x + ee.east_x_val
                 ee.south_rect.x = ee.rect.x + ee.south_x_val
                 ee.west_rect.x = ee.rect.x - ee.west_x_val
-            if bup.upgrade_out:
-                bup.rect.x -= self.speed
             if com.activate and not com.felled:
                 com.rect.x -= self.speed
                 com.north_rect.x = com.rect.x + com.north_x_val
@@ -565,6 +567,13 @@ class Player(pygame.sprite.Sprite):
                 ma.east_rect.x = ma.rect.x + ma.east_x_val
                 ma.south_rect.x = ma.rect.x + ma.south_x_val
                 ma.west_rect.x = ma.rect.x - ma.west_x_val
+            if clp.upgrade_out:
+                clp.rect.x -= self.speed
+            if lzp.upgrade_out:
+                lzp.rect.x -= self.speed
+            if bup.upgrade_out:
+                bup.rect.x -= self.speed
+
 
     def move_north(self):
         # moves the player and camera North, while moving every other entity in the opposite direction
@@ -613,8 +622,7 @@ class Player(pygame.sprite.Sprite):
                 ee.east_rect.y = ee.rect.y + ee.east_y_val
                 ee.south_rect.y = ee.rect.y + ee.south_y_val
                 ee.west_rect.y = ee.rect.y + ee.west_y_val
-            if bup.upgrade_out:
-                bup.rect.y += self.speed
+
             if com.activate and not com.felled:
                 com.rect.y += self.speed
                 com.north_rect.y = com.rect.y - com.north_y_val
@@ -629,6 +637,12 @@ class Player(pygame.sprite.Sprite):
                 ma.east_rect.y = ma.rect.y + ma.east_y_val
                 ma.south_rect.y = ma.rect.y + ma.south_y_val
                 ma.west_rect.y = ma.rect.y + ma.west_y_val
+            if clp.upgrade_out:
+                clp.rect.y += self.speed
+            if lzp.upgrade_out:
+                lzp.rect.y += self.speed
+            if bup.upgrade_out:
+                bup.rect.y += self.speed
 
     def move_south(self):
         # moves the player and camera South, while moving every other entity in the opposite direction
@@ -677,8 +691,6 @@ class Player(pygame.sprite.Sprite):
                 ee.east_rect.y = ee.rect.y + ee.east_y_val
                 ee.south_rect.y = ee.rect.y + ee.south_y_val
                 ee.west_rect.y = ee.rect.y + ee.west_y_val
-            if bup.upgrade_out:
-                bup.rect.y -= self.speed
             if com.activate and not com.felled:
                 com.rect.y -= self.speed
                 com.north_rect.y = com.rect.y - com.north_y_val
@@ -689,6 +701,12 @@ class Player(pygame.sprite.Sprite):
                 ma.rect.y -= self.speed
                 ma.py -= self.speed
                 ma.seekery -= self.speed
+            if clp.upgrade_out:
+                clp.rect.y -= self.speed
+            if lzp.upgrade_out:
+                lzp.rect.y -= self.speed
+            if bup.upgrade_out:
+                bup.rect.y -= self.speed
 
 
 class BasicAttack:
@@ -2115,7 +2133,7 @@ class Commander(Enemy):
         self.rect.x = x
         self.rect.y = y
         self.rect.width = 20
-        self.health = 1000
+        self.health = 5
         self.speed = 2
         self.travel_north()
         self.travel_east()
@@ -2137,7 +2155,6 @@ class Commander(Enemy):
     def activate_death(self):
         if self.health <= 0:
             p.gold += 25
-            # Makes sure Comander is actually dead
             self.felled = True
 
     def check_collisions(self):
@@ -2218,6 +2235,8 @@ class Commander(Enemy):
         self.attack_timer = (pygame.time.get_ticks() / 1000)
         self.x = random.randint(-340, 990)
         self.y = random.randint(-340, 990)
+        lzp.rect.x = self.rect.x
+        lzp.rect.y = self.rect.y
         if self.animation <= 15:
             screen.blit(pygame.transform.scale(minibee1, (40, 45)), (self.rect.x, self.rect.y))
             self.animation += 1
@@ -2291,7 +2310,7 @@ class Mage(Enemy):
         self.rect.y = y
         self.rect.width = 20
         self.maxhealth = 1000
-        self.health = 1000
+        self.health = 5
         self.speed = 2.5
         self.travel_north()
         self.travel_east()
@@ -2336,6 +2355,8 @@ class Mage(Enemy):
         self.attack_timer = (pygame.time.get_ticks() / 1000)
         self.x = random.randint(-340, 990)
         self.y = random.randint(-340, 990)
+        clp.rect.x = self.rect.x
+        clp.rect.y = self.rect.y
         if self.animation <= 15:
             screen.blit(pygame.transform.scale(minibee1, (40, 45)), (self.rect.x, self.rect.y))
             self.animation += 1
@@ -2367,7 +2388,6 @@ class Mage(Enemy):
     def activate_death(self):
         if self.health <= 0:
             p.gold += 25
-            # Makes sure Comander is actually dead
             self.felled = True
 
     def check_collisions(self):
@@ -2462,7 +2482,7 @@ class Mage(Enemy):
                 self.seekery = ma.rect.y
                 self.seekeractive = True
             if self.seekeractive:
-                self.seeker = pygame.draw.circle(screen, (1,1,1), (self.seekerx,self.seekery), 10, 4)
+                self.seeker = pygame.draw.circle(screen, (0,255,255), (self.seekerx,self.seekery), 10, 4)
                 if self.seekacdur >= self.seekdur:
                     self.seeker = None
                     self.seekacdur = 0
@@ -2979,10 +2999,73 @@ class ChainLightning:
             if self.shoot >= self.cooldown:
                 cl.target_enemy()
                 self.shoot = 0
-
-
-
 cl = ChainLightning()
+class Laserpickup:
+    def __init__(self):
+        self.rect = bullet_upgrade.get_rect().scale_by(1, 1)
+        self.rect.x = 0
+        self.rect.y = 0
+        self.upgrade_out = True
+        self.upgrade_active = False
+        self.obtained = False
+        self.animation = 0
+
+    def generate_entity(self):
+        lzp.upgrade_out = True
+        if lzp.animation <= 15:
+            screen.blit(pygame.transform.scale(bullet_upgrade, (40, 45)), (lzp.rect.x, lzp.rect.y))
+            lzp.animation += 1
+        elif lzp.animation <= 30:
+            screen.blit(pygame.transform.scale(bullet_upgrade, (40, 45)), (lzp.rect.x, lzp.rect.y + 5))
+            lzp.animation += 1
+        elif lzp.animation <= 45:
+            screen.blit(pygame.transform.scale(bullet_upgrade, (40, 45)), (lzp.rect.x, lzp.rect.y + 10))
+            lzp.animation += 1
+        elif lzp.animation <= 60:
+            screen.blit(pygame.transform.scale(bullet_upgrade, (40, 45)), (lzp.rect.x, lzp.rect.y + 5))
+            lzp.animation += 1
+        if lzp.animation == 60:
+            lzp.animation = 0
+
+    def check_collisions(self):
+        self.upgrade_out = False
+        self.upgrade_active = True
+        lzp.obtained = True
+
+
+lzp = Laserpickup()
+class Chainlpickup:
+    def __init__(self):
+        self.rect = bullet_upgrade.get_rect().scale_by(1, 1)
+        self.rect.x = 0
+        self.rect.y = 0
+        self.upgrade_out = True
+        self.upgrade_active = False
+        self.obtained = False
+        self.animation = 0
+
+    def generate_entity(self):
+        clp.upgrade_out = True
+        if clp.animation <= 15:
+            screen.blit(pygame.transform.scale(bullet_upgrade, (40, 45)), (clp.rect.x, clp.rect.y))
+            clp.animation += 1
+        elif clp.animation <= 30:
+            screen.blit(pygame.transform.scale(bullet_upgrade, (40, 45)), (clp.rect.x, clp.rect.y + 5))
+            clp.animation += 1
+        elif clp.animation <= 45:
+            screen.blit(pygame.transform.scale(bullet_upgrade, (40, 45)), (clp.rect.x, clp.rect.y + 10))
+            clp.animation += 1
+        elif clp.animation <= 60:
+            screen.blit(pygame.transform.scale(bullet_upgrade, (40, 45)), (clp.rect.x, clp.rect.y + 5))
+            clp.animation += 1
+        if clp.animation == 60:
+            clp.animation = 0
+    def check_collisions(self):
+        self.upgrade_out = False
+        self.upgrade_active = True
+        clp.obtained = True
+
+clp = Chainlpickup()
 
 
 class XPBar:
@@ -4977,7 +5060,7 @@ while game:
     if p.rect.colliderect(bup.rect) and not bup.upgrade_active and ee.felled:
         bup.check_collisions()
 
-    if int(minutes) == 5 and int(seconds) == 00:
+    if int(minutes) == 4 and int(seconds) == 0:
         com.activate = True
 
     if com.activate and not com.felled:
@@ -4986,7 +5069,15 @@ while game:
         com.check_collisions()
     com.activate_death()
 
-    if int(minutes) == 0 and int(seconds) == 3:
+    if com.felled and not lzp.upgrade_active:
+        lzp.generate_entity()
+
+    if p.rect.colliderect(lzp.rect) and not lzp.upgrade_active and com.felled:
+        lzp.check_collisions()
+
+
+
+    if int(minutes) >= 7 and int(seconds) == 0 and com.felled:
         ma.activate = True
 
     if ma.activate and not ma.felled:
@@ -4995,6 +5086,12 @@ while game:
         ma.check_collisions()
     ma.activate_death()
     #print(ma.health)
+
+    if ma.felled and not clp.upgrade_active:
+        clp.generate_entity()
+
+    if p.rect.colliderect(clp.rect) and not clp.upgrade_active and com.felled:
+        clp.check_collisions()
 
     if int(minutes) == 10 and int(seconds) == 00:
         # skeleton king spawns once the game time reaches a minute and thirty seconds
@@ -5014,15 +5111,16 @@ while game:
     for bat in bats:
         bat.clean_dictionaries()
         bat.decide_action()
-    if lz.laser_aquired == True:
+    if lzp.obtained == True:
         lz.laser_timer()
-    counter = 0
-    if len(enemies) > 6:
-        for enemy in enemies:
-            if enemy.spawned:
-                    counter += 1
-    if counter >= 6:
-        cl.cl_timer()
+    if clp.obtained == True:
+        counter = 0
+        if len(enemies) > 6:
+            for enemy in enemies:
+                if enemy.spawned:
+                        counter += 1
+        if counter >= 6:
+            cl.cl_timer()
 
     # print(pd.upgrade2_level)
 
