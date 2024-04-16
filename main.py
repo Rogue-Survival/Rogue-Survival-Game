@@ -2632,7 +2632,7 @@ class Mage(Enemy):
         self.rect.y = y
         self.rect.width = 20
         self.maxhealth = 1000
-        self.health = 2
+        self.health = 1000
         self.speed = 2.5
         self.travel_north()
         self.travel_east()
@@ -3612,6 +3612,7 @@ class XPBar:
         self.button_rect1 = None
         self.button_rect2 = None
         self.selected = False
+        self.bullet_upgrade_added = True
 
     def show_xp_bar(self):
         """Displays the XP Bar and upgrade menu."""
@@ -3699,8 +3700,12 @@ class XPBar:
 
                     if not self.selected_upgrade_choices and not self.selected:
                         # if two random options have not been generated, then generate them
-                        self.available_upgrades = ['BA-Dam', 'BA-Ran',
-                                                   'BA-Spe', 'Mov-Spe', 'Dod-Cha', 'Bul-Dam', 'Bul-Ran', 'Bul-Spe']
+                        self.available_upgrades = ['BA-Dam', 'BA-Ran', 'BA-Spe', 'Mov-Spe', 'Dod-Cha']
+                        if bup.upgrade_active and not self.bullet_upgrade_added:
+                            self.available_upgrades.append('Bul-Dam')
+                            self.available_upgrades.append('Bul-Ran')
+                            self.available_upgrades.append('Bul-Spe')
+                            self.bullet_upgrade_added = True
                         random_upgrade1 = random.randint(0, (len(self.available_upgrades) - 1))
                         self.option1 = self.available_upgrades[random_upgrade1]
                         random_upgrade2 = random.randint(0, (len(self.available_upgrades) - 1))
@@ -5665,7 +5670,7 @@ while game:
             p.current_health = int(p.max_health * 0.75)
             p.revive_available = False
         else:
-            p.time_survived = (minutes, seconds)
+            p.time_survived = (int(minutes), int(seconds))
             prevGameTime = gameTime
             p.death = True
             # print(p.gold)
@@ -5795,8 +5800,7 @@ while game:
         lzp.check_collisions()
 
 
-    com.felled = True
-    if int(minutes) >= 0 and int(seconds) == 3 and com.felled:
+    if int(minutes) >= 2 and int(seconds) == 3 and com.felled:
         ma.activate = True
 
     if ma.activate and not ma.felled:
@@ -5804,7 +5808,6 @@ while game:
         ma.active()
         ma.check_collisions()
     ma.activate_death()
-    #print(ma.health)
 
     if int(minutes) == 10 and int(seconds) == 0:
         # skeleton king spawns once the game time reaches a minute and thirty seconds
