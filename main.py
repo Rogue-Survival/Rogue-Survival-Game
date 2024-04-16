@@ -456,7 +456,7 @@ class Player:
     def __init__(self):
         """Initalizes the Player class."""
         self.speed = 4 + (.05 * pd.upgrade4_level)
-        self.max_health = 50000 + (10 * pd.upgrade1_level)
+        self.max_health = 50 + (10 * pd.upgrade1_level)
         self.current_health = self.max_health
         self.generated_health = False
         self.revive_available = True
@@ -470,7 +470,6 @@ class Player:
         self.rect.y = 400
         self.rect.width = 40
         self.gold = 0
-        # self.death = True
         self.health_font = pygame.font.SysFont('futura', 46)
         self.orspeed = 0
         self.enemies_destroyed = 0
@@ -820,10 +819,10 @@ class BasicAttack:
         east_endCounter (int): The amount of times the attack has been on screen to the east (the last position).
         running (bool): Declares if the basic attack is current active/swinging.
         finished (bool): Declares if the basic attacked finished it's swing.
-        damage (int): The base damage for the basic attack.
+        damage (float): The base damage for the basic attack.
         basic_attack_timer (int): A timer that counts up in the game loop until it reaches it's target.
         timer_target (int): A timer that controls the interval between basic attacks.
-        range_increase (int): Increases the range of the basic attack.
+        range_increase (float): Increases the range of the basic attack.
         hitbox_radius (int): Increases the hitbox radius of the basic attack.
     """
     def __init__(self):
@@ -1039,7 +1038,7 @@ class Bullet:
         bullet_disstance (int): The maximum distance a bullet can travel.
         angle (float): Calculated angle from the bullet position to the mouse position.
         position_reached (bool): Declares if the bullet has reached the mouse position.
-        damage (int): The base damage of the bullet.
+        damage (float): The base damage of the bullet.
         go_fourth_a (bool): Declares if the bullet originally went in the fourth quadrant.
         go_third_a (bool): Declares if the bullet originally went in the third quadrant.
         go_second_a (bool): Declares if the bullet originally went in the second quadrant.
@@ -1376,39 +1375,18 @@ class Enemy:
                                 if life_steal:
                                     p.add_life_steal_health()
                             i += 1
+
         for bullet in bullets:
-            # for each active bullet, if the bullet hits an enemy, deal damage if appropriate conditions met.
-            if self.rect.colliderect(bullet.rect) and bullet.bullet_valid:
-                if not self.bullet_collisions:
-                    # if the enemy has encountered it's first bullet, add to the list and take damage
-                    self.bullet_collisions.append(bullet)
-                    critical = p.check_critical_chance()
-                    if critical:
-                        self.health -= (b.damage * 1.5)
-                    else:
-                        self.health -= b.damage
-                    life_steal = p.check_life_steal_chance()
-                    if life_steal:
-                        p.add_life_steal_health()
-                elif self.bullet_collisions:
-                    # if the list of bullets the enemy has collided with is greater than 0,
-                    # make sure it is a different bullet in order to deal damage
-                    i = 0
-                    for l in self.bullet_collisions:
-                        if (bullet.rect.x == self.bullet_collisions[i].rect.x and
-                                bullet.rect.y == self.bullet_collisions[i].rect.y):
-                            pass
-                        elif bullet not in self.bullet_collisions and bullet.bullet_valid:
-                            self.bullet_collisions.append(bullet)
-                            critical = p.check_critical_chance()
-                            if critical:
-                                self.health -= (b.damage * 1.5)
-                            else:
-                                self.health -= b.damage
-                            life_steal = p.check_life_steal_chance()
-                            if life_steal:
-                                p.add_life_steal_health()
-                        i += 1
+            # removes expired bullets from the skeleton king boss bullet collision list
+            if bullet in self.bullet_collisions and not self.rect.colliderect(bullet.rect):
+                self.bullet_collisions.remove(bullet)
+                # print("BULLET REMOVED")
+        if self.bullet_collisions:
+            # backup to remove expired bullets from the enemy bullet collision list
+            for g in self.bullet_collisions:
+                if not g.rect.colliderect(self.rect):
+                    # removes collided bullet from enemy bullet collisions list
+                    self.bullet_collisions.remove(g)
 
         if self.rect.colliderect(ba.hitbox_rect) and ba.running and not self.melee_attack_collisions:
             # Reduce enemy health from the Players basic attack if not hit by that same attack swing
@@ -2010,38 +1988,16 @@ class Bat(Enemy):
                             i += 1
 
         for bullet in bullets:
-            # for each active bullet, if the bullet hits a bat, deal damage if appropriate conditions met.
-            if self.rect.colliderect(bullet.rect) and bullet.bullet_valid:
-                if not self.bullet_collisions:
-                    # if the bat has encountered it's first bullet, add to the list and take damage
-                    self.bullet_collisions.append(bullet)
-                    critical = p.check_critical_chance()
-                    if critical:
-                        self.health -= (b.damage * 1.5)
-                    else:
-                        self.health -= b.damage
-                    life_steal = p.check_life_steal_chance()
-                    if life_steal:
-                        p.add_life_steal_health()
-                elif self.bullet_collisions:
-                    # if the list of bullets the bat has collided with is greater than 0,
-                    # make sure it is a different bullet in order to deal damage
-                    i = 0
-                    for l in self.bullet_collisions:
-                        if (bullet.rect.x == self.bullet_collisions[i].rect.x and bullet.rect.y ==
-                                self.bullet_collisions[i].rect.y):
-                            pass
-                        elif bullet not in self.bullet_collisions and bullet.bullet_valid:
-                            self.bullet_collisions.append(bullet)
-                            critical = p.check_critical_chance()
-                            if critical:
-                                self.health -= (b.damage * 1.5)
-                            else:
-                                self.health -= b.damage
-                            life_steal = p.check_life_steal_chance()
-                            if life_steal:
-                                p.add_life_steal_health()
-                        i += 1
+            # removes expired bullets from the skeleton king boss bullet collision list
+            if bullet in self.bullet_collisions and not self.rect.colliderect(bullet.rect):
+                self.bullet_collisions.remove(bullet)
+                # print("BULLET REMOVED")
+        if self.bullet_collisions:
+            # backup to remove expired bullets from the enemy bullet collision list
+            for g in self.bullet_collisions:
+                if not g.rect.colliderect(self.rect):
+                    # removes collided bullet from enemy bullet collisions list
+                    self.bullet_collisions.remove(g)
 
         if self.rect.colliderect(ba.hitbox_rect) and ba.running and not self.melee_attack_collisions:
             # Reduce bat health from the Players basic attack if not hit by that same attack swing
@@ -2334,6 +2290,7 @@ class MiniEarthElemental(Enemy):
             # Makes sure ee is actually dead
             self.felled = True
             self.activate = False
+            exp.spawn_xp(self.rect.x, self.rect.y, 'mini')
 
     def follow_mc(self):
         """Handles the movement of getting the Earth Elemental to the Player."""
@@ -2451,6 +2408,7 @@ class Commander(Enemy):
             p.gold += 25
             # Makes sure Comander is actually dead
             self.felled = True
+            exp.spawn_xp(self.rect.x, self.rect.y, 'mini')
 
     def check_collisions(self):
         """Checks the collisions between the commander and the player's attacks."""
@@ -2507,7 +2465,7 @@ class Commander(Enemy):
         if self.rect.colliderect(ba.hitbox_rect) and ba.running and not self.melee_attack_collisions:
             # Reduce health from the mini boss from Players basic attack if not hit by that same attack swing
             critical = p.check_critical_chance()
-            print("Hit")
+            # print("Hit")
             if critical:
                 self.health -= (ba.damage * 1.5)
             else:
@@ -2613,7 +2571,7 @@ class Mage(Enemy):
         speed (int): The movement speed of the mage.
         felled (bool): Declares if the mage has been destroyed.
         not_attacking (bool): Declares if the mage is not attacking.
-        hit_damage (int): Sets the base damage for the mage's hit attack
+        hit_damage (int): Sets the base damage for the mage's hit attack.
         last_auto (int):
         attack_speed (int):
         meteorimpact (None):
@@ -2732,6 +2690,7 @@ class Mage(Enemy):
             p.gold += 25
             # Makes sure Comander is actually dead
             self.felled = True
+            exp.spawn_xp(self.rect.x, self.rect.y, 'boss')
 
     def check_collisions(self):
         """Checks the collisions between the mage and the player's attacks."""
@@ -3170,7 +3129,12 @@ class SkeletonKing(Enemy):
             # removes the skeleton king if they are at or below zero health
             self.felled = True
             self.activate = False
+            exp.spawn_xp(self.rect.x, self.rect.y, 'boss')
             self.rect = None
+            pd.add_gold()
+            pd.load_upgrades_into_game()
+            death_screen('win')
+
 
     def follow_mc(self):
         """Handles the movement of getting the skeleton king to the Player."""
@@ -3280,6 +3244,35 @@ class XP:
                 self.y += p.speed
             if self.rect.y + 18 > p.rect.y:
                 self.y -= p.speed
+
+    def spawn_xp(self, starting_x, starting_y, type):
+        """Spawns XP orbs around the area a mini-boss or boss has been destroyed."""
+        if type == 'mini':
+            xp_orbs = 15
+            xp_generated = 0
+            while xp_generated <= xp_orbs:
+                x_bounds = (starting_x - 45, starting_x + 45)
+                y_bounds = (starting_y - 45, starting_y + 45)
+                final_x = random.randint(x_bounds[0], x_bounds[1])
+                final_y = random.randint(y_bounds[0], y_bounds[1])
+                if final_x <= m.left_boundary_x or final_x >= m.right_boundary_x or final_y >= m.bottom_boundary_y or final_y <= m.top_boundary_y:
+                    pass
+                else:
+                    xp.append(XP(final_x, final_y))
+                    xp_generated += 1
+        elif type == 'boss':
+            xp_orbs = 30
+            xp_generated = 0
+            while xp_generated <= xp_orbs:
+                x_bounds = (starting_x - 85, starting_x + 85)
+                y_bounds = (starting_y - 85, starting_y + 85)
+                final_x = random.randint(x_bounds[0], x_bounds[1])
+                final_y = random.randint(y_bounds[0], y_bounds[1])
+                if final_x <= m.left_boundary_x or final_x >= m.right_boundary_x or final_y >= m.bottom_boundary_y or final_y <= m.top_boundary_y:
+                    pass
+                else:
+                    xp.append(XP(final_x, final_y))
+                    xp_generated += 1
 
 
 
@@ -5119,7 +5112,8 @@ class UserProfile:
 
 
 up = UserProfile()
-
+exp = XP(0,0)
+menu_timer = 0
 
 # adding the ability to implement buttons
 def button(msg, x, y, w, h, ic, ac, action):
@@ -5157,6 +5151,8 @@ def button(msg, x, y, w, h, ic, ac, action):
                 bullet_timer1 = 2
                 bullet_timer2 = 0
             elif action == "main_menu":
+                global menu_timer
+                menu_timer = 1
                 main_menu()
             elif action == "skilltree":
                 pd.load_skill_tree()
@@ -5356,10 +5352,11 @@ def main_menu():
         clock.tick(15)
 
 
-def death_screen():
+def death_screen(screen_type):
     """Displays a death screen if the player dies."""
-    global pause, screen_width, screen_height, game
+    global pause, screen_width, screen_height, game, menu_timer
     pause = True
+    menu_timer = 0
     while pause:
         global gameTimerStr
         global gameTime
@@ -5374,9 +5371,16 @@ def death_screen():
 
         large_text = pygame.font.SysFont('Garamond', 70, bold=True)
         info_text = pygame.font.SysFont('Garamond', 32, bold=1)
-        text_surf, text_rect = text_objects("YOU DIED", large_text)
+        text_surf = None
+        text_rect = None
+        if screen_type == 'lose':
+            text_surf, text_rect = text_objects("YOU DIED", large_text)
+        elif screen_type == 'win':
+            text_surf, text_rect = text_objects("YOU WIN!", large_text)
         text_rect.center = ((screen_width / 2), (screen_height / 3.3))
-        screen.blit(horizontalScroll, (screen_width / 2 - 288, screen_height / 10))
+        # screen.blit(pygame.transform.scale(horizontalScroll, (625,175)), (screen_width / 2.25 - 288, screen_height / 2))
+        # screen.blit(horizontalScroll, (screen_width / 2 - 288, screen_height / 25))
+        screen.blit(pygame.transform.scale(horizontalScroll, (675,550)), (screen_width / 2.25 - 288, screen_height / 10))
         # shows the buttons needed on the pause menu
         button("Main Menu", ((screen_width / 4) - 100), (screen_height / 1.25), 200, 100, (247, 167, 82),
                (184, 120, 51), "main_menu")
@@ -5385,18 +5389,22 @@ def death_screen():
                (184, 120, 51), "Quit")
         # puts the menu text on the screen
         screen.blit(text_surf, text_rect)
+        if not menu_timer:
+            if screen_type == 'lose':
+                info0_render = info_text.render(f'Time: {p.time_survived[0]} minutes and {p.time_survived[1]} seconds', True, (0, 0, 0))
+                screen.blit(info0_render, (screen_width / 4, screen_height / 2.625))
+            elif screen_type == 'win':
+                info0_render = info_text.render(f'You survived the time!', True, (0, 0, 0))
+                screen.blit(info0_render, (screen_width / 4, screen_height / 2.625))
 
-        info0_render = info_text.render(f'You survived for {p.time_survived[0]} minutes and {p.time_survived[1]} seconds!', True, (225, 255, 255))
-        screen.blit(info0_render, (screen_width / 4, screen_height / 2.12))
+            info1_render = info_text.render(f'Eliminated {p.enemies_destroyed} enemies', True, (0, 0, 0))
+            screen.blit(info1_render, (screen_width / 4, screen_height / 2.25))
 
-        info1_render = info_text.render(f'You eliminated {p.enemies_destroyed} enemies!', True, (225, 255, 255))
-        screen.blit(info1_render, (screen_width / 4, screen_height / 1.85))
+            info2_render = info_text.render(f'Earned {p.gold} gold', True, (0, 0, 0))
+            screen.blit(info2_render, (screen_width / 4, screen_height / 1.975))
 
-        info2_render = info_text.render(f'You earned {p.gold} gold!', True, (225, 255, 255))
-        screen.blit(info2_render, (screen_width / 4, screen_height / 1.67))
-
-        info3_render = info_text.render(f'You now have {pd.balance} gold!', True, (225, 255, 255))
-        screen.blit(info3_render, (screen_width / 4, screen_height / 1.51))
+            info3_render = info_text.render(f'You now have {pd.balance} gold', True, (0, 0, 0))
+            screen.blit(info3_render, (screen_width / 4, screen_height / 1.75))
 
         pygame.display.update()
         clock.tick(15)
@@ -5532,7 +5540,7 @@ def key_pressed():
 
 # begin the game by opening to the main menu, which has a play button to start the game
 main_menu()
-
+# pydoc.writedoc('main')
 # activating the character shooting and needed variables to maintain it
 activate_bullet = True
 bullet_timer1 = 2
@@ -5571,12 +5579,12 @@ while game:
             # print(p.gold)
             pd.add_gold()
             pd.load_upgrades_into_game()
-            death_screen()
-            while p.death:
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        p.death = False
-                        game = False
+            death_screen('lose')
+            # while p.death:
+            #     for event in pygame.event.get():
+            #         if event.type == pygame.QUIT:
+            #             p.death = False
+            #             game = False
     # makes the map visible
     # screen.blit(pygame.transform.scale(bg_img, (2250, 2250)), (-800 - m.cameraX, -800 - m.cameraY))
     screen.blit(bg_img, (-800 - m.cameraX, -800 - m.cameraY))
@@ -5677,9 +5685,9 @@ while game:
     if p.rect.colliderect(bup.rect) and not bup.upgrade_active and ee.felled:
         bup.check_collisions()
 
-    if int(minutes) == 5 and int(seconds) == 00:
+    if int(minutes) == 5 and int(seconds) == 0:
         com.activate = True
-    # pydoc.writedoc('main')
+
     if com.activate and not com.felled:
         com.generate_enemy()
         com.comactive()
@@ -5687,7 +5695,7 @@ while game:
     if not com.felled:
         com.activate_death()
 
-    if int(minutes) == 0 and int(seconds) == 3:
+    if int(minutes) == 2 and int(seconds) == 3:
         ma.activate = True
 
     if ma.activate and not ma.felled:
@@ -5697,7 +5705,7 @@ while game:
     ma.activate_death()
     #print(ma.health)
 
-    if int(minutes) == 10 and int(seconds) == 00:
+    if int(minutes) == 10 and int(seconds) == 0:
         # skeleton king spawns once the game time reaches a minute and thirty seconds
         sk.activate = True
 
@@ -5728,7 +5736,7 @@ while game:
 
     # print(pd.upgrade2_level)
 
-    if (seconds == 30 or seconds == 00) and not p.generated_health:
+    if (seconds == 30 or seconds == 0) and not p.generated_health:
         if p.current_health + (2 * pd.upgrade2_level) <= p.max_health:
             if pd.upgrade2_level:
                 p.current_health += (2 * pd.upgrade2_level)
