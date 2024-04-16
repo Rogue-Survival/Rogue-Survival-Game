@@ -1320,6 +1320,7 @@ class Enemy:
         self.edamage = 15
         self.wasbuffed = False
         self.death = False
+        self.dropped = False
 
     def generate_enemy(self):
         """Creates the enemy and handles it's animations."""
@@ -2308,7 +2309,9 @@ class MiniEarthElemental(Enemy):
             # Makes sure ee is actually dead
             self.felled = True
             self.activate = False
-            exp.spawn_xp(self.rect.x, self.rect.y, 'mini')
+            if not self.dropped:
+                exp.spawn_xp(self.rect.x, self.rect.y, 'mini')
+                self.dropped = True
 
     def follow_mc(self):
         """Handles the movement of getting the Earth Elemental to the Player."""
@@ -2425,7 +2428,9 @@ class Commander(Enemy):
             p.enemies_destroyed += 1
             p.gold += 25
             self.felled = True
-            exp.spawn_xp(self.rect.x, self.rect.y, 'mini')
+            if not self.dropped:
+                exp.spawn_xp(self.rect.x, self.rect.y, 'mini')
+                self.dropped = True
 
     def check_collisions(self):
         """Checks the collisions between the commander and the player's attacks."""
@@ -2627,7 +2632,7 @@ class Mage(Enemy):
         self.rect.y = y
         self.rect.width = 20
         self.maxhealth = 1000
-        self.health = 1000
+        self.health = 2
         self.speed = 2.5
         self.travel_north()
         self.travel_east()
@@ -2710,7 +2715,9 @@ class Mage(Enemy):
         if self.health <= 0:
             p.gold += 25
             self.felled = True
-            exp.spawn_xp(self.rect.x, self.rect.y, 'boss')
+            if not self.dropped:
+                exp.spawn_xp(self.rect.x, self.rect.y, 'mini')
+                self.dropped = True
 
     def check_collisions(self):
         """Checks the collisions between the mage and the player's attacks."""
@@ -3149,7 +3156,9 @@ class SkeletonKing(Enemy):
             # removes the skeleton king if they are at or below zero health
             self.felled = True
             self.activate = False
-            exp.spawn_xp(self.rect.x, self.rect.y, 'boss')
+            if not self.dropped:
+                exp.spawn_xp(self.rect.x, self.rect.y, 'boss')
+                self.dropped = True
             self.rect = None
             pd.add_gold()
             pd.load_upgrades_into_game()
@@ -5778,8 +5787,6 @@ while game:
     if not com.felled:
         com.activate_death()
 
-    if int(minutes) == 2 and int(seconds) == 3:
-        ma.activate = True
 
     if com.felled and not lzp.upgrade_active:
         lzp.generate_entity()
@@ -5788,8 +5795,8 @@ while game:
         lzp.check_collisions()
 
 
-
-    if int(minutes) >= 7 and int(seconds) == 0 and com.felled:
+    com.felled = True
+    if int(minutes) >= 0 and int(seconds) == 3 and com.felled:
         ma.activate = True
 
     if ma.activate and not ma.felled:
