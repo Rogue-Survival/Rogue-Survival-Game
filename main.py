@@ -462,7 +462,7 @@ class Player:
     def __init__(self):
         """Initalizes the Player class."""
         self.speed = 4 + (.05 * pd.upgrade4_level)
-        self.max_health = 50 + (10 * pd.upgrade1_level)
+        self.max_health = 250 + (10 * pd.upgrade1_level)
         self.current_health = self.max_health
         self.generated_health = False
         self.revive_available = True
