@@ -38,6 +38,16 @@ minibee2 = pygame.image.load("./images/EarthElemental2.png").convert_alpha()
 minibee3 = pygame.image.load("./images/EarthElemental3.png").convert_alpha()
 minibee4 = pygame.image.load("./images/EarthElemental4.png").convert_alpha()
 
+comimage1 = pygame.image.load("./images/commander1.png").convert_alpha()
+comimage2 = pygame.image.load("./images/commander2.png").convert_alpha()
+comimage3 = pygame.image.load("./images/commander3.png").convert_alpha()
+comimage4 = pygame.image.load("./images/commander4.png").convert_alpha()
+
+mageimage1 = pygame.image.load("./images/mage1.png").convert_alpha()
+mageimage2 = pygame.image.load("./images/mage2.png").convert_alpha()
+mageimage3 = pygame.image.load("./images/mage3.png").convert_alpha()
+mageimage4 = pygame.image.load("./images/mage4.png").convert_alpha()
+
 skeleton_king1 = pygame.image.load("./images/skeletonking1.png").convert_alpha()
 skeleton_king2 = pygame.image.load("./images/skeletonking2.png").convert_alpha()
 skeleton_king3 = pygame.image.load("./images/skeletonking3.png").convert_alpha()
@@ -2399,7 +2409,7 @@ class Commander(Enemy):
             y (float): Sets the starting y-position of the commander.
         """
         super().__init__(x, y)
-        self.rect = minibee1.get_rect().scale_by(1, 1)
+        self.rect = comimage1.get_rect().scale_by(1, 1)
         self.rect.x = x
         self.rect.y = y
         self.rect.width = 20
@@ -2516,16 +2526,16 @@ class Commander(Enemy):
         lzp.rect.x = self.rect.x
         lzp.rect.y = self.rect.y
         if self.animation <= 15:
-            screen.blit(pygame.transform.scale(minibee1, (40, 45)), (self.rect.x, self.rect.y))
+            screen.blit(pygame.transform.scale(comimage1, (40, 45)), (self.rect.x, self.rect.y))
             self.animation += 1
         elif self.animation <= 30:
-            screen.blit(pygame.transform.scale(minibee2, (40, 45)), (self.rect.x, self.rect.y))
+            screen.blit(pygame.transform.scale(comimage2, (40, 45)), (self.rect.x, self.rect.y))
             self.animation += 1
         elif self.animation <= 45:
-            screen.blit(pygame.transform.scale(minibee3, (40, 45)), (self.rect.x, self.rect.y))
+            screen.blit(pygame.transform.scale(comimage3, (40, 45)), (self.rect.x, self.rect.y))
             self.animation += 1
         elif self.animation <= 60:
-            screen.blit(pygame.transform.scale(minibee4, (40, 45)), (self.rect.x, self.rect.y))
+            screen.blit(pygame.transform.scale(comimage4, (40, 45)), (self.rect.x, self.rect.y))
             self.animation += 1
         if self.animation == 60:
             self.animation = 0
@@ -2626,7 +2636,7 @@ class Mage(Enemy):
             y (float): Sets the y-position of the enemy.
         """
         super().__init__(x, y)
-        self.rect = minibee1.get_rect().scale_by(1, 1)
+        self.rect = mageimage1.get_rect().scale_by(1, 1)
         self.rect.x = x
         self.rect.y = y
         self.rect.width = 20
@@ -2678,16 +2688,16 @@ class Mage(Enemy):
         clp.rect.x = self.rect.x
         clp.rect.y = self.rect.y
         if self.animation <= 15:
-            screen.blit(pygame.transform.scale(minibee1, (40, 45)), (self.rect.x, self.rect.y))
+            screen.blit(pygame.transform.scale(mageimage1, (40, 45)), (self.rect.x, self.rect.y))
             self.animation += 1
         elif self.animation <= 30:
-            screen.blit(pygame.transform.scale(minibee2, (40, 45)), (self.rect.x, self.rect.y))
+            screen.blit(pygame.transform.scale(mageimage2, (40, 45)), (self.rect.x, self.rect.y))
             self.animation += 1
         elif self.animation <= 45:
-            screen.blit(pygame.transform.scale(minibee3, (40, 45)), (self.rect.x, self.rect.y))
+            screen.blit(pygame.transform.scale(mageimage3, (40, 45)), (self.rect.x, self.rect.y))
             self.animation += 1
         elif self.animation <= 60:
-            screen.blit(pygame.transform.scale(minibee4, (40, 45)), (self.rect.x, self.rect.y))
+            screen.blit(pygame.transform.scale(mageimage4, (40, 45)), (self.rect.x, self.rect.y))
             self.animation += 1
         if self.animation == 60:
             self.animation = 0
@@ -2792,7 +2802,7 @@ class Mage(Enemy):
                     self.meteor = pygame.draw.circle(screen, (255,0,0),(self.px,self.py - self.meteor_distance),40)
                     self.meteor_distance -= 10
                 if self.meteor_distance <= 0:
-                    self.meteorcounter = 0
+                    self.meteor_counter = 0
                     self.meteor = pygame.draw.circle(screen, (255, 0, 0), (self.px, self.py), 350, 1)
                     self.summon = False
                     self.meteor_distance = 1000
@@ -2807,26 +2817,26 @@ class Mage(Enemy):
             if not self.seeker_active:
                 self.seekerx = ma.rect.x
                 self.seekery = ma.rect.y
-                self.seekeractive = True
-            if self.seekeractive:
+                self.seeker_active = True
+            if self.seeker_active:
                 self.seeker = pygame.draw.circle(screen, (0,255,255), (self.seekerx,self.seekery), 10, 4)
                 if self.seekacdur >= self.seekdur:
                     self.seeker = None
                     self.seekacdur = 0
                     self.seekercounter = 0
-                    self.seekeractive = False
+                    self.seeker_active = False
                     self.seekerx = ma.rect.x
                     self.seekery = ma.rect.y
-                if self.seekeractive and self.seeker.colliderect(p.rect):
+                if self.seeker_active and self.seeker.colliderect(p.rect):
                     p.current_health -= 30
                     self.seeker = None
                     self.seekercounter = 0
                     self.seekerx = ma.rect.x
                     self.seekery = ma.rect.y
-                    self.seekeractive = False
+                    self.seeker_active = False
     def seeker_seeks(self):
         '''Make the skeeker bullet follow the player'''
-        if self.seekeractive:
+        if self.seeker_active:
             if self.seekery >= p.rect.y:
                 self.seekery -= self.seek_speed
             if self.seekery <= p.rect.y:
@@ -2843,10 +2853,10 @@ class Mage(Enemy):
             self.fire_seeker()
             self.summon_meteor()
             self.seeker_seeks()
-            self.meteorcounter += .03
-            if not self.seekeractive:
+            self.meteor_counter += .03
+            if not self.seeker_active:
                 self.seeker_counter += .03
-            if self.seekeractive:
+            if self.seeker_active:
                 self.seekacdur += .03
 
 ma = Mage(random.randint(-340, 990), random.randint(-340, 990))
@@ -3420,6 +3430,19 @@ class ChainLightning:
                 self.shoot = 0
 cl = ChainLightning()
 class Laserpickup: #laser pickup
+
+    """
+    The upgrade drop that gives the laser ability.
+    Attributes:
+rect (pygame.rect.Rect): Hit box for the upgrade.
+rect (pygame.rect.Rect): Hit box for the upgrade.
+rect.x (int): x coordinate.
+rect.y (int): y coordinate.
+upgrade_out (bool): If the upgrade is out on the map.
+upgrade_active (bool):
+obtained (bool): If the player obtains the buff.
+animation (int): The counter for the animation.
+"""
     def __init__(self):
         self.rect = bullet_upgrade.get_rect().scale_by(1, 1)
         self.rect.x = 0
@@ -3454,6 +3477,18 @@ class Laserpickup: #laser pickup
 
 lzp = Laserpickup()
 class Chainlpickup: #Chain Lightning pickup
+    """
+    The upgrade drop that gives the Chainlightning ability.
+    Attributes:
+rect (pygame.rect.Rect): Hit box for the upgrade.
+rect (pygame.rect.Rect): Hit box for the upgrade.
+rect.x (int): x coordinate.
+rect.y (int): y coordinate.
+upgrade_out (bool): If the upgrade is out on the map.
+upgrade_active (bool):
+obtained (bool): If the player obtains the buff.
+animation (int): The counter for the animation.
+"""
     def __init__(self):
         self.rect = bullet_upgrade.get_rect().scale_by(1, 1)
         self.rect.x = 0
@@ -5743,7 +5778,7 @@ while game:
         lzp.check_collisions()
 
 
-    if int(minutes) >= 2 and int(seconds) == 3 and com.felled:
+    if int(minutes) == 7 and int(seconds) == 0:
         ma.activate = True
 
     if ma.activate and not ma.felled:
