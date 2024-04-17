@@ -2632,28 +2632,27 @@ class Mage(Enemy):
         speed (int): The movement speed of the mage.
         felled (bool): Declares if the mage has been destroyed.
         not_attacking (bool): Declares if the mage is not attacking.
-        hit_damage (int): Sets the base damage for the mage's hit attack
-        last_auto (int):
-        attack_speed (int):
-        meteorimpact (None):
-        meteorcd (int):
-        calling (bool):
-        activate (bool):
-        meteorcounter (int):
-        seekercd (int):
-        seekercounter (int):
-        meteor (None):
-        px (int):
-        py (int):
-        summon (bool):
-        o (int):
-        seeker (None):
-        seekerx (float):
-        seekery (float):
-        seekspeed (int):
-        seekeractive (bool):
-        seekdur (int):
-        seekacdur (int):
+        hit_damage (int): Sets the base damage for the mage's hit attack.
+        last_auto (int): A time stamp from the last austo attack on the player.
+        attack_speed (int): the rate of auto attacks.
+        meteor_impact (None): The impact rect that damages the player on collision.
+        meteor_cd (int): The set coodown  of the meteor ability.
+        activate (bool): If mage is active.
+        meteor_counter (int): The counter for the meteor cooldown.
+        seeker_cd (int): The seeker cooldown.
+        seeker_counter (int): The counter for the seeker cooldown.
+        meteor (None): The rect of tha falling meteor.
+        px (int): The snapshot of the players x position at the time of summon for the meteor.
+        py (int): The snapshot of the players y position at the time of summon for the meteor.
+        summon (bool): If summon is active.
+        meteor_distance (int): The height of the metoer on summon.
+        seeker (None): The Seeker bullet.
+        seekerx (float): The x position of the seeker bullet.
+        seekery (float): The y position of the seeker bullet
+        seek_speed (int): The speed of the seker bullet.
+        seeker_active (bool): If the seeker is active.
+        seekdur (int): The duration of the seeker befroe it dies.
+        seekacdur (int): the counter for how long the seeker is active.
     """
     def __init__(self, x, y):
         """
@@ -2681,25 +2680,22 @@ class Mage(Enemy):
         self.last_auto = 0
         self.attack_speed = 5
         self.speed = 1
-        self.meteorimpact = None
-        # self.orspeed = 0
-        self.meteorcd = 15
-        # self.shoutarea = None
-        self.calling = False
+        self.meteor_impact = None
+        self.meteor_cd = 15
         self.activate = False
-        self.meteorcounter = 0
-        self.seekercd = 20
-        self.seekercounter = 0
+        self.meteor_counter = 0
+        self.seeker_cd = 20
+        self.seeker_counter = 0
         self.meteor = None
         self.px = 0
         self.py = 0
         self.summon = False
-        self.o = 1000
+        self.meteor_distance = 1000
         self.seeker = None
         self.seekerx = self.rect.x + 15
         self.seekery = self.rect.y + 15
-        self.seekspeed = 3
-        self.seekeractive = False
+        self.seek_speed = 3
+        self.seeker_active = False
         self.seekdur = 8
         self.seekacdur = 0
 
@@ -2819,30 +2815,30 @@ class Mage(Enemy):
 
     def summon_meteor(self):
         """Summons meteor to fall where the player was standing at the time of the summon."""
-        if self.meteorcounter >= self.meteorcd:
+        if self.meteor_counter >= self.meteor_cd:
             if not self.summon:
                 self.px = p.rect.x +15
                 self.py = p.rect.y + 15
                 self.summon = True
             if self.summon:
                 pygame.draw.circle(screen, (255, 0, 0), (self.px, self.py), 350, 3)
-                if self.o > 0:
-                    self.meteor = pygame.draw.circle(screen, (255,0,0),(self.px,self.py - self.o),40)
-                    self.o -= 10
-                if self.o <= 0:
+                if self.meteor_distance > 0:
+                    self.meteor = pygame.draw.circle(screen, (255,0,0),(self.px,self.py - self.meteor_distance),40)
+                    self.meteor_distance -= 10
+                if self.meteor_distance <= 0:
                     self.meteorcounter = 0
                     self.meteor = pygame.draw.circle(screen, (255, 0, 0), (self.px, self.py), 350, 1)
                     self.summon = False
-                    self.o = 1000
+                    self.meteor_distance = 1000
                     if self.meteor.colliderect(p.rect):
                         p.current_health -= 200
 
 
 
     def fire_seeker(self):
-        """"""
-        if self.seekercounter >= self.seekercd:
-            if not self.seekeractive:
+        """Spawns a seeker bullet that damages on impact or dies after a certain amount of time"""
+        if self.seeker_counter >= self.seeker_cd:
+            if not self.seeker_active:
                 self.seekerx = ma.rect.x
                 self.seekery = ma.rect.y
                 self.seekeractive = True
@@ -2863,16 +2859,16 @@ class Mage(Enemy):
                     self.seekery = ma.rect.y
                     self.seekeractive = False
     def seeker_seeks(self):
-        """"""
+        '''Make the skeeker bullet follow the player'''
         if self.seekeractive:
             if self.seekery >= p.rect.y:
-                self.seekery -= self.seekspeed
+                self.seekery -= self.seek_speed
             if self.seekery <= p.rect.y:
-                self.seekery += self.seekspeed
+                self.seekery += self.seek_speed
             if self.seekerx >= p.rect.x:
-                self.seekerx -= self.seekspeed
+                self.seekerx -= self.seek_speed
             if self.seekerx <= p.rect.x:
-                self.seekerx += self.seekspeed
+                self.seekerx += self.seek_speed
 
 
     def active(self):
@@ -2883,66 +2879,13 @@ class Mage(Enemy):
             self.seeker_seeks()
             self.meteorcounter += .03
             if not self.seekeractive:
-                self.seekercounter += .03
+                self.seeker_counter += .03
             if self.seekeractive:
                 self.seekacdur += .03
 
 ma = Mage(random.randint(-340, 990), random.randint(-340, 990))
 
 class CalcTargets:
-    """Calculates targets to be attacked."""
-    def calc_closest(t1, o1, n1):
-        """
-        Calculates the closest targets
-
-        Args:
-            o1 (PUT TYPE HERE): DESCRIPTION
-            n1 (PUT TYPE HERE): DESCRIPTION
-        """
-        closest_targets = []
-        close = []
-        # Iterate through the enemies and checks their distances then adds them to the list
-        for t1 in o1:
-            xcor = t1.rect.x - p.rect.x
-            ycor = t1.rect.y - p.rect.y
-            distance = math.sqrt(xcor ** 2 + ycor ** 2)
-            xcor = abs(t1.rect.x - p.rect.x)
-            ycor = abs(t1.rect.y - p.rect.y)
-            if close == []:
-                close.append((t1, xcor, ycor, distance))
-            if close[0][3] > distance:
-                close.insert(0,(t1,xcor,ycor,distance))
-            else:
-                close.append((t1, xcor, ycor, distance))
-
-
-        # Sorts and condenses the list to n closest targets.
-        closest_targets = close[:n1]
-        for i in closest_targets:
-            pygame.draw.line(screen, (0, 100, 0), (p.rect.x, p.rect.y), (closest_targets[1],closest_targets[2]),10)
-        return closest_targets
-
-    def calc_farthest(t1, o1, n1):
-        """
-        Calculates the farthest targets
-
-        Args:
-            o1 (PUT TYPE HERE): DESCRIPTION
-            n1 (PUT TYPE HERE): DESCRIPTION
-        """
-        farthest_target = []
-        for t1 in o1:
-            # itterates through the enemies and checks thier distances then adds them to the list
-            xcor = t1.rect.x - p.rect.x
-            ycor = t1.rect.y - p.rect.y
-            distance = math.sqrt(xcor ** 2 + ycor ** 2)
-            farthest_target.append((t1, xcor, ycor))
-
-        # sorts and condenses the list to targets.
-        farthest_target.sort(key=lambda x: x[1], reverse=True)
-        farthest_one = farthest_target[:n1]
-        return farthest_one
-
     def calc_distance(self):
         """Calculates the distance between the enemy and the player."""
         xcor = self.rect.x - p.rect.x
@@ -3314,10 +3257,10 @@ class Laser:
         closest_enemy (list): An x,y position of the closest enemy to the player.
         damage (int): The base damage of the laser.
         cd (int): The cooldown time of the laser ability.
-        shoot (int):
-        target (list):
-        dmgtype (str):
-        laser_aquired (bool):
+        shoot (int): Triggers the laser.
+        target (list): The Target that the laser is fighting.
+        dmgtype (str): Unimplemented damage type.
+        laser_aquired (bool): Is true if you have the laser.
     """
     def __init__(self): #Simple laser attack.
         """Initializes the Lazer class."""
@@ -3368,15 +3311,15 @@ class ChainLightning:
     A chain lightning ability that the player can unlock.
 
     Attributes:
-        closest_enemy (list):
-        x_distance (int):
-        y_distance (int):
+        closest_enemy (list): Checks the closest enemies.
+        x_distance (int): Distance between the player and target on x axis.
+        y_distance (int): Distance between the player and target on x axis.
         next_closest_enemy (list): The x,y position of the next closest enemy.
-        enemies_hit (int):
-        targeted_enemies (list):
-        target_coords (list):
+        enemies_hit (int): The number of targets hit.
+        targeted_enemies (list): List of enemies targeted.
+        target_coords (list): The coords of the targeted mobs.
         cooldown (int): The cooldown of the chain lightning ability.
-        shoot (int):
+        shoot (int): The counter for the cooldown
         damage (int): The base damage of the chain lightning ability.
     """
 
