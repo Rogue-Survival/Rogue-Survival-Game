@@ -1,0 +1,1432 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module main</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>main</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:c%3A%5Cusers%5Ckille%5Cpycharmprojects%5Crogue-survival-game%5Cmain.py">c:\users\kille\pycharmprojects\rogue-survival-game\main.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="csv.html">csv</a><br>
+<a href="math.html">math</a><br>
+</td><td width="25%" valign=top><a href="numpy.html">numpy</a><br>
+<a href="os.html">os</a><br>
+</td><td width="25%" valign=top><a href="pydoc.html">pydoc</a><br>
+<a href="pygame.html">pygame</a><br>
+</td><td width="25%" valign=top><a href="random.html">random</a><br>
+<a href="sys.html">sys</a><br>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="main.html#BasicAttack">BasicAttack</a>
+</font></dt><dt><font face="helvetica, arial"><a href="main.html#Bullet">Bullet</a>
+</font></dt><dt><font face="helvetica, arial"><a href="main.html#BulletUpgrade">BulletUpgrade</a>
+</font></dt><dt><font face="helvetica, arial"><a href="main.html#CalcTargets">CalcTargets</a>
+</font></dt><dt><font face="helvetica, arial"><a href="main.html#ChainLightning">ChainLightning</a>
+</font></dt><dt><font face="helvetica, arial"><a href="main.html#ChainLightningPickup">ChainLightningPickup</a>
+</font></dt><dt><font face="helvetica, arial"><a href="main.html#Enemy">Enemy</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="main.html#Bat">Bat</a>
+</font></dt><dt><font face="helvetica, arial"><a href="main.html#Commander">Commander</a>
+</font></dt><dt><font face="helvetica, arial"><a href="main.html#Mage">Mage</a>
+</font></dt><dt><font face="helvetica, arial"><a href="main.html#MiniEarthElemental">MiniEarthElemental</a>
+</font></dt><dt><font face="helvetica, arial"><a href="main.html#SkeletonKing">SkeletonKing</a>
+</font></dt></dl>
+</dd>
+<dt><font face="helvetica, arial"><a href="main.html#Laser">Laser</a>
+</font></dt><dt><font face="helvetica, arial"><a href="main.html#LaserPickup">LaserPickup</a>
+</font></dt><dt><font face="helvetica, arial"><a href="main.html#Map">Map</a>
+</font></dt><dt><font face="helvetica, arial"><a href="main.html#Player">Player</a>
+</font></dt><dt><font face="helvetica, arial"><a href="main.html#ProfileData">ProfileData</a>
+</font></dt><dt><font face="helvetica, arial"><a href="main.html#SkillTree">SkillTree</a>
+</font></dt><dt><font face="helvetica, arial"><a href="main.html#UserProfile">UserProfile</a>
+</font></dt><dt><font face="helvetica, arial"><a href="main.html#XP">XP</a>
+</font></dt><dt><font face="helvetica, arial"><a href="main.html#XPBar">XPBar</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="BasicAttack">class <strong>BasicAttack</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Allows&nbsp;the&nbsp;player&nbsp;to&nbsp;automatically&nbsp;attack&nbsp;in&nbsp;an&nbsp;area&nbsp;around&nbsp;the&nbsp;player&nbsp;after&nbsp;a&nbsp;certain&nbsp;amount&nbsp;of&nbsp;time&nbsp;passes.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;rect&nbsp;(pygame.rect.Rect):&nbsp;Draws&nbsp;the&nbsp;basic&nbsp;attack&nbsp;to&nbsp;the&nbsp;screen.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;hitbox_rect&nbsp;(pygame.rect.Rect):&nbsp;Detects&nbsp;if&nbsp;enemies&nbsp;are&nbsp;within&nbsp;the&nbsp;range&nbsp;of&nbsp;the&nbsp;basic&nbsp;attack.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;east&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;basic&nbsp;attack&nbsp;has&nbsp;activated&nbsp;in&nbsp;the&nbsp;east&nbsp;direction.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;north_east&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;basic&nbsp;attack&nbsp;has&nbsp;activated&nbsp;in&nbsp;the&nbsp;northeast&nbsp;direction.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;north&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;basic&nbsp;attack&nbsp;has&nbsp;activated&nbsp;in&nbsp;the&nbsp;north&nbsp;direction.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;north_west&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;basic&nbsp;attack&nbsp;has&nbsp;activated&nbsp;in&nbsp;the&nbsp;north_west&nbsp;direction.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;west&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;basic&nbsp;attack&nbsp;has&nbsp;activated&nbsp;in&nbsp;the&nbsp;west&nbsp;direction.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;south_west&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;basic&nbsp;attack&nbsp;has&nbsp;activated&nbsp;in&nbsp;the&nbsp;south_west&nbsp;direction.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;south&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;basic&nbsp;attack&nbsp;has&nbsp;activated&nbsp;in&nbsp;the&nbsp;south&nbsp;direction.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;south_east&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;basic&nbsp;attack&nbsp;has&nbsp;activated&nbsp;in&nbsp;the&nbsp;south_east&nbsp;direction.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;east_end&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;basic&nbsp;attack&nbsp;has&nbsp;finished&nbsp;it's&nbsp;cycle.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;east_counter&nbsp;(int):&nbsp;The&nbsp;amount&nbsp;of&nbsp;times&nbsp;the&nbsp;attack&nbsp;has&nbsp;been&nbsp;on&nbsp;screen&nbsp;to&nbsp;the&nbsp;east.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;north_east_counter&nbsp;(int):&nbsp;The&nbsp;amount&nbsp;of&nbsp;times&nbsp;the&nbsp;attack&nbsp;has&nbsp;been&nbsp;on&nbsp;screen&nbsp;to&nbsp;the&nbsp;northeast.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;north_counter&nbsp;(int):&nbsp;The&nbsp;amount&nbsp;of&nbsp;times&nbsp;the&nbsp;attack&nbsp;has&nbsp;been&nbsp;on&nbsp;screen&nbsp;to&nbsp;the&nbsp;north.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;north_west_counter&nbsp;(int):&nbsp;The&nbsp;amount&nbsp;of&nbsp;times&nbsp;the&nbsp;attack&nbsp;has&nbsp;been&nbsp;on&nbsp;screen&nbsp;to&nbsp;the&nbsp;north_west.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;west_counter&nbsp;(int):&nbsp;The&nbsp;amount&nbsp;of&nbsp;times&nbsp;the&nbsp;attack&nbsp;has&nbsp;been&nbsp;on&nbsp;screen&nbsp;to&nbsp;the&nbsp;west.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;south_west_counter&nbsp;(int):&nbsp;The&nbsp;amount&nbsp;of&nbsp;times&nbsp;the&nbsp;attack&nbsp;has&nbsp;been&nbsp;on&nbsp;screen&nbsp;to&nbsp;the&nbsp;southwest.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;south_counter&nbsp;(int):&nbsp;The&nbsp;amount&nbsp;of&nbsp;times&nbsp;the&nbsp;attack&nbsp;has&nbsp;been&nbsp;on&nbsp;screen&nbsp;to&nbsp;the&nbsp;south.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;south_east_counter&nbsp;(int):&nbsp;The&nbsp;amount&nbsp;of&nbsp;times&nbsp;the&nbsp;attack&nbsp;has&nbsp;been&nbsp;on&nbsp;screen&nbsp;to&nbsp;the&nbsp;south_east.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;east_endCounter&nbsp;(int):&nbsp;The&nbsp;amount&nbsp;of&nbsp;times&nbsp;the&nbsp;attack&nbsp;has&nbsp;been&nbsp;on&nbsp;screen&nbsp;to&nbsp;the&nbsp;east&nbsp;(the&nbsp;last&nbsp;position).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;running&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;basic&nbsp;attack&nbsp;is&nbsp;current&nbsp;active/swinging.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;finished&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;basic&nbsp;attacked&nbsp;finished&nbsp;it's&nbsp;swing.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;damage&nbsp;(float):&nbsp;The&nbsp;base&nbsp;damage&nbsp;for&nbsp;the&nbsp;basic&nbsp;attack.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;basic_attack_timer&nbsp;(int):&nbsp;A&nbsp;timer&nbsp;that&nbsp;counts&nbsp;up&nbsp;in&nbsp;the&nbsp;game&nbsp;loop&nbsp;until&nbsp;it&nbsp;reaches&nbsp;it's&nbsp;target.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;timer_target&nbsp;(int):&nbsp;A&nbsp;timer&nbsp;that&nbsp;controls&nbsp;the&nbsp;interval&nbsp;between&nbsp;basic&nbsp;attacks.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;range_increase&nbsp;(float):&nbsp;Increases&nbsp;the&nbsp;range&nbsp;of&nbsp;the&nbsp;basic&nbsp;attack.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;hitbox_radius&nbsp;(int):&nbsp;Increases&nbsp;the&nbsp;hitbox&nbsp;radius&nbsp;of&nbsp;the&nbsp;basic&nbsp;attack.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="BasicAttack-__init__"><strong>__init__</strong></a>(self)</dt><dd><tt>Initializes&nbsp;the&nbsp;<a href="#BasicAttack">BasicAttack</a>&nbsp;class.</tt></dd></dl>
+
+<dl><dt><a name="BasicAttack-attack"><strong>attack</strong></a>(self)</dt><dd><tt>Allows&nbsp;the&nbsp;player&nbsp;to&nbsp;swing&nbsp;their&nbsp;sword&nbsp;and&nbsp;deal&nbsp;damage&nbsp;to&nbsp;enemies&nbsp;within&nbsp;range.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Bat">class <strong>Bat</strong></a>(<a href="main.html#Enemy">Enemy</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Bat">Bat</a>(x,&nbsp;y)<br>
+&nbsp;<br>
+Controls&nbsp;the&nbsp;movement&nbsp;and&nbsp;attacks&nbsp;of&nbsp;the&nbsp;bat&nbsp;enemy&nbsp;type.&nbsp;Inherrits&nbsp;from&nbsp;the&nbsp;<a href="#Enemy">Enemy</a>&nbsp;class.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;rect&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;hitbox&nbsp;for&nbsp;the&nbsp;bat.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;health&nbsp;(float):&nbsp;The&nbsp;health&nbsp;of&nbsp;the&nbsp;bat.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;speed&nbsp;(float):&nbsp;The&nbsp;movementspeed&nbsp;of&nbsp;the&nbsp;bat.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bat&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;it&nbsp;is&nbsp;of&nbsp;type&nbsp;bat.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;player_pos&nbsp;(tuple):&nbsp;The&nbsp;x,y&nbsp;position&nbsp;of&nbsp;the&nbsp;player,&nbsp;used&nbsp;for&nbsp;targeting.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;found&nbsp;(bool):&nbsp;Determines&nbsp;if&nbsp;the&nbsp;<a href="#Bat">Bat</a>&nbsp;found&nbsp;the&nbsp;angle&nbsp;between&nbsp;itself&nbsp;and&nbsp;the&nbsp;player.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bullet_rect&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;hitbox&nbsp;of&nbsp;the&nbsp;bullet.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bullet_speed&nbsp;(float):&nbsp;The&nbsp;speed&nbsp;that&nbsp;the&nbsp;bullet&nbsp;travels.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;spawned2&nbsp;(list):&nbsp;Contains&nbsp;spawn&nbsp;information&nbsp;of&nbsp;the&nbsp;bat.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;position_reached&nbsp;(bool):&nbsp;Determines&nbsp;if&nbsp;the&nbsp;bullet&nbsp;the&nbsp;bat&nbsp;shoots&nbsp;found&nbsp;it's&nbsp;target.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;go_fourth_a&nbsp;(bool):&nbsp;Determines&nbsp;of&nbsp;the&nbsp;player&nbsp;is&nbsp;in&nbsp;the&nbsp;fourth&nbsp;quadrant&nbsp;from&nbsp;the&nbsp;bat.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;go_third_a&nbsp;(bool):&nbsp;Determines&nbsp;of&nbsp;the&nbsp;player&nbsp;is&nbsp;in&nbsp;the&nbsp;third&nbsp;quadrant&nbsp;from&nbsp;the&nbsp;bat.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;go_second_a&nbsp;(bool):&nbsp;Determines&nbsp;of&nbsp;the&nbsp;player&nbsp;is&nbsp;in&nbsp;the&nbsp;second&nbsp;quadrant&nbsp;from&nbsp;the&nbsp;bat.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;go_first_a&nbsp;(bool):&nbsp;Determines&nbsp;of&nbsp;the&nbsp;player&nbsp;is&nbsp;in&nbsp;the&nbsp;first&nbsp;quadrant&nbsp;from&nbsp;the&nbsp;bat.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;angle&nbsp;(float):&nbsp;Calculated&nbsp;angle&nbsp;between&nbsp;the&nbsp;bat&nbsp;and&nbsp;the&nbsp;player.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;counter&nbsp;(int):&nbsp;Sets&nbsp;the&nbsp;interval&nbsp;between&nbsp;each&nbsp;bullet&nbsp;the&nbsp;bat&nbsp;shoots.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;target_x&nbsp;(float):&nbsp;The&nbsp;player's&nbsp;x-position.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;target_y&nbsp;(float):&nbsp;The&nbsp;player's&nbsp;y-position.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;starting_point&nbsp;(list):&nbsp;The&nbsp;starting&nbsp;point&nbsp;of&nbsp;when&nbsp;the&nbsp;bullet&nbsp;is&nbsp;initially&nbsp;launched.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;shoot_timer&nbsp;(int):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bullet_valid&nbsp;(bool):&nbsp;Determines&nbsp;if&nbsp;the&nbsp;bullet&nbsp;is&nbsp;currently&nbsp;active.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;hit_counter&nbsp;(int):&nbsp;A&nbsp;counter&nbsp;which&nbsp;counts&nbsp;how&nbsp;many&nbsp;times&nbsp;the&nbsp;player&nbsp;has&nbsp;been&nbsp;hit.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;spawned&nbsp;(bool):&nbsp;Determines&nbsp;if&nbsp;the&nbsp;bat&nbsp;has&nbsp;been&nbsp;spawned.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="main.html#Bat">Bat</a></dd>
+<dd><a href="main.html#Enemy">Enemy</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="Bat-__init__"><strong>__init__</strong></a>(self, x, y)</dt><dd><tt>Initializes&nbsp;the&nbsp;<a href="#Bat">Bat</a>&nbsp;class.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;x&nbsp;(float):&nbsp;Sets&nbsp;the&nbsp;starting&nbsp;x-position&nbsp;of&nbsp;the&nbsp;bat.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;y&nbsp;(float):&nbsp;Sets&nbsp;the&nbsp;starting&nbsp;y-position&nbsp;of&nbsp;the&nbsp;bat.</tt></dd></dl>
+
+<dl><dt><a name="Bat-activate_death"><strong>activate_death</strong></a>(self)</dt><dd><tt>Destroys&nbsp;the&nbsp;enemy&nbsp;when&nbsp;they&nbsp;run&nbsp;out&nbsp;of&nbsp;health.</tt></dd></dl>
+
+<dl><dt><a name="Bat-check_collisions"><strong>check_collisions</strong></a>(self)</dt><dd><tt>Checks&nbsp;the&nbsp;collisions&nbsp;between&nbsp;the&nbsp;bat&nbsp;and&nbsp;the&nbsp;player's&nbsp;attacks.</tt></dd></dl>
+
+<dl><dt><a name="Bat-clean_dictionaries"><strong>clean_dictionaries</strong></a>(self)</dt><dd><tt>As&nbsp;bullets&nbsp;and&nbsp;other&nbsp;attacks&nbsp;hit&nbsp;the&nbsp;enemy,&nbsp;clear&nbsp;those&nbsp;registered&nbsp;hits&nbsp;once&nbsp;they&nbsp;are&nbsp;no&nbsp;longer&nbsp;active.</tt></dd></dl>
+
+<dl><dt><a name="Bat-decide_action"><strong>decide_action</strong></a>(self)</dt><dd><tt>Changes&nbsp;the&nbsp;behavior&nbsp;of&nbsp;the&nbsp;bat,&nbsp;switching&nbsp;between&nbsp;shooting&nbsp;the&nbsp;player&nbsp;and&nbsp;running&nbsp;at&nbsp;them.</tt></dd></dl>
+
+<dl><dt><a name="Bat-find_angle"><strong>find_angle</strong></a>(self)</dt><dd><tt>Calculates&nbsp;the&nbsp;angle&nbsp;between&nbsp;the&nbsp;bat&nbsp;and&nbsp;the&nbsp;player&nbsp;in&nbsp;order&nbsp;to&nbsp;fire&nbsp;a&nbsp;bullet.</tt></dd></dl>
+
+<dl><dt><a name="Bat-generate_enemy"><strong>generate_enemy</strong></a>(self)</dt><dd><tt>Creates&nbsp;the&nbsp;bat&nbsp;and&nbsp;handles&nbsp;it's&nbsp;animations.</tt></dd></dl>
+
+<dl><dt><a name="Bat-shoot"><strong>shoot</strong></a>(self)</dt><dd><tt>Shoots&nbsp;a&nbsp;bullet&nbsp;from&nbsp;the&nbsp;bat&nbsp;to&nbsp;the&nbsp;player's&nbsp;position.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="main.html#Enemy">Enemy</a>:<br>
+<dl><dt><a name="Bat-attack_mc"><strong>attack_mc</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Bat-follow_mc"><strong>follow_mc</strong></a>(self)</dt><dd><tt>Handles&nbsp;the&nbsp;logic&nbsp;behind&nbsp;enemy&nbsp;movement.</tt></dd></dl>
+
+<dl><dt><a name="Bat-spawn"><strong>spawn</strong></a>(self)</dt><dd><tt>Sets&nbsp;the&nbsp;enemy&nbsp;to&nbsp;have&nbsp;spawned&nbsp;after&nbsp;their&nbsp;spawn&nbsp;indicator&nbsp;is&nbsp;no&nbsp;longer&nbsp;active.</tt></dd></dl>
+
+<dl><dt><a name="Bat-travel_east"><strong>travel_east</strong></a>(self)</dt><dd><tt>Allows&nbsp;the&nbsp;enemy&nbsp;to&nbsp;move&nbsp;east.</tt></dd></dl>
+
+<dl><dt><a name="Bat-travel_north"><strong>travel_north</strong></a>(self)</dt><dd><tt>Allows&nbsp;the&nbsp;enemy&nbsp;to&nbsp;move&nbsp;north</tt></dd></dl>
+
+<dl><dt><a name="Bat-travel_south"><strong>travel_south</strong></a>(self)</dt><dd><tt>Allows&nbsp;the&nbsp;enemy&nbsp;to&nbsp;move&nbsp;south.</tt></dd></dl>
+
+<dl><dt><a name="Bat-travel_west"><strong>travel_west</strong></a>(self)</dt><dd><tt>Allows&nbsp;the&nbsp;enemy&nbsp;to&nbsp;move&nbsp;west.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="main.html#Enemy">Enemy</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Bullet">class <strong>Bullet</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>The&nbsp;bullet&nbsp;ability,&nbsp;which&nbsp;allows&nbsp;the&nbsp;player&nbsp;to&nbsp;shoot&nbsp;at&nbsp;enemies.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;rect&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;hitbox&nbsp;of&nbsp;the&nbsp;bullet.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;image&nbsp;(str):&nbsp;The&nbsp;path&nbsp;to&nbsp;the&nbsp;bullet&nbsp;image&nbsp;file.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;starting_point&nbsp;(tuple):&nbsp;The&nbsp;starting&nbsp;point&nbsp;of&nbsp;the&nbsp;bullets&nbsp;x,y&nbsp;position.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;mouse_pos&nbsp;(tuple):&nbsp;The&nbsp;x,y&nbsp;position&nbsp;of&nbsp;where&nbsp;the&nbsp;mouse&nbsp;cursor&nbsp;is&nbsp;currently&nbsp;pointed.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bullet_valid&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;bullet&nbsp;is&nbsp;shooting.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bullet_speed&nbsp;(float):&nbsp;Controls&nbsp;the&nbsp;speed&nbsp;the&nbsp;bullet&nbsp;moves.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bullet_increment&nbsp;(float):&nbsp;Works&nbsp;with&nbsp;the&nbsp;bullet_spawn_speed&nbsp;to&nbsp;have&nbsp;consistent&nbsp;spawn&nbsp;timings.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;counterX&nbsp;(int):&nbsp;A&nbsp;timer&nbsp;to&nbsp;restrict&nbsp;the&nbsp;distance&nbsp;the&nbsp;bullet&nbsp;travels&nbsp;in&nbsp;the&nbsp;x-direction.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;counterY&nbsp;(int):&nbsp;A&nbsp;timer&nbsp;to&nbsp;restrict&nbsp;the&nbsp;distance&nbsp;the&nbsp;bullet&nbsp;travels&nbsp;in&nbsp;the&nbsp;y-direction.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bullet_disstance&nbsp;(int):&nbsp;The&nbsp;maximum&nbsp;distance&nbsp;a&nbsp;bullet&nbsp;can&nbsp;travel.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;angle&nbsp;(float):&nbsp;Calculated&nbsp;angle&nbsp;from&nbsp;the&nbsp;bullet&nbsp;position&nbsp;to&nbsp;the&nbsp;mouse&nbsp;position.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;position_reached&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;bullet&nbsp;has&nbsp;reached&nbsp;the&nbsp;mouse&nbsp;position.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;damage&nbsp;(float):&nbsp;The&nbsp;base&nbsp;damage&nbsp;of&nbsp;the&nbsp;bullet.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;go_fourth_a&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;bullet&nbsp;originally&nbsp;went&nbsp;in&nbsp;the&nbsp;fourth&nbsp;quadrant.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;go_third_a&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;bullet&nbsp;originally&nbsp;went&nbsp;in&nbsp;the&nbsp;third&nbsp;quadrant.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;go_second_a&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;bullet&nbsp;originally&nbsp;went&nbsp;in&nbsp;the&nbsp;second&nbsp;quadrant.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;go_first_a&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;bullet&nbsp;originally&nbsp;went&nbsp;in&nbsp;the&nbsp;first&nbsp;quadrant.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bullet_counter&nbsp;(int):&nbsp;A&nbsp;timer&nbsp;that&nbsp;counts&nbsp;up&nbsp;in&nbsp;the&nbsp;game&nbsp;loop&nbsp;until&nbsp;it&nbsp;reaches&nbsp;it's&nbsp;target.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bullet_spawn_speed&nbsp;(int):&nbsp;A&nbsp;timer&nbsp;that&nbsp;determines&nbsp;the&nbsp;interval&nbsp;between&nbsp;each&nbsp;bullet.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;shooting&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;bullet&nbsp;ability&nbsp;is&nbsp;active.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Bullet-__init__"><strong>__init__</strong></a>(self)</dt><dd><tt>Initializes&nbsp;the&nbsp;<a href="#Bullet">Bullet</a>&nbsp;class.</tt></dd></dl>
+
+<dl><dt><a name="Bullet-bullet"><strong>bullet</strong></a>(self)</dt><dd><tt>Shoots&nbsp;a&nbsp;bullet&nbsp;from&nbsp;the&nbsp;player&nbsp;to&nbsp;where&nbsp;the&nbsp;mouse&nbsp;cursor&nbsp;is&nbsp;at.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="BulletUpgrade">class <strong>BulletUpgrade</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Controls&nbsp;the&nbsp;animation&nbsp;and&nbsp;hitbox&nbsp;of&nbsp;bullet&nbsp;ability&nbsp;when&nbsp;dropped&nbsp;by&nbsp;the&nbsp;Earth&nbsp;Elemental.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;rect&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;hitbox&nbsp;of&nbsp;the&nbsp;bullet&nbsp;ability&nbsp;when&nbsp;it&nbsp;is&nbsp;dropped.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;upgrade_out&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;player&nbsp;has&nbsp;equipped&nbsp;the&nbsp;bullet&nbsp;ability.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;upgrade_active&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;upgrade&nbsp;has&nbsp;been&nbsp;dropped/can&nbsp;be&nbsp;equipped&nbsp;by&nbsp;the&nbsp;player.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;animation&nbsp;(int):&nbsp;A&nbsp;timer&nbsp;that&nbsp;controls&nbsp;the&nbsp;intervals&nbsp;between&nbsp;different&nbsp;animations&nbsp;of&nbsp;the&nbsp;dropped&nbsp;ability.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="BulletUpgrade-__init__"><strong>__init__</strong></a>(self)</dt><dd><tt>Initializes&nbsp;the&nbsp;<a href="#BulletUpgrade">BulletUpgrade</a>&nbsp;class.</tt></dd></dl>
+
+<dl><dt><a name="BulletUpgrade-check_collisions"><strong>check_collisions</strong></a>(self)</dt><dd><tt>Changes&nbsp;stats&nbsp;once&nbsp;the&nbsp;player&nbsp;comes&nbsp;in&nbsp;contact&nbsp;with&nbsp;the&nbsp;dropped&nbsp;bullet&nbsp;ability.</tt></dd></dl>
+
+<dl><dt><a name="BulletUpgrade-generate_entity"><strong>generate_entity</strong></a>(self)</dt><dd><tt>Handles&nbsp;the&nbsp;animiations&nbsp;of&nbsp;the&nbsp;dropped&nbsp;bullet&nbsp;ability.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="CalcTargets">class <strong>CalcTargets</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Calculates&nbsp;targets&nbsp;to&nbsp;be&nbsp;attacked.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="CalcTargets-calc_distance"><strong>calc_distance</strong></a>(self)</dt><dd><tt>Calculates&nbsp;the&nbsp;distance&nbsp;between&nbsp;the&nbsp;enemy&nbsp;and&nbsp;the&nbsp;player.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="ChainLightning">class <strong>ChainLightning</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>A&nbsp;chain&nbsp;lightning&nbsp;ability&nbsp;that&nbsp;the&nbsp;player&nbsp;can&nbsp;unlock.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;closest_enemy&nbsp;(list):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;x_distance&nbsp;(int):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;y_distance&nbsp;(int):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;next_closest_enemy&nbsp;(list):&nbsp;The&nbsp;x,y&nbsp;position&nbsp;of&nbsp;the&nbsp;next&nbsp;closest&nbsp;enemy.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;enemies_hit&nbsp;(int):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;targeted_enemies&nbsp;(list):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;target_coords&nbsp;(list):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;cooldown&nbsp;(int):&nbsp;The&nbsp;cooldown&nbsp;of&nbsp;the&nbsp;chain&nbsp;lightning&nbsp;ability.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;shoot&nbsp;(int):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;damage&nbsp;(int):&nbsp;The&nbsp;base&nbsp;damage&nbsp;of&nbsp;the&nbsp;chain&nbsp;lightning&nbsp;ability.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="ChainLightning-__init__"><strong>__init__</strong></a>(self)</dt><dd><tt>Initiates&nbsp;the&nbsp;chain&nbsp;lightning&nbsp;class.</tt></dd></dl>
+
+<dl><dt><a name="ChainLightning-cl_timer"><strong>cl_timer</strong></a>(self)</dt><dd><tt>Handles&nbsp;the&nbsp;intervals&nbsp;between&nbsp;using&nbsp;the&nbsp;chain&nbsp;lightning&nbsp;ability.</tt></dd></dl>
+
+<dl><dt><a name="ChainLightning-target_enemy"><strong>target_enemy</strong></a>(self)</dt><dd><tt>Targets&nbsp;the&nbsp;first&nbsp;closest&nbsp;enemy&nbsp;to&nbsp;the&nbsp;player.</tt></dd></dl>
+
+<dl><dt><a name="ChainLightning-target_next_enemy"><strong>target_next_enemy</strong></a>(self)</dt><dd><tt>Targets&nbsp;the&nbsp;closest&nbsp;enemy&nbsp;to&nbsp;the&nbsp;last&nbsp;enemy&nbsp;that&nbsp;was&nbsp;targeted.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="ChainLightningPickup">class <strong>ChainLightningPickup</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>The&nbsp;upgrade&nbsp;drop&nbsp;that&nbsp;gives&nbsp;the&nbsp;chain&nbsp;lightning&nbsp;ability.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;rect&nbsp;(pygame.rect.Rect):&nbsp;Hit&nbsp;box&nbsp;for&nbsp;the&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;upgrade_out&nbsp;(bool):&nbsp;If&nbsp;the&nbsp;upgrade&nbsp;is&nbsp;out&nbsp;on&nbsp;the&nbsp;map.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;upgrade_active&nbsp;(bool):&nbsp;Upgrade&nbsp;becomes&nbsp;active&nbsp;when&nbsp;dropped.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;obtained&nbsp;(bool):&nbsp;If&nbsp;the&nbsp;player&nbsp;obtains&nbsp;the&nbsp;buff.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;animation&nbsp;(int):&nbsp;The&nbsp;counter&nbsp;for&nbsp;the&nbsp;animation.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="ChainLightningPickup-__init__"><strong>__init__</strong></a>(self)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="ChainLightningPickup-check_collisions"><strong>check_collisions</strong></a>(self)</dt><dd><tt>When&nbsp;player&nbsp;collides,&nbsp;grant&nbsp;the&nbsp;player&nbsp;the&nbsp;chain&nbsp;lightning&nbsp;ability.</tt></dd></dl>
+
+<dl><dt><a name="ChainLightningPickup-generate_entity"><strong>generate_entity</strong></a>(self)</dt><dd><tt>Spawns&nbsp;the&nbsp;new&nbsp;ability&nbsp;with&nbsp;it's&nbsp;animations.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Commander">class <strong>Commander</strong></a>(<a href="main.html#Enemy">Enemy</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Commander">Commander</a>(x,&nbsp;y)<br>
+&nbsp;<br>
+Controls&nbsp;the&nbsp;movement&nbsp;and&nbsp;attacks&nbsp;of&nbsp;the&nbsp;<a href="#Commander">Commander</a>&nbsp;enemy.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;rect&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;hitbox&nbsp;for&nbsp;the&nbsp;commander.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;health&nbsp;(float):&nbsp;The&nbsp;health&nbsp;of&nbsp;the&nbsp;commander.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;speed&nbsp;(int):&nbsp;The&nbsp;speed&nbsp;of&nbsp;the&nbsp;commander<br>
+&nbsp;&nbsp;&nbsp;&nbsp;felled&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;commander&nbsp;has&nbsp;been&nbsp;destroyed.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;not_attacking&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;commander&nbsp;is&nbsp;not&nbsp;attacking<br>
+&nbsp;&nbsp;&nbsp;&nbsp;hit_damage&nbsp;(int):&nbsp;The&nbsp;base&nbsp;damage&nbsp;for&nbsp;the&nbsp;commander's&nbsp;attack<br>
+&nbsp;&nbsp;&nbsp;&nbsp;last_auto&nbsp;(int):&nbsp;A&nbsp;timer&nbsp;for&nbsp;the&nbsp;last&nbsp;auto-attack.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;attack_speed&nbsp;(int):&nbsp;The&nbsp;interval&nbsp;of&nbsp;time&nbsp;between&nbsp;attacks.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;buff_area&nbsp;(None):&nbsp;The&nbsp;size&nbsp;of&nbsp;area&nbsp;that&nbsp;allies&nbsp;are&nbsp;buffed.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;shout_timer&nbsp;(int):&nbsp;A&nbsp;timer&nbsp;for&nbsp;the&nbsp;last&nbsp;shout&nbsp;ability&nbsp;used.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;shout_area&nbsp;(None):&nbsp;The&nbsp;size&nbsp;of&nbsp;area&nbsp;that&nbsp;allies&nbsp;are&nbsp;affected&nbsp;by&nbsp;shout.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;shout&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;shout&nbsp;ability&nbsp;has&nbsp;been&nbsp;used.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;activate&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;commander&nbsp;has&nbsp;been&nbsp;spawned.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;shout_counter&nbsp;(int):&nbsp;Determines&nbsp;the&nbsp;interval&nbsp;between&nbsp;shout&nbsp;abilities.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="main.html#Commander">Commander</a></dd>
+<dd><a href="main.html#Enemy">Enemy</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="Commander-__init__"><strong>__init__</strong></a>(self, x, y)</dt><dd><tt>initializes&nbsp;the&nbsp;<a href="#Commander">Commander</a>&nbsp;class.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;x&nbsp;(float):&nbsp;Sets&nbsp;the&nbsp;starting&nbsp;x-position&nbsp;of&nbsp;the&nbsp;commander.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;y&nbsp;(float):&nbsp;Sets&nbsp;the&nbsp;starting&nbsp;y-position&nbsp;of&nbsp;the&nbsp;commander.</tt></dd></dl>
+
+<dl><dt><a name="Commander-activate_death"><strong>activate_death</strong></a>(self)</dt><dd><tt>Destroys&nbsp;the&nbsp;commander&nbsp;when&nbsp;they&nbsp;run&nbsp;out&nbsp;of&nbsp;health.</tt></dd></dl>
+
+<dl><dt><a name="Commander-auto_hit_player"><strong>auto_hit_player</strong></a>(self)</dt><dd><tt>When&nbsp;the&nbsp;commander&nbsp;is&nbsp;very&nbsp;close&nbsp;to&nbsp;the&nbsp;player,&nbsp;auto-attack&nbsp;them.</tt></dd></dl>
+
+<dl><dt><a name="Commander-buff_aura"><strong>buff_aura</strong></a>(self)</dt><dd><tt>Ability&nbsp;of&nbsp;the&nbsp;commander&nbsp;that&nbsp;buffs&nbsp;the&nbsp;speed&nbsp;and&nbsp;healing&nbsp;of&nbsp;it's&nbsp;surrounding&nbsp;allies.</tt></dd></dl>
+
+<dl><dt><a name="Commander-buff_shout"><strong>buff_shout</strong></a>(self)</dt><dd><tt>Ability&nbsp;of&nbsp;the&nbsp;commander&nbsp;that&nbsp;buffs&nbsp;the&nbsp;damage&nbsp;and&nbsp;max&nbsp;health&nbsp;of&nbsp;it's&nbsp;surrounding&nbsp;allies.</tt></dd></dl>
+
+<dl><dt><a name="Commander-check_collisions"><strong>check_collisions</strong></a>(self)</dt><dd><tt>Checks&nbsp;the&nbsp;collisions&nbsp;between&nbsp;the&nbsp;commander&nbsp;and&nbsp;the&nbsp;player's&nbsp;attacks.</tt></dd></dl>
+
+<dl><dt><a name="Commander-comactive"><strong>comactive</strong></a>(self)</dt><dd><tt>Once&nbsp;the&nbsp;commander&nbsp;has&nbsp;been&nbsp;spawned,&nbsp;have&nbsp;them&nbsp;use&nbsp;their&nbsp;abilities&nbsp;at&nbsp;certain&nbsp;times.</tt></dd></dl>
+
+<dl><dt><a name="Commander-follow_mc"><strong>follow_mc</strong></a>(self)</dt><dd><tt>Handles&nbsp;the&nbsp;movement&nbsp;of&nbsp;getting&nbsp;the&nbsp;Earth&nbsp;Elemental&nbsp;to&nbsp;the&nbsp;<a href="#Player">Player</a>.</tt></dd></dl>
+
+<dl><dt><a name="Commander-generate_enemy"><strong>generate_enemy</strong></a>(self)</dt><dd><tt>Creates&nbsp;the&nbsp;commander&nbsp;and&nbsp;handles&nbsp;it's&nbsp;animations.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="main.html#Enemy">Enemy</a>:<br>
+<dl><dt><a name="Commander-attack_mc"><strong>attack_mc</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Commander-clean_dictionaries"><strong>clean_dictionaries</strong></a>(self)</dt><dd><tt>As&nbsp;bullets&nbsp;and&nbsp;other&nbsp;attacks&nbsp;hit&nbsp;the&nbsp;enemy,&nbsp;clear&nbsp;those&nbsp;registered&nbsp;hits&nbsp;once&nbsp;they&nbsp;are&nbsp;no&nbsp;longer&nbsp;active.</tt></dd></dl>
+
+<dl><dt><a name="Commander-spawn"><strong>spawn</strong></a>(self)</dt><dd><tt>Sets&nbsp;the&nbsp;enemy&nbsp;to&nbsp;have&nbsp;spawned&nbsp;after&nbsp;their&nbsp;spawn&nbsp;indicator&nbsp;is&nbsp;no&nbsp;longer&nbsp;active.</tt></dd></dl>
+
+<dl><dt><a name="Commander-travel_east"><strong>travel_east</strong></a>(self)</dt><dd><tt>Allows&nbsp;the&nbsp;enemy&nbsp;to&nbsp;move&nbsp;east.</tt></dd></dl>
+
+<dl><dt><a name="Commander-travel_north"><strong>travel_north</strong></a>(self)</dt><dd><tt>Allows&nbsp;the&nbsp;enemy&nbsp;to&nbsp;move&nbsp;north</tt></dd></dl>
+
+<dl><dt><a name="Commander-travel_south"><strong>travel_south</strong></a>(self)</dt><dd><tt>Allows&nbsp;the&nbsp;enemy&nbsp;to&nbsp;move&nbsp;south.</tt></dd></dl>
+
+<dl><dt><a name="Commander-travel_west"><strong>travel_west</strong></a>(self)</dt><dd><tt>Allows&nbsp;the&nbsp;enemy&nbsp;to&nbsp;move&nbsp;west.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="main.html#Enemy">Enemy</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Enemy">class <strong>Enemy</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Enemy">Enemy</a>(x,&nbsp;y)<br>
+&nbsp;<br>
+Controls&nbsp;the&nbsp;movement&nbsp;of&nbsp;the&nbsp;most&nbsp;basic&nbsp;enemy&nbsp;type,&nbsp;the&nbsp;slime.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;speed&nbsp;(float):&nbsp;Sets&nbsp;a&nbsp;random&nbsp;movement&nbsp;speed&nbsp;of&nbsp;the&nbsp;enemy.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;image&nbsp;(str):&nbsp;A&nbsp;string&nbsp;path&nbsp;to&nbsp;the&nbsp;image&nbsp;file.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;rect&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;hitbox&nbsp;of&nbsp;the&nbsp;enemy.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;north_rect&nbsp;(pygame.rect.Rect):&nbsp;Sets&nbsp;a&nbsp;hitbox&nbsp;to&nbsp;the&nbsp;north&nbsp;side&nbsp;of&nbsp;the&nbsp;enemy.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;east_rect&nbsp;(pygame.rect.Rect):&nbsp;Sets&nbsp;a&nbsp;hitbox&nbsp;to&nbsp;the&nbsp;east&nbsp;side&nbsp;of&nbsp;the&nbsp;enemy.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;south_rect&nbsp;(pygame.rect.Rect):&nbsp;Sets&nbsp;a&nbsp;hitbox&nbsp;to&nbsp;the&nbsp;south&nbsp;side&nbsp;of&nbsp;the&nbsp;enemy.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;west_rect&nbsp;(pygame.rect.Rect):&nbsp;Sets&nbsp;a&nbsp;hitbox&nbsp;to&nbsp;the&nbsp;west&nbsp;side&nbsp;of&nbsp;the&nbsp;enemy.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;north_x_val&nbsp;(int):&nbsp;Used&nbsp;to&nbsp;set&nbsp;the&nbsp;north&nbsp;hitbox&nbsp;x-value.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;north_y_val&nbsp;(int):&nbsp;Used&nbsp;to&nbsp;set&nbsp;the&nbsp;north&nbsp;hitbox&nbsp;y-value.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;east_x_val&nbsp;(int):&nbsp;Used&nbsp;to&nbsp;set&nbsp;the&nbsp;east&nbsp;hitbox&nbsp;x-value.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;east_y_val&nbsp;(int):&nbsp;Used&nbsp;to&nbsp;set&nbsp;the&nbsp;east&nbsp;hitbox&nbsp;y-value.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;south_x_val&nbsp;(int):&nbsp;Used&nbsp;to&nbsp;set&nbsp;the&nbsp;south&nbsp;hitbox&nbsp;x-value.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;south_y_val&nbsp;(int):&nbsp;Used&nbsp;to&nbsp;set&nbsp;the&nbsp;south&nbsp;hitbox&nbsp;y-value.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;west_x_val&nbsp;(int):&nbsp;Used&nbsp;to&nbsp;set&nbsp;the&nbsp;west&nbsp;hitbox&nbsp;x-value.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;west_y_val&nbsp;(int):&nbsp;Used&nbsp;to&nbsp;set&nbsp;the&nbsp;west&nbsp;hitbox&nbsp;y-value.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;circle_rect&nbsp;(pygame.rect.Rect):&nbsp;Creates&nbsp;a&nbsp;medium-sized&nbsp;circular&nbsp;hitbox&nbsp;to&nbsp;detect&nbsp;ally&nbsp;movements.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;middot_rect&nbsp;(pygame.rect.Rect):&nbsp;Creates&nbsp;a&nbsp;small-sized&nbsp;circular&nbsp;hitbox&nbsp;to&nbsp;detect&nbsp;ally&nbsp;movements.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;maxhealth&nbsp;(int):&nbsp;Sets&nbsp;the&nbsp;maximum&nbsp;health&nbsp;an&nbsp;enemy&nbsp;can&nbsp;have.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;health&nbsp;(float):&nbsp;Sets&nbsp;the&nbsp;current&nbsp;health&nbsp;of&nbsp;the&nbsp;enemy.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bullet_collisions&nbsp;(list):&nbsp;A&nbsp;list&nbsp;containing&nbsp;the&nbsp;instances&nbsp;of&nbsp;each&nbsp;bullet&nbsp;that&nbsp;hit&nbsp;the&nbsp;enemy.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;temp_time&nbsp;(int):&nbsp;Sets&nbsp;the&nbsp;amount&nbsp;of&nbsp;seconds&nbsp;at&nbsp;a&nbsp;given&nbsp;point,&nbsp;used&nbsp;to&nbsp;see&nbsp;if&nbsp;enemies&nbsp;stop&nbsp;moving.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;previous_pos&nbsp;(tuple):&nbsp;Sets&nbsp;the&nbsp;enemie's&nbsp;x,y&nbsp;position&nbsp;to&nbsp;determine&nbsp;movement&nbsp;behaviors.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;melee_attack_collisions&nbsp;(list):&nbsp;A&nbsp;list&nbsp;containing&nbsp;the&nbsp;different&nbsp;times&nbsp;it&nbsp;has&nbsp;been&nbsp;hit&nbsp;by&nbsp;the&nbsp;basic&nbsp;attack.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;spawned&nbsp;(list):&nbsp;List&nbsp;containing&nbsp;spawn&nbsp;information&nbsp;of&nbsp;the&nbsp;enemy.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;spawn_timer&nbsp;(int):&nbsp;A&nbsp;timer&nbsp;that&nbsp;determines&nbsp;when&nbsp;the&nbsp;enemy&nbsp;will&nbsp;spawn&nbsp;after&nbsp;displaying&nbsp;it's&nbsp;indicator.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;spawn_indicator&nbsp;(None):&nbsp;An&nbsp;indicator&nbsp;that&nbsp;shows&nbsp;up&nbsp;to&nbsp;reveal&nbsp;where&nbsp;the&nbsp;enemy&nbsp;will&nbsp;soon&nbsp;be&nbsp;spawned.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;animation&nbsp;(int):&nbsp;A&nbsp;counter&nbsp;that&nbsp;changes&nbsp;which&nbsp;animation&nbsp;to&nbsp;play.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bat&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;this&nbsp;enemy&nbsp;is&nbsp;a&nbsp;bat.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;skeleton_king&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;this&nbsp;enemy&nbsp;is&nbsp;a&nbsp;skeleton&nbsp;King.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;enemy_length&nbsp;(bool):&nbsp;The&nbsp;number&nbsp;of&nbsp;enemies&nbsp;spawned.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;enemy_list&nbsp;(None):&nbsp;The&nbsp;list&nbsp;of&nbsp;enemies&nbsp;spawned.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;player_collide_counter&nbsp;(int):&nbsp;A&nbsp;timer&nbsp;that&nbsp;counts&nbsp;how&nbsp;long&nbsp;a&nbsp;player&nbsp;has&nbsp;collided&nbsp;with&nbsp;the&nbsp;enemy.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;edamage&nbsp;(int):&nbsp;Base&nbsp;damage&nbsp;of&nbsp;the&nbsp;earth&nbsp;elemental.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;wasbuffed&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;enemy&nbsp;has&nbsp;been&nbsp;buffed&nbsp;by&nbsp;the&nbsp;commander.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;death&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;enemy&nbsp;has&nbsp;died.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dropped&nbsp;(bool):&nbsp;Decleares&nbsp;if&nbsp;the&nbsp;enemy&nbsp;has&nbsp;dropped&nbsp;their&nbsp;xp.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Enemy-__init__"><strong>__init__</strong></a>(self, x, y)</dt><dd><tt>Initializes&nbsp;the&nbsp;<a href="#Enemy">Enemy</a>&nbsp;class.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;x&nbsp;(float):&nbsp;Sets&nbsp;the&nbsp;x-position&nbsp;of&nbsp;the&nbsp;enemy.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;y&nbsp;(float):&nbsp;Sets&nbsp;the&nbsp;y-position&nbsp;of&nbsp;the&nbsp;enemy.</tt></dd></dl>
+
+<dl><dt><a name="Enemy-activate_death"><strong>activate_death</strong></a>(self)</dt><dd><tt>Destroys&nbsp;the&nbsp;enemy&nbsp;when&nbsp;they&nbsp;run&nbsp;out&nbsp;of&nbsp;health.</tt></dd></dl>
+
+<dl><dt><a name="Enemy-attack_mc"><strong>attack_mc</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Enemy-check_collisions"><strong>check_collisions</strong></a>(self)</dt><dd><tt>Checks&nbsp;the&nbsp;collisions&nbsp;between&nbsp;the&nbsp;enemy&nbsp;and&nbsp;the&nbsp;player's&nbsp;attacks.</tt></dd></dl>
+
+<dl><dt><a name="Enemy-clean_dictionaries"><strong>clean_dictionaries</strong></a>(self)</dt><dd><tt>As&nbsp;bullets&nbsp;and&nbsp;other&nbsp;attacks&nbsp;hit&nbsp;the&nbsp;enemy,&nbsp;clear&nbsp;those&nbsp;registered&nbsp;hits&nbsp;once&nbsp;they&nbsp;are&nbsp;no&nbsp;longer&nbsp;active.</tt></dd></dl>
+
+<dl><dt><a name="Enemy-follow_mc"><strong>follow_mc</strong></a>(self)</dt><dd><tt>Handles&nbsp;the&nbsp;logic&nbsp;behind&nbsp;enemy&nbsp;movement.</tt></dd></dl>
+
+<dl><dt><a name="Enemy-generate_enemy"><strong>generate_enemy</strong></a>(self)</dt><dd><tt>Creates&nbsp;the&nbsp;enemy&nbsp;and&nbsp;handles&nbsp;it's&nbsp;animations.</tt></dd></dl>
+
+<dl><dt><a name="Enemy-spawn"><strong>spawn</strong></a>(self)</dt><dd><tt>Sets&nbsp;the&nbsp;enemy&nbsp;to&nbsp;have&nbsp;spawned&nbsp;after&nbsp;their&nbsp;spawn&nbsp;indicator&nbsp;is&nbsp;no&nbsp;longer&nbsp;active.</tt></dd></dl>
+
+<dl><dt><a name="Enemy-travel_east"><strong>travel_east</strong></a>(self)</dt><dd><tt>Allows&nbsp;the&nbsp;enemy&nbsp;to&nbsp;move&nbsp;east.</tt></dd></dl>
+
+<dl><dt><a name="Enemy-travel_north"><strong>travel_north</strong></a>(self)</dt><dd><tt>Allows&nbsp;the&nbsp;enemy&nbsp;to&nbsp;move&nbsp;north</tt></dd></dl>
+
+<dl><dt><a name="Enemy-travel_south"><strong>travel_south</strong></a>(self)</dt><dd><tt>Allows&nbsp;the&nbsp;enemy&nbsp;to&nbsp;move&nbsp;south.</tt></dd></dl>
+
+<dl><dt><a name="Enemy-travel_west"><strong>travel_west</strong></a>(self)</dt><dd><tt>Allows&nbsp;the&nbsp;enemy&nbsp;to&nbsp;move&nbsp;west.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Laser">class <strong>Laser</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>A&nbsp;laser&nbsp;ability&nbsp;that&nbsp;the&nbsp;player&nbsp;can&nbsp;unlock.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;targets&nbsp;(int):&nbsp;The&nbsp;maximum&nbsp;number&nbsp;of&nbsp;targets&nbsp;the&nbsp;laser&nbsp;will&nbsp;hit.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;closest_enemy&nbsp;(list):&nbsp;An&nbsp;x,y&nbsp;position&nbsp;of&nbsp;the&nbsp;closest&nbsp;enemy&nbsp;to&nbsp;the&nbsp;player.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;damage&nbsp;(int):&nbsp;The&nbsp;base&nbsp;damage&nbsp;of&nbsp;the&nbsp;laser.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;cd&nbsp;(int):&nbsp;The&nbsp;cooldown&nbsp;time&nbsp;of&nbsp;the&nbsp;laser&nbsp;ability.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;shoot&nbsp;(int):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;target&nbsp;(list):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dmgtype&nbsp;(str):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;laser_aquired&nbsp;(bool):<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Laser-__init__"><strong>__init__</strong></a>(self)</dt><dd><tt>Initializes&nbsp;the&nbsp;Lazer&nbsp;class.</tt></dd></dl>
+
+<dl><dt><a name="Laser-fire"><strong>fire</strong></a>(self)</dt><dd><tt>Fires&nbsp;the&nbsp;laser&nbsp;at&nbsp;nearby&nbsp;enemies.</tt></dd></dl>
+
+<dl><dt><a name="Laser-laser_timer"><strong>laser_timer</strong></a>(self)</dt><dd><tt>Handles&nbsp;the&nbsp;intervals&nbsp;between&nbsp;shooting&nbsp;the&nbsp;laser.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="LaserPickup">class <strong>LaserPickup</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>The&nbsp;upgrade&nbsp;drop&nbsp;that&nbsp;gives&nbsp;the&nbsp;laser&nbsp;ability.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;rect&nbsp;(pygame.rect.Rect):&nbsp;Hit&nbsp;box&nbsp;for&nbsp;the&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;upgrade_out&nbsp;(bool):&nbsp;If&nbsp;the&nbsp;upgrade&nbsp;is&nbsp;out&nbsp;on&nbsp;the&nbsp;map.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;upgrade_active&nbsp;(bool):&nbsp;Upgrade&nbsp;becomes&nbsp;active&nbsp;when&nbsp;dropped.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;obtained&nbsp;(bool):&nbsp;If&nbsp;the&nbsp;player&nbsp;obtains&nbsp;the&nbsp;buff.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;animation&nbsp;(int):&nbsp;The&nbsp;counter&nbsp;for&nbsp;the&nbsp;animation.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="LaserPickup-__init__"><strong>__init__</strong></a>(self)</dt><dd><tt>Initializes&nbsp;the&nbsp;LazerPickup&nbsp;class.</tt></dd></dl>
+
+<dl><dt><a name="LaserPickup-check_collisions"><strong>check_collisions</strong></a>(self)</dt><dd><tt>When&nbsp;player&nbsp;collides,&nbsp;grant&nbsp;the&nbsp;player&nbsp;the&nbsp;laser&nbsp;ability.</tt></dd></dl>
+
+<dl><dt><a name="LaserPickup-generate_entity"><strong>generate_entity</strong></a>(self)</dt><dd><tt>Spawns&nbsp;the&nbsp;new&nbsp;ability&nbsp;with&nbsp;it's&nbsp;animations.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Mage">class <strong>Mage</strong></a>(<a href="main.html#Enemy">Enemy</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Mage">Mage</a>(x,&nbsp;y)<br>
+&nbsp;<br>
+Controls&nbsp;the&nbsp;movement&nbsp;and&nbsp;attacks&nbsp;of&nbsp;the&nbsp;mage&nbsp;enemy.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;rect&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;hitbox&nbsp;of&nbsp;the&nbsp;mage.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;maxhealth&nbsp;(int):&nbsp;The&nbsp;max&nbsp;health&nbsp;of&nbsp;the&nbsp;mage.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;health&nbsp;(float):&nbsp;The&nbsp;current&nbsp;health&nbsp;of&nbsp;the&nbsp;mage.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;speed&nbsp;(int):&nbsp;The&nbsp;movement&nbsp;speed&nbsp;of&nbsp;the&nbsp;mage.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;felled&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;mage&nbsp;has&nbsp;been&nbsp;destroyed.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;not_attacking&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;mage&nbsp;is&nbsp;not&nbsp;attacking.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;hit_damage&nbsp;(int):&nbsp;Sets&nbsp;the&nbsp;base&nbsp;damage&nbsp;for&nbsp;the&nbsp;mage's&nbsp;hit&nbsp;attack.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;last_auto&nbsp;(int):&nbsp;Time&nbsp;stamp&nbsp;of&nbsp;last&nbsp;auto&nbsp;attack.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;attack_speed&nbsp;(int):&nbsp;Rate&nbsp;of&nbsp;attack&nbsp;speed.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;meteor_impact&nbsp;(None):&nbsp;Rect&nbsp;of&nbsp;the&nbsp;meteor&nbsp;impact&nbsp;that&nbsp;deals&nbsp;damage.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;meteor_cd&nbsp;(int):&nbsp;The&nbsp;cooldown&nbsp;of&nbsp;the&nbsp;meteor.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;activate&nbsp;(bool):&nbsp;True&nbsp;if&nbsp;the&nbsp;<a href="#Mage">Mage</a>&nbsp;is&nbsp;active<br>
+&nbsp;&nbsp;&nbsp;&nbsp;meteor_counter&nbsp;(int):&nbsp;The&nbsp;counter&nbsp;for&nbsp;the&nbsp;metoer&nbsp;cooldown.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;seeker_cd&nbsp;(int):&nbsp;Cooldown&nbsp;of&nbsp;the&nbsp;seeker&nbsp;ability.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;seeker_counter&nbsp;(int):&nbsp;Counter&nbsp;for&nbsp;the&nbsp;Seeker&nbsp;cooldown.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;meteor&nbsp;(None):&nbsp;rect&nbsp;for&nbsp;the&nbsp;falling&nbsp;meteor.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;px&nbsp;(int):&nbsp;Snapshot&nbsp;of&nbsp;player&nbsp;x&nbsp;position.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;py&nbsp;(int):&nbsp;Snapshot&nbsp;of&nbsp;player&nbsp;y&nbsp;position.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;meteor_height&nbsp;(int):&nbsp;Height&nbsp;of&nbsp;the&nbsp;meteor&nbsp;at&nbsp;spawn.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;seeker&nbsp;(None):&nbsp;rect&nbsp;of&nbsp;the&nbsp;seekeer&nbsp;ability.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;seek_speed&nbsp;(int):&nbsp;Speed&nbsp;of&nbsp;the&nbsp;seeker&nbsp;bullet.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;seeker_active&nbsp;(bool):&nbsp;True&nbsp;if&nbsp;the&nbsp;seeker&nbsp;is&nbsp;active.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;seekdur&nbsp;(int):&nbsp;Duration&nbsp;of&nbsp;the&nbsp;seeker&nbsp;bullet&nbsp;before&nbsp;it&nbsp;despawns.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;seekacdur&nbsp;(int):&nbsp;Duration&nbsp;of&nbsp;seeker&nbsp;active.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;summon&nbsp;(bool):&nbsp;If&nbsp;summon&nbsp;is&nbsp;active<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="main.html#Mage">Mage</a></dd>
+<dd><a href="main.html#Enemy">Enemy</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="Mage-__init__"><strong>__init__</strong></a>(self, x, y)</dt><dd><tt>Initializes&nbsp;the&nbsp;<a href="#Mage">Mage</a>&nbsp;class.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;x&nbsp;(float):&nbsp;Sets&nbsp;the&nbsp;x-position&nbsp;of&nbsp;the&nbsp;enemy.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;y&nbsp;(float):&nbsp;Sets&nbsp;the&nbsp;y-position&nbsp;of&nbsp;the&nbsp;enemy.</tt></dd></dl>
+
+<dl><dt><a name="Mage-activate_death"><strong>activate_death</strong></a>(self)</dt><dd><tt>Destroys&nbsp;the&nbsp;mage&nbsp;when&nbsp;they&nbsp;run&nbsp;out&nbsp;of&nbsp;health.</tt></dd></dl>
+
+<dl><dt><a name="Mage-active"><strong>active</strong></a>(self)</dt><dd><tt>Once&nbsp;the&nbsp;mage&nbsp;has&nbsp;been&nbsp;spawned,&nbsp;have&nbsp;them&nbsp;use&nbsp;their&nbsp;abilities&nbsp;at&nbsp;certain&nbsp;times.</tt></dd></dl>
+
+<dl><dt><a name="Mage-auto_hit_player"><strong>auto_hit_player</strong></a>(self)</dt><dd><tt>When&nbsp;the&nbsp;mage&nbsp;is&nbsp;very&nbsp;close&nbsp;to&nbsp;the&nbsp;player,&nbsp;auto-attack&nbsp;them.</tt></dd></dl>
+
+<dl><dt><a name="Mage-check_collisions"><strong>check_collisions</strong></a>(self)</dt><dd><tt>Checks&nbsp;the&nbsp;collisions&nbsp;between&nbsp;the&nbsp;mage&nbsp;and&nbsp;the&nbsp;player's&nbsp;attacks.</tt></dd></dl>
+
+<dl><dt><a name="Mage-fire_seeker"><strong>fire_seeker</strong></a>(self)</dt><dd><tt>Spawns&nbsp;the&nbsp;seeker&nbsp;and&nbsp;deals&nbsp;damage</tt></dd></dl>
+
+<dl><dt><a name="Mage-follow_mc"><strong>follow_mc</strong></a>(self)</dt><dd><tt>Handles&nbsp;the&nbsp;movement&nbsp;of&nbsp;getting&nbsp;the&nbsp;mage&nbsp;to&nbsp;the&nbsp;<a href="#Player">Player</a>.</tt></dd></dl>
+
+<dl><dt><a name="Mage-generate_enemy"><strong>generate_enemy</strong></a>(self)</dt><dd><tt>Creates&nbsp;the&nbsp;mage&nbsp;and&nbsp;handles&nbsp;it's&nbsp;animations.</tt></dd></dl>
+
+<dl><dt><a name="Mage-seeker_seeks"><strong>seeker_seeks</strong></a>(self)</dt><dd><tt>Makes&nbsp;the&nbsp;seeker&nbsp;bullet&nbsp;chase&nbsp;the&nbsp;player.</tt></dd></dl>
+
+<dl><dt><a name="Mage-summon_meteor"><strong>summon_meteor</strong></a>(self)</dt><dd><tt>Summons&nbsp;meteor&nbsp;to&nbsp;fall&nbsp;where&nbsp;the&nbsp;player&nbsp;was&nbsp;standing&nbsp;at&nbsp;the&nbsp;time&nbsp;of&nbsp;the&nbsp;summon.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="main.html#Enemy">Enemy</a>:<br>
+<dl><dt><a name="Mage-attack_mc"><strong>attack_mc</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="Mage-clean_dictionaries"><strong>clean_dictionaries</strong></a>(self)</dt><dd><tt>As&nbsp;bullets&nbsp;and&nbsp;other&nbsp;attacks&nbsp;hit&nbsp;the&nbsp;enemy,&nbsp;clear&nbsp;those&nbsp;registered&nbsp;hits&nbsp;once&nbsp;they&nbsp;are&nbsp;no&nbsp;longer&nbsp;active.</tt></dd></dl>
+
+<dl><dt><a name="Mage-spawn"><strong>spawn</strong></a>(self)</dt><dd><tt>Sets&nbsp;the&nbsp;enemy&nbsp;to&nbsp;have&nbsp;spawned&nbsp;after&nbsp;their&nbsp;spawn&nbsp;indicator&nbsp;is&nbsp;no&nbsp;longer&nbsp;active.</tt></dd></dl>
+
+<dl><dt><a name="Mage-travel_east"><strong>travel_east</strong></a>(self)</dt><dd><tt>Allows&nbsp;the&nbsp;enemy&nbsp;to&nbsp;move&nbsp;east.</tt></dd></dl>
+
+<dl><dt><a name="Mage-travel_north"><strong>travel_north</strong></a>(self)</dt><dd><tt>Allows&nbsp;the&nbsp;enemy&nbsp;to&nbsp;move&nbsp;north</tt></dd></dl>
+
+<dl><dt><a name="Mage-travel_south"><strong>travel_south</strong></a>(self)</dt><dd><tt>Allows&nbsp;the&nbsp;enemy&nbsp;to&nbsp;move&nbsp;south.</tt></dd></dl>
+
+<dl><dt><a name="Mage-travel_west"><strong>travel_west</strong></a>(self)</dt><dd><tt>Allows&nbsp;the&nbsp;enemy&nbsp;to&nbsp;move&nbsp;west.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="main.html#Enemy">Enemy</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Map">class <strong>Map</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Controls&nbsp;the&nbsp;map,&nbsp;map&nbsp;boundaries,&nbsp;and&nbsp;houses&nbsp;the&nbsp;camera&nbsp;controls.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;map_x&nbsp;(float):&nbsp;The&nbsp;x-position&nbsp;of&nbsp;the&nbsp;map's&nbsp;starting&nbsp;position.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;map_y&nbsp;(float):&nbsp;The&nbsp;y-position&nbsp;of&nbsp;the&nbsp;map's&nbsp;starting&nbsp;position.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;cameraX&nbsp;(float):&nbsp;The&nbsp;x-position&nbsp;of&nbsp;the&nbsp;camera's&nbsp;starting&nbsp;position.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;cameraY&nbsp;(float):&nbsp;The&nbsp;y-position&nbsp;of&nbsp;the&nbsp;camera's&nbsp;starting&nbsp;position.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;left_boundary&nbsp;(pygame.rect.Rect):&nbsp;Creates&nbsp;a&nbsp;left&nbsp;boundary&nbsp;wall&nbsp;so&nbsp;the&nbsp;player&nbsp;cannot&nbsp;pass.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;left_boundary_x&nbsp;(float):&nbsp;The&nbsp;x-position&nbsp;of&nbsp;the&nbsp;left&nbsp;boundary&nbsp;wall.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;left_boundary_y1&nbsp;(float):&nbsp;The&nbsp;first&nbsp;y-position&nbsp;of&nbsp;the&nbsp;left&nbsp;boundary&nbsp;wall.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;left_boundary_y2&nbsp;(float):&nbsp;The&nbsp;second&nbsp;y-position&nbsp;of&nbsp;the&nbsp;left&nbsp;boundary&nbsp;wall.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;right_boundary&nbsp;(pygame.rect.Rect):&nbsp;Creates&nbsp;a&nbsp;right&nbsp;boundary&nbsp;wall&nbsp;so&nbsp;the&nbsp;player&nbsp;cannot&nbsp;pass.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;right_boundary_x&nbsp;(float):&nbsp;The&nbsp;y-position&nbsp;of&nbsp;the&nbsp;left&nbsp;boundary&nbsp;wall.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;right_boundary_y1&nbsp;(float):&nbsp;The&nbsp;first&nbsp;y-position&nbsp;of&nbsp;the&nbsp;right&nbsp;boundary&nbsp;wall.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;right_boundary_y2&nbsp;(float):&nbsp;The&nbsp;first&nbsp;y-position&nbsp;of&nbsp;the&nbsp;left&nbsp;boundary&nbsp;wall.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;top_boundary&nbsp;(pygame.rect.Rect):&nbsp;Creates&nbsp;a&nbsp;top&nbsp;boundary&nbsp;wall&nbsp;so&nbsp;the&nbsp;player&nbsp;cannot&nbsp;pass.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;top_boundary_x1&nbsp;(float):&nbsp;The&nbsp;first&nbsp;x-position&nbsp;of&nbsp;the&nbsp;top&nbsp;boundary&nbsp;wall.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;top_boundary_x2&nbsp;(float):&nbsp;The&nbsp;second&nbsp;x-position&nbsp;of&nbsp;the&nbsp;top&nbsp;boundary&nbsp;wall.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;top_boundary_y&nbsp;(float):&nbsp;The&nbsp;y-position&nbsp;of&nbsp;the&nbsp;top&nbsp;boundary&nbsp;wall.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bottom_boundary&nbsp;(pygame.rect.Rect):&nbsp;Creates&nbsp;a&nbsp;bottom&nbsp;boundary&nbsp;wall&nbsp;so&nbsp;the&nbsp;player&nbsp;cannot&nbsp;pass.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bottom_boundary_x1&nbsp;(float):&nbsp;The&nbsp;first&nbsp;x-position&nbsp;of&nbsp;the&nbsp;bottom&nbsp;boundary&nbsp;wall.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bottom_boundary_x2&nbsp;(float):&nbsp;The&nbsp;second&nbsp;x-position&nbsp;of&nbsp;the&nbsp;bottom&nbsp;boundary&nbsp;wall.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bottom_boundary_y&nbsp;(float):&nbsp;The&nbsp;y-position&nbsp;of&nbsp;the&nbsp;bottom&nbsp;boundary&nbsp;wall.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Map-__init__"><strong>__init__</strong></a>(self)</dt><dd><tt>Initalizes&nbsp;the&nbsp;<a href="#Map">Map</a>&nbsp;class.</tt></dd></dl>
+
+<dl><dt><a name="Map-update_boundary"><strong>update_boundary</strong></a>(self)</dt><dd><tt>Updates&nbsp;the&nbsp;map&nbsp;boundary&nbsp;constantly&nbsp;as&nbsp;the&nbsp;camera&nbsp;moves&nbsp;positionings.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="MiniEarthElemental">class <strong>MiniEarthElemental</strong></a>(<a href="main.html#Enemy">Enemy</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#MiniEarthElemental">MiniEarthElemental</a>(x,&nbsp;y)<br>
+&nbsp;<br>
+Controls&nbsp;the&nbsp;movement&nbsp;and&nbsp;attacks&nbsp;of&nbsp;the&nbsp;Earth&nbsp;Elemental.<br>
+&nbsp;<br>
+rect&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;hitbox&nbsp;of&nbsp;the&nbsp;Earth&nbsp;Elemental.<br>
+health&nbsp;(float):&nbsp;The&nbsp;health&nbsp;of&nbsp;the&nbsp;Earth&nbsp;Elemental.<br>
+speed&nbsp;(int):&nbsp;The&nbsp;speed&nbsp;of&nbsp;the&nbsp;Earth&nbsp;Elemental.<br>
+mini&nbsp;(bool):&nbsp;Determines&nbsp;if&nbsp;it&nbsp;is&nbsp;of&nbsp;type&nbsp;mini-boss.<br>
+felled&nbsp;(bool):&nbsp;Determines&nbsp;if&nbsp;the&nbsp;Earth&nbsp;Elemental&nbsp;has&nbsp;been&nbsp;destroyed.<br>
+activate&nbsp;(bool):&nbsp;Determines&nbsp;if&nbsp;the&nbsp;Earth&nbsp;Elemental&nbsp;is&nbsp;spawned.<br>
+not_attacking&nbsp;(bool):&nbsp;Determines&nbsp;if&nbsp;the&nbsp;Earth&nbsp;Elemental&nbsp;is&nbsp;not&nbsp;attacking.<br>
+is_attacking&nbsp;(bool):&nbsp;Determines&nbsp;if&nbsp;the&nbsp;Earth&nbsp;Elemental&nbsp;is&nbsp;attacking.<br>
+attack_timer&nbsp;(int):&nbsp;A&nbsp;timer&nbsp;that&nbsp;determines&nbsp;the&nbsp;interval&nbsp;between&nbsp;attacks.<br>
+last_attack&nbsp;(int):&nbsp;A&nbsp;timer&nbsp;that&nbsp;determines&nbsp;the&nbsp;last&nbsp;rumble&nbsp;attack.<br>
+attack_area&nbsp;(None):&nbsp;Sets&nbsp;the&nbsp;area&nbsp;of&nbsp;attack.<br>
+attack_rect&nbsp;(None):&nbsp;Sets&nbsp;a&nbsp;hitbox&nbsp;for&nbsp;the&nbsp;attack.<br>
+rumble_area&nbsp;(None):&nbsp;Sets&nbsp;the&nbsp;area&nbsp;for&nbsp;the&nbsp;rumble&nbsp;display.<br>
+aoe_start&nbsp;(int):&nbsp;A&nbsp;timer&nbsp;that&nbsp;keeps&nbsp;track&nbsp;of&nbsp;when&nbsp;the&nbsp;rumble&nbsp;attack&nbsp;is&nbsp;first&nbsp;initiated.<br>
+rumble_speed&nbsp;(int):&nbsp;Sets&nbsp;the&nbsp;speed&nbsp;that&nbsp;the&nbsp;player&nbsp;will&nbsp;go&nbsp;if&nbsp;hit&nbsp;by&nbsp;the&nbsp;rumble&nbsp;attack.<br>
+hit_damage&nbsp;(int):&nbsp;Sets&nbsp;the&nbsp;base&nbsp;damage&nbsp;of&nbsp;the&nbsp;attack.<br>
+animation&nbsp;(int):&nbsp;A&nbsp;timer&nbsp;that&nbsp;changes&nbsp;the&nbsp;different&nbsp;animations.<br>
+last_auto&nbsp;(int):&nbsp;A&nbsp;counter&nbsp;that&nbsp;determines&nbsp;the&nbsp;last&nbsp;auto-attack.<br>
+attack_speed&nbsp;(int):&nbsp;Sets&nbsp;the&nbsp;speed&nbsp;of&nbsp;the&nbsp;attack&nbsp;duration.<br>
+attackcounter&nbsp;(float):&nbsp;A&nbsp;timer&nbsp;for&nbsp;the&nbsp;rumble&nbsp;attack.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="main.html#MiniEarthElemental">MiniEarthElemental</a></dd>
+<dd><a href="main.html#Enemy">Enemy</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="MiniEarthElemental-__init__"><strong>__init__</strong></a>(self, x, y)</dt><dd><tt>Initializes&nbsp;the&nbsp;<a href="#MiniEarthElemental">MiniEarthElemental</a>&nbsp;class.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;x&nbsp;(float):&nbsp;Sets&nbsp;the&nbsp;starting&nbsp;x-position&nbsp;for&nbsp;the&nbsp;Earth&nbsp;Elemental.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;y&nbsp;(float):&nbsp;Sets&nbsp;the&nbsp;starting&nbsp;y-position&nbsp;for&nbsp;the&nbsp;Earth&nbsp;Elemental.</tt></dd></dl>
+
+<dl><dt><a name="MiniEarthElemental-activate_death"><strong>activate_death</strong></a>(self)</dt><dd><tt>Destroys&nbsp;the&nbsp;enemy&nbsp;when&nbsp;they&nbsp;run&nbsp;out&nbsp;of&nbsp;health.</tt></dd></dl>
+
+<dl><dt><a name="MiniEarthElemental-aoe_hit"><strong>aoe_hit</strong></a>(self)</dt><dd><tt>Creates&nbsp;a&nbsp;rumble&nbsp;area-of-effect&nbsp;attack&nbsp;against&nbsp;the&nbsp;player.</tt></dd></dl>
+
+<dl><dt><a name="MiniEarthElemental-auto_hit_player"><strong>auto_hit_player</strong></a>(self)</dt><dd><tt>When&nbsp;the&nbsp;Earth&nbsp;Elemental&nbsp;is&nbsp;very&nbsp;close&nbsp;to&nbsp;the&nbsp;player,&nbsp;auto-attack&nbsp;them.</tt></dd></dl>
+
+<dl><dt><a name="MiniEarthElemental-check_collisions"><strong>check_collisions</strong></a>(self)</dt><dd><tt>Checks&nbsp;the&nbsp;collisions&nbsp;between&nbsp;the&nbsp;Earth&nbsp;Elemental&nbsp;and&nbsp;the&nbsp;player's&nbsp;attacks.</tt></dd></dl>
+
+<dl><dt><a name="MiniEarthElemental-follow_mc"><strong>follow_mc</strong></a>(self)</dt><dd><tt>Handles&nbsp;the&nbsp;movement&nbsp;of&nbsp;getting&nbsp;the&nbsp;Earth&nbsp;Elemental&nbsp;to&nbsp;the&nbsp;<a href="#Player">Player</a>.</tt></dd></dl>
+
+<dl><dt><a name="MiniEarthElemental-generate_enemy"><strong>generate_enemy</strong></a>(self)</dt><dd><tt>Creates&nbsp;the&nbsp;enemy&nbsp;and&nbsp;handles&nbsp;it's&nbsp;animations.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="main.html#Enemy">Enemy</a>:<br>
+<dl><dt><a name="MiniEarthElemental-attack_mc"><strong>attack_mc</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="MiniEarthElemental-clean_dictionaries"><strong>clean_dictionaries</strong></a>(self)</dt><dd><tt>As&nbsp;bullets&nbsp;and&nbsp;other&nbsp;attacks&nbsp;hit&nbsp;the&nbsp;enemy,&nbsp;clear&nbsp;those&nbsp;registered&nbsp;hits&nbsp;once&nbsp;they&nbsp;are&nbsp;no&nbsp;longer&nbsp;active.</tt></dd></dl>
+
+<dl><dt><a name="MiniEarthElemental-spawn"><strong>spawn</strong></a>(self)</dt><dd><tt>Sets&nbsp;the&nbsp;enemy&nbsp;to&nbsp;have&nbsp;spawned&nbsp;after&nbsp;their&nbsp;spawn&nbsp;indicator&nbsp;is&nbsp;no&nbsp;longer&nbsp;active.</tt></dd></dl>
+
+<dl><dt><a name="MiniEarthElemental-travel_east"><strong>travel_east</strong></a>(self)</dt><dd><tt>Allows&nbsp;the&nbsp;enemy&nbsp;to&nbsp;move&nbsp;east.</tt></dd></dl>
+
+<dl><dt><a name="MiniEarthElemental-travel_north"><strong>travel_north</strong></a>(self)</dt><dd><tt>Allows&nbsp;the&nbsp;enemy&nbsp;to&nbsp;move&nbsp;north</tt></dd></dl>
+
+<dl><dt><a name="MiniEarthElemental-travel_south"><strong>travel_south</strong></a>(self)</dt><dd><tt>Allows&nbsp;the&nbsp;enemy&nbsp;to&nbsp;move&nbsp;south.</tt></dd></dl>
+
+<dl><dt><a name="MiniEarthElemental-travel_west"><strong>travel_west</strong></a>(self)</dt><dd><tt>Allows&nbsp;the&nbsp;enemy&nbsp;to&nbsp;move&nbsp;west.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="main.html#Enemy">Enemy</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Player">class <strong>Player</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Controls&nbsp;the&nbsp;movement&nbsp;of&nbsp;the&nbsp;player,&nbsp;along&nbsp;with&nbsp;the&nbsp;stats&nbsp;and&nbsp;interactions&nbsp;with&nbsp;the&nbsp;camera.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;speed&nbsp;(float):&nbsp;The&nbsp;movement&nbsp;speed&nbsp;of&nbsp;the&nbsp;player.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;max_health&nbsp;(int):&nbsp;The&nbsp;maximum&nbsp;health&nbsp;the&nbsp;player&nbsp;can&nbsp;have,&nbsp;also&nbsp;the&nbsp;starting&nbsp;amount.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;current_health&nbsp;(int):&nbsp;The&nbsp;current&nbsp;health&nbsp;of&nbsp;the&nbsp;player&nbsp;through&nbsp;the&nbsp;game.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;generated_health&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;health&nbsp;was&nbsp;restored&nbsp;from&nbsp;the&nbsp;health&nbsp;regen&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;revive_available&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;revive&nbsp;upgrade&nbsp;has&nbsp;been&nbsp;used.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;dodge_chance&nbsp;(float):&nbsp;The&nbsp;percent&nbsp;chance&nbsp;for&nbsp;the&nbsp;player&nbsp;to&nbsp;avoid&nbsp;taking&nbsp;damage.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;critical_chance&nbsp;(float):&nbsp;The&nbsp;percent&nbsp;chance&nbsp;for&nbsp;the&nbsp;player&nbsp;to&nbsp;deal&nbsp;additional&nbsp;damage.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;life_steal_chance&nbsp;(float):&nbsp;The&nbsp;percent&nbsp;chance&nbsp;for&nbsp;the&nbsp;player&nbsp;to&nbsp;steal&nbsp;health&nbsp;from&nbsp;enemies.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;image&nbsp;(str):&nbsp;The&nbsp;path&nbsp;to&nbsp;the&nbsp;player's&nbsp;image&nbsp;file.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;death&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;player&nbsp;is&nbsp;dead.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;rect&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;hitbox&nbsp;of&nbsp;the&nbsp;player.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;gold&nbsp;(int):&nbsp;The&nbsp;gold&nbsp;the&nbsp;player&nbsp;has&nbsp;received&nbsp;in&nbsp;just&nbsp;their&nbsp;current&nbsp;game,&nbsp;not&nbsp;total.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;health_font&nbsp;(pygame.font.Font):&nbsp;The&nbsp;font&nbsp;style&nbsp;used&nbsp;for&nbsp;displaying&nbsp;health&nbsp;information.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;orspeed&nbsp;(float):&nbsp;The&nbsp;speed&nbsp;the&nbsp;player&nbsp;may&nbsp;move&nbsp;at&nbsp;if&nbsp;hit&nbsp;by&nbsp;the&nbsp;Earth&nbsp;Elemental's&nbsp;attacks.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;enemies_destroyed&nbsp;(int):&nbsp;The&nbsp;number&nbsp;of&nbsp;enemies&nbsp;the&nbsp;player&nbsp;destroyed&nbsp;in&nbsp;just&nbsp;their&nbsp;current&nbsp;game.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;time_survived&nbsp;(tuple):&nbsp;The&nbsp;time&nbsp;that&nbsp;the&nbsp;player&nbsp;survived.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Player-__init__"><strong>__init__</strong></a>(self)</dt><dd><tt>Initalizes&nbsp;the&nbsp;<a href="#Player">Player</a>&nbsp;class.</tt></dd></dl>
+
+<dl><dt><a name="Player-add_life_steal_health"><strong>add_life_steal_health</strong></a>(self)</dt><dd><tt>Adds&nbsp;a&nbsp;specific&nbsp;number&nbsp;of&nbsp;health&nbsp;if&nbsp;player&nbsp;lifesteals,&nbsp;if&nbsp;the&nbsp;player&nbsp;is&nbsp;not&nbsp;already&nbsp;full&nbsp;health.</tt></dd></dl>
+
+<dl><dt><a name="Player-check_critical_chance"><strong>check_critical_chance</strong></a>(self)</dt><dd><tt>Checks&nbsp;to&nbsp;see&nbsp;if&nbsp;the&nbsp;player&nbsp;will&nbsp;deal&nbsp;a&nbsp;critical&nbsp;strike&nbsp;to&nbsp;an&nbsp;enemy.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bool:&nbsp;True&nbsp;if&nbsp;player&nbsp;deals&nbsp;critical&nbsp;damage,&nbsp;False&nbsp;if&nbsp;they&nbsp;don't.</tt></dd></dl>
+
+<dl><dt><a name="Player-check_dodge_chance"><strong>check_dodge_chance</strong></a>(self)</dt><dd><tt>Checks&nbsp;to&nbsp;see&nbsp;if&nbsp;the&nbsp;player&nbsp;will&nbsp;dodge&nbsp;the&nbsp;enemy&nbsp;attack.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bool:&nbsp;True&nbsp;if&nbsp;player&nbsp;avoids&nbsp;attack,&nbsp;False&nbsp;if&nbsp;they&nbsp;don't.</tt></dd></dl>
+
+<dl><dt><a name="Player-check_life_steal_chance"><strong>check_life_steal_chance</strong></a>(self)</dt><dd><tt>Checks&nbsp;to&nbsp;see&nbsp;if&nbsp;the&nbsp;player&nbsp;will&nbsp;heal&nbsp;off&nbsp;damaging&nbsp;an&nbsp;enemy.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bool:&nbsp;True&nbsp;if&nbsp;player&nbsp;heals&nbsp;off&nbsp;the&nbsp;enemy,&nbsp;False&nbsp;if&nbsp;they&nbsp;don't.</tt></dd></dl>
+
+<dl><dt><a name="Player-display_health"><strong>display_health</strong></a>(self)</dt><dd><tt>Displays&nbsp;player&nbsp;health&nbsp;to&nbsp;the&nbsp;top&nbsp;of&nbsp;the&nbsp;screen.</tt></dd></dl>
+
+<dl><dt><a name="Player-move_east"><strong>move_east</strong></a>(self)</dt><dd><tt>Moves&nbsp;the&nbsp;player/camera&nbsp;east,&nbsp;and&nbsp;moves&nbsp;all&nbsp;other&nbsp;entities&nbsp;in&nbsp;the&nbsp;opposite&nbsp;direction.</tt></dd></dl>
+
+<dl><dt><a name="Player-move_north"><strong>move_north</strong></a>(self)</dt><dd><tt>Moves&nbsp;the&nbsp;player/camera&nbsp;north,&nbsp;and&nbsp;moves&nbsp;all&nbsp;other&nbsp;entities&nbsp;in&nbsp;the&nbsp;opposite&nbsp;direction.</tt></dd></dl>
+
+<dl><dt><a name="Player-move_south"><strong>move_south</strong></a>(self)</dt><dd><tt>Moves&nbsp;the&nbsp;player/camera&nbsp;south,&nbsp;and&nbsp;moves&nbsp;all&nbsp;other&nbsp;entities&nbsp;in&nbsp;the&nbsp;opposite&nbsp;direction.</tt></dd></dl>
+
+<dl><dt><a name="Player-move_west"><strong>move_west</strong></a>(self)</dt><dd><tt>Moves&nbsp;the&nbsp;player/camera&nbsp;west,&nbsp;and&nbsp;moves&nbsp;all&nbsp;other&nbsp;entities&nbsp;in&nbsp;the&nbsp;opposite&nbsp;direction.</tt></dd></dl>
+
+<dl><dt><a name="Player-update_upgrades"><strong>update_upgrades</strong></a>(self)</dt><dd><tt>Updates&nbsp;the&nbsp;upgrades&nbsp;when&nbsp;the&nbsp;user&nbsp;selects&nbsp;specific&nbsp;in-game&nbsp;upgrades.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="ProfileData">class <strong>ProfileData</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Reads&nbsp;and&nbsp;writes&nbsp;game&nbsp;data&nbsp;to&nbsp;game&nbsp;file.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;empty&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;game&nbsp;data&nbsp;file&nbsp;is&nbsp;empty.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;new_file_data&nbsp;(list):&nbsp;List&nbsp;of&nbsp;data&nbsp;to&nbsp;be&nbsp;written&nbsp;to&nbsp;temporary&nbsp;file.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;upgrade1_level&nbsp;(int):&nbsp;Level&nbsp;number&nbsp;for&nbsp;the&nbsp;max&nbsp;health&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;upgrade2_level&nbsp;(int):&nbsp;Level&nbsp;number&nbsp;for&nbsp;the&nbsp;health&nbsp;regen&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;upgrade3_level&nbsp;(int):&nbsp;Level&nbsp;number&nbsp;for&nbsp;the&nbsp;revive&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;upgrade4_level&nbsp;(int):&nbsp;Level&nbsp;number&nbsp;for&nbsp;the&nbsp;movement&nbsp;speed&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;upgrade5_level&nbsp;(int):&nbsp;Level&nbsp;number&nbsp;for&nbsp;the&nbsp;dodge&nbsp;chance&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;upgrade6_level&nbsp;(int):&nbsp;Level&nbsp;number&nbsp;for&nbsp;the&nbsp;increased&nbsp;gold&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;upgrade7_level&nbsp;(int):&nbsp;Level&nbsp;number&nbsp;for&nbsp;the&nbsp;crit&nbsp;chance&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;upgrade8_level&nbsp;(int):&nbsp;Level&nbsp;number&nbsp;for&nbsp;the&nbsp;life-steal&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;balance&nbsp;(int):&nbsp;The&nbsp;total&nbsp;gold&nbsp;the&nbsp;user&nbsp;has.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;profile_id&nbsp;(int):&nbsp;The&nbsp;currently&nbsp;selected&nbsp;user&nbsp;profile.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="ProfileData-__init__"><strong>__init__</strong></a>(self)</dt><dd><tt>Initializes&nbsp;the&nbsp;<a href="#ProfileData">ProfileData</a>&nbsp;class.</tt></dd></dl>
+
+<dl><dt><a name="ProfileData-add_gold"><strong>add_gold</strong></a>(self)</dt><dd><tt>Adds&nbsp;gold&nbsp;acquired&nbsp;from&nbsp;game&nbsp;to&nbsp;the&nbsp;profile-data.csv&nbsp;when&nbsp;the&nbsp;player&nbsp;either&nbsp;dies&nbsp;or&nbsp;wins.</tt></dd></dl>
+
+<dl><dt><a name="ProfileData-change_profile"><strong>change_profile</strong></a>(self, profile)</dt><dd><tt>Changes&nbsp;the&nbsp;selected&nbsp;profile&nbsp;in&nbsp;the&nbsp;profile-data.csv&nbsp;file.</tt></dd></dl>
+
+<dl><dt><a name="ProfileData-check_empty"><strong>check_empty</strong></a>(self)</dt><dd><tt>Checks&nbsp;if&nbsp;profile&nbsp;folder/file&nbsp;exists&nbsp;and&nbsp;if&nbsp;it&nbsp;does,&nbsp;if&nbsp;it&nbsp;is&nbsp;empty.</tt></dd></dl>
+
+<dl><dt><a name="ProfileData-create_csv"><strong>create_csv</strong></a>(self)</dt><dd><tt>Creates&nbsp;the&nbsp;profile-data.csv&nbsp;if&nbsp;it&nbsp;does&nbsp;not&nbsp;exist.</tt></dd></dl>
+
+<dl><dt><a name="ProfileData-increase_upgrade_level"><strong>increase_upgrade_level</strong></a>(self, column)</dt><dd><tt>When&nbsp;the&nbsp;player&nbsp;purchases&nbsp;an&nbsp;upgrade,&nbsp;increase&nbsp;the&nbsp;upgrade&nbsp;level&nbsp;in&nbsp;the&nbsp;profile-data.csv.</tt></dd></dl>
+
+<dl><dt><a name="ProfileData-load_skill_tree"><strong>load_skill_tree</strong></a>(self)</dt><dd><tt>Updates&nbsp;each&nbsp;upgrade&nbsp;level&nbsp;in&nbsp;the&nbsp;skill&nbsp;tree&nbsp;with&nbsp;the&nbsp;most&nbsp;recent&nbsp;upgrade&nbsp;levels.</tt></dd></dl>
+
+<dl><dt><a name="ProfileData-load_upgrades_into_game"><strong>load_upgrades_into_game</strong></a>(self)</dt><dd><tt>Updates&nbsp;the&nbsp;upgrade&nbsp;level&nbsp;into&nbsp;the&nbsp;game&nbsp;loop;&nbsp;used&nbsp;for&nbsp;player&nbsp;stat&nbsp;upgrades.</tt></dd></dl>
+
+<dl><dt><a name="ProfileData-reset_profile"><strong>reset_profile</strong></a>(self, profile)</dt><dd><tt>Resets&nbsp;the&nbsp;selected&nbsp;profile's&nbsp;data&nbsp;in&nbsp;the&nbsp;profile-data.csv&nbsp;file.</tt></dd></dl>
+
+<dl><dt><a name="ProfileData-subtract_gold"><strong>subtract_gold</strong></a>(self, purchase_price)</dt><dd><tt>Subtracts&nbsp;gold&nbsp;from&nbsp;upgrades&nbsp;purchased&nbsp;to&nbsp;the&nbsp;profile-data.csv&nbsp;when&nbsp;the&nbsp;player&nbsp;buys&nbsp;upgrades&nbsp;in&nbsp;the&nbsp;skill&nbsp;tree.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="SkeletonKing">class <strong>SkeletonKing</strong></a>(<a href="main.html#Enemy">Enemy</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#SkeletonKing">SkeletonKing</a>(x,&nbsp;y)<br>
+&nbsp;<br>
+Controls&nbsp;the&nbsp;movement&nbsp;and&nbsp;attacks&nbsp;of&nbsp;the&nbsp;skeleton&nbsp;King&nbsp;enemy&nbsp;type.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;rect&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;hitbox&nbsp;for&nbsp;the&nbsp;skeleton&nbsp;king.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;mid_box_rect&nbsp;(pygame.rect.Rect):&nbsp;A&nbsp;smaller&nbsp;hitbox&nbsp;in&nbsp;the&nbsp;center&nbsp;of&nbsp;the&nbsp;skeleton&nbsp;king.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;health&nbsp;(float):&nbsp;The&nbsp;health&nbsp;of&nbsp;the&nbsp;skeleton&nbsp;king.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;speed&nbsp;(int):&nbsp;The&nbsp;speed&nbsp;of&nbsp;the&nbsp;skeleton&nbsp;king.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;skeleton_king&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;it&nbsp;is&nbsp;of&nbsp;type&nbsp;skeleton&nbsp;king.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;x_coord&nbsp;(float):&nbsp;A&nbsp;random&nbsp;x-position&nbsp;as&nbsp;a&nbsp;starting&nbsp;point.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;y_coord&nbsp;(float):&nbsp;A&nbsp;random&nbsp;y-position&nbsp;as&nbsp;a&nbsp;starting&nbsp;point.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;left_leg_rect&nbsp;(pygame.rect.Rect):&nbsp;A&nbsp;hitbox&nbsp;on&nbsp;the&nbsp;smaller&nbsp;left&nbsp;leg.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;right_leg_rect&nbsp;(pygame.rect.Rect):&nbsp;A&nbsp;hitbox&nbsp;on&nbsp;the&nbsp;smaller&nbsp;right&nbsp;leg.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;animation_image&nbsp;(int):&nbsp;The&nbsp;current&nbsp;animation&nbsp;image&nbsp;that&nbsp;is&nbsp;being&nbsp;displayed.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;main_left_leg_rect&nbsp;(pygame.rect.Rect):&nbsp;A&nbsp;hitbox&nbsp;on&nbsp;the&nbsp;bigger&nbsp;left&nbsp;leg.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;main_right_leg_rect&nbsp;(pygame.rect.Rect):&nbsp;A&nbsp;hitbox&nbsp;on&nbsp;the&nbsp;bigger&nbsp;right&nbsp;leg.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;run_activation&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;skeleton&nbsp;king&nbsp;is&nbsp;running&nbsp;straight&nbsp;for&nbsp;the&nbsp;player's&nbsp;position&nbsp;rapidly.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;run_counter&nbsp;(int):&nbsp;A&nbsp;counter&nbsp;that&nbsp;when&nbsp;reached,&nbsp;halts&nbsp;the&nbsp;skeleton&nbsp;king's&nbsp;run&nbsp;attack.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;animation_interval&nbsp;(int):&nbsp;A&nbsp;timer&nbsp;which&nbsp;changes&nbsp;the&nbsp;animation&nbsp;image&nbsp;at&nbsp;certain&nbsp;times.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;run_target&nbsp;(tuple):&nbsp;Sets&nbsp;he&nbsp;x,y&nbsp;position&nbsp;of&nbsp;the&nbsp;player's&nbsp;position&nbsp;so&nbsp;the&nbsp;skeleton&nbsp;king&nbsp;can&nbsp;run&nbsp;to&nbsp;and&nbsp;attack.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;target_aquired&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;it&nbsp;has&nbsp;targeted&nbsp;and&nbsp;locked&nbsp;onto&nbsp;the&nbsp;player.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;felled&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;skeleton&nbsp;king&nbsp;has&nbsp;been&nbsp;destroyed.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;activate&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;skeleton&nbsp;king&nbsp;has&nbsp;spawned.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;player_collide_counter&nbsp;(int):&nbsp;A&nbsp;timer&nbsp;that&nbsp;counts&nbsp;how&nbsp;long&nbsp;a&nbsp;player&nbsp;has&nbsp;collided&nbsp;with&nbsp;the&nbsp;skeleton&nbsp;king.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%"><dl><dt>Method resolution order:</dt>
+<dd><a href="main.html#SkeletonKing">SkeletonKing</a></dd>
+<dd><a href="main.html#Enemy">Enemy</a></dd>
+<dd><a href="builtins.html#object">builtins.object</a></dd>
+</dl>
+<hr>
+Methods defined here:<br>
+<dl><dt><a name="SkeletonKing-__init__"><strong>__init__</strong></a>(self, x, y)</dt><dd><tt>Initializes&nbsp;the&nbsp;<a href="#Enemy">Enemy</a>&nbsp;class.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;x&nbsp;(float):&nbsp;Sets&nbsp;the&nbsp;x-position&nbsp;of&nbsp;the&nbsp;enemy.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;y&nbsp;(float):&nbsp;Sets&nbsp;the&nbsp;y-position&nbsp;of&nbsp;the&nbsp;enemy.</tt></dd></dl>
+
+<dl><dt><a name="SkeletonKing-activate_death"><strong>activate_death</strong></a>(self)</dt><dd><tt>Destroys&nbsp;the&nbsp;skeelton&nbsp;king&nbsp;when&nbsp;they&nbsp;run&nbsp;out&nbsp;of&nbsp;health.</tt></dd></dl>
+
+<dl><dt><a name="SkeletonKing-attack"><strong>attack</strong></a>(self)</dt><dd><tt>Attacks&nbsp;the&nbsp;player&nbsp;and&nbsp;it's&nbsp;allies&nbsp;if&nbsp;under&nbsp;it's&nbsp;legs.</tt></dd></dl>
+
+<dl><dt><a name="SkeletonKing-check_collisions"><strong>check_collisions</strong></a>(self)</dt><dd><tt>Checks&nbsp;the&nbsp;collisions&nbsp;between&nbsp;the&nbsp;skeleton&nbsp;king&nbsp;and&nbsp;the&nbsp;player's&nbsp;attacks.</tt></dd></dl>
+
+<dl><dt><a name="SkeletonKing-follow_mc"><strong>follow_mc</strong></a>(self)</dt><dd><tt>Handles&nbsp;the&nbsp;movement&nbsp;of&nbsp;getting&nbsp;the&nbsp;skeleton&nbsp;king&nbsp;to&nbsp;the&nbsp;<a href="#Player">Player</a>.</tt></dd></dl>
+
+<dl><dt><a name="SkeletonKing-generate_enemy"><strong>generate_enemy</strong></a>(self)</dt><dd><tt>Creates&nbsp;the&nbsp;skeleton&nbsp;king&nbsp;nd&nbsp;handles&nbsp;it's&nbsp;animations,&nbsp;along&nbsp;with&nbsp;getting&nbsp;the&nbsp;player's&nbsp;position.</tt></dd></dl>
+
+<hr>
+Methods inherited from <a href="main.html#Enemy">Enemy</a>:<br>
+<dl><dt><a name="SkeletonKing-attack_mc"><strong>attack_mc</strong></a>(self)</dt></dl>
+
+<dl><dt><a name="SkeletonKing-clean_dictionaries"><strong>clean_dictionaries</strong></a>(self)</dt><dd><tt>As&nbsp;bullets&nbsp;and&nbsp;other&nbsp;attacks&nbsp;hit&nbsp;the&nbsp;enemy,&nbsp;clear&nbsp;those&nbsp;registered&nbsp;hits&nbsp;once&nbsp;they&nbsp;are&nbsp;no&nbsp;longer&nbsp;active.</tt></dd></dl>
+
+<dl><dt><a name="SkeletonKing-spawn"><strong>spawn</strong></a>(self)</dt><dd><tt>Sets&nbsp;the&nbsp;enemy&nbsp;to&nbsp;have&nbsp;spawned&nbsp;after&nbsp;their&nbsp;spawn&nbsp;indicator&nbsp;is&nbsp;no&nbsp;longer&nbsp;active.</tt></dd></dl>
+
+<dl><dt><a name="SkeletonKing-travel_east"><strong>travel_east</strong></a>(self)</dt><dd><tt>Allows&nbsp;the&nbsp;enemy&nbsp;to&nbsp;move&nbsp;east.</tt></dd></dl>
+
+<dl><dt><a name="SkeletonKing-travel_north"><strong>travel_north</strong></a>(self)</dt><dd><tt>Allows&nbsp;the&nbsp;enemy&nbsp;to&nbsp;move&nbsp;north</tt></dd></dl>
+
+<dl><dt><a name="SkeletonKing-travel_south"><strong>travel_south</strong></a>(self)</dt><dd><tt>Allows&nbsp;the&nbsp;enemy&nbsp;to&nbsp;move&nbsp;south.</tt></dd></dl>
+
+<dl><dt><a name="SkeletonKing-travel_west"><strong>travel_west</strong></a>(self)</dt><dd><tt>Allows&nbsp;the&nbsp;enemy&nbsp;to&nbsp;move&nbsp;west.</tt></dd></dl>
+
+<hr>
+Data descriptors inherited from <a href="main.html#Enemy">Enemy</a>:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="SkillTree">class <strong>SkillTree</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>A&nbsp;menu&nbsp;which&nbsp;allows&nbsp;the&nbsp;user&nbsp;to&nbsp;purchase&nbsp;permanent&nbsp;upgrades.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>active</strong>&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;skill&nbsp;tree&nbsp;menu&nbsp;is&nbsp;currently&nbsp;active.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>offset</strong>&nbsp;(int):&nbsp;A&nbsp;set&nbsp;number&nbsp;to&nbsp;help&nbsp;change&nbsp;the&nbsp;y-position&nbsp;of&nbsp;all&nbsp;elements&nbsp;of&nbsp;the&nbsp;skill&nbsp;tree&nbsp;section.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>box1</strong>&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;hitbox/display&nbsp;box&nbsp;for&nbsp;the&nbsp;first&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>box1_border</strong>&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;border&nbsp;for&nbsp;the&nbsp;first&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>box2</strong>&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;hitbox/display&nbsp;box&nbsp;for&nbsp;the&nbsp;second&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>box2_border</strong>&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;border&nbsp;for&nbsp;the&nbsp;second&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>box3</strong>&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;hitbox/display&nbsp;box&nbsp;for&nbsp;the&nbsp;third&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>box3_border</strong>&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;border&nbsp;for&nbsp;the&nbsp;third&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>box4</strong>&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;hitbox/display&nbsp;box&nbsp;for&nbsp;the&nbsp;fourth&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>box4_border</strong>&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;border&nbsp;for&nbsp;the&nbsp;fourth&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>box5</strong>&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;hitbox/display&nbsp;box&nbsp;for&nbsp;the&nbsp;fifth&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>box5_border</strong>&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;border&nbsp;for&nbsp;the&nbsp;fifth&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>box6</strong>&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;hitbox/display&nbsp;box&nbsp;for&nbsp;the&nbsp;sixth&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>box6_border</strong>&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;border&nbsp;for&nbsp;the&nbsp;sixth&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>box7</strong>&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;hitbox/display&nbsp;box&nbsp;for&nbsp;the&nbsp;seventh&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>box7_border</strong>&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;border&nbsp;for&nbsp;the&nbsp;seventh&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>box8</strong>&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;hitbox/display&nbsp;box&nbsp;for&nbsp;the&nbsp;eighth&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>box8_border</strong>&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;border&nbsp;for&nbsp;the&nbsp;eighth&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>description_box</strong>&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;display&nbsp;box&nbsp;for&nbsp;the&nbsp;selected&nbsp;upgrade&nbsp;information.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>description_border</strong>&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;border&nbsp;of&nbsp;the&nbsp;selected&nbsp;description&nbsp;box.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>buy_box</strong>&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;display&nbsp;box/hitbox&nbsp;for&nbsp;the&nbsp;buy&nbsp;button.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>buy_border</strong>&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;border&nbsp;for&nbsp;the&nbsp;buy&nbsp;button.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>level_font</strong>&nbsp;(pygame.font.Font):&nbsp;The&nbsp;font&nbsp;style&nbsp;used&nbsp;for&nbsp;displaying&nbsp;the&nbsp;level&nbsp;of&nbsp;each&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>level2_font</strong>&nbsp;(pygame.font.Font):&nbsp;The&nbsp;font&nbsp;style&nbsp;used&nbsp;for&nbsp;displaying&nbsp;if&nbsp;the&nbsp;level&nbsp;has&nbsp;been&nbsp;maxed&nbsp;out.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>title_font</strong>&nbsp;(pygame.font.Font):&nbsp;The&nbsp;font&nbsp;style&nbsp;used&nbsp;for&nbsp;displaying&nbsp;the&nbsp;title&nbsp;of&nbsp;the&nbsp;menu.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>back_font</strong>&nbsp;(pygame.font.Font):&nbsp;The&nbsp;font&nbsp;style&nbsp;used&nbsp;for&nbsp;displaying&nbsp;the&nbsp;back&nbsp;button&nbsp;text.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>description_title_font</strong>&nbsp;(pygame.font.Font):&nbsp;The&nbsp;font&nbsp;style&nbsp;used&nbsp;for&nbsp;displaying&nbsp;the&nbsp;upgrade&nbsp;description&nbsp;title.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>description_font</strong>&nbsp;(pygame.font.Font):&nbsp;The&nbsp;font&nbsp;style&nbsp;used&nbsp;for&nbsp;displaying&nbsp;the&nbsp;upgrade&nbsp;description&nbsp;text.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>buy_font</strong>&nbsp;(pygame.font.Font):&nbsp;The&nbsp;font&nbsp;style&nbsp;used&nbsp;for&nbsp;displaying&nbsp;the&nbsp;buy&nbsp;button&nbsp;text.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>feedback_message_font</strong>&nbsp;(pygame.font.Font):&nbsp;The&nbsp;font&nbsp;style&nbsp;used&nbsp;for&nbsp;displaying&nbsp;the&nbsp;feedback&nbsp;text.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>title_background_border</strong>&nbsp;(pygame.rect.Rect):&nbsp;Adds&nbsp;a&nbsp;border&nbsp;around&nbsp;the&nbsp;title&nbsp;display&nbsp;box.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>title_background</strong>&nbsp;(pygame.rect.Rect):&nbsp;Adds&nbsp;a&nbsp;display&nbsp;box&nbsp;behind&nbsp;the&nbsp;title&nbsp;text.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>back_background_border</strong>&nbsp;(pygame.rect.Rect):&nbsp;Adds&nbsp;a&nbsp;border&nbsp;around&nbsp;the&nbsp;back&nbsp;button.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>back_background</strong>&nbsp;(pygame.rect.Rect):&nbsp;Adds&nbsp;a&nbsp;display&nbsp;box&nbsp;for&nbsp;the&nbsp;back&nbsp;button.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>selected</strong>&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;an&nbsp;upgrade&nbsp;has&nbsp;been&nbsp;selected.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>selected_option</strong>&nbsp;(list):&nbsp;Contains&nbsp;the&nbsp;upgrade&nbsp;that&nbsp;has&nbsp;been&nbsp;most&nbsp;recently&nbsp;selected.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>selected_cost</strong>&nbsp;(float):&nbsp;The&nbsp;cost&nbsp;of&nbsp;the&nbsp;selected&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>upgrade1_level</strong>&nbsp;(int):&nbsp;The&nbsp;level&nbsp;the&nbsp;player&nbsp;has&nbsp;for&nbsp;the&nbsp;first&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>upgrade2_level</strong>&nbsp;(int):&nbsp;The&nbsp;level&nbsp;the&nbsp;player&nbsp;has&nbsp;for&nbsp;the&nbsp;second&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>upgrade3_level</strong>&nbsp;(int):&nbsp;The&nbsp;level&nbsp;the&nbsp;player&nbsp;has&nbsp;for&nbsp;the&nbsp;third&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>upgrade4_level</strong>&nbsp;(int):&nbsp;The&nbsp;level&nbsp;the&nbsp;player&nbsp;has&nbsp;for&nbsp;the&nbsp;fourth&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>upgrade5_level</strong>&nbsp;(int):&nbsp;The&nbsp;level&nbsp;the&nbsp;player&nbsp;has&nbsp;for&nbsp;the&nbsp;fifth&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>upgrade6_level</strong>&nbsp;(int):&nbsp;The&nbsp;level&nbsp;the&nbsp;player&nbsp;has&nbsp;for&nbsp;the&nbsp;sixth&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>upgrade7_level</strong>&nbsp;(int):&nbsp;The&nbsp;level&nbsp;the&nbsp;player&nbsp;has&nbsp;for&nbsp;the&nbsp;seventh&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>upgrade8_level</strong>&nbsp;(int):&nbsp;The&nbsp;level&nbsp;the&nbsp;player&nbsp;has&nbsp;for&nbsp;the&nbsp;eighth&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>upgrade1_cost</strong>&nbsp;(float):&nbsp;The&nbsp;cost&nbsp;to&nbsp;increase&nbsp;the&nbsp;level&nbsp;for&nbsp;the&nbsp;first&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>upgrade2_cost</strong>&nbsp;(float):&nbsp;The&nbsp;cost&nbsp;to&nbsp;increase&nbsp;the&nbsp;level&nbsp;for&nbsp;the&nbsp;second&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>upgrade3_cost</strong>&nbsp;(float):&nbsp;The&nbsp;cost&nbsp;to&nbsp;increase&nbsp;the&nbsp;level&nbsp;for&nbsp;the&nbsp;third&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>upgrade4_cost</strong>&nbsp;(float):&nbsp;The&nbsp;cost&nbsp;to&nbsp;increase&nbsp;the&nbsp;level&nbsp;for&nbsp;the&nbsp;fourth&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>upgrade5_cost</strong>&nbsp;(float):&nbsp;The&nbsp;cost&nbsp;to&nbsp;increase&nbsp;the&nbsp;level&nbsp;for&nbsp;the&nbsp;fifth&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>upgrade6_cost</strong>&nbsp;(float):&nbsp;The&nbsp;cost&nbsp;to&nbsp;increase&nbsp;the&nbsp;level&nbsp;for&nbsp;the&nbsp;sixth&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>upgrade7_cost</strong>&nbsp;(float):&nbsp;The&nbsp;cost&nbsp;to&nbsp;increase&nbsp;the&nbsp;level&nbsp;for&nbsp;the&nbsp;seventh&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>upgrade8_cost</strong>&nbsp;(float):&nbsp;The&nbsp;cost&nbsp;to&nbsp;increase&nbsp;the&nbsp;level&nbsp;for&nbsp;the&nbsp;eighth&nbsp;upgrade.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>balance</strong>&nbsp;(int):&nbsp;The&nbsp;total&nbsp;amount&nbsp;of&nbsp;gold&nbsp;the&nbsp;player&nbsp;has.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>feedback</strong>&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;feedback&nbsp;box&nbsp;is&nbsp;currently&nbsp;active.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>feedback_option</strong>&nbsp;(int):&nbsp;Numbers&nbsp;1-3&nbsp;indicate&nbsp;a&nbsp;different&nbsp;feedback&nbsp;message&nbsp;to&nbsp;send&nbsp;to&nbsp;the&nbsp;user.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>feedback_box</strong>&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;display&nbsp;box&nbsp;for&nbsp;the&nbsp;feedback&nbsp;message.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>message_timer</strong>&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;feedback&nbsp;box&nbsp;message&nbsp;initially&nbsp;appeared.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>message_timer_counter</strong>&nbsp;(int):&nbsp;A&nbsp;timer&nbsp;to&nbsp;count&nbsp;how&nbsp;long&nbsp;the&nbsp;feedback&nbsp;message&nbsp;has&nbsp;been&nbsp;active.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;self.<strong>column</strong>&nbsp;(int):&nbsp;Numbers&nbsp;3-10,&nbsp;each&nbsp;indicating&nbsp;a&nbsp;column&nbsp;in&nbsp;the&nbsp;profile-data.csv,&nbsp;relating&nbsp;to&nbsp;upgrade&nbsp;levels.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="SkillTree-__init__"><strong>__init__</strong></a>(self)</dt><dd><tt>Initializes&nbsp;the&nbsp;<a href="#SkillTree">SkillTree</a>&nbsp;class.</tt></dd></dl>
+
+<dl><dt><a name="SkillTree-display_information"><strong>display_information</strong></a>(self, option)</dt><dd><tt>Displays&nbsp;the&nbsp;selected&nbsp;upgrade's&nbsp;information&nbsp;to&nbsp;the&nbsp;bottom&nbsp;of&nbsp;the&nbsp;screen.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;option&nbsp;(str):&nbsp;The&nbsp;selected&nbsp;upgrade&nbsp;option.</tt></dd></dl>
+
+<dl><dt><a name="SkillTree-give_feedback"><strong>give_feedback</strong></a>(self)</dt><dd><tt>After&nbsp;the&nbsp;user&nbsp;clicks&nbsp;the&nbsp;buy&nbsp;button,&nbsp;a&nbsp;message&nbsp;will&nbsp;appear&nbsp;to&nbsp;the&nbsp;user.</tt></dd></dl>
+
+<dl><dt><a name="SkillTree-load_data"><strong>load_data</strong></a>(self)</dt><dd><tt>Updates&nbsp;the&nbsp;upgrade&nbsp;costs.</tt></dd></dl>
+
+<dl><dt><a name="SkillTree-purchase_upgrade"><strong>purchase_upgrade</strong></a>(self)</dt><dd><tt>Allows&nbsp;the&nbsp;user&nbsp;to&nbsp;purchase&nbsp;a&nbsp;selected&nbsp;upgrade.</tt></dd></dl>
+
+<dl><dt><a name="SkillTree-skill_tree"><strong>skill_tree</strong></a>(self)</dt><dd><tt>Handles&nbsp;the&nbsp;main&nbsp;logic&nbsp;behind&nbsp;the&nbsp;operations&nbsp;of&nbsp;the&nbsp;skill&nbsp;tree;&nbsp;presents&nbsp;the&nbsp;upgrade&nbsp;information.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="UserProfile">class <strong>UserProfile</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>A&nbsp;menu&nbsp;which&nbsp;allows&nbsp;the&nbsp;user&nbsp;to&nbsp;change&nbsp;profile's&nbsp;and&nbsp;reset&nbsp;it's&nbsp;data.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;active&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;user&nbsp;profile&nbsp;menu&nbsp;is&nbsp;currently&nbsp;active.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;offset1&nbsp;(int):&nbsp;A&nbsp;set&nbsp;number&nbsp;to&nbsp;help&nbsp;change&nbsp;the&nbsp;y-position&nbsp;of&nbsp;all&nbsp;elements&nbsp;of&nbsp;the&nbsp;user&nbsp;profile&nbsp;section.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;profile_box1&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;display&nbsp;box/hitbox&nbsp;of&nbsp;the&nbsp;first&nbsp;profile&nbsp;button.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;profile_border_box1&nbsp;(pygame.rect.Rect):&nbsp;Adds&nbsp;a&nbsp;border&nbsp;to&nbsp;the&nbsp;first&nbsp;profile&nbsp;button.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;reset_profile1&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;display&nbsp;box/hitbox&nbsp;of&nbsp;the&nbsp;first&nbsp;profile&nbsp;reset&nbsp;button.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;reset_profile1_border&nbsp;(pygame.rect.Rect):&nbsp;Adds&nbsp;a&nbsp;border&nbsp;to&nbsp;the&nbsp;first&nbsp;profile&nbsp;reset&nbsp;button.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;profile_box2&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;display&nbsp;box/hitbox&nbsp;of&nbsp;the&nbsp;second&nbsp;profile&nbsp;button.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;profile_border_box2&nbsp;(pygame.rect.Rect):&nbsp;Adds&nbsp;a&nbsp;border&nbsp;to&nbsp;the&nbsp;second&nbsp;profile&nbsp;button.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;reset_profile2&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;display&nbsp;box/hitbox&nbsp;of&nbsp;the&nbsp;second&nbsp;profile&nbsp;reset&nbsp;button.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;reset_profile2_border&nbsp;(pygame.rect.Rect):&nbsp;Adds&nbsp;a&nbsp;border&nbsp;to&nbsp;the&nbsp;second&nbsp;profile&nbsp;reset&nbsp;button.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;profile_box3&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;display&nbsp;box/hitbox&nbsp;of&nbsp;the&nbsp;third&nbsp;profile&nbsp;button.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;profile_border_box3&nbsp;(pygame.rect.Rect):&nbsp;Adds&nbsp;a&nbsp;border&nbsp;to&nbsp;the&nbsp;third&nbsp;profile&nbsp;button.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;reset_profile3&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;display&nbsp;box/hitbox&nbsp;of&nbsp;the&nbsp;third&nbsp;profile&nbsp;reset&nbsp;button.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;reset_profile3_border&nbsp;(pygame.rect.Rect):&nbsp;Adds&nbsp;a&nbsp;border&nbsp;to&nbsp;the&nbsp;third&nbsp;profile&nbsp;reset&nbsp;button.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;profile_box4&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;display&nbsp;box/hitbox&nbsp;of&nbsp;the&nbsp;fourth&nbsp;profile&nbsp;button.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;profile_border_box4&nbsp;(pygame.rect.Rect):&nbsp;Adds&nbsp;a&nbsp;border&nbsp;to&nbsp;the&nbsp;fourth&nbsp;profile&nbsp;button.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;reset_profile4&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;display&nbsp;box/hitbox&nbsp;of&nbsp;the&nbsp;fourth&nbsp;profile&nbsp;reset&nbsp;button.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;reset_profile4_border&nbsp;(pygame.rect.Rect):&nbsp;Adds&nbsp;a&nbsp;border&nbsp;to&nbsp;the&nbsp;fourth&nbsp;profile&nbsp;reset&nbsp;button.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;profile_box5&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;display&nbsp;box/hitbox&nbsp;of&nbsp;the&nbsp;fifth&nbsp;profile&nbsp;button.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;profile_border_box5&nbsp;(pygame.rect.Rect):&nbsp;Adds&nbsp;a&nbsp;border&nbsp;to&nbsp;the&nbsp;fifth&nbsp;profile&nbsp;button.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;reset_profile5&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;display&nbsp;box/hitbox&nbsp;of&nbsp;the&nbsp;fifth&nbsp;profile&nbsp;reset&nbsp;button.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;reset_profile5_border&nbsp;(pygame.rect.Rect):&nbsp;Adds&nbsp;a&nbsp;border&nbsp;to&nbsp;the&nbsp;fifth&nbsp;profile&nbsp;reset&nbsp;button.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;info_background&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;background&nbsp;for&nbsp;the&nbsp;user&nbsp;info&nbsp;section.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;back_background_border&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;border&nbsp;box&nbsp;for&nbsp;the&nbsp;back&nbsp;button.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;back_background&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;hitbox/box&nbsp;for&nbsp;the&nbsp;back&nbsp;button.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;down_offset&nbsp;(int):&nbsp;A&nbsp;set&nbsp;number&nbsp;to&nbsp;help&nbsp;change&nbsp;the&nbsp;y-position&nbsp;of&nbsp;all&nbsp;elements&nbsp;of&nbsp;the&nbsp;user&nbsp;info&nbsp;section.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;profile_font&nbsp;(pygame.font.Font):&nbsp;The&nbsp;font&nbsp;style&nbsp;used&nbsp;for&nbsp;displaying&nbsp;the&nbsp;different&nbsp;profiles.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;reset_font&nbsp;(pygame.font.Font):&nbsp;The&nbsp;font&nbsp;style&nbsp;used&nbsp;for&nbsp;displaying&nbsp;the&nbsp;reset&nbsp;profiles.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;balance_font&nbsp;(pygame.font.Font):&nbsp;The&nbsp;font&nbsp;style&nbsp;used&nbsp;for&nbsp;displaying&nbsp;player&nbsp;balance.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;info_font&nbsp;(pygame.font.Font):&nbsp;The&nbsp;font&nbsp;style&nbsp;used&nbsp;for&nbsp;displaying&nbsp;the&nbsp;info&nbsp;section.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;back_font&nbsp;(pygame.font.Font):&nbsp;The&nbsp;font&nbsp;style&nbsp;used&nbsp;for&nbsp;displaying&nbsp;the&nbsp;back&nbsp;button&nbsp;text.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;reset_confirmation_font&nbsp;(pygame.font.Font):&nbsp;The&nbsp;font&nbsp;style&nbsp;used&nbsp;for&nbsp;displaying&nbsp;the&nbsp;reset&nbsp;confirmation&nbsp;screen.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;reset_confirm_border1_box&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;outermost&nbsp;border&nbsp;of&nbsp;the&nbsp;reset&nbsp;confirmation&nbsp;box.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;reset_confirm_border2_box&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;middlemost&nbsp;border&nbsp;of&nbsp;the&nbsp;reset&nbsp;confirmation&nbsp;box.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;reset_confirm_border3_box&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;innermost&nbsp;border&nbsp;of&nbsp;the&nbsp;reset&nbsp;confirmation&nbsp;box.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;reset_confirm_box&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;main&nbsp;display&nbsp;box&nbsp;which&nbsp;allows&nbsp;the&nbsp;player&nbsp;to&nbsp;confirm&nbsp;profile&nbsp;reset.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;awaiting_confirmation&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;reset&nbsp;profile&nbsp;menu&nbsp;has&nbsp;been&nbsp;activated.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;reset_negative_box&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;hitbox/box&nbsp;for&nbsp;the&nbsp;'no'&nbsp;option&nbsp;of&nbsp;profile&nbsp;reset.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;reset_negative_border_box&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;border&nbsp;of&nbsp;the&nbsp;'no'&nbsp;option&nbsp;of&nbsp;profile&nbsp;reset.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;reset_affirmative_box&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;hitbox/box&nbsp;for&nbsp;the&nbsp;'yes'&nbsp;option&nbsp;of&nbsp;profile&nbsp;reset.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;reset_affirmative_border_box&nbsp;(pygame.rect.Rect):&nbsp;The&nbsp;border&nbsp;of&nbsp;the&nbsp;'yes'&nbsp;option&nbsp;of&nbsp;profile&nbsp;reset.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;reset&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;a&nbsp;profile&nbsp;was&nbsp;selected&nbsp;to&nbsp;be&nbsp;reset.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="UserProfile-__init__"><strong>__init__</strong></a>(self)</dt><dd><tt>Initializes&nbsp;the&nbsp;<a href="#UserProfile">UserProfile</a>&nbsp;class.</tt></dd></dl>
+
+<dl><dt><a name="UserProfile-confirm_reset"><strong>confirm_reset</strong></a>(self)</dt><dd><tt>Prompts&nbsp;the&nbsp;user&nbsp;to&nbsp;confirm&nbsp;if&nbsp;they&nbsp;want&nbsp;to&nbsp;reset&nbsp;their&nbsp;profile&nbsp;data.</tt></dd></dl>
+
+<dl><dt><a name="UserProfile-user_profile_menu"><strong>user_profile_menu</strong></a>(self)</dt><dd><tt>Handles&nbsp;the&nbsp;operations&nbsp;of&nbsp;the&nbsp;user&nbsp;profile&nbsp;menu;&nbsp;displays&nbsp;user&nbsp;profile&nbsp;data.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="XP">class <strong>XP</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#XP">XP</a>(x,&nbsp;y)<br>
+&nbsp;<br>
+Controls&nbsp;<a href="#XP">XP</a>&nbsp;movement&nbsp;and&nbsp;displays&nbsp;individual&nbsp;<a href="#XP">XP</a>&nbsp;orbs&nbsp;on&nbsp;the&nbsp;ground.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;x&nbsp;(float):&nbsp;The&nbsp;x-position&nbsp;of&nbsp;where&nbsp;the&nbsp;<a href="#XP">XP</a>&nbsp;orb&nbsp;will&nbsp;be&nbsp;spawned.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;y&nbsp;(float):&nbsp;The&nbsp;y-position&nbsp;of&nbsp;where&nbsp;the&nbsp;<a href="#XP">XP</a>&nbsp;orb&nbsp;will&nbsp;be&nbsp;spawned.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;rect&nbsp;(pygame.rect.Rect):&nbsp;A&nbsp;very&nbsp;small&nbsp;hitbox&nbsp;for&nbsp;the&nbsp;individual&nbsp;<a href="#XP">XP</a>&nbsp;orb.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;hitbox_rect&nbsp;(pygame.rect.Rect):&nbsp;A&nbsp;big&nbsp;hitbox&nbsp;for&nbsp;the&nbsp;<a href="#XP">XP</a>,&nbsp;utilized&nbsp;for&nbsp;range&nbsp;pickup&nbsp;of&nbsp;player.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="XP-__init__"><strong>__init__</strong></a>(self, x, y)</dt><dd><tt>Initializes&nbsp;the&nbsp;<a href="#XP">XP</a>&nbsp;class.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;x&nbsp;(float):&nbsp;Sets&nbsp;the&nbsp;x-position&nbsp;of&nbsp;the&nbsp;<a href="#XP">XP</a>&nbsp;orb.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;y&nbsp;(float):&nbsp;Sets&nbsp;the&nbsp;y-position&nbsp;of&nbsp;the&nbsp;<a href="#XP">XP</a>&nbsp;orb.</tt></dd></dl>
+
+<dl><dt><a name="XP-spawn_xp"><strong>spawn_xp</strong></a>(self, starting_x, starting_y, type)</dt><dd><tt>Spawns&nbsp;<a href="#XP">XP</a>&nbsp;orbs&nbsp;around&nbsp;the&nbsp;area&nbsp;a&nbsp;mini-boss&nbsp;or&nbsp;boss&nbsp;has&nbsp;been&nbsp;destroyed.</tt></dd></dl>
+
+<dl><dt><a name="XP-travel_to_player"><strong>travel_to_player</strong></a>(self)</dt><dd><tt>When&nbsp;player&nbsp;is&nbsp;in&nbsp;range&nbsp;of&nbsp;<a href="#XP">XP</a>,&nbsp;have&nbsp;the&nbsp;<a href="#XP">XP</a>&nbsp;fly&nbsp;to&nbsp;the&nbsp;player&nbsp;for&nbsp;them&nbsp;to&nbsp;collect&nbsp;it.</tt></dd></dl>
+
+<dl><dt><a name="XP-xp_stationary"><strong>xp_stationary</strong></a>(self)</dt><dd><tt>Constantly&nbsp;updates&nbsp;and&nbsp;displays&nbsp;the&nbsp;<a href="#XP">XP</a>&nbsp;at&nbsp;it's&nbsp;specific&nbsp;location.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="XPBar">class <strong>XPBar</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt>Displays&nbsp;the&nbsp;<a href="#XP">XP</a>&nbsp;bar&nbsp;to&nbsp;the&nbsp;screen&nbsp;and&nbsp;also&nbsp;displays&nbsp;the&nbsp;upgrade&nbsp;menu.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;xp_bar_border_rect&nbsp;(pygame.rect.Rect):&nbsp;Adds&nbsp;a&nbsp;border&nbsp;around&nbsp;the&nbsp;<a href="#XP">XP</a>&nbsp;bar.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;xp_bar_rect&nbsp;(pygame.rect.Rect):&nbsp;Adds&nbsp;a&nbsp;bar&nbsp;indicating&nbsp;the&nbsp;amount&nbsp;of&nbsp;<a href="#XP">XP</a>&nbsp;the&nbsp;player&nbsp;has.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;xp_bar_empty_rect&nbsp;(pygame.rect.Rect):&nbsp;Adds&nbsp;an&nbsp;empty&nbsp;<a href="#XP">XP</a>&nbsp;bar&nbsp;to&nbsp;indicate&nbsp;how&nbsp;full/empty&nbsp;the&nbsp;<a href="#XP">XP</a>&nbsp;bar&nbsp;is.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;xp&nbsp;(int):&nbsp;The&nbsp;amount&nbsp;of&nbsp;<a href="#XP">XP</a>&nbsp;the&nbsp;player&nbsp;has&nbsp;per&nbsp;level.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;level&nbsp;(int):&nbsp;The&nbsp;current&nbsp;<a href="#XP">XP</a>&nbsp;level&nbsp;the&nbsp;player&nbsp;has.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;total_length&nbsp;(int):&nbsp;The&nbsp;total&nbsp;length&nbsp;of&nbsp;the&nbsp;<a href="#XP">XP</a>&nbsp;bar.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;level_xp_requirement&nbsp;(float):&nbsp;The&nbsp;<a href="#XP">XP</a>&nbsp;requirement&nbsp;in&nbsp;order&nbsp;to&nbsp;unlock&nbsp;an&nbsp;upgrade&nbsp;and&nbsp;increase&nbsp;<a href="#XP">XP</a>&nbsp;level.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;length&nbsp;(float):&nbsp;The&nbsp;length&nbsp;of&nbsp;the&nbsp;current&nbsp;fluid&nbsp;<a href="#XP">XP</a>&nbsp;bar.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;connector&nbsp;(None):&nbsp;Displays&nbsp;a&nbsp;line&nbsp;that&nbsp;connects&nbsp;to&nbsp;the&nbsp;<a href="#XP">XP</a>&nbsp;bar&nbsp;to&nbsp;the&nbsp;box&nbsp;which&nbsp;displays&nbsp;the&nbsp;<a href="#XP">XP</a>&nbsp;level.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;top&nbsp;(None):&nbsp;Displays&nbsp;a&nbsp;line&nbsp;above&nbsp;the&nbsp;<a href="#XP">XP</a>&nbsp;level&nbsp;to&nbsp;form&nbsp;a&nbsp;box&nbsp;around&nbsp;it.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;right&nbsp;(None):&nbsp;Displays&nbsp;a&nbsp;line&nbsp;to&nbsp;the&nbsp;right&nbsp;of&nbsp;the&nbsp;<a href="#XP">XP</a>&nbsp;level&nbsp;to&nbsp;form&nbsp;a&nbsp;box&nbsp;around&nbsp;it.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bottom&nbsp;(None):&nbsp;Displays&nbsp;a&nbsp;line&nbsp;below&nbsp;the&nbsp;<a href="#XP">XP</a>&nbsp;level&nbsp;to&nbsp;form&nbsp;a&nbsp;box&nbsp;around&nbsp;it.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;left&nbsp;(None):&nbsp;Displays&nbsp;a&nbsp;line&nbsp;to&nbsp;the&nbsp;left&nbsp;of&nbsp;the&nbsp;<a href="#XP">XP</a>&nbsp;level&nbsp;to&nbsp;form&nbsp;a&nbsp;box&nbsp;around&nbsp;it.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;level_background&nbsp;(None):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;level_font&nbsp;(pygame.font.Font):&nbsp;The&nbsp;font&nbsp;used&nbsp;for&nbsp;displaying&nbsp;the&nbsp;level&nbsp;number.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;upgrade_title_font&nbsp;(pygame.font.Font):&nbsp;The&nbsp;font&nbsp;used&nbsp;for&nbsp;displaying&nbsp;the&nbsp;upgrade&nbsp;menu&nbsp;title.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;upgrade_desc_font&nbsp;(pygame.font.Font):&nbsp;&nbsp;The&nbsp;font&nbsp;used&nbsp;for&nbsp;displaying&nbsp;the&nbsp;upgrade&nbsp;descriptions.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;offset&nbsp;(int):&nbsp;A&nbsp;fixed&nbsp;value&nbsp;which&nbsp;was&nbsp;used&nbsp;to&nbsp;help&nbsp;allign&nbsp;the&nbsp;<a href="#XP">XP</a>&nbsp;bar&nbsp;with&nbsp;all&nbsp;the&nbsp;different&nbsp;connecting&nbsp;pieces.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;leftover&nbsp;(float):&nbsp;The&nbsp;amount&nbsp;of&nbsp;<a href="#XP">XP</a>&nbsp;left&nbsp;over&nbsp;after&nbsp;completing&nbsp;the&nbsp;<a href="#XP">XP</a>&nbsp;level&nbsp;requirement.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;leftover_size&nbsp;(float):&nbsp;The&nbsp;size&nbsp;the&nbsp;leftover&nbsp;<a href="#XP">XP</a>&nbsp;will&nbsp;take&nbsp;up&nbsp;during&nbsp;the&nbsp;new&nbsp;<a href="#XP">XP</a>&nbsp;level.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;level_menu&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;the&nbsp;player&nbsp;is&nbsp;in&nbsp;the&nbsp;upgrade&nbsp;menu.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;pauseTimer&nbsp;(float):&nbsp;A&nbsp;timer&nbsp;which&nbsp;has&nbsp;the&nbsp;amount&nbsp;of&nbsp;time&nbsp;the&nbsp;game&nbsp;was&nbsp;paused.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;available_upgrades&nbsp;(list):&nbsp;A&nbsp;list&nbsp;of&nbsp;all&nbsp;available&nbsp;upgrades&nbsp;for&nbsp;the&nbsp;player.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;selected_upgrade_choices&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;two&nbsp;choices&nbsp;have&nbsp;been&nbsp;randomly&nbsp;selected&nbsp;to&nbsp;be&nbsp;displayed.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;option1&nbsp;(None):&nbsp;Displays&nbsp;the&nbsp;first&nbsp;random&nbsp;upgrade&nbsp;option.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;option2&nbsp;(None):&nbsp;Displays&nbsp;the&nbsp;second&nbsp;random&nbsp;upgrade&nbsp;option.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;button_rect1&nbsp;(None):&nbsp;The&nbsp;hitbox&nbsp;for&nbsp;selecting&nbsp;the&nbsp;first&nbsp;option.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;button_rect2&nbsp;(None):&nbsp;The&nbsp;hitbox&nbsp;for&nbsp;selecting&nbsp;the&nbsp;second&nbsp;option.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;selected&nbsp;(bool):&nbsp;Declares&nbsp;if&nbsp;an&nbsp;option&nbsp;has&nbsp;been&nbsp;selected.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="XPBar-__init__"><strong>__init__</strong></a>(self)</dt><dd><tt>Initializes&nbsp;the&nbsp;<a href="#XPBar">XPBar</a>&nbsp;class.</tt></dd></dl>
+
+<dl><dt><a name="XPBar-basic_attack_damage_upgrade"><strong>basic_attack_damage_upgrade</strong></a>(self, option)</dt><dd><tt>Displays&nbsp;information&nbsp;for&nbsp;the&nbsp;basic&nbsp;attack&nbsp;upgrades,&nbsp;and,&nbsp;if&nbsp;selected,&nbsp;upgrades&nbsp;this&nbsp;ability.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;option&nbsp;(int):&nbsp;Numbers&nbsp;0-2&nbsp;indicate&nbsp;a&nbsp;specific&nbsp;action.&nbsp;0:&nbsp;Upgrade,&nbsp;1:&nbsp;display&nbsp;info&nbsp;left,&nbsp;2:&nbsp;display&nbsp;info&nbsp;right</tt></dd></dl>
+
+<dl><dt><a name="XPBar-basic_attack_range_upgrade"><strong>basic_attack_range_upgrade</strong></a>(self, option)</dt><dd><tt>Displays&nbsp;information&nbsp;for&nbsp;the&nbsp;basic&nbsp;attack&nbsp;range&nbsp;upgrades,&nbsp;and,&nbsp;if&nbsp;selected,&nbsp;upgrades&nbsp;this&nbsp;ability.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;option&nbsp;(int):&nbsp;Numbers&nbsp;0-2&nbsp;indicate&nbsp;a&nbsp;specific&nbsp;action.&nbsp;0:&nbsp;Upgrade,&nbsp;1:&nbsp;display&nbsp;info&nbsp;left,&nbsp;2:&nbsp;display&nbsp;info&nbsp;right</tt></dd></dl>
+
+<dl><dt><a name="XPBar-basic_attack_speed_upgrade"><strong>basic_attack_speed_upgrade</strong></a>(self, option)</dt><dd><tt>Displays&nbsp;information&nbsp;for&nbsp;the&nbsp;basic&nbsp;attack&nbsp;speed&nbsp;upgrades,&nbsp;and,&nbsp;if&nbsp;selected,&nbsp;upgrades&nbsp;this&nbsp;ability.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;option&nbsp;(int):&nbsp;Numbers&nbsp;0-2&nbsp;indicate&nbsp;a&nbsp;specific&nbsp;action.&nbsp;0:&nbsp;Upgrade,&nbsp;1:&nbsp;display&nbsp;info&nbsp;left,&nbsp;2:&nbsp;display&nbsp;info&nbsp;right</tt></dd></dl>
+
+<dl><dt><a name="XPBar-bullet_damage_upgrade"><strong>bullet_damage_upgrade</strong></a>(self, option)</dt><dd><tt>Displays&nbsp;information&nbsp;for&nbsp;the&nbsp;bullet&nbsp;damage&nbsp;upgrades,&nbsp;and,&nbsp;if&nbsp;selected,&nbsp;upgrades&nbsp;this&nbsp;ability.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;option&nbsp;(int):&nbsp;Numbers&nbsp;0-2&nbsp;indicate&nbsp;a&nbsp;specific&nbsp;action.&nbsp;0:&nbsp;Upgrade,&nbsp;1:&nbsp;display&nbsp;info&nbsp;left,&nbsp;2:&nbsp;display&nbsp;info&nbsp;right</tt></dd></dl>
+
+<dl><dt><a name="XPBar-bullet_range_upgrade"><strong>bullet_range_upgrade</strong></a>(self, option)</dt><dd><tt>Displays&nbsp;information&nbsp;for&nbsp;the&nbsp;bullet&nbsp;range&nbsp;upgrades,&nbsp;and,&nbsp;if&nbsp;selected,&nbsp;upgrades&nbsp;this&nbsp;ability.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;option&nbsp;(int):&nbsp;Numbers&nbsp;0-2&nbsp;indicate&nbsp;a&nbsp;specific&nbsp;action.&nbsp;0:&nbsp;Upgrade,&nbsp;1:&nbsp;display&nbsp;info&nbsp;left,&nbsp;2:&nbsp;display&nbsp;info&nbsp;right</tt></dd></dl>
+
+<dl><dt><a name="XPBar-bullet_speed_upgrade"><strong>bullet_speed_upgrade</strong></a>(self, option)</dt><dd><tt>Displays&nbsp;information&nbsp;for&nbsp;the&nbsp;bullet&nbsp;speed&nbsp;upgrades,&nbsp;and,&nbsp;if&nbsp;selected,&nbsp;upgrades&nbsp;this&nbsp;ability.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;option&nbsp;(int):&nbsp;Numbers&nbsp;0-2&nbsp;indicate&nbsp;a&nbsp;specific&nbsp;action.&nbsp;0:&nbsp;Upgrade,&nbsp;1:&nbsp;display&nbsp;info&nbsp;left,&nbsp;2:&nbsp;display&nbsp;info&nbsp;right</tt></dd></dl>
+
+<dl><dt><a name="XPBar-dodge_chance_upgrade"><strong>dodge_chance_upgrade</strong></a>(self, option)</dt><dd><tt>Displays&nbsp;information&nbsp;for&nbsp;the&nbsp;dodge&nbsp;chance&nbsp;upgrades,&nbsp;and,&nbsp;if&nbsp;selected,&nbsp;upgrades&nbsp;this&nbsp;ability.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;option&nbsp;(int):&nbsp;Numbers&nbsp;0-2&nbsp;indicate&nbsp;a&nbsp;specific&nbsp;action.&nbsp;0:&nbsp;Upgrade,&nbsp;1:&nbsp;display&nbsp;info&nbsp;left,&nbsp;2:&nbsp;display&nbsp;info&nbsp;right</tt></dd></dl>
+
+<dl><dt><a name="XPBar-move_speed_upgrade"><strong>move_speed_upgrade</strong></a>(self, option)</dt><dd><tt>Displays&nbsp;information&nbsp;for&nbsp;the&nbsp;movement&nbsp;speed&nbsp;upgrades,&nbsp;and,&nbsp;if&nbsp;selected,&nbsp;upgrades&nbsp;this&nbsp;ability.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;option&nbsp;(int):&nbsp;Numbers&nbsp;0-2&nbsp;indicate&nbsp;a&nbsp;specific&nbsp;action.&nbsp;0:&nbsp;Upgrade,&nbsp;1:&nbsp;display&nbsp;info&nbsp;left,&nbsp;2:&nbsp;display&nbsp;info&nbsp;right</tt></dd></dl>
+
+<dl><dt><a name="XPBar-show_xp_bar"><strong>show_xp_bar</strong></a>(self)</dt><dd><tt>Displays&nbsp;the&nbsp;<a href="#XP">XP</a>&nbsp;Bar&nbsp;and&nbsp;upgrade&nbsp;menu.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-button"><strong>button</strong></a>(msg, x, y, w, h, ic, ac, action)</dt><dd><tt>If&nbsp;buttons&nbsp;are&nbsp;pressed,&nbsp;activate&nbsp;the&nbsp;appropriate&nbsp;functions.</tt></dd></dl>
+ <dl><dt><a name="-credits"><strong>credits</strong></a>()</dt><dd><tt>Function&nbsp;to&nbsp;show&nbsp;the&nbsp;credits&nbsp;menu,&nbsp;which&nbsp;will&nbsp;contain&nbsp;the&nbsp;credits&nbsp;to&nbsp;all&nbsp;resources&nbsp;used.</tt></dd></dl>
+ <dl><dt><a name="-death_screen"><strong>death_screen</strong></a>(screen_type)</dt><dd><tt>Displays&nbsp;a&nbsp;death&nbsp;screen&nbsp;if&nbsp;the&nbsp;player&nbsp;dies.</tt></dd></dl>
+ <dl><dt><a name="-display_fps"><strong>display_fps</strong></a>(text, font, text_color)</dt><dd><tt>Function&nbsp;to&nbsp;show&nbsp;the&nbsp;frames&nbsp;per&nbsp;second&nbsp;in&nbsp;the&nbsp;corner.</tt></dd></dl>
+ <dl><dt><a name="-display_timer"><strong>display_timer</strong></a>(text, font, text_color)</dt><dd><tt>Function&nbsp;to&nbsp;display&nbsp;the&nbsp;game&nbsp;timer&nbsp;to&nbsp;show&nbsp;how&nbsp;long&nbsp;you&nbsp;have&nbsp;been&nbsp;in-game.</tt></dd></dl>
+ <dl><dt><a name="-fullscreen_toggle"><strong>fullscreen_toggle</strong></a>()</dt><dd><tt>Adds&nbsp;the&nbsp;ability&nbsp;to&nbsp;fullscreen&nbsp;the&nbsp;game.</tt></dd></dl>
+ <dl><dt><a name="-key_pressed"><strong>key_pressed</strong></a>()</dt><dd><tt>Handles&nbsp;all&nbsp;keypress&nbsp;functions.</tt></dd></dl>
+ <dl><dt><a name="-main_menu"><strong>main_menu</strong></a>()</dt><dd><tt>Function&nbsp;to&nbsp;show&nbsp;the&nbsp;Main&nbsp;Menu&nbsp;before&nbsp;the&nbsp;game&nbsp;starts.</tt></dd></dl>
+ <dl><dt><a name="-pause_game"><strong>pause_game</strong></a>()</dt><dd><tt>Displays&nbsp;a&nbsp;pause&nbsp;menu&nbsp;while&nbsp;the&nbsp;game&nbsp;is&nbsp;paused.</tt></dd></dl>
+ <dl><dt><a name="-reset_stats"><strong>reset_stats</strong></a>()</dt><dd><tt>Resets&nbsp;the&nbsp;stats&nbsp;so&nbsp;the&nbsp;player&nbsp;can&nbsp;start&nbsp;fresh&nbsp;when&nbsp;they&nbsp;die</tt></dd></dl>
+ <dl><dt><a name="-settings_menu"><strong>settings_menu</strong></a>()</dt><dd><tt>Function&nbsp;to&nbsp;run&nbsp;the&nbsp;settings&nbsp;menu,&nbsp;which&nbsp;is&nbsp;accessible&nbsp;through&nbsp;the&nbsp;pause&nbsp;menu.</tt></dd></dl>
+ <dl><dt><a name="-start_game_time"><strong>start_game_time</strong></a>()</dt><dd><tt>Starts&nbsp;keeping&nbsp;track&nbsp;of&nbsp;the&nbsp;time&nbsp;within&nbsp;the&nbsp;game.</tt></dd></dl>
+ <dl><dt><a name="-text_objects"><strong>text_objects</strong></a>(text, font)</dt><dd><tt>Adds&nbsp;ability&nbsp;for&nbsp;text&nbsp;to&nbsp;be&nbsp;on&nbsp;screen</tt></dd></dl>
+ <dl><dt><a name="-unpause"><strong>unpause</strong></a>()</dt><dd><tt>Unpauses&nbsp;the&nbsp;game&nbsp;loop.</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>activate_bullet</strong> = True<br>
+<strong>b</strong> = &lt;main.Bullet object&gt;<br>
+<strong>ba</strong> = &lt;main.BasicAttack object&gt;<br>
+<strong>batImg1</strong> = &lt;Surface(32x32x32 SW)&gt;<br>
+<strong>batImg2</strong> = &lt;Surface(32x32x32 SW)&gt;<br>
+<strong>bats</strong> = []<br>
+<strong>bg_img</strong> = &lt;Surface(2160x2160x32 SW)&gt;<br>
+<strong>bullet_timer1</strong> = 2<br>
+<strong>bullet_timer2</strong> = 0<br>
+<strong>bullet_upgrade</strong> = &lt;Surface(16x16x32 SW)&gt;<br>
+<strong>bullets</strong> = []<br>
+<strong>bup</strong> = &lt;main.BulletUpgrade object&gt;<br>
+<strong>buttonScroll</strong> = &lt;Surface(720x471x32 SW)&gt;<br>
+<strong>cl</strong> = &lt;main.ChainLightning object&gt;<br>
+<strong>clock</strong> = &lt;Clock(fps=15.06)&gt;<br>
+<strong>clp</strong> = &lt;main.ChainLightningPickup object&gt;<br>
+<strong>com</strong> = &lt;main.Commander object&gt;<br>
+<strong>comimage1</strong> = &lt;Surface(16x16x32 SW)&gt;<br>
+<strong>comimage2</strong> = &lt;Surface(16x16x32 SW)&gt;<br>
+<strong>comimage3</strong> = &lt;Surface(16x16x32 SW)&gt;<br>
+<strong>comimage4</strong> = &lt;Surface(16x16x32 SW)&gt;<br>
+<strong>crit_img</strong> = &lt;Surface(16x16x32 SW)&gt;<br>
+<strong>dodge_img</strong> = &lt;Surface(16x16x32 SW)&gt;<br>
+<strong>dungeonBackground</strong> = &lt;Surface(1280x1280x32 SW)&gt;<br>
+<strong>ee</strong> = &lt;main.MiniEarthElemental object&gt;<br>
+<strong>enemies</strong> = []<br>
+<strong>enemy1</strong> = &lt;Surface(32x32x32 SW)&gt;<br>
+<strong>enemy2</strong> = &lt;Surface(32x32x32 SW)&gt;<br>
+<strong>enemy3</strong> = &lt;Surface(32x32x32 SW)&gt;<br>
+<strong>enemy4</strong> = &lt;Surface(32x32x32 SW)&gt;<br>
+<strong>enemyOriginal</strong> = &lt;Surface(16x16x32 SW)&gt;<br>
+<strong>exp</strong> = &lt;main.XP object&gt;<br>
+<strong>fps_font</strong> = &lt;pygame.font.Font object&gt;<br>
+<strong>game</strong> = True<br>
+<strong>gameTime</strong> = 0<br>
+<strong>gameTimeStr</strong> = 0<br>
+<strong>gameTimerOn</strong> = False<br>
+<strong>gold_img</strong> = &lt;Surface(16x16x32 SW)&gt;<br>
+<strong>horizontalScroll</strong> = &lt;Surface(576x324x32 SW)&gt;<br>
+<strong>input_csv</strong> = './game-data/profile-data.csv'<br>
+<strong>isFullscreen</strong> = False<br>
+<strong>level_scroll</strong> = &lt;Surface(50x32x32 SW)&gt;<br>
+<strong>lifesteal_img</strong> = &lt;Surface(16x16x32 SW)&gt;<br>
+<strong>lz</strong> = &lt;main.Laser object&gt;<br>
+<strong>lzp</strong> = &lt;main.LaserPickup object&gt;<br>
+<strong>m</strong> = &lt;main.Map object&gt;<br>
+<strong>ma</strong> = &lt;main.Mage object&gt;<br>
+<strong>mageimage1</strong> = &lt;Surface(16x16x32 SW)&gt;<br>
+<strong>mageimage2</strong> = &lt;Surface(16x16x32 SW)&gt;<br>
+<strong>mageimage3</strong> = &lt;Surface(16x16x32 SW)&gt;<br>
+<strong>mageimage4</strong> = &lt;Surface(16x16x32 SW)&gt;<br>
+<strong>maxhealth_img</strong> = &lt;Surface(16x16x32 SW)&gt;<br>
+<strong>mc_img</strong> = &lt;Surface(16x16x32 SW)&gt;<br>
+<strong>mediumScroll</strong> = &lt;Surface(283x367x32 SW)&gt;<br>
+<strong>menu_timer</strong> = 0<br>
+<strong>menu_timer2</strong> = 3992<br>
+<strong>minibee1</strong> = &lt;Surface(16x16x32 SW)&gt;<br>
+<strong>minibee2</strong> = &lt;Surface(16x16x32 SW)&gt;<br>
+<strong>minibee3</strong> = &lt;Surface(16x16x32 SW)&gt;<br>
+<strong>minibee4</strong> = &lt;Surface(16x16x32 SW)&gt;<br>
+<strong>minutes</strong> = 0<br>
+<strong>movementspeed_img</strong> = &lt;Surface(16x16x32 SW)&gt;<br>
+<strong>output_csv</strong> = './game-data/new-profile-data.csv'<br>
+<strong>p</strong> = &lt;main.Player object&gt;<br>
+<strong>pause</strong> = False<br>
+<strong>pd</strong> = &lt;main.ProfileData object&gt;<br>
+<strong>prevGameTime</strong> = 0<br>
+<strong>regen_img</strong> = &lt;Surface(16x16x32 SW)&gt;<br>
+<strong>revive_img</strong> = &lt;Surface(16x16x32 SW)&gt;<br>
+<strong>screen</strong> = &lt;Surface(800x800x32 SW)&gt;<br>
+<strong>screen_height</strong> = 800<br>
+<strong>screen_size_height</strong> = 800<br>
+<strong>screen_size_stuff</strong> = &lt;VideoInfo(hw = 0, wm = 1,video_mem = 0
+        ...         pixel_format = SDL_PIXELFORMAT_RGB888)
+&gt;<br>
+<strong>screen_size_width</strong> = 800<br>
+<strong>screen_width</strong> = 800<br>
+<strong>seconds</strong> = 0<br>
+<strong>sk</strong> = &lt;main.SkeletonKing object&gt;<br>
+<strong>skeleton_king1</strong> = &lt;Surface(320x320x32 SW)&gt;<br>
+<strong>skeleton_king2</strong> = &lt;Surface(320x320x32 SW)&gt;<br>
+<strong>skeleton_king3</strong> = &lt;Surface(320x320x32 SW)&gt;<br>
+<strong>skeleton_king4</strong> = &lt;Surface(320x320x32 SW)&gt;<br>
+<strong>speed_img</strong> = &lt;Surface(16x16x32 SW)&gt;<br>
+<strong>speed_item_visible</strong> = True<br>
+<strong>st</strong> = &lt;main.SkillTree object&gt;<br>
+<strong>tallScroll</strong> = &lt;Surface(200x347x32 SW)&gt;<br>
+<strong>timer_font</strong> = &lt;pygame.font.Font object&gt;<br>
+<strong>transparent_surface</strong> = &lt;Surface(800x800x32 SW)&gt;<br>
+<strong>up</strong> = &lt;main.UserProfile object&gt;<br>
+<strong>x</strong> = 1538<br>
+<strong>xp</strong> = []<br>
+<strong>xpB</strong> = &lt;main.XPBar object&gt;<br>
+<strong>xp_hit</strong> = []</td></tr></table>
+</body></html>
