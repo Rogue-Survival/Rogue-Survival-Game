@@ -161,9 +161,9 @@ class ProfileData:
                 data0 = ["profile_id", "currency", "selected_profile", "upgrade1_level", "upgrade2_level",
                          "upgrade3_level", "upgrade4_level", "upgrade5_level", "upgrade6_level", "upgrade7_level",
                          "upgrade8_level"]
-                data1 = [1, 0, "not-selected", 0, 0, 0, 0, 0, 0, 0, 0]
+                data1 = [1, 0, "selected", 0, 0, 0, 0, 0, 0, 0, 0]
                 data2 = [2, 0, "not-selected", 0, 0, 0, 0, 0, 0, 0, 0]
-                data3 = [3, 0, "selected", 0, 0, 0, 0, 0, 0, 0, 0]
+                data3 = [3, 0, "not-selected", 0, 0, 0, 0, 0, 0, 0, 0]
                 data4 = [4, 0, "not-selected", 0, 0, 0, 0, 0, 0, 0, 0]
                 data5 = [5, 0, "not-selected", 0, 0, 0, 0, 0, 0, 0, 0]
                 p_writer.writerow(data0)
