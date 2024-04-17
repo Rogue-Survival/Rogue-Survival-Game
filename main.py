@@ -2405,12 +2405,12 @@ class Commander(Enemy):
         hit_damage (int): The base damage for the commander's attack
         last_auto (int): A timer for the last auto-attack.
         attack_speed (int): The interval of time between attacks.
-        buffarea (None): The size of area that allies are buffed.
-        shouttimer (int): A timer for the last shout ability used.
-        shoutarea (None): The size of area that allies are affected by shout.
+        buff_area (None): The size of area that allies are buffed.
+        shout_timer (int): A timer for the last shout ability used.
+        shout_area (None): The size of area that allies are affected by shout.
         shout (bool): Declares if the shout ability has been used.
         activate (bool): Declares if the commander has been spawned.
-        shoutcounter (int): Determines the interval between shout abilities.
+        shout_counter (int): Determines the interval between shout abilities.
     """
 
     def __init__(self, x, y):
@@ -2438,13 +2438,12 @@ class Commander(Enemy):
         self.last_auto = 0
         self.attack_speed = 5
         self.speed = 1
-        self.buffarea = None
-        # self.orspeed = 0
-        self.shouttimer = 15
-        self.shoutarea = None
+        self.buff_area = None
+        self.shout_timer = 15
+        self.shout_area = None
         self.shout = False
         self.activate = False
-        self.shoutcounter = 0
+        self.shout_counter = 0
 
     def activate_death(self):
         """Destroys the commander when they run out of health."""
@@ -2567,32 +2566,32 @@ class Commander(Enemy):
 
     def buff_aura(self):  # Speed and healing aura
         """Ability of the commander that buffs the speed and healing of it's surrounding allies."""
-        self.buffarea = pygame.draw.circle(screen, (100, 100, 100), (self.rect.x + 15, self.rect.y + 15), 90, 1)
+        self.buff_area = pygame.draw.circle(screen, (100, 100, 100), (self.rect.x + 15, self.rect.y + 15), 90, 1)
         for enemy in enemies:
-            if enemy.rect.colliderect(self.buffarea):
+            if enemy.rect.colliderect(self.buff_area):
                 enemy.speed = 3
                 if enemy.health > enemy.maxhealth:
                     enemy.health += .5
                 enemy.wasbuffed = True
-            if not enemy.rect.colliderect(self.buffarea) and enemy.wasbuffed == True:
+            if not enemy.rect.colliderect(self.buff_area) and enemy.wasbuffed == True:
                 enemy.speed = random.randint(1, 2)
                 enemy.wasbuffed = False
 
     def buff_shout(self):  # damage and max health/heal buff
         """Ability of the commander that buffs the damage and max health of it's surrounding allies."""
-        if self.shoutcounter <= self.shouttimer:
-            self.shoutcounter += .1
-        if self.shoutcounter >= self.shouttimer:
+        if self.shout_counter <= self.shout_timer:
+            self.shout_counter += .1
+        if self.shout_counter >= self.shout_timer:
             self.shout = True
         if self.shout:
-            self.shoutarea = pygame.draw.circle(screen, (100, 0, 255), (self.rect.x + 15, self.rect.y + 15), 400, 3)
+            self.shout_area = pygame.draw.circle(screen, (100, 0, 255), (self.rect.x + 15, self.rect.y + 15), 400, 3)
             for enemy in enemies:
-                if enemy.rect.colliderect(self.shoutarea):
+                if enemy.rect.colliderect(self.shout_area):
                     enemy.maxhealth += 15
                     enemy.health += 15
                     enemy.edamage += 10
                     self.shout = False
-                    self.shoutcounter = 0
+                    self.shout_counter = 0
 
     def comactive(self):
         """Once the commander has been spawned, have them use their abilities at certain times."""
@@ -2616,27 +2615,24 @@ class Mage(Enemy):
         felled (bool): Declares if the mage has been destroyed.
         not_attacking (bool): Declares if the mage is not attacking.
         hit_damage (int): Sets the base damage for the mage's hit attack.
-        last_auto (int):
-        attack_speed (int):
-        meteorimpact (None):
-        meteorcd (int):
-        calling (bool):
-        activate (bool):
-        meteorcounter (int):
-        seekercd (int):
-        seekercounter (int):
-        meteor (None):
-        px (int):
-        py (int):
-        summon (bool):
-        o (int):
-        seeker (None):
-        seekerx (float):
-        seekery (float):
-        seekspeed (int):
-        seekeractive (bool):
-        seekdur (int):
-        seekacdur (int):
+        last_auto (int): Time stamp of last auto attack.
+        attack_speed (int): Rate of attack speed.
+        meteor_impact (None): Rect of the meteor impact that deals damage.
+        meteor_cd (int): The cooldown of the meteor.
+        activate (bool): True if the Mage is active
+        meteor_counter (int): The counter for the metoer cooldown.
+        seeker_cd (int): Cooldown of the seeker ability.
+        seeker_counter (int): Counter for the Seeker cooldown.
+        meteor (None): rect for the falling meteor.
+        px (int): Snapshot of player x position.
+        py (int): Snapshot of player y position.
+        meteor_height (int): Height of the meteor at spawn.
+        seeker (None): rect of the seekeer ability.
+        seek_speed (int): Speed of the seeker bullet.
+        seeker_active (bool): True if the seeker is active.
+        seekdur (int): Duration of the seeker bullet before it despawns.
+        seekacdur (int): Duration of seeker active.
+        summon (bool): If summon is active
     """
 
     def __init__(self, x, y):
@@ -2665,27 +2661,25 @@ class Mage(Enemy):
         self.last_auto = 0
         self.attack_speed = 5
         self.speed = 1
-        self.meteorimpact = None
-        # self.orspeed = 0
-        self.meteorcd = 15
-        # self.shoutarea = None
+        self.meteor_impact = None
+        self.meteor_cd = 15
         self.calling = False
         self.activate = False
-        self.meteorcounter = 0
+        self.meteor_counter = 0
         self.seekercd = 20
-        self.seekercounter = 0
+        self.seeker_counter = 0
         self.meteor = None
         self.px = 0
         self.py = 0
-        self.summon = False
-        self.o = 1000
+        self.meteor_height = 1000
         self.seeker = None
         self.seekerx = self.rect.x + 15
         self.seekery = self.rect.y + 15
-        self.seekspeed = 3
-        self.seekeractive = False
+        self.seek_speed = 3
+        self.seeker_active = False
         self.seekdur = 8
         self.seekacdur = 0
+        self.summon = False
 
     def auto_hit_player(self):
         """When the mage is very close to the player, auto-attack them."""
@@ -2806,28 +2800,28 @@ class Mage(Enemy):
 
     def summon_meteor(self):
         """Summons meteor to fall where the player was standing at the time of the summon."""
-        if self.meteorcounter >= self.meteorcd:
+        if self.meteor_counter >= self.meteor_cd:
             if not self.summon:
                 self.px = p.rect.x + 15
                 self.py = p.rect.y + 15
                 self.summon = True
             if self.summon:
                 pygame.draw.circle(screen, (255, 0, 0), (self.px, self.py), 350, 3)
-                if self.o > 0:
-                    self.meteor = pygame.draw.circle(screen, (255, 0, 0), (self.px, self.py - self.o), 40)
-                    self.o -= 10
-                if self.o <= 0:
+                if self.meteor_height > 0:
+                    self.meteor = pygame.draw.circle(screen, (255, 0, 0), (self.px, self.py - self.meteor_height), 40)
+                    self.meteor_height -= 10
+                if self.meteor_height <= 0:
                     self.meteor_counter = 0
                     self.meteor = pygame.draw.circle(screen, (255, 0, 0), (self.px, self.py), 350, 1)
                     self.summon = False
-                    self.o = 1000
+                    self.meteor_height = 1000
                     if self.meteor.colliderect(p.rect):
                         p.current_health -= 200
 
     def fire_seeker(self):
         """"""
-        if self.seekercounter >= self.seekercd:
-            if not self.seekeractive:
+        if self.seeker_counter >= self.seekercd:
+            if not self.seeker_active:
                 self.seekerx = ma.rect.x
                 self.seekery = ma.rect.y
                 self.seeker_active = True
@@ -2836,14 +2830,14 @@ class Mage(Enemy):
                 if self.seekacdur >= self.seekdur:
                     self.seeker = None
                     self.seekacdur = 0
-                    self.seekercounter = 0
+                    self.seeker_counter = 0
                     self.seeker_active = False
                     self.seekerx = ma.rect.x
                     self.seekery = ma.rect.y
                 if self.seeker_active and self.seeker.colliderect(p.rect):
                     p.current_health -= 30
                     self.seeker = None
-                    self.seekercounter = 0
+                    self.seeker_counter = 0
                     self.seekerx = ma.rect.x
                     self.seekery = ma.rect.y
                     self.seeker_active = False
@@ -2852,13 +2846,13 @@ class Mage(Enemy):
         """"""
         if self.seeker_active:
             if self.seekery >= p.rect.y:
-                self.seekery -= self.seekspeed
+                self.seekery -= self.seek_speed
             if self.seekery <= p.rect.y:
-                self.seekery += self.seekspeed
+                self.seekery += self.seek_speed
             if self.seekerx >= p.rect.x:
-                self.seekerx -= self.seekspeed
+                self.seekerx -= self.seek_speed
             if self.seekerx <= p.rect.x:
-                self.seekerx += self.seekspeed
+                self.seekerx += self.seek_speed
 
     def active(self):
         """Once the mage has been spawned, have them use their abilities at certain times."""
@@ -2868,7 +2862,7 @@ class Mage(Enemy):
             self.seeker_seeks()
             self.meteor_counter += .03
             if not self.seeker_active:
-                self.seekercounter += .03
+                self.seeker_counter += .03
             if self.seeker_active:
                 self.seekacdur += .03
 
