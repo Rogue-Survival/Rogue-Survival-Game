@@ -5828,7 +5828,7 @@ while game:
             bat.check_collisions()
         bat.activate_death()
 
-    if int(minutes) == 0 and int(seconds) == 5:
+    if int(minutes) == 1 and int(seconds) == 30:
         ee.activate = True
 
     if ee.activate and not ee.felled:
