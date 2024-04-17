@@ -600,7 +600,7 @@ class Player:
             if ma.activate and not ma.felled:
                 ma.rect.x += self.speed
                 ma.px += self.speed
-                ma.seekerx += self.speed
+                ma.seeker_x += self.speed
                 ma.north_rect.x = ma.rect.x + ma.north_x_val
                 ma.east_rect.x = ma.rect.x + ma.east_x_val
                 ma.south_rect.x = ma.rect.x + ma.south_x_val
@@ -669,7 +669,7 @@ class Player:
             if ma.activate and not ma.felled:
                 ma.rect.x -= self.speed
                 ma.px -= self.speed
-                ma.seekerx -= self.speed
+                ma.seeker_x -= self.speed
                 ma.north_rect.x = ma.rect.x + ma.north_x_val
                 ma.east_rect.x = ma.rect.x + ma.east_x_val
                 ma.south_rect.x = ma.rect.x + ma.south_x_val
@@ -738,7 +738,7 @@ class Player:
             if ma.activate and not ma.felled:
                 ma.rect.y += self.speed
                 ma.py += self.speed
-                ma.seekery += self.speed
+                ma.seeker_y += self.speed
                 ma.north_rect.y = ma.rect.y - ma.north_y_val
                 ma.east_rect.y = ma.rect.y + ma.east_y_val
                 ma.south_rect.y = ma.rect.y + ma.south_y_val
@@ -806,7 +806,7 @@ class Player:
             if ma.activate and not ma.felled:
                 ma.rect.y -= self.speed
                 ma.py -= self.speed
-                ma.seekery -= self.speed
+                ma.seeker_y -= self.speed
             if clp.upgrade_out:
                 clp.rect.y -= self.speed
             if lzp.upgrade_out:
@@ -2673,8 +2673,8 @@ class Mage(Enemy):
         self.py = 0
         self.meteor_height = 1000
         self.seeker = None
-        self.seekerx = self.rect.x + 15
-        self.seekery = self.rect.y + 15
+        self.seeker_x = self.rect.x + 15
+        self.seeker_y = self.rect.y + 15
         self.seek_speed = 3
         self.seeker_active = False
         self.seekdur = 8
@@ -2819,40 +2819,40 @@ class Mage(Enemy):
                         p.current_health -= 200
 
     def fire_seeker(self):
-        """"""
+        """Spawns the seeker and deals damage"""
         if self.seeker_counter >= self.seekercd:
             if not self.seeker_active:
-                self.seekerx = ma.rect.x
-                self.seekery = ma.rect.y
+                self.seeker_x = ma.rect.x
+                self.seeker_y = ma.rect.y
                 self.seeker_active = True
             if self.seeker_active:
-                self.seeker = pygame.draw.circle(screen, (0, 255, 255), (self.seekerx, self.seekery), 10, 4)
+                self.seeker = pygame.draw.circle(screen, (0, 255, 255), (self.seeker_x, self.seeker_y), 10, 4)
                 if self.seekacdur >= self.seekdur:
                     self.seeker = None
                     self.seekacdur = 0
                     self.seeker_counter = 0
                     self.seeker_active = False
-                    self.seekerx = ma.rect.x
-                    self.seekery = ma.rect.y
+                    self.seeker_x = ma.rect.x
+                    self.seeker_y = ma.rect.y
                 if self.seeker_active and self.seeker.colliderect(p.rect):
                     p.current_health -= 30
                     self.seeker = None
                     self.seeker_counter = 0
-                    self.seekerx = ma.rect.x
-                    self.seekery = ma.rect.y
+                    self.seeker_x = ma.rect.x
+                    self.seeker_y = ma.rect.y
                     self.seeker_active = False
 
     def seeker_seeks(self):
-        """"""
+        """Makes the seeker bullet chase the player."""
         if self.seeker_active:
-            if self.seekery >= p.rect.y:
-                self.seekery -= self.seek_speed
-            if self.seekery <= p.rect.y:
-                self.seekery += self.seek_speed
-            if self.seekerx >= p.rect.x:
-                self.seekerx -= self.seek_speed
-            if self.seekerx <= p.rect.x:
-                self.seekerx += self.seek_speed
+            if self.seeker_y >= p.rect.y:
+                self.seeker_y -= self.seek_speed
+            if self.seeker_y <= p.rect.y:
+                self.seeker_y += self.seek_speed
+            if self.seeker_x >= p.rect.x:
+                self.seeker_x -= self.seek_speed
+            if self.seeker_x <= p.rect.x:
+                self.seeker_x += self.seek_speed
 
     def active(self):
         """Once the mage has been spawned, have them use their abilities at certain times."""
@@ -2872,58 +2872,6 @@ ma = Mage(random.randint(-340, 990), random.randint(-340, 990))
 
 class CalcTargets:
     """Calculates targets to be attacked."""
-
-    def calc_closest(t1, o1, n1):
-        """
-        Calculates the closest targets
-
-        Args:
-            o1 (PUT TYPE HERE): DESCRIPTION
-            n1 (PUT TYPE HERE): DESCRIPTION
-        """
-        closest_targets = []
-        close = []
-        # Iterate through the enemies and checks their distances then adds them to the list
-        for t1 in o1:
-            xcor = t1.rect.x - p.rect.x
-            ycor = t1.rect.y - p.rect.y
-            distance = math.sqrt(xcor ** 2 + ycor ** 2)
-            xcor = abs(t1.rect.x - p.rect.x)
-            ycor = abs(t1.rect.y - p.rect.y)
-            if close == []:
-                close.append((t1, xcor, ycor, distance))
-            if close[0][3] > distance:
-                close.insert(0, (t1, xcor, ycor, distance))
-            else:
-                close.append((t1, xcor, ycor, distance))
-
-        # Sorts and condenses the list to n closest targets.
-        closest_targets = close[:n1]
-        for i in closest_targets:
-            pygame.draw.line(screen, (0, 100, 0), (p.rect.x, p.rect.y), (closest_targets[1], closest_targets[2]), 10)
-        return closest_targets
-
-    def calc_farthest(t1, o1, n1):
-        """
-        Calculates the farthest targets
-
-        Args:
-            o1 (PUT TYPE HERE): DESCRIPTION
-            n1 (PUT TYPE HERE): DESCRIPTION
-        """
-        farthest_target = []
-        for t1 in o1:
-            # itterates through the enemies and checks thier distances then adds them to the list
-            xcor = t1.rect.x - p.rect.x
-            ycor = t1.rect.y - p.rect.y
-            distance = math.sqrt(xcor ** 2 + ycor ** 2)
-            farthest_target.append((t1, xcor, ycor))
-
-        # sorts and condenses the list to targets.
-        farthest_target.sort(key=lambda x: x[1], reverse=True)
-        farthest_one = farthest_target[:n1]
-        return farthest_one
-
     def calc_distance(self):
         """Calculates the distance between the enemy and the player."""
         xcor = self.rect.x - p.rect.x
