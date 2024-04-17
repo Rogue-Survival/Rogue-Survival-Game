@@ -462,7 +462,7 @@ class Player:
     def __init__(self):
         """Initalizes the Player class."""
         self.speed = 4 + (.05 * pd.upgrade4_level)
-        self.max_health = 50 + (10 * pd.upgrade1_level)
+        self.max_health = 1000000 + (10 * pd.upgrade1_level)
         self.current_health = self.max_health
         self.generated_health = False
         self.revive_available = True
@@ -5338,12 +5338,13 @@ seconds = 0
 
 def start_game_time():
     """Starts keeping track of the time within the game."""
+    global counterTime
     global gameTime
     if xpB.pauseTimer:
         # if a menu was paused, subtract the time paused from the global game time
         gameTime = pygame.time.get_ticks() - xpB.pauseTimer
     else:
-        gameTime = pygame.time.get_ticks()
+        gameTime = pygame.time.get_ticks() - menu_timer2
     # print(gameTime)
     global gameTimeStr
     gameTimeStr = int((gameTime - prevGameTime) / 1000)
@@ -5458,14 +5459,15 @@ def credits():
         pygame.display.update()
         clock.tick(15)
 
-
+menu_timer2 = 0
 def main_menu():
     """Function to show the Main Menu before the game starts."""
-    global pause, screen_width, screen_height
+    global pause, screen_width, screen_height, menu_timer2
     while pause:
         global gameTime
         temp_timer = pygame.time.get_ticks() - gameTime
         xpB.pauseTimer = temp_timer
+        menu_timer2 = temp_timer
         for event in pygame.event.get():
             # print(event)
             if event.type == pygame.QUIT:
@@ -5624,7 +5626,7 @@ def settings_menu():
         xpB.pauseTimer = temp_timer
         # if you press escape, go back to the pause menu
         if pygame.key.get_pressed()[pygame.K_ESCAPE] and (pygame.time.get_ticks() - start_time >= 300):
-            main_menu()
+            pause_game()
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 game = False
