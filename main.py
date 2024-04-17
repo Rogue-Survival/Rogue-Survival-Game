@@ -462,7 +462,7 @@ class Player:
     def __init__(self):
         """Initalizes the Player class."""
         self.speed = 4 + (.05 * pd.upgrade4_level)
-        self.max_health = 1000000 + (10 * pd.upgrade1_level)
+        self.max_health = 50 + (10 * pd.upgrade1_level)
         self.current_health = self.max_health
         self.generated_health = False
         self.revive_available = True
@@ -2258,7 +2258,7 @@ class MiniEarthElemental(Enemy):
         self.rect.x = x
         self.rect.y = y
         self.rect.width = 20
-        self.health = 5
+        self.health = 500
         self.speed = 3
         self.travel_north()
         self.travel_east()
@@ -5828,7 +5828,7 @@ while game:
             bat.check_collisions()
         bat.activate_death()
 
-    if int(minutes) == 1 and int(seconds) == 30:
+    if int(minutes) == 0 and int(seconds) == 5:
         ee.activate = True
 
     if ee.activate and not ee.felled:
