@@ -81,6 +81,7 @@ mageimage4 = pygame.image.load("./images/mage4.png").convert_alpha()
 screen_height = 800
 screen_width = 800
 isFullscreen = False
+pause_screen = False
 gameTime = 0
 pause = True
 # instantiating the XP arrays
@@ -5269,6 +5270,7 @@ exp = XP(0, 0)
 menu_timer = 0
 
 
+
 # adding the ability to implement buttons
 def button(msg, x, y, w, h, ic, ac, action):
     """If buttons are pressed, activate the appropriate functions."""
@@ -5279,10 +5281,15 @@ def button(msg, x, y, w, h, ic, ac, action):
     global activate_bullet
     global bullet_timer1
     global bullet_timer2
+    global pause_screen
+
     # does a specific action based on button text and if it was clicked
     if x + w > mouse[0] > x and y + h > mouse[1] > y:
         pygame.draw.rect(screen, ac, (x, y, w, h), border_radius=20)
         if click[0] == 1 and action is not None:
+            if action == "main_menu" and action == "skilltree":
+                print('3')
+            print(action)
             if action == "Settings":
                 pause = False
                 settings_menu()
@@ -5306,12 +5313,15 @@ def button(msg, x, y, w, h, ic, ac, action):
                 bullet_timer2 = 0
             elif action == "main_menu":
                 global menu_timer
+                pause_screen = True
                 menu_timer = 1
                 main_menu()
             elif action == "skilltree":
-                pd.load_skill_tree()
-                st.load_data()
-                st.skill_tree()
+                if not pause_screen:
+                    pd.load_skill_tree()
+                    st.load_data()
+                    st.skill_tree()
+                pause_screen = False
             elif action == "profile":
                 up.user_profile_menu()
     else:
@@ -5572,7 +5582,7 @@ def pause_game():
     start_time = pygame.time.get_ticks()
     info = pygame.display.Info()
     screen_width, screen_height = info.current_w, info.current_h
-    global pause  # risky
+    global pause
     pause = True
 
     while pause:
